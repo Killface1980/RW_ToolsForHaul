@@ -44,7 +44,7 @@ namespace ToolsForHaul
         public override void DesignateSingleCell(IntVec3 c)
         {
             List<Thing> thingList = c.GetThingList();
-            foreach (var thing in thingList)
+            foreach (Thing thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
                 if (pawn != null && (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike)))

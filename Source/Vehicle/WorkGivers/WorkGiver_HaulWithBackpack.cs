@@ -15,7 +15,7 @@ namespace ToolsForHaul
 {
     public class WorkGiver_HaulWithBackpack : WorkGiver
     {
-        private static string NoBackpack = Translator.Translate("NoBackpack");
+        private static string NoBackpack = "NoBackpack".Translate();
 
         public override bool ShouldSkip(Pawn pawn)
         {

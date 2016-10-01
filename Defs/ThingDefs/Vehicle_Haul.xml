@@ -84,9 +84,9 @@
     </recipeMaker>
   </ThingDef>
 
-  
+  <!--
 
-  <ThingDef ParentName="BaseVehicle">
+<ThingDef ParentName="BaseVehicle">
     <defName>VehicleSaddle</defName>
     <label>saddle</label>
     <hasInteractionCell>True</hasInteractionCell>
@@ -106,11 +106,11 @@
     <statBases>
       <MaxHitPoints>100</MaxHitPoints>
     </statBases>
-    <size>(1,1)</size>
+    <size>(1,1)</size>-->
 <!--     <inspectorTabs>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
     </inspectorTabs> -->
-    <CostList>
+  <!--<CostList>
       <Steel>40</Steel>
     </CostList>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
@@ -128,16 +128,18 @@
       </recipeUsers>
       <workAmount>1600</workAmount>
     <unfinishedThingDef>UnfinishedWeapon</unfinishedThingDef>
-	  <skillRequirements>
+	  <skillRequirements>-->
 		<!-- <li>
 		  <skill>Crafting</skill>
 		  <minLevel>8</minLevel>
 		</li> -->
-	  </skillRequirements>
+  <!-- </skillRequirements>
     </recipeMaker>
   </ThingDef>
-  
- <!-- Food Service Trolley -->
+
+  -->
+
+  <!-- Food Service Trolley -->
  <!--  <ThingDef ParentName="BaseVehicle">
     <defName>VehicleTrolley</defName>
     <label>trolley</label>

@@ -76,7 +76,7 @@ namespace ToolsForHaul
             thingIconRect.y = storageRect.y;
             thingLabelRect.y = storageRect.y;
             thingButtonRect.y = storageRect.y;
-            foreach (var thing in cart.storage)
+            foreach (Thing thing in cart.storage)
             {
                 if ((thing.ThingID.IndexOf("Human_Corpse") <= -1) ? false : true)
                     Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconHuman_Corpse"), 1.0f);

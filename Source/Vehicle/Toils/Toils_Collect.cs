@@ -100,7 +100,7 @@ public static class Toils_Collect
             if ((haulThing.ThingID.IndexOf("Human_Corpse") <= -1)? false : true)
             {
                 Corpse corpse = (Corpse)haulThing;
-                var wornApparel = corpse.innerPawn.apparel.WornApparel;
+                List<Apparel> wornApparel = corpse.innerPawn.apparel.WornApparel;
 
                 //Drop wornApparel. wornApparel cannot Add to container directly because it will be duplicated.
                 corpse.innerPawn.apparel.DropAll(corpse.innerPawn.Position, false);
@@ -152,7 +152,7 @@ public static class Toils_Collect
             if ((haulThing.ThingID.IndexOf("Human_Corpse") <= -1) ? false : true)
             {
                 Corpse corpse = (Corpse)haulThing;
-                var wornApparel = corpse.innerPawn.apparel.WornApparel;
+                List<Apparel> wornApparel = corpse.innerPawn.apparel.WornApparel;
 
                 //Drop wornApparel. wornApparel cannot Add to container directly because it will be duplicated.
                 corpse.innerPawn.apparel.DropAll(corpse.innerPawn.Position, false);

@@ -34,6 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -54,40 +55,60 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backpack\Apparel_Backpack.cs" />
-    <Compile Include="Materials.cs" />
+    <Compile Include="RightTools\_ThinkNode_JobGiver.cs" />
+    <Compile Include="RightTools\RightTools.cs" />
+    <Compile Include="RightTools\Class3.cs" />
+    <Compile Include="RightTools\MapComponentInjector.cs" />
+    <Compile Include="RightTools\SpecialInjector.cs" />
+    <Compile Include="RightTools\Detours.cs" />
     <Compile Include="ToolsForHaulUtility.cs" />
     <Compile Include="Trace.cs" />
-    <Compile Include="Vehicle\Cart\JobDriver_Standby.cs" />
-    <Compile Include="Vehicle\Cart\JobDriver_HaulWithAnimalCart.cs" />
-    <Compile Include="Vehicle\Cart\Toils_Cart.cs" />
-    <Compile Include="Vehicle\Cart\WorkGiver_HaulWithCart.cs" />
-    <Compile Include="Vehicle\CompMountable.cs" />
-    <Compile Include="Backpack\Designator_ApplyMedicine.cs" />
-    <Compile Include="Vehicle\Designator_Mount.cs" />
-    <Compile Include="Backpack\Designator_PutInInventory.cs" />
+    <Compile Include="JobDrivers\JobDriver_Standby.cs" />
+    <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
+    <Compile Include="Toils\Toils_Cart.cs" />
+    <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
+    <Compile Include="Vehicles\CompMountable.cs" />
+    <Compile Include="Designators\Designator_ApplyMedicine.cs" />
+    <Compile Include="Designators\Designator_Mount.cs" />
+    <Compile Include="Designators\Designator_PutInInventory.cs" />
     <Compile Include="Backpack\Gizmo_BackpackEquipment.cs" />
-    <Compile Include="Vehicle\ITab_Pawn_VehicleGear.cs">
+    <Compile Include="ITabs\ITab_Pawn_VehicleGear.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Vehicle\ITab_Vehicle_Storage.cs" />
-    <Compile Include="Backpack\JobDriver_ApplyMedicine.cs" />
-    <Compile Include="Vehicle\Cart\JobDriver_HaulWithCart.cs">
+    <Compile Include="ITabs\ITab_Vehicle_Storage.cs" />
+    <Compile Include="JobDrivers\JobDriver_ApplyMedicine.cs" />
+    <Compile Include="JobDrivers\JobDriver_HaulWithCart.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Vehicle\JobDriver_Board.cs" />
-    <Compile Include="Vehicle\Cart\JobDriver_DismountInBase.cs" />
-    <Compile Include="Backpack\JobDriver_HaulWithBackpack.cs" />
-    <Compile Include="Vehicle\JobDriver_MakeMount.cs" />
-    <Compile Include="Vehicle\JobDriver_Mount.cs" />
-    <Compile Include="Backpack\JobDriver_PutInInventory.cs" />
+    <Compile Include="JobDrivers\JobDriver_Board.cs" />
+    <Compile Include="JobDrivers\JobDriver_DismountInBase.cs" />
+    <Compile Include="JobDrivers\JobDriver_HaulWithBackpack.cs" />
+    <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
+    <Compile Include="JobDrivers\JobDriver_Mount.cs" />
+    <Compile Include="JobDrivers\JobDriver_PutInInventory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Toils_Collect.cs" />
-    <Compile Include="Vehicle\Cart\Vehicle_Cart.cs" />
-    <Compile Include="Vehicle\Saddle\Designator_Board.cs" />
-    <Compile Include="Vehicle\Saddle\Designator_Move.cs" />
-    <Compile Include="Vehicle\Saddle\Vehicle_Saddle.cs" />
-    <Compile Include="Backpack\WorkGiver_HaulWithBackpack.cs" />
+    <Compile Include="Toils\Toils_Collect.cs" />
+    <Compile Include="Vehicles\Vehicle_Cart.cs" />
+    <Compile Include="Designators\Designator_Board.cs" />
+    <Compile Include="Designators\Designator_Move.cs" />
+    <Compile Include="Vehicles\Vehicle_Saddle.cs" />
+    <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\Defs\StatDefs\Stats_Apparel.xml">
+      <Link>Defs\StatDefs\Stats_Apparel.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Apparel_Backpack.xml">
+      <Link>Defs\ThingDefs\Apparel_Backpack.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
+      <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Vehicle_Haul.xml">
+      <Link>Defs\ThingDefs\Vehicle_Haul.xml</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

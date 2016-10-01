@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using RimWorld;
 
 namespace ToolsForHaul
 {
+    [StaticConstructorOnStartup]
     public class Vehicle_Saddle : ThingWithComps, IThingContainerOwner
     {
 
@@ -18,13 +17,13 @@ namespace ToolsForHaul
         private const int maxNumBoarding = 1;
 
         //Graphic data
-        private Graphic_Multi graphic_Saddle;
+        private static Graphic_Multi graphic_Saddle;
         //Body and part location
         private Vector3 saddleLoc;
 
         //mount and storage data
         public CompMountable mountableComp;
-        public ThingContainer storage = null;
+        public ThingContainer storage;
         public ThingContainer GetContainer() { return storage; }
         public IntVec3 GetPosition() { return Position; }
 
@@ -50,6 +49,7 @@ namespace ToolsForHaul
             pawn.holder.owner = this;
             pawn.jobs.StartJob(new Job(JobDefOf.WaitCombat));
         }
+
         public virtual void Unboard(Pawn pawn)
         {
             if (storage.Count(x => x is Pawn) <= 0)
@@ -68,11 +68,11 @@ namespace ToolsForHaul
             if (storage.Count(x => x is Pawn) <= 0)
                 return;
 
-            Thing dummy;
             foreach (Pawn crew in storage.Where(x => x is Pawn).ToList())
             {
                 crew.holder = null;
                 crew.jobs.StopAll();
+                Thing dummy;
                 storage.TryDrop(crew, Position, ThingPlaceMode.Near, out dummy);
             }
         }
@@ -81,24 +81,28 @@ namespace ToolsForHaul
         #region Setup Work
 
         public Vehicle_Saddle()
-            : base()
         {
             storage = new ThingContainer(this);
         }
 
+        static Vehicle_Saddle()
+        {
+            ThingDef def = ThingDef.Named("VehicleSaddle");
+            graphic_Saddle = GraphicDatabase.Get<Graphic_Multi>("Things/Pawn/Vehicle/Saddle", def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Multi;
+        }
 
         public override void SpawnSetup()
         {
             base.SpawnSetup();
             mountableComp = GetComp<CompMountable>();
 
-            UpdateGraphics();
+            //UpdateGraphics();
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.LookDeep<ThingContainer>(ref storage, "storage");
+            Scribe_Deep.LookDeep(ref storage, "storage");
         }
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
@@ -113,7 +117,7 @@ namespace ToolsForHaul
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            foreach (var baseGizmo in base.GetGizmos())
+            foreach (Gizmo baseGizmo in base.GetGizmos())
                 yield return baseGizmo;
             if (mountableComp.IsMounted && storage.Count(x => x is Pawn) < maxNumBoarding)
             {
@@ -181,11 +185,9 @@ namespace ToolsForHaul
         /// <summary>
         /// Import the graphics
         /// </summary>
-        private void UpdateGraphics()
-        {
-            graphic_Saddle = new Graphic_Multi();
-            graphic_Saddle = GraphicDatabase.Get<Graphic_Multi>("Things/Pawn/Vehicle/Saddle", def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Multi;
-        }
+      //private void UpdateGraphics()
+      //{
+      //}
 
         #endregion
 
@@ -235,33 +237,35 @@ namespace ToolsForHaul
                 base.DrawAt(drawLoc);
                 return;
             }
-            saddleLoc = drawLoc; saddleLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.01f;
+            saddleLoc = drawLoc;
+            saddleLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.01f;
 
             if (mountableComp != null && mountableComp.IsMounted)
             {
                 graphic_Saddle.Draw(saddleLoc, Rotation, this);
-                Vector3 crewLoc = drawLoc; crewLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
+                Vector3 crewLoc = drawLoc;
+                crewLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.05f;
                 Vector3 crewsOffset = new Vector3(0.25f, 0.02f, -0.25f);
                 if (Rotation == Rot4.North || Rotation == Rot4.South)
                     crewsOffset.x = 0f;
-                if (storage != null)
-                    foreach (var thing in storage.Where(x => x is Pawn).ToList())
-                    {
-                        var pawn = (Pawn) thing;
-                        if (pawn == null) continue;
-                        pawn.Rotation = Rotation;
-                        pawn.DrawAt(crewLoc + crewsOffset.RotatedBy(Rotation.AsAngle));
-                        if (!(pawn.stances.curStance is Stance_Warmup) || !Find.Selector.IsSelected(this)) continue;
-                        Stance_Warmup stance_Warmup = (Stance_Warmup) pawn.stances.curStance;
-                        float pieSizeFactor;
-                        if (stance_Warmup.ticksLeft < 300)
-                            pieSizeFactor = 1f;
-                        else if (stance_Warmup.ticksLeft < 450)
-                            pieSizeFactor = 0.75f;
-                        else
-                            pieSizeFactor = 0.5f;
-                        GenDraw.DrawAimPie((Thing)stance_Warmup.stanceTracker?.pawn, stance_Warmup.focusTarg, (int)((double)stance_Warmup.ticksLeft * (double)pieSizeFactor), 0.2f);
-                    }
+                if (storage == null) return;
+                foreach (Thing thing in storage.Where(x => x is Pawn).ToList())
+                {
+                    Pawn pawn = (Pawn) thing;
+                    if (pawn == null) continue;
+                    pawn.Rotation = Rotation;
+                    pawn.DrawAt(crewLoc + crewsOffset.RotatedBy(Rotation.AsAngle));
+                    if (!(pawn.stances.curStance is Stance_Warmup) || !Find.Selector.IsSelected(this)) continue;
+                    Stance_Warmup stance_Warmup = (Stance_Warmup) pawn.stances.curStance;
+                    float pieSizeFactor;
+                    if (stance_Warmup.ticksLeft < 300)
+                        pieSizeFactor = 1f;
+                    else if (stance_Warmup.ticksLeft < 450)
+                        pieSizeFactor = 0.75f;
+                    else
+                        pieSizeFactor = 0.5f;
+                    GenDraw.DrawAimPie(stance_Warmup.stanceTracker?.pawn, stance_Warmup.focusTarg, (int)(stance_Warmup.ticksLeft * (double)pieSizeFactor), 0.2f);
+                }
             }
             else
                 base.DrawAt(drawLoc);

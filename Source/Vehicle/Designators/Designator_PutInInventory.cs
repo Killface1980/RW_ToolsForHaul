@@ -37,7 +37,7 @@ namespace ToolsForHaul
             numOfContents = backpack.wearer.inventory.container.Count;
 
             int designationsTotalStackCount = 0;
-            foreach (var designation in designations)
+            foreach (Designation designation in designations)
                 designationsTotalStackCount += designation.target.Thing.stackCount;
 
             //No Item space or no stack space
@@ -46,7 +46,7 @@ namespace ToolsForHaul
                 return new AcceptanceReport(txtBackpackIsFull.Translate());
 
 
-            foreach (var thing in thingList)
+            foreach (Thing thing in thingList)
             {
                 if (thing.def.category == ThingCategory.Item && !Find.Reservations.IsReserved(thing, Faction.OfPlayer))
                     return true;
@@ -57,7 +57,7 @@ namespace ToolsForHaul
         public override void DesignateSingleCell(IntVec3 c)
         {
             List<Thing> thingList = c.GetThingList();
-            foreach (var thing in thingList)
+            foreach (Thing thing in thingList)
                 if (thing.def.category == ThingCategory.Item && !Find.Reservations.IsReserved(thing, Faction.OfPlayer))
                     designations.Add(new Designation(thing, DesignationDefOf.Haul));
         }
@@ -84,7 +84,7 @@ namespace ToolsForHaul
 
         public override void SelectedUpdate()
         {
-            foreach (var designation in designations)
+            foreach (Designation designation in designations)
                 designation.DesignationDraw();
         }
     }

@@ -101,7 +101,7 @@ namespace ToolsForHaul
 
         public override IEnumerable<Command> CompGetGizmosExtra()
         {
-            foreach (var compCom in base.CompGetGizmosExtra())
+            foreach (Command compCom in base.CompGetGizmosExtra())
                 yield return compCom;
 
             Command_Action com = new Command_Action();

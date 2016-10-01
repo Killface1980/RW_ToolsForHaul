@@ -97,7 +97,7 @@ namespace ToolsForHaul
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            foreach (var baseGizmo in base.GetGizmos())
+            foreach (Gizmo baseGizmo in base.GetGizmos())
                 yield return baseGizmo;
         }
 
