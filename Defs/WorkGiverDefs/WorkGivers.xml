@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<WorkGivers>
+
+  
+  <WorkGiverDef>
+    <defName>HaulWithBackpack</defName>
+    <giverClass>ToolsForHaul.WorkGiver_HaulWithBackpack</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>9</priorityInType>
+    <verb>haul with </verb>
+    <gerund>hauling with </gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  
+  <!-- ============= Driver ============= -->
+ 
+  <WorkGiverDef>
+    <defName>HaulWithCart</defName>
+    <giverClass>ToolsForHaul.WorkGiver_HaulWithCart</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>7</priorityInType>
+    <scanThings>true</scanThings>
+    <verb>haul with </verb>
+    <gerund>hauling with </gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+</WorkGivers>

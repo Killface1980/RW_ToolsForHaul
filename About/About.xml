@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>Tools for hauling</name>
+	<author>BBream</author>
+	<targetVersion>0.15.1284</targetVersion>
+	<description>
+  https://ludeon.com/forums/index.php?topic=12282.0
+	Version V1.5d
+	
+  Contents List:
+	- Cart for hauling
+  - Backpack for hauling
+  - Saddle for rider
+		
+  Change Log
+  V1.5d
+  - Finding items logic is changed.
+  - JobDriver_HaulWithCart is improved.
+  - DrawPos is adjusted for big animal.
+  
+  V1.5c
+  - Now cart's maximum item become 4.
+  - Backpack's maximum stack is 50 per item. 
+  - Bugs related to door are fixed.
+  - Dismount Policy is changed: Home Area => Storage zone for cart or Cell near cart
+  - Now cart is not used if Hauling item is less than 50 persent of maximum item capacity(Typically less than 2 items).
+  - Cart wheel is rotated if cart is moving.
+  
+  V1.5b
+  - Texture is changed. Thanks for sharing it, mrofa!
+  - Critical Bug that make colonist idle is fixed.
+  - Backpack bug is fixed but need to check it is fine in a lot of case.
+  - Code is refined and separated from release mod. You can download code from github.
+  
+  V1.5a
+  - 5 bugs are fixed. See this. https://github.com/BBream/ToolsForHaul/issues?q=is%3Aissue+is%3Aclosed
+  - Animals can haul item depending on their body size. For example, muffalo has 2.0 body size and factor is 4.
+  So, muffalo can haul 8 items. You can see body size in information window.(Carring capacity)
+  
+  V1.5
+  - Cart and saddle can be mounted in animal's back. For this, Animal should be trained for 'Obeidence' and bigger than human.(baseBodySize >= 1.0)
+  This is list of animal can mount cart and saddle: 
+    Warg, Husky, LabradorRetriever, Elk, Thrumbo, Boomalope, Muffalo, Rhinoceros, Dromedary, Elephant, Cow, Alpaca.
+  - Cart has been nerfed. Maximum items humanlike can haul with cart is changed from 6 items or 600 stacks to 3 items or 300 stacks. 
+  Instead, Maximum items animal can haul with cart is 6 items or 600 stacks.
+  - Saddle is added. Saddle can be mounted in animal's back. Human can board on Animal has saddle like riding horse. 
+  Rider would attack if enemy is close enough.
+  - 'Drop All' button is added in Cart's Gear inspector tab.
+  
+  V1.4b
+  - Backpack bug is fixed. After just starting game and picking up backpack, error is occured.
+  - Backpack bug is fixed. Hauling with backpack has problem when backpack is empty.
+  - Now Colonist will check temperature is safe enough(80'C below) to do hauling job. 
+  - Hauling with cart logic is changed. See https://ludeon.com/forums/index.php?topic=12282.msg175662#msg175662
+  
+  V1.4a
+  - Backpack gizmo's drop floating menu bug is fixed. It was made disappear equipment try to drop.
+  - Backpack is now used for hauling. Priority of using tool is Backpack - Cart - Hand.
+    Before they start hauling with backpack, they will remember backpack's item that already put in and won't drop it.
+  
+  V1.4
+  - Fixed for Alpha 12d
+  
+  V1.3a
+  - Cargo renamed 'Cart'
+  - Fixed for Alpha 11b
+  
+  V1.2a
+  - Collecting and droping logic is changed. The colonist will collect and drop it while standing if it can reach in standing position.
+  - Fixed bug that Cargo cannnot draw in while being carried by hand
+  - Chunkslag may not print holder error message. If you see this error, please report me
+  
+  V1.2
+  - Cargo is added new tab for filtering item. Cargo will be used just filtered item.
+  - Cargo can be deconstructed by float menu button. It return 40 steels.
+  - Korean language is available. Thanks Latta for translating.
+  
+  V1.1c
+  - Save-load bug that try register new pawn if game is saved while hauling with cargo.
+  
+  V1.1b
+  - Memory lick removed.
+
+  V1.1a
+  - Holder error message is not printed anymore.
+  - Fixed backpack bug that cannot use and should reequip after loading game.
+  
+  V1.1
+  - Backpack UI is improved.
+  - Cargo now check storage priority.
+  - Cargo Gizmo is removed.
+  
+  V1.0b
+  - Cargo can store item in storage building.
+  V1.0a
+  - Cargo collect not just 6 items but also 600 stacks. it can collect 600 potatos.
+  - Holder error message is fixed but still rarely printed. But it has no problem.
+  - Fixed bug that colonist do not haul job even if haulable items exist.
+    
+	</description>
+</ModMetaData>

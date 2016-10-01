@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  
+  <!-- Backpack -->
+  <DesignatorPutInDefaultLabel>Put in</DesignatorPutInDefaultLabel>
+  <DesignatorPutInDefaultDesc>Put in inventory. Capacity: </DesignatorPutInDefaultDesc>
+  
+  <!-- Failure messages -->
+  <CannotMount>Must designate colonist can be mounted.</CannotMount>
+    <NotPawn>It is not pawn.</NotPawn>
+    <NotColonyFaction>It is not in your faction.</NotColonyFaction>
+    <NotHumanlikeOrMechanoid>It is not for humanlike or mechanoid.</NotHumanlikeOrMechanoid>
+    <NotTrainedAnimal>The animal is not trained for 'Obedience'.</NotTrainedAnimal>
+    <TooSmallAnimal>The animal is too small to mount.</TooSmallAnimal>
+    <NoWorkForMakeMount>No worker make animal mount.</NoWorkForMakeMount>
+  <CannotBoard>Must designate humanlike or colony mechanoid.</CannotBoard>
+  <NoNeedTreatment>Must designate pawn needed treatment.</NoNeedTreatment>
+  <BackpackIsFull>BackPack has been Full.</BackpackIsFull>
+  <InvalidPutInTarget>Must designate item can be hauled</InvalidPutInTarget>
+  <NoDoctor>Colonist is not doctor</NoDoctor>
+  <CannotEatAnymore>Colonist don't want to eat anymore</CannotEatAnymore>
+
+</LanguageData>
