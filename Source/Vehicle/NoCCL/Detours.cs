@@ -38,7 +38,7 @@ namespace ToolsForHaul
             string sourceString = source.DeclaringType?.FullName + "." + source.Name + " @ 0x" + source.MethodHandle.GetFunctionPointer().ToString("X" + (IntPtr.Size * 2));
             string destinationString = destination.DeclaringType?.FullName + "." + destination.Name + " @ 0x" + destination.MethodHandle.GetFunctionPointer().ToString("X" + (IntPtr.Size * 2));
 
-#if DEBUG
+#if DEBUG && CCL
             if (detoured.Contains(sourceString))
             {
                 CCL_Log.Trace(Verbosity.Warnings,

@@ -14,13 +14,11 @@ namespace ToolsForHaul
 {
     public static class ToolsForHaulUtility
     {
-        public static string NoHaulable;
         public static string TooLittleHaulable;
         public static string NoEmptyPlaceForCart;
         public static string NoEmptyPlaceLowerTrans;
         public static string NoAvailableCart;
         public static string BurningLowerTrans;
-        private static readonly JobDef jobDefHaulWithBackpack = DefDatabase<JobDef>.GetNamed("HaulWithBackpack");
         private static readonly JobDef jobDefHaulWithAnimalCart = DefDatabase<JobDef>.GetNamed("HaulWithAnimalCart");
         private static readonly JobDef jobDefHaulWithCart = DefDatabase<JobDef>.GetNamed("HaulWithCart");
         private static readonly JobDef jobDefDismountInBase = DefDatabase<JobDef>.GetNamed("DismountInBase");
@@ -28,7 +26,6 @@ namespace ToolsForHaul
 
         static ToolsForHaulUtility()
         {
-            NoHaulable = "NoHaulable".Translate();
             TooLittleHaulable = "TooLittleHaulable".Translate();
             NoEmptyPlaceForCart = "NoEmptyPlaceForCart".Translate();
             NoEmptyPlaceLowerTrans = "NoEmptyPlaceLower".Translate();
@@ -55,7 +52,7 @@ namespace ToolsForHaul
             {
                 if (backpack.numOfSavedItems > 0)
                 {
-                    lastItemInd = ((backpack.numOfSavedItems >= pawn.inventory.container.Count) ? pawn.inventory.container.Count : backpack.numOfSavedItems) - 1;
+                    lastItemInd = (backpack.numOfSavedItems >= pawn.inventory.container.Count ? pawn.inventory.container.Count : backpack.numOfSavedItems) - 1;
                     lastItem = pawn.inventory.container[lastItemInd];
                 }
                 if (foodInInventory != null && backpack.numOfSavedItems < pawn.inventory.container.Count
@@ -65,11 +62,22 @@ namespace ToolsForHaul
             return lastItem;
         }
 
-        public static List<Thing> Cart() { return Find.ListerThings.AllThings.FindAll((Thing thing) => (thing is Vehicle_Cart)); }
-        public static bool AvailableCart(Vehicle_Cart cart, Pawn pawn) { return (!cart.TryGetComp<CompMountable>().IsMounted || cart.TryGetComp<CompMountable>().Driver == pawn); }
+        public static List<Thing> Cart()
+        {
+            return Find.ListerThings.AllThings.FindAll(thing => thing is Vehicle_Cart);
+        }
+
+        public static bool AvailableCart(Vehicle_Cart cart, Pawn pawn)
+        {
+            if (!cart.TryGetComp<CompMountable>().IsMounted) return true;
+            if (cart.TryGetComp<CompMountable>().Driver == pawn) return true;
+            if (!cart.IsForbidden(pawn.Faction)) return true;
+            return false;
+        }
+
         public static bool AvailableAnimalCart(Vehicle_Cart cart)
         {
-            Pawn Driver = (cart.TryGetComp<CompMountable>().IsMounted) ? cart.TryGetComp<CompMountable>().Driver : null;
+            Pawn Driver = cart.TryGetComp<CompMountable>().IsMounted ? cart.TryGetComp<CompMountable>().Driver : null;
             if (Driver == null)
                 return false;
 
@@ -95,7 +103,7 @@ namespace ToolsForHaul
             if (cart == null)
             {
                 Apparel_Backpack backpack = TryGetBackpack(pawn);
-                jobDef = jobDefHaulWithBackpack;
+                jobDef = DefDatabase<JobDef>.GetNamed("HaulWithBackpack");
                 targetC = backpack;
                 maxItem = backpack.MaxItem;
                 thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
@@ -112,19 +120,21 @@ namespace ToolsForHaul
             }
             else
             {
-                jobDef = (cart.TryGetComp<CompMountable>().IsMounted && cart.TryGetComp<CompMountable>().Driver.RaceProps.Animal) ?
+                jobDef = cart.TryGetComp<CompMountable>().IsMounted && cart.TryGetComp<CompMountable>().Driver.RaceProps.Animal ?
                     jobDefHaulWithAnimalCart : jobDefHaulWithCart;
                 targetC = cart;
                 maxItem = cart.MaxItem;
                 thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
                 reservedMaxItem = cart.storage.Count;
                 remainingItems = cart.storage;
-                ShouldDrop = (reservedMaxItem > 0) ? true : false;
+                ShouldDrop = reservedMaxItem > 0 ? true : false;
             }
-            Job job = new Job(jobDef);
-            job.targetQueueA = new List<TargetInfo>();
-            job.targetQueueB = new List<TargetInfo>();
-            job.targetC = targetC;
+            Job job = new Job(jobDef)
+            {
+                targetQueueA = new List<TargetInfo>(),
+                targetQueueB = new List<TargetInfo>(),
+                targetC = targetC
+            };
 
             Trace.AppendLine(pawn.LabelCap + " In HaulWithTools: " + jobDef.defName + "\n"
                 + "MaxItem: " + maxItem + " reservedMaxItem: " + reservedMaxItem);
@@ -147,7 +157,7 @@ namespace ToolsForHaul
                 }
                 if (!job.targetQueueB.NullOrEmpty())
                 {
-                    Trace.AppendLine("Droping Job is issued");
+                    Trace.AppendLine("Dropping Job is issued");
                     Trace.LogMessage();
                     return job;
                 }
@@ -165,7 +175,9 @@ namespace ToolsForHaul
 
             //Collect item
             Trace.AppendLine("Start Collect item");
-            IntVec3 searchPos = (cart != null) ? cart.Position : pawn.Position;
+            IntVec3 searchPos;
+            if (cart != null) searchPos = cart.Position;
+            else searchPos = pawn.Position;
             bool flag1 = false;
             foreach (SlotGroup slotGroup in Find.SlotGroupManager.AllGroupsListInPriorityOrder)
             {
@@ -185,7 +197,7 @@ namespace ToolsForHaul
                     Predicate<Thing> predicate = item
                         => !job.targetQueueA.Contains(item) && !item.IsBurning()
                             && ((cart != null && cart.allowances.Allows(item)) || cart == null)
-                         && !ForbidUtility.IsForbidden(item, pawn)
+                         && !item.IsForbidden(pawn.Faction)
                             && slotGroup.Settings.AllowedToAccept(item)
                             && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger());
                     //&& !(item is UnfinishedThing && ((UnfinishedThing)item).BoundBill != null)
@@ -193,8 +205,7 @@ namespace ToolsForHaul
                     Thing thing = GenClosest.ClosestThing_Global_Reachable(searchPos,
                                                         ListerHaulables.ThingsPotentiallyNeedingHauling(),
                                                         PathEndMode.ClosestTouch,
-                                                        TraverseParms.For(pawn, pawn.NormalMaxDanger()),
-                                                        // pawn was "TraverseMode.ByPawn"
+                                                        TraverseParms.For(TraverseMode.ByPawn, pawn.NormalMaxDanger()),
                                                         9999,
                                                         predicate);
                     if (thing == null)
@@ -206,7 +217,7 @@ namespace ToolsForHaul
                     foreach (Thing item in ListerHaulables.ThingsPotentiallyNeedingHauling().Where(item
                                     => !job.targetQueueA.Contains(item) && !item.IsBurning()
                                         && ((cart != null && cart.allowances.Allows(item)) || cart == null)
-                                        && !ForbidUtility.IsForbidden(item, pawn)
+                                        && !item.IsForbidden(pawn.Faction)
                                         && slotGroup.Settings.AllowedToAccept(item)
                                         && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger())
                                         && center.DistanceToSquared(item.Position) <= ValidDistance))
@@ -223,7 +234,7 @@ namespace ToolsForHaul
                         List<IntVec3> availableCells = new List<IntVec3>();
                         foreach (IntVec3 cell in slotGroup.CellsList.Where(cell => pawn.CanReserve(cell) && cell.Standable() && cell.GetStorable() == null))
                         {
-// NEW cell in allowed area
+                            // NEW cell in allowed area
                             if (cell.InAllowedArea(pawn))
                                 job.targetQueueB.Add(cell);
                             if (job.targetQueueB.Count >= job.targetQueueA.Count)
@@ -256,7 +267,7 @@ namespace ToolsForHaul
             }
 
             if (job.targetQueueA.NullOrEmpty())
-                JobFailReason.Is(NoHaulable);
+                JobFailReason.Is("NoHaulable".Translate());
             else if (reservedMaxItem + job.targetQueueA.Count <= thresholdItem)
                 JobFailReason.Is(TooLittleHaulable);
             else if (job.targetQueueB.NullOrEmpty())

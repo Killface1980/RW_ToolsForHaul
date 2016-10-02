@@ -30,8 +30,7 @@ namespace ToolsForHaul
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotPawn".Translate());
             if (pawn.Faction != Faction.OfPlayer)
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotColonyFaction".Translate());
-            if (false)
-          //  if (!pawn.RaceProps.Animal && vehicle is Vehicle_Saddle)
+            if (!pawn.RaceProps.Animal && vehicle is Vehicle_Saddle)
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotHumanlikeOrMechanoid".Translate());
             if (pawn.RaceProps.Animal && !pawn.training.IsCompleted(TrainableDefOf.Obedience))
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotTrainedAnimal".Translate());

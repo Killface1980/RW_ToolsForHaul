@@ -8,7 +8,6 @@ namespace ToolsForHaul
 {
     public class WorkGiver_HaulWithBackpack : WorkGiver
     {
-
         public override bool ShouldSkip(Pawn pawn)
         {
             Trace.DebugWriteHaulingPawn(pawn);
@@ -19,8 +18,8 @@ namespace ToolsForHaul
             //Should skip pawn that don't have backpack.
             var backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
             if (backpack == null)
-                    return true;
-            if (backpack.MaxItem - backpack.numOfSavedItems==0)
+                return true;
+            if (backpack.MaxItem - backpack.numOfSavedItems == 0)
             {
                 return true;
             }

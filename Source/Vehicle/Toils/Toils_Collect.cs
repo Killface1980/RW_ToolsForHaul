@@ -132,6 +132,8 @@ public static class Toils_Collect
             if (!actor.inventory.container.CanAcceptAnyOf(haulThing))
                 return true;
 
+            
+
             return false;
         });
 		return toil;
@@ -297,7 +299,7 @@ public static class Toils_Collect
 
             if (dropThing == null)
             {
-                //Log.Error(toil.actor + "try drop null thing in " + actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
+                Log.Error(toil.actor + "try drop null thing in " + actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
                 return;
             }
             IntVec3 destLoc = actor.jobs.curJob.GetTarget(StoreCellInd).Cell;

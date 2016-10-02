@@ -23,6 +23,9 @@ namespace ToolsForHaul
             useMouseIcon = true;
             designations = new List<Designation>();
             soundSucceeded = SoundDefOf.DesignateHaul;
+            soundDragSustain = SoundDefOf.DesignateDragStandard;
+            soundDragChanged = SoundDefOf.DesignateDragStandardChanged;
+            activateSound = SoundDef.Named("Click");
         }
 
         public override int DraggableDimensions { get { return 2; } }

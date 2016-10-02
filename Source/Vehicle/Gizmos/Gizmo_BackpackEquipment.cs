@@ -12,7 +12,6 @@ namespace ToolsForHaul
     [StaticConstructorOnStartup]
     public class Gizmo_BackpackEquipment : Gizmo
     {
-        private static string txtCannotEatAnymore;
         private static string txtNoItem;
         private static string txtThingInfo;
         private static string txtDropThing;
@@ -50,7 +49,6 @@ namespace ToolsForHaul
 
         public Gizmo_BackpackEquipment()
         {
-            txtCannotEatAnymore = "CannotEatAnymore".Translate();
             txtNoItem = "NoItem".Translate();
             txtThingInfo = "ThingInfo".Translate();
             txtDropThing = "DropThing".Translate();
@@ -148,21 +146,21 @@ namespace ToolsForHaul
                             }));
 
 
-                      ////Medicine
-                      //if (item.def.thingCategories.Contains(medicine))
-                      //{
-                      //    if (wearer.workSettings != null && wearer.workSettings.WorkIsActive(WorkTypeDefOf.Doctor))
-                      //        options.Add(new FloatMenuOption("TreatPatientWithMedicine".Translate(), () =>
-                      //        {
-                      //            Designator_ApplyMedicine designator = new Designator_ApplyMedicine();
-                      //            designator.medicine = item;
-                      //            designator.doctor = wearer;
-                      //            designator.icon = item.def.uiIcon;
-                      //            designator.activateSound = SoundDef.Named("Click");
-                      //
-                      //            DesignatorManager.Select(designator);
-                      //        }));
-                      //}
+                        //Medicine
+                        if (item.def.thingCategories.Contains(medicine))
+                        {
+                            if (wearer.workSettings != null && wearer.workSettings.WorkIsActive(WorkTypeDefOf.Doctor))
+                                options.Add(new FloatMenuOption("TreatPatientWithMedicine".Translate(), () =>
+                                {
+                                    Designator_ApplyMedicine designator = new Designator_ApplyMedicine();
+                                    designator.medicine = item;
+                                    designator.doctor = wearer;
+                                    designator.icon = item.def.uiIcon;
+                                    designator.activateSound = SoundDef.Named("Click");
+                        
+                                    DesignatorManager.Select(designator);
+                                }));
+                        }
                         //Food
                         if (item.def.thingCategories.Contains(foodMeals))
                         {

@@ -17,8 +17,6 @@ namespace ToolsForHaul
         private const TargetIndex StoreCellInd = TargetIndex.B;
         private const TargetIndex BackpackInd = TargetIndex.C;
 
-        public JobDriver_HaulWithBackpack() : base() { }
-
         public override string GetReport()
         {
             Thing hauledThing = null;
@@ -33,6 +31,8 @@ namespace ToolsForHaul
                 destGroup = StoreUtility.GetSlotGroup(destLoc);
             }
             this.FailOn(() => !pawn.CanReach(TargetThingA, PathEndMode.ClosestTouch, Danger.Deadly));
+
+
 
             if (destGroup != null)
                 destName = destGroup.parent.SlotYielderLabel();
@@ -56,12 +56,13 @@ namespace ToolsForHaul
             //Set fail conditions
             ///
 
+
             ///
             //Define Toil
             ///
 
             Toil endOfJob = new Toil();
-                endOfJob.initAction = () => { EndJobWith(JobCondition.Succeeded); };
+            endOfJob.initAction = () => { EndJobWith(JobCondition.Succeeded); };
             Toil checkStoreCellEmpty = Toils_Jump.JumpIf(endOfJob, () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
             Toil checkHaulableEmpty = Toils_Jump.JumpIf(checkStoreCellEmpty, () => CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
 

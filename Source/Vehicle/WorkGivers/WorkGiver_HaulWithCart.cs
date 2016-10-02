@@ -7,9 +7,11 @@ namespace ToolsForHaul
 {
     public class WorkGiver_HaulWithCart : WorkGiver_Scanner
     {
+
+
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            return ToolsForHaulUtility.Cart();
+            return ToolsForHaulUtility.Cart() as IEnumerable<Thing>;
         }
 
         public override bool ShouldSkip(Pawn pawn)
@@ -17,6 +19,16 @@ namespace ToolsForHaul
             Trace.DebugWriteHaulingPawn(pawn);
             if (ToolsForHaulUtility.Cart().Count == 0)
                 return true;
+          //int countForbidden = 0;
+          //foreach (var actualCart in cart)
+          //{
+          //    if (actualCart.IsForbidden(pawn.Faction))
+          //        countForbidden+=1;
+          //}
+          //if (cart.Count== countForbidden)
+          //{
+          //    return true;
+          //}
             return false;
         }
 
@@ -34,7 +46,7 @@ namespace ToolsForHaul
             }
             if (ListerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.storage.Count == 0)
             {
-                JobFailReason.Is(ToolsForHaulUtility.NoHaulable);
+                JobFailReason.Is("NoHaulable".Translate());
                 return null;
             }
             if (Find.SlotGroupManager.AllGroupsListInPriorityOrder.Count == 0)
