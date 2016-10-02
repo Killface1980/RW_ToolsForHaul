@@ -48,6 +48,7 @@ namespace ToolsForHaul
                 Log.Warning("Tried dismount at " + dismountPos);
         }
         public Vector3 InteractionOffset { get { return parent.def.interactionCellOffset.ToVector3().RotatedBy(driver.Rotation.AsAngle); } }
+
         public Vector3 Position { 
             get {
                 Vector3 mapSize = Find.Map.Size.ToVector3();

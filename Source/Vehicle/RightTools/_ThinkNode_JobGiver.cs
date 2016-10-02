@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
-using static ToolsForHaul.MapComponent_FacialStuff;
+using static ToolsForHaul.MapComponent_ToolsForHaul;
 
 namespace ToolsForHaul
 {
@@ -20,20 +20,20 @@ namespace ToolsForHaul
             if (jobNull)
             {
                 result = ThinkResult.NoJob;
-              //if (wasAutoEquipped.ContainsKey(pawn) && pawn.mindState.IsIdle)
-              //{
-              //    ThingWithComps dummy;
-              //    Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
-              //
-              //    Pawn wearer = backpack.wearer;
-              //    if (wearer.equipment.Primary != null)
-              //        wearer.equipment.TryTransferEquipmentToContainer(wearer.equipment.Primary, wearer.inventory.container, out dummy);
-              //    else
-              //        backpack.numOfSavedItems--;
-              //    wearer.equipment.AddEquipment(wasAutoEquipped[pawn]);
-              //    wearer.inventory.container.Remove(wasAutoEquipped[pawn]);
-              //    wasAutoEquipped.Remove(pawn);
-              //}
+              if (wasAutoEquipped.ContainsKey(pawn) && pawn.mindState.IsIdle)
+              {
+                  ThingWithComps dummy;
+                  Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+              
+                  Pawn wearer = backpack.wearer;
+                  if (wearer.equipment.Primary != null)
+                      wearer.equipment.TryTransferEquipmentToContainer(wearer.equipment.Primary, wearer.inventory.container, out dummy);
+                  else
+                      backpack.numOfSavedItems--;
+                  wearer.equipment.AddEquipment(wasAutoEquipped[pawn]);
+                  wearer.inventory.container.Remove(wasAutoEquipped[pawn]);
+                  wasAutoEquipped.Remove(pawn);
+              }
             }
             else
             {

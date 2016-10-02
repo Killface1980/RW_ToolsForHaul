@@ -13,9 +13,6 @@ namespace ToolsForHaul
 {
     public class Designator_PutInInventory : Designator
     {
-        private const string txtBackpackIsFull = "BackpackIsFull";
-        private const string txtInvalidPutInTarget = "InvalidPutInTarget";
-
         public Apparel_Backpack backpack;
         public List<Designation> designations;
 
@@ -43,7 +40,7 @@ namespace ToolsForHaul
             //No Item space or no stack space
             if ((designations.Count + numOfContents) >= backpack.MaxItem 
                 || (designationsTotalStackCount + backpack.wearer.inventory.container.TotalStackCount) >= backpack.MaxStack)
-                return new AcceptanceReport(txtBackpackIsFull.Translate());
+                return new AcceptanceReport("BackpackIsFull".Translate());
 
 
             foreach (Thing thing in thingList)
@@ -51,7 +48,7 @@ namespace ToolsForHaul
                 if (thing.def.category == ThingCategory.Item && !Find.Reservations.IsReserved(thing, Faction.OfPlayer))
                     return true;
             }
-            return new AcceptanceReport(txtInvalidPutInTarget.Translate());
+            return new AcceptanceReport("InvalidPutInTarget".Translate());
         }
 
         public override void DesignateSingleCell(IntVec3 c)

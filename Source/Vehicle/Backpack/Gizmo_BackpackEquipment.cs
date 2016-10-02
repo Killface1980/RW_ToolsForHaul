@@ -1,21 +1,17 @@
 ﻿
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
-using RimWorld;
 
 namespace ToolsForHaul
 {
     [StaticConstructorOnStartup]
     public class Gizmo_BackpackEquipment : Gizmo
     {
-        private static string txtNoDoctor;
         private static string txtCannotEatAnymore;
         private static string txtNoItem;
         private static string txtThingInfo;
@@ -28,6 +24,10 @@ namespace ToolsForHaul
         private static readonly Texture2D FilledTex = SolidColorMaterials.NewSolidColorTexture(1f, 1f, 1f, 0.10f);
         private static readonly Texture2D EmptyTex = SolidColorMaterials.NewSolidColorTexture(0.4f, 0.4f, 0.4f, 0.15f);
         private static readonly Texture2D NoAvailableTex = SolidColorMaterials.NewSolidColorTexture(0.0f, 0.0f, 0.0f, 1.0f);
+
+        private static readonly Texture2D MeleeWeaponTex = SolidColorMaterials.NewSolidColorTexture(0.6f, 0.15f, 0.15f, 0.75f);
+        private static readonly Texture2D RangedWeaponTex = SolidColorMaterials.NewSolidColorTexture(0.09f, 0.25f, 0.6f, 0.75f);
+
         //private static readonly Color HighlightColor = new Color(0.5f, 0.5f, 0.5f, 1f);
         //private static readonly ThingCategoryDef weaponMelee = DefDatabase<ThingCategoryDef>.GetNamed("WeaponsMelee");
         //private static readonly ThingCategoryDef weaponRanged = DefDatabase<ThingCategoryDef>.GetNamed("WeaponsRanged");
@@ -50,11 +50,11 @@ namespace ToolsForHaul
 
         public Gizmo_BackpackEquipment()
         {
-            txtNoDoctor = Translator.Translate("NoDoctor");
-            txtCannotEatAnymore = Translator.Translate("CannotEatAnymore");
-            txtNoItem = Translator.Translate("NoItem");
-            txtThingInfo = Translator.Translate("ThingInfo");
-            txtDropThing = Translator.Translate("DropThing");
+            ;
+            txtCannotEatAnymore = "CannotEatAnymore".Translate();
+            txtNoItem = "NoItem".Translate();
+            txtThingInfo = "ThingInfo".Translate();
+            txtDropThing = "DropThing".Translate();
         }
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft)
@@ -72,9 +72,9 @@ namespace ToolsForHaul
             List<Thing> things = wearer.inventory.container.ToList();
 
             //Draw Gizmo
-            for (int i = 0;i < numOfMaxItemsPerRow * numOfRow; i++)
+            for (int i = 0; i < numOfMaxItemsPerRow * numOfRow; i++)
             {
-                if ( i >= backpack.MaxItem )
+                if (i >= backpack.MaxItem)
                 {
                     thingIconRect.x = topLeft.x + widthPerItem * (i % numOfMaxItemsPerRow);
                     thingIconRect.y = topLeft.y + (Height / 2) * (i / numOfMaxItemsPerRow);
@@ -87,11 +87,25 @@ namespace ToolsForHaul
                     thingIconRect.x = topLeft.x + widthPerItem * (i % numOfMaxItemsPerRow);
                     thingIconRect.y = topLeft.y + (Height / 2) * (i / numOfMaxItemsPerRow);
                     Widgets.DrawTextureFitted(thingIconRect, EmptyTex, 1.0f);
+
+
                     continue;
                 }
 
                 Thing item = things[i];
-                Widgets.DrawBox(thingIconRect, 1);
+
+                if (item == null)
+                    continue;
+
+                if (item.def.IsMeleeWeapon)
+                {
+                    Widgets.DrawTextureFitted(thingIconRect, MeleeWeaponTex, 1.0f);
+                }
+                if (item.def.IsRangedWeapon)
+                {
+                    Widgets.DrawTextureFitted(thingIconRect, RangedWeaponTex, 1.0f);
+                }
+                Widgets.DrawBox(thingIconRect);
                 Widgets.ThingIcon(thingIconRect, item);
                 if (thingIconRect.Contains(Event.current.mousePosition))
                 {
@@ -103,110 +117,115 @@ namespace ToolsForHaul
                     thingIconSound = SoundDefOf.Click;
                     if (Event.current.button == 0)
                     {
-                        //Weapon
-                        if (item.def.equipmentType == EquipmentType.Primary)
-                        {
-                            if (wearer.equipment.Primary != null)
-                                wearer.equipment.TryTransferEquipmentToContainer(wearer.equipment.Primary, wearer.inventory.container, out dummy);
-                            else
-                                backpack.numOfSavedItems--;
-                            wearer.equipment.AddEquipment(item as ThingWithComps);
-                            wearer.inventory.container.Remove(item as ThingWithComps);
-                            if (wearer.jobs.curJob != null)
-                                wearer.jobs.EndCurrentJob(JobCondition.InterruptForced);
-                        }
-                        //Medicine
-                        else if (item.def.thingCategories.Contains(medicine))
-                        {
-                            if (wearer.workSettings.WorkIsActive(WorkTypeDefOf.Doctor))
-                            {
-                                Designator_ApplyMedicine designator = new Designator_ApplyMedicine();
-                                designator.medicine = item;
-                                designator.doctor = wearer;
-                                designator.icon = item.def.uiIcon;
-                                designator.activateSound = SoundDef.Named("Click");
 
-                                DesignatorManager.Select(designator);
-                            }
-                            else
-                            {
-                                Messages.Message(txtNoDoctor.Translate(), MessageSound.RejectInput);
-                                Messages.Update();
-                                thingIconSound = SoundDefOf.ClickReject;
-                            }
-                        }
-                        //Food
-                        else if (item.def.thingCategories.Contains(foodMeals))
-                        {
-                            if (wearer.needs.food.CurCategory != HungerCategory.Fed)
-                            {
-                                Job jobNew = new Job(JobDefOf.Ingest, item);
-                                jobNew.maxNumToCarry = 1;
-                                jobNew.ignoreForbidden = true;
-                                wearer.drafter.TakeOrderedJob(jobNew);
-                            }
-                            else
-                            {
-                                Messages.Message(txtCannotEatAnymore.Translate(), MessageSound.RejectInput);
-                                Messages.Update();
-                                thingIconSound = SoundDefOf.ClickReject;
-                            }
-                        }
-                        //Apparel
-                        else if (item is Apparel)
-                        {
-                            //if (!wearer.apparel.CanWearWithoutDroppingAnything(item.def))
-                            //    wearer.apparel.WornApparel.Find(apparel => apparel.def.apparel.layers.Any);
-                            for (int index = wearer.apparel.WornApparel.Count - 1; index >= 0; --index)
-                            {
-                                Apparel ap = wearer.apparel.WornApparel[index];
-                                if (!ApparelUtility.CanWearTogether(item.def, ap.def))
-                                {
-                                    Apparel resultingAp;
-                                    wearer.apparel.TryDrop(ap, out resultingAp, wearer.Position, false);
-                                    wearer.inventory.container.TryAdd(resultingAp);
-                                    backpack.numOfSavedItems++;
-                                }
-                            }
-                            wearer.apparel.Wear(item as Apparel);
-                            wearer.inventory.container.Remove(item as ThingWithComps);
-                            backpack.numOfSavedItems--;
-                        }
-
-                        else
-                        {
-                            //Add another type of item you want to interact
-                        }
                     }
-                    else if (Event.current.button == 1)
+                    if (Event.current.button == 1)
                     {
                         List<FloatMenuOption> options = new List<FloatMenuOption>();
+
                         options.Add(new FloatMenuOption(txtThingInfo, () =>
                         {
-                            Find.WindowStack.Add((Window)new Dialog_InfoCard(item));
+                            Find.WindowStack.Add(new Dialog_InfoCard(item));
                         }));
+
                         options.Add(new FloatMenuOption(txtDropThing, () =>
                         {
                             Thing dummy1;
                             wearer.inventory.container.TryDrop(item, wearer.Position, ThingPlaceMode.Near, out dummy1);
                         }));
 
-                        Find.WindowStack.Add((Window)new FloatMenu(options, item.LabelCap, false));
+                        //Weapon
+                        if (item != null && item.def.equipmentType == EquipmentType.Primary)
+                            options.Add(new FloatMenuOption("Equip".Translate(item.LabelCap), () =>
+                            {
+                                if (wearer.equipment.Primary != null)
+                                    wearer.equipment.TryTransferEquipmentToContainer(wearer.equipment.Primary, wearer.inventory.container, out dummy);
+                                else
+                                    backpack.numOfSavedItems--;
+                                wearer.equipment.AddEquipment(item as ThingWithComps);
+                                wearer.inventory.container.Remove(item as ThingWithComps);
+                                if (wearer.jobs.curJob != null)
+                                    wearer.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                            }));
+
+
+                      ////Medicine
+                      //if (item.def.thingCategories.Contains(medicine))
+                      //{
+                      //    if (wearer.workSettings != null && wearer.workSettings.WorkIsActive(WorkTypeDefOf.Doctor))
+                      //        options.Add(new FloatMenuOption("TreatPatientWithMedicine".Translate(), () =>
+                      //        {
+                      //            Designator_ApplyMedicine designator = new Designator_ApplyMedicine();
+                      //            designator.medicine = item;
+                      //            designator.doctor = wearer;
+                      //            designator.icon = item.def.uiIcon;
+                      //            designator.activateSound = SoundDef.Named("Click");
+                      //
+                      //            DesignatorManager.Select(designator);
+                      //        }));
+                      //}
+                        //Food
+                        if (item.def.thingCategories.Contains(foodMeals))
+                        {
+                            //  if (wearer.needs.food.CurCategory != HungerCategory.Fed)
+                            options.Add(new FloatMenuOption("ConsumeThing".Translate(item.def.LabelCap), () =>
+                            {
+                                Job jobNew = new Job(JobDefOf.Ingest, item);
+                                jobNew.maxNumToCarry = item.def.ingestible.maxNumToIngestAtOnce;
+                                jobNew.ignoreForbidden = true;
+                                wearer.drafter.TakeOrderedJob(jobNew);
+                            }));
+                        }
+                        // Drugs
+                        if (item.def.ingestible?.drugCategory >= DrugCategory.Any)
+                            options.Add(new FloatMenuOption("ConsumeThing".Translate(), () =>
+                            {
+                                Job jobNew = new Job(JobDefOf.Ingest, item);
+                                jobNew.maxNumToCarry = item.def.ingestible.maxNumToIngestAtOnce;
+                                jobNew.ignoreForbidden = true;
+                                wearer.drafter.TakeOrderedJob(jobNew);
+                            }));
+                        //Apparel
+                        if (item is Apparel)
+                            options.Add(new FloatMenuOption("Wear".Translate(item.def.LabelCap), () =>
+                            {
+                                //if (!wearer.apparel.CanWearWithoutDroppingAnything(item.def))
+                                //    wearer.apparel.WornApparel.Find(apparel => apparel.def.apparel.layers.Any);
+                                for (int index = wearer.apparel.WornApparel.Count - 1; index >= 0; --index)
+                                {
+                                    Apparel ap = wearer.apparel.WornApparel[index];
+                                    if (ApparelUtility.CanWearTogether(item.def, ap.def)) continue;
+                                    Apparel resultingAp;
+                                    wearer.apparel.TryDrop(ap, out resultingAp, wearer.Position, false);
+                                    wearer.inventory.container.TryAdd(resultingAp);
+                                    backpack.numOfSavedItems++;
+                                }
+                                wearer.apparel.Wear(item as Apparel);
+                                wearer.inventory.container.Remove(item as ThingWithComps);
+                                backpack.numOfSavedItems--;
+                            }));
+
+                        Find.WindowStack.Add(new FloatMenu(options, item.LabelCap));
                     }
 
-                    SoundStarter.PlayOneShotOnCamera(thingIconSound);
+                    thingIconSound.PlayOneShotOnCamera();
                 }
+                if (Mouse.IsOver(thingIconRect))
+                {
+                    GUI.DrawTexture(thingIconRect, TexUI.HighlightTex);
+                }
+                TooltipHandler.TipRegion(thingIconRect, item.def.LabelCap);
 
                 numOfCurItem++;
                 thingIconRect.x = topLeft.x + widthPerItem * (numOfCurItem % numOfMaxItemsPerRow);
                 thingIconRect.y = topLeft.y + (Height / 2) * (numOfCurItem / numOfMaxItemsPerRow);
             }
 
-            if (numOfCurItem == 0 )
+            if (numOfCurItem == 0)
             {
                 Rect textRect = new Rect(topLeft.x + Width / 2 - textWidth / 2, topLeft.y + Height / 2 - textHeight / 2, textWidth, textHeight);
                 Widgets.Label(textRect, txtNoItem.Translate());
-            }         
+            }
             return new GizmoResult(GizmoState.Clear);
         }
 

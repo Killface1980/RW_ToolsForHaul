@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
+using RimWorld;
 using UnityEngine;
 using Verse;
-using Verse.AI;
-using RimWorld;
 
 namespace ToolsForHaul
 {
@@ -24,8 +19,8 @@ namespace ToolsForHaul
         public virtual IEnumerable<Gizmo> GetWornGizmos();
         */
 
-        private static string DesignatorPutInInventoryDefaultLabel = Translator.Translate("DesignatorPutInDefaultLabel");
-        private static string DesignatorPutInInventoryDefaultDesc = Translator.Translate("DesignatorPutInDefaultDesc");
+        private static string DesignatorPutInInventoryDefaultLabel = "DesignatorPutInDefaultLabel".Translate();
+        private static string DesignatorPutInInventoryDefaultDesc = "DesignatorPutInDefaultDesc".Translate();
         private static readonly StatDef backpackMaxItem = DefDatabase<StatDef>.GetNamed("BackpackMaxItem");
 
         public int maxItem; //obsoleted
@@ -35,7 +30,7 @@ namespace ToolsForHaul
         public int MaxItem { get { return (int)this.GetStatValue(backpackMaxItem); } }
         public int MaxStack { get { return maxItem * 50; } }
 
-        public Apparel_Backpack() : base()
+        public Apparel_Backpack()
         {
             postWearer = null;
             numOfSavedItems = 0;
@@ -50,8 +45,8 @@ namespace ToolsForHaul
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.LookValue<int>(ref maxItem, "maxItem", (int)this.GetStatValue(backpackMaxItem));
-            Scribe_Values.LookValue<int>(ref numOfSavedItems, "numOfSavedItems", 0);
+            Scribe_Values.LookValue(ref maxItem, "maxItem", (int)this.GetStatValue(backpackMaxItem));
+            Scribe_Values.LookValue(ref numOfSavedItems, "numOfSavedItems", 0);
         }
 
         public override void Draw()

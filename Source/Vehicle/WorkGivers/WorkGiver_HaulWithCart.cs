@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
 using Verse.AI;
-
 
 namespace ToolsForHaul
 {
@@ -14,7 +9,7 @@ namespace ToolsForHaul
     {
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            return ToolsForHaulUtility.Cart() as IEnumerable<Thing>;
+            return ToolsForHaulUtility.Cart();
         }
 
         public override bool ShouldSkip(Pawn pawn)
@@ -29,28 +24,28 @@ namespace ToolsForHaul
         {
             Vehicle_Cart cart = t as Vehicle_Cart;
             if (cart == null)
-                return (Job)null;
-            if (cart.IsForbidden(pawn.Faction) || !ReservationUtility.CanReserveAndReach(pawn, cart, PathEndMode.ClosestTouch, DangerUtility.NormalMaxDanger(pawn)))
-                return (Job)null;
-            if (FireUtility.IsBurning(cart))
+                return null;
+            if (cart.IsForbidden(pawn.Faction) || !pawn.CanReserveAndReach(cart, PathEndMode.ClosestTouch, pawn.NormalMaxDanger()))
+                return null;
+            if (cart.IsBurning())
             {
                 JobFailReason.Is(ToolsForHaulUtility.BurningLowerTrans);
-                return (Job)null;
+                return null;
             }
             if (ListerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.storage.Count == 0)
             {
                 JobFailReason.Is(ToolsForHaulUtility.NoHaulable);
-                return (Job)null;
+                return null;
             }
             if (Find.SlotGroupManager.AllGroupsListInPriorityOrder.Count == 0)
             {
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
-                return (Job)null;
+                return null;
             }
             if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableCart(cart, pawn))
                 return ToolsForHaulUtility.HaulWithTools(pawn, cart);
             JobFailReason.Is(ToolsForHaulUtility.NoAvailableCart);
-            return (Job)null;
+            return null;
         }
 
     }

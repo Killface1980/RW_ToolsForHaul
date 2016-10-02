@@ -1,6 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <WorkGivers>
-
+  
+  <WorkGiverDef>
+    <defName>EquipTools</defName>
+    <giverClass>ToolsForHaul.WorkGiver_EquipTools</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>6</priorityInType>
+    <verb>equip with </verb>
+    <gerund>equipping with </gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
   
   <WorkGiverDef>
     <defName>HaulWithBackpack</defName>

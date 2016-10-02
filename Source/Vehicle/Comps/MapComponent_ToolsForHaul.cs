@@ -5,7 +5,7 @@ using Verse;
 namespace ToolsForHaul
 {
 
-    public class MapComponent_FacialStuff : MapComponent
+    public class MapComponent_ToolsForHaul : MapComponent
     {
 
 
@@ -15,7 +15,7 @@ namespace ToolsForHaul
 
         public override void ExposeData()
         {
-            Scribe_Collections.LookDictionary(ref wasAutoEquipped, "Pawns", LookMode.Deep);
+            Scribe_Collections.LookDictionary(ref wasAutoEquipped, "wasAutoEquipped", LookMode.Deep,LookMode.Deep);
         }
     }
 }

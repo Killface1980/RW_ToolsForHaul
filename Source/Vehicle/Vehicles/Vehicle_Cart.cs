@@ -170,7 +170,7 @@ namespace ToolsForHaul
         {
             get
             {
-                if (!mountableComp.IsMounted || !Spawned) // right? Was this.SpawnedInWorld
+                if (!mountableComp.IsMounted || Spawned) // right? Was this.SpawnedInWorld
                     return base.DrawPos;
                 Vector2 drawSize = mountableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize;
                 float factor = (drawSize.x - 1f);

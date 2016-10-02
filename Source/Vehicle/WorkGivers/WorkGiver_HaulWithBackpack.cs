@@ -1,21 +1,13 @@
 ﻿//#define DEBUG
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using UnityEngine;
 using RimWorld;
 using Verse;
 using Verse.AI;
-
 
 namespace ToolsForHaul
 {
     public class WorkGiver_HaulWithBackpack : WorkGiver
     {
-        private static string NoBackpack = "NoBackpack".Translate();
 
         public override bool ShouldSkip(Pawn pawn)
         {
@@ -34,8 +26,8 @@ namespace ToolsForHaul
         {
             if (ToolsForHaulUtility.TryGetBackpack(pawn) != null)
                 return ToolsForHaulUtility.HaulWithTools(pawn);
-            JobFailReason.Is(NoBackpack);
-            return (Job)null;
+            JobFailReason.Is("NoBackpack".Translate());
+            return null;
         }
     }
 }

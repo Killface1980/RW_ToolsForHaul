@@ -43,6 +43,7 @@ namespace ToolsForHaul
             //Backpack is full.
             this.FailOn(() =>{ return (pawn.inventory.container.Count < backpack.MaxItem) ? false : true; });
 
+            this.FailOn(() => { return (pawn == backpack.wearer) ? false : true; });
             ///
             //Define Toil
             ///

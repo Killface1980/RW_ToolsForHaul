@@ -42,6 +42,7 @@ namespace ToolsForHaul
                     return apparel as Apparel_Backpack;
             return null;
         }
+
         public static Thing TryGetBackpackLastItem(Pawn pawn)
         {
             Apparel_Backpack backpack = TryGetBackpack(pawn);
@@ -77,6 +78,7 @@ namespace ToolsForHaul
                 && Driver.needs.rest.CurCategory < RestCategory.VeryTired
                 && !Driver.health.ShouldBeTendedNow;
         }
+
         public static Job HaulWithTools(Pawn pawn, Vehicle_Cart cart = null)
         {
             Trace.stopWatchStart();

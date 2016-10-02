@@ -13,8 +13,6 @@ namespace ToolsForHaul
 {
     public class Designator_Mount : Designator
     {
-        private const string txtCannotMount = "CannotMount";
-
         public Thing vehicle;
 
         public Designator_Mount(): base()
@@ -29,15 +27,16 @@ namespace ToolsForHaul
         {
             Pawn pawn = loc.GetThingList().Find(t => t is Pawn) as Pawn;
             if (pawn == null)
-                return new AcceptanceReport(txtCannotMount.Translate() + ": " + "NotPawn".Translate());
+                return new AcceptanceReport("CannotMount".Translate() + ": " + "NotPawn".Translate());
             if (pawn.Faction != Faction.OfPlayer)
-                return new AcceptanceReport(txtCannotMount.Translate() + ": " + "NotColonyFaction".Translate());
-            if (!pawn.RaceProps.Animal && vehicle is Vehicle_Saddle)
-                return new AcceptanceReport(txtCannotMount.Translate() + ": " + "NotHumanlikeOrMechanoid".Translate());
+                return new AcceptanceReport("CannotMount".Translate() + ": " + "NotColonyFaction".Translate());
+            if (false)
+          //  if (!pawn.RaceProps.Animal && vehicle is Vehicle_Saddle)
+                return new AcceptanceReport("CannotMount".Translate() + ": " + "NotHumanlikeOrMechanoid".Translate());
             if (pawn.RaceProps.Animal && !pawn.training.IsCompleted(TrainableDefOf.Obedience))
-                return new AcceptanceReport(txtCannotMount.Translate() + ": " + "NotTrainedAnimal".Translate());
+                return new AcceptanceReport("CannotMount".Translate() + ": " + "NotTrainedAnimal".Translate());
             if (pawn.RaceProps.Animal && !(pawn.RaceProps.baseBodySize >= 1.0))
-                return new AcceptanceReport(txtCannotMount.Translate() + ": " + "TooSmallAnimal".Translate());
+                return new AcceptanceReport("CannotMount".Translate() + ": " + "TooSmallAnimal".Translate());
             return true;
         }
 

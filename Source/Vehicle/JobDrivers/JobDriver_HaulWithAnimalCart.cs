@@ -58,6 +58,8 @@ namespace ToolsForHaul
 
             this.FailOnDestroyedOrNull(CartInd);
             this.FailOn(() => !cart.mountableComp.IsMounted);
+            this.FailOn(() => !pawn.CanReach(TargetThingA, PathEndMode.ClosestTouch, Danger.Deadly));
+
             //Note we only fail on forbidden if the target doesn't start that way
             //This helps haul-aside jobs on forbidden items
             if (!TargetThingA.IsForbidden(pawn.Faction))

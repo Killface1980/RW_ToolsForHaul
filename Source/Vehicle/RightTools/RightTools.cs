@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Verse;
 using Verse.AI;
+using Verse.Sound;
 
 namespace ToolsForHaul
 {
@@ -20,7 +21,7 @@ namespace ToolsForHaul
 
         }
 
-        private static float GetMaxStat(ThingWithComps thing, StatDef def)
+        public static float GetMaxStat(ThingWithComps thing, StatDef def)
         {
             bool flag = thing == null || thing.def.equippedStatOffsets == null;
             float result;
@@ -75,8 +76,8 @@ namespace ToolsForHaul
                 {
                     ThingWithComps dummy;
 
-                    if (!MapComponent_FacialStuff.wasAutoEquipped.ContainsKey(pawn))
-                        MapComponent_FacialStuff.wasAutoEquipped.Add(pawn, pawn.equipment.Primary);
+                    if (!MapComponent_ToolsForHaul.wasAutoEquipped.ContainsKey(pawn))
+                        MapComponent_ToolsForHaul.wasAutoEquipped.Add(pawn, pawn.equipment.Primary);
 
                     pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container, out dummy);
                     pawn.equipment.AddEquipment(thingWithComps);

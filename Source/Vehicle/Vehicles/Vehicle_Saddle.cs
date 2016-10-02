@@ -28,7 +28,8 @@ namespace ToolsForHaul
         public IntVec3 GetPosition() { return Position; }
 
         public int MaxItem { get { return (Rider != null) ? 3 : 2; } }
-        public Pawn Rider { get {return (storage.Where(x => x is Pawn).Count() > 0)? storage.Where(x => x is Pawn).First() as Pawn : null; }}
+        public Pawn Rider { get {return storage.Any(x => x is Pawn)? storage.First(x => x is Pawn) as Pawn : null; }}
+
         public virtual void BoardOn(Pawn pawn)
         {
             if (mountableComp.IsMounted 
@@ -63,6 +64,7 @@ namespace ToolsForHaul
                 storage.TryDrop(pawn, Position, ThingPlaceMode.Near, out dummy);
             }
         }
+
         public virtual void UnboardAll()
         {
             if (storage.Count(x => x is Pawn) <= 0)

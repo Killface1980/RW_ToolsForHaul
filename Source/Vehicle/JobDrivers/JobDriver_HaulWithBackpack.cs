@@ -32,6 +32,7 @@ namespace ToolsForHaul
                 destLoc = pawn.jobs.curJob.targetB.Cell;
                 destGroup = StoreUtility.GetSlotGroup(destLoc);
             }
+            this.FailOn(() => !pawn.CanReach(TargetThingA, PathEndMode.ClosestTouch, Danger.Deadly));
 
             if (destGroup != null)
                 destName = destGroup.parent.SlotYielderLabel();
