@@ -85,7 +85,7 @@
     <Compile Include="JobDrivers\JobDriver_HaulWithCart.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="JobDrivers\JobDriver_Board.cs" />
+    <Compile Include="JobDrivers\JobDriver_Board.cs" />
     <Compile Include="JobDrivers\JobDriver_DismountInBase.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithBackpack.cs" />
     <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />

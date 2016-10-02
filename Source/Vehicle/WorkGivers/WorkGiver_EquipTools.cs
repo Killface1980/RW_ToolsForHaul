@@ -50,7 +50,7 @@ namespace ToolsForHaul
 
         public override bool HasJobOnThing(Pawn pawn, Thing t)
         {
-            if (!pawn.inventory.container.Contains(t.def))
+            if (!pawn.inventory.container.Contains(t.def) || pawn.equipment.Primary.def.Equals(t.def))
                 return true;
             return false;
 
@@ -67,6 +67,7 @@ namespace ToolsForHaul
                 jobNew.targetA = backpack;
                 jobNew.targetQueueB = new List<TargetInfo>();
                 jobNew.targetQueueB.Add(t);
+                pawn.Reserve(t);
 
                 return jobNew;
                 //if (backpack.wearer.drafter.CanTakePlayerJob())

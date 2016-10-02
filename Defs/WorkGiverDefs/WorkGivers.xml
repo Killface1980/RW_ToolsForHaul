@@ -4,8 +4,8 @@
   <WorkGiverDef>
     <defName>EquipTools</defName>
     <giverClass>ToolsForHaul.WorkGiver_EquipTools</giverClass>
-    <workType>Hauling</workType>
-    <priorityInType>6</priorityInType>
+    <workType>Flicker</workType>
+    <priorityInType>350</priorityInType>
     <verb>equip with </verb>
     <gerund>equipping with </gerund>
     <requiredCapacities>
@@ -17,7 +17,7 @@
     <defName>HaulWithBackpack</defName>
     <giverClass>ToolsForHaul.WorkGiver_HaulWithBackpack</giverClass>
     <workType>Hauling</workType>
-    <priorityInType>9</priorityInType>
+    <priorityInType>7</priorityInType>
     <verb>haul with </verb>
     <gerund>hauling with </gerund>
     <requiredCapacities>
@@ -31,7 +31,7 @@
     <defName>HaulWithCart</defName>
     <giverClass>ToolsForHaul.WorkGiver_HaulWithCart</giverClass>
     <workType>Hauling</workType>
-    <priorityInType>7</priorityInType>
+    <priorityInType>9</priorityInType>
     <scanThings>true</scanThings>
     <verb>haul with </verb>
     <gerund>hauling with </gerund>
