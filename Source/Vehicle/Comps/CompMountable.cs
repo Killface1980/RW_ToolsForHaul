@@ -51,7 +51,6 @@ namespace ToolsForHaul
 
         public Vector3 Position { 
             get {
-                Vector3 mapSize = Find.Map.Size.ToVector3();
                 Vector3 position = driver.DrawPos - InteractionOffset;
                 //No driver
                 if (driver == null)

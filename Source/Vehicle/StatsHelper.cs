@@ -53,53 +53,16 @@ namespace ToolsForHaul
                     }
                 }
 
-                foreach (StatDef key in new List<StatDef>(dict.Keys))
-                {
-                    if (key == StatDefOf.MoveSpeed)
-                    {
-                        switch (pawn.story.traits.DegreeOfTrait(TraitDef.Named("SpeedOffset")))
-                        {
-                            case -1:
-                                dict[key] *= 1.5f;
-                                break;
-                            case 1:
-                                dict[key] *= 0.5f;
-                                break;
-                            case 2:
-                                dict[key] *= 0.25f;
-                                break;
-                        }
-                    }
 
-                    if (key == StatDefOf.WorkSpeedGlobal)
-                    {
-                        switch (pawn.story.traits.DegreeOfTrait(TraitDef.Named("Industriousness")))
-                        {
-                            case -2:
-                                dict[key] *= 2f;
-                                break;
-                            case -1:
-                                dict[key] *= 1.5f;
-                                break;
-                            case 1:
-                                dict[key] *= 0.5f;
-                                break;
-                            case 2:
-                                dict[key] *= 0.25f;
-                                break;
-                        }
-                    }
-                }
-            
-
+           
             if (dict.Count > 0)
             {
                 // normalize weights
                 float max = dict.Values.Select(Math.Abs).Max();
                 foreach (StatDef key in new List<StatDef>(dict.Keys))
                 {
-                    // normalize max of absolute weigths to be 1.5
-                    dict[key] /= max / 1.5f;
+                    // normalize max of absolute weigths to be 1
+                    dict[key] /= max / 1f;
                 }
             }
 
@@ -133,26 +96,11 @@ namespace ToolsForHaul
 
                 case "Handling":
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.MoveSpeed, 0.3f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.CarryingCapacity, 0.1f);
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.TameAnimalChance, 1f);
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.TrainAnimalChance, 1f);
-                    yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("MeleeDPS"), 0.2f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MeleeHitChance, 0.2f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.ArmorRating_Blunt, 0.25f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.ArmorRating_Sharp, 0.25f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.AccuracyTouch, 0.2f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MeleeWeapon_Cooldown, -0.2f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MeleeWeapon_DamageAmount, 0.2f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MeleeHitChance, 0.2f);
-                    //         yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("CarryWeight"), 0.25f); // CR
-                    //         yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("CarryBulk"), 0.25f); // CR
                     yield break;
 
                 case "Cooking":
-                    //    yield return new KeyValuePair<StatDef, float>(StatDefOf.MoveSpeed, 0.05f);
-                    //     yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MoveSpeed, 0.1f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("CookSpeed"), 1f);
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.FoodPoisonChance, -0.5f);
                     yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("BrewingSpeed"), 1f);
@@ -161,71 +109,43 @@ namespace ToolsForHaul
                     yield break;
 
                 case "Hunting":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MoveSpeed, 0.5f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.AimingDelayFactor, -1f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.ShootingAccuracy, 1f);
-                    yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("MeleeDPS"), 0.25f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MeleeHitChance, 0.25f);
-                    //   yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("AimingAccuracy"), 1f); // CR
-                    //   yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("ReloadSpeed"), 0.25f); // CR
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.ArmorRating_Blunt, 0.25f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.ArmorRating_Sharp, 0.25f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.AccuracyShort, 0.4f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.AccuracyMedium, 0.4f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.AccuracyLong, 0.4f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.RangedWeapon_Cooldown, -0.8f);
+
                     yield break;
 
                 case "Construction":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MoveSpeed, 0.2f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.ConstructionSpeed, 1f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.SmoothingSpeed, 1f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.CarryingCapacity, 0.25f);
                     yield break;
 
                 case "Repair":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MoveSpeed, 0.2f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.FixBrokenDownBuildingFailChance, -1f);
                     yield break;
 
                 case "Growing":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MoveSpeed, 0.1f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.PlantWorkSpeed, 1f);
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.HarvestFailChance, -1f);
                     yield break;
 
                 case "Mining":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MoveSpeed, 0.1f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.MiningSpeed, 1f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.CarryingCapacity, 0.25f);
                     yield break;
 
                 case "PlantCutting":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.PlantWorkSpeed, 0.5f);
                     yield break;
 
                 case "Smithing":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("SmithingSpeed"), 1f);
                     yield break;
 
                 case "Tailoring":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("TailoringSpeed"), 1f);
                     yield break;
 
                 case "Art":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("SculptingSpeed"), 1f);
                     yield break;
 
                 case "Crafting":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("StonecuttingSpeed"), 1f);
                     yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("SmeltingSpeed"), 1f);
                     yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("ButcheryMechanoidSpeed"), 0.5f);
@@ -233,23 +153,14 @@ namespace ToolsForHaul
                     yield break;
 
                 case "Hauling":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MoveSpeed, 1f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.CarryingCapacity, 0.25f);
                     yield break;
 
                 case "Cleaning":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.MoveSpeed, 0.5f);
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.25f);
+
                     yield break;
 
                 case "Research":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.WorkSpeedGlobal, 0.2f);
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.ResearchSpeed, 1f);
-                    yield break;
-
-                case "Managing":
-                    yield return new KeyValuePair<StatDef, float>(StatDefOf.SocialImpact, 0.25f);
-                    yield return new KeyValuePair<StatDef, float>(DefDatabase<StatDef>.GetNamed("ManagingSpeed"), 0.5f);
                     yield break;
 
                 default:

@@ -50,7 +50,6 @@ namespace ToolsForHaul
 
         public Gizmo_BackpackEquipment()
         {
-            ;
             txtCannotEatAnymore = "CannotEatAnymore".Translate();
             txtNoItem = "NoItem".Translate();
             txtThingInfo = "ThingInfo".Translate();

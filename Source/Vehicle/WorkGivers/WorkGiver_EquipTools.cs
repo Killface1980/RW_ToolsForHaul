@@ -10,30 +10,32 @@ namespace ToolsForHaul
     {
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            var statdict = new Dictionary<Thing, float>();
+            List<Thing> potentialWorkThingsGlobal = new List<Thing>();
 
             foreach (Thing thing in Find.ListerThings.AllThings)
             {
                 float statfloat = 0;
-                if (!thing.def.IsMeleeWeapon)
+                if (!thing.def.IsMeleeWeapon || !pawn.CanReserveAndReach(thing, PathEndMode.ClosestTouch, Danger.Deadly))
                     continue;
-                foreach (var stat in pawn.GetWeightedWorkStats())
+                foreach (KeyValuePair<StatDef, float> stat in pawn.GetWeightedWorkStats())
                 {
                     statfloat += RightTools.GetMaxStat(thing as ThingWithComps, stat.Key);
+                    if (statfloat > 0)
+                    {
+                        potentialWorkThingsGlobal.Add(thing);
+                    }
                 }
-                if (statfloat > 0)
-                {
-                    statdict.Add(thing, statfloat);
-                }
+
             }
 
-            return statdict.Keys;
+
+            return potentialWorkThingsGlobal;
         }
 
 
         public override bool ShouldSkip(Pawn pawn)
         {
-            var backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
             //Should skip pawn that don't have backpack.
             if (backpack == null)
                 return true;
@@ -46,9 +48,18 @@ namespace ToolsForHaul
             return false;
         }
 
+        public override bool HasJobOnThing(Pawn pawn, Thing t)
+        {
+            if (!pawn.inventory.container.Contains(t.def))
+                return true;
+            return false;
+
+        }
+
         public override Job JobOnThing(Pawn pawn, Thing t)
         {
-            var backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+
             if (backpack != null)
             {
                 Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInInventory"));
@@ -59,7 +70,7 @@ namespace ToolsForHaul
 
                 return jobNew;
                 //if (backpack.wearer.drafter.CanTakePlayerJob())
-                    backpack.wearer.drafter.TakeOrderedJob(jobNew);
+                //    backpack.wearer.drafter.TakeOrderedJob(jobNew);
                 //else
                 //    backpack.wearer.drafter.QueueJob(jobNew);
             }

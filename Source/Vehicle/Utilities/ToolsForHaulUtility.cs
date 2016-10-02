@@ -55,7 +55,7 @@ namespace ToolsForHaul
             {
                 if (backpack.numOfSavedItems > 0)
                 {
-                    lastItemInd = ((backpack.numOfSavedItems >= pawn.inventory.container.Count)?pawn.inventory.container.Count : backpack.numOfSavedItems) - 1;
+                    lastItemInd = ((backpack.numOfSavedItems >= pawn.inventory.container.Count) ? pawn.inventory.container.Count : backpack.numOfSavedItems) - 1;
                     lastItem = pawn.inventory.container[lastItemInd];
                 }
                 if (foodInInventory != null && backpack.numOfSavedItems < pawn.inventory.container.Count
@@ -66,7 +66,7 @@ namespace ToolsForHaul
         }
 
         public static List<Thing> Cart() { return Find.ListerThings.AllThings.FindAll((Thing thing) => (thing is Vehicle_Cart)); }
-        public static bool AvailableCart(Vehicle_Cart cart, Pawn pawn){return (!cart.TryGetComp<CompMountable>().IsMounted || cart.TryGetComp<CompMountable>().Driver == pawn);}
+        public static bool AvailableCart(Vehicle_Cart cart, Pawn pawn) { return (!cart.TryGetComp<CompMountable>().IsMounted || cart.TryGetComp<CompMountable>().Driver == pawn); }
         public static bool AvailableAnimalCart(Vehicle_Cart cart)
         {
             Pawn Driver = (cart.TryGetComp<CompMountable>().IsMounted) ? cart.TryGetComp<CompMountable>().Driver : null;
@@ -74,7 +74,7 @@ namespace ToolsForHaul
                 return false;
 
             return Driver.RaceProps.Animal && Driver.CasualInterruptibleNow()
-                && Driver.needs.food.CurCategory < HungerCategory.Starving 
+                && Driver.needs.food.CurCategory < HungerCategory.Starving
                 && Driver.needs.rest.CurCategory < RestCategory.VeryTired
                 && !Driver.health.ShouldBeTendedNow;
         }
@@ -112,7 +112,7 @@ namespace ToolsForHaul
             }
             else
             {
-                jobDef = (cart.TryGetComp<CompMountable>().IsMounted && cart.TryGetComp<CompMountable>().Driver.RaceProps.Animal)? 
+                jobDef = (cart.TryGetComp<CompMountable>().IsMounted && cart.TryGetComp<CompMountable>().Driver.RaceProps.Animal) ?
                     jobDefHaulWithAnimalCart : jobDefHaulWithCart;
                 targetC = cart;
                 maxItem = cart.MaxItem;
@@ -137,7 +137,7 @@ namespace ToolsForHaul
                 for (int i = 0; i < remainingItems.Count(); i++)
                 {
                     if (cart == null && startDrop == false)
-                        if (remainingItems.ElementAt(i) == lastItem) 
+                        if (remainingItems.ElementAt(i) == lastItem)
                             startDrop = true;
                         else
                             continue;
@@ -185,14 +185,16 @@ namespace ToolsForHaul
                     Predicate<Thing> predicate = item
                         => !job.targetQueueA.Contains(item) && !item.IsBurning()
                             && ((cart != null && cart.allowances.Allows(item)) || cart == null)
+                         && !ForbidUtility.IsForbidden(item, pawn)
                             && slotGroup.Settings.AllowedToAccept(item)
                             && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger());
-                            //&& !(item is UnfinishedThing && ((UnfinishedThing)item).BoundBill != null)
-                            //&& (item.def.IsNutritionSource && !SocialProperness.IsSociallyProper(item, pawn, false, false));
+                    //&& !(item is UnfinishedThing && ((UnfinishedThing)item).BoundBill != null)
+                    //&& (item.def.IsNutritionSource && !SocialProperness.IsSociallyProper(item, pawn, false, false));
                     Thing thing = GenClosest.ClosestThing_Global_Reachable(searchPos,
                                                         ListerHaulables.ThingsPotentiallyNeedingHauling(),
                                                         PathEndMode.ClosestTouch,
-                                                        TraverseParms.For(TraverseMode.ByPawn, pawn.NormalMaxDanger()),
+                                                        TraverseParms.For(pawn, pawn.NormalMaxDanger()),
+                                                        // pawn was "TraverseMode.ByPawn"
                                                         9999,
                                                         predicate);
                     if (thing == null)
@@ -204,6 +206,7 @@ namespace ToolsForHaul
                     foreach (Thing item in ListerHaulables.ThingsPotentiallyNeedingHauling().Where(item
                                     => !job.targetQueueA.Contains(item) && !item.IsBurning()
                                         && ((cart != null && cart.allowances.Allows(item)) || cart == null)
+                                        && !ForbidUtility.IsForbidden(item, pawn)
                                         && slotGroup.Settings.AllowedToAccept(item)
                                         && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger())
                                         && center.DistanceToSquared(item.Position) <= ValidDistance))
@@ -219,8 +222,10 @@ namespace ToolsForHaul
                     {
                         List<IntVec3> availableCells = new List<IntVec3>();
                         foreach (IntVec3 cell in slotGroup.CellsList.Where(cell => pawn.CanReserve(cell) && cell.Standable() && cell.GetStorable() == null))
-                        {    
-                            job.targetQueueB.Add(cell);
+                        {
+// NEW cell in allowed area
+                            if (cell.InAllowedArea(pawn))
+                                job.targetQueueB.Add(cell);
                             if (job.targetQueueB.Count >= job.targetQueueA.Count)
                                 break;
                         }
@@ -235,7 +240,7 @@ namespace ToolsForHaul
             }
             Trace.AppendLine("Elapsed Time");
             Trace.stopWatchStop();
-            
+
             //Check job is valid
             if (!job.targetQueueA.NullOrEmpty() && reservedMaxItem + job.targetQueueA.Count > thresholdItem
                 && !job.targetQueueB.NullOrEmpty())

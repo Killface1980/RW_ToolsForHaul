@@ -64,7 +64,9 @@
     <Compile Include="NoCCL\SpecialInjector.cs" />
     <Compile Include="NoCCL\Detours.cs" />
     <Compile Include="StatsHelper.cs" />
-    <Compile Include="ToolsForHaulUtility.cs" />
+    <None Include="Utilities\Class1.cs" />
+    <Compile Include="Utilities\Pawn_BackpackTracker.cs" />
+    <Compile Include="Utilities\ToolsForHaulUtility.cs" />
     <Compile Include="Trace.cs" />
     <Compile Include="JobDrivers\JobDriver_Standby.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
