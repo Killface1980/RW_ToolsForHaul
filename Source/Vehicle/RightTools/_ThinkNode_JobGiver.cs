@@ -50,7 +50,7 @@ namespace ToolsForHaul
                         RightTools.EquipRigthTool(pawn, StatDefOf.AccuracyLong);
                     }
 
-                    if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair)
+                    if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
                     {
                         RightTools.EquipRigthTool(pawn, StatDefOf.ConstructionSpeed);
                     }

@@ -47,19 +47,26 @@ namespace ToolsForHaul
             else
                 Log.Warning("Tried dismount at " + dismountPos);
         }
-        public Vector3 InteractionOffset { get { return parent.def.interactionCellOffset.ToVector3().RotatedBy(driver.Rotation.AsAngle); } }
+
+        public Vector3 InteractionOffset
+        {
+            get
+            {
+                return parent.def.interactionCellOffset.ToVector3().RotatedBy(driver.Rotation.AsAngle);
+            }
+        }
 
         public Vector3 Position { 
             get {
-                Vector3 position = driver.DrawPos - InteractionOffset;
+                Vector3 position = driver.DrawPos - InteractionOffset*1.3f;
                 //No driver
                 if (driver == null)
                     return parent.DrawPos;
                 //Out of bound or Preventing cart from stucking door
-                else if (!GenGrid.InBounds(position))
+                if (!GenGrid.InBounds(position))
                     return driver.DrawPos;
-                else
-                    return (driver.DrawPos - InteractionOffset);
+
+                return (driver.DrawPos - InteractionOffset * 1.3f);
             } }
 
         public override void PostExposeData()

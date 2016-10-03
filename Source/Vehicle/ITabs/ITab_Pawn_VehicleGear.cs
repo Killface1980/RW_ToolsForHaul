@@ -20,7 +20,6 @@ namespace ToolsForHaul
         private const string txtTabVehicleGear = "TabVehicleGear";
         private const string txtDriver = "Driver";
         private const string txtStorage = "Storage";
-        private const string txtDismount = "Dismount";
         private const string txtDropIt = "DropIt";
 
         public Itab_Pawn_VehicleGear() 
@@ -58,7 +57,7 @@ namespace ToolsForHaul
                 if(Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
                 {
                     List<FloatMenuOption> options = new List<FloatMenuOption>();
-                    FloatMenuOption dismount = new FloatMenuOption(txtDismount.Translate(driver.LabelShort), () =>
+                    FloatMenuOption dismount = new FloatMenuOption("Dismount".Translate(driver.LabelShort), () =>
                     {
                         cart.mountableComp.Dismount();
                     });
@@ -87,7 +86,7 @@ namespace ToolsForHaul
                 }
                 else
                     Widgets.ThingIcon(thingIconRect, thing);
-                Widgets.Label(thingLabelRect, thing.Label.Translate());
+                Widgets.Label(thingLabelRect, thing.LabelCap);
                 if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
                 {
                     List<FloatMenuOption> options = new List<FloatMenuOption>();
@@ -103,6 +102,11 @@ namespace ToolsForHaul
 
                     Find.WindowStack.Add((Window)new FloatMenu(options, thing.LabelCap, false));
                 }
+                if (Mouse.IsOver(thingButtonRect))
+                {
+                    GUI.DrawTexture(thingButtonRect, TexUI.HighlightTex);
+                }
+                TooltipHandler.TipRegion(thingIconRect, thing.def.LabelCap);
                 thingIconRect.y += fieldHeight;
                 thingLabelRect.y += fieldHeight;
             }

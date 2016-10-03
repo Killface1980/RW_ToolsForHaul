@@ -192,7 +192,7 @@ namespace ToolsForHaul
             return toil;
         }
 
-        public static Toil WaitAnimalCart(TargetIndex CartInd, TargetIndex HaulableInd)
+        public static Toil WaitForAnimalCart(TargetIndex CartInd, TargetIndex HaulableInd)
         {
             Toil toil = new Toil();
             int tickTime = 0;
@@ -208,16 +208,17 @@ namespace ToolsForHaul
                 tickTime = 0;
                 if (cart.mountableComp.IsMounted)
                 {
-                    //Worker is arrival and Animal cart is coming
+                    //Worker has arrived and Animal cart is coming
                     if (cart.mountableComp.Driver.CurJob.def == jobDefStandby && !actor.Position.AdjacentTo8WayOrInside(cart))
                         tickTime = 0;
-                    //Worker is arrival and Animal cart is arrival
+                    //Worker has arrived and Animal cart has arrived
                     else if (cart.mountableComp.Driver.CurJob.def == jobDefStandby && actor.Position.AdjacentTo8WayOrInside(cart))
                         toil.actor.jobs.curDriver.ReadyForNextToil();
                     //Worker is arrival but Animal cart is missing
                     else
                     {
                         Job job = new Job(jobDefStandby, actor.jobs.curJob.GetTarget(HaulableInd), defaultWaitWorker);
+                       
                         cart.mountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
                     }
                 }
@@ -236,7 +237,7 @@ namespace ToolsForHaul
                 if (Find.TickManager.TicksGame % tickCheckInterval == 0)
                     if (cart.mountableComp.IsMounted)
                     {
-                        //Animal cart is arrival
+                        //Animal cart has arrived
                         if (cart.mountableComp.Driver.CurJob.def == jobDefStandby && actor.Position.AdjacentTo8WayOrInside(cart))
                             toil.actor.jobs.curDriver.ReadyForNextToil();
                         //Animal cart would never come. Imcompletable.

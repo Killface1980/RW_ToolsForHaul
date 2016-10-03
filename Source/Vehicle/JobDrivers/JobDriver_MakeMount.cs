@@ -93,11 +93,8 @@ namespace ToolsForHaul
             {
                 Vehicle_Cart cart = CurJob.GetTarget(MountableInd).Thing as Vehicle_Cart;
 
-#if (false)
                 Vehicle_Saddle saddle = CurJob.GetTarget(MountableInd).Thing as Vehicle_Saddle;
                 if (cart == null && saddle == null)
-#endif
-                    if (cart == null)
                 {
                     Log.Error(GetActor().LabelCap + ": MakeMount get TargetA not cart or saddle.");
                     EndJobWith(JobCondition.Errored);

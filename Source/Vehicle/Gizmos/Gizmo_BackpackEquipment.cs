@@ -114,7 +114,18 @@ namespace ToolsForHaul
                     thingIconSound = SoundDefOf.Click;
                     if (Event.current.button == 0)
                     {
-
+                        //Weapon
+                        if (item != null && item.def.equipmentType == EquipmentType.Primary && item.def.IsRangedWeapon)
+                            {
+                                if (wearer.equipment.Primary != null)
+                                    wearer.equipment.TryTransferEquipmentToContainer(wearer.equipment.Primary, wearer.inventory.container, out dummy);
+                                else
+                                    backpack.numOfSavedItems--;
+                                wearer.equipment.AddEquipment(item as ThingWithComps);
+                                wearer.inventory.container.Remove(item as ThingWithComps);
+                                if (wearer.jobs.curJob != null)
+                                    wearer.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                            }
                     }
                     if (Event.current.button == 1)
                     {

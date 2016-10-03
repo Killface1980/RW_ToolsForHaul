@@ -1,8 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Verse;
 using Verse.AI;
 using RimWorld;
@@ -32,7 +28,7 @@ namespace ToolsForHaul
             if (pawn.jobs.curJob.targetB != null)
             {
                 destLoc = pawn.jobs.curJob.targetB.Cell;
-                destGroup = StoreUtility.GetSlotGroup(destLoc);
+                destGroup = destLoc.GetSlotGroup();
             }
 
             if (destGroup != null)
@@ -50,7 +46,6 @@ namespace ToolsForHaul
         protected override IEnumerable<Toil> MakeNewToils()
         {
             Vehicle_Cart cart = CurJob.GetTarget(CartInd).Thing as Vehicle_Cart;
-            Job jobNew = new Job();
 
             ///
             //Set fail conditions
@@ -85,9 +80,9 @@ namespace ToolsForHaul
             
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.Touch)
                                         .FailOn(() => cart.Destroyed || !cart.TryGetComp<CompMountable>().IsMounted);
-            
-            //JumpIf toilCheckStoreCellEmpty
-            yield return checkHaulableEmpty;
+
+            //JumpIf toilCheckStoreCellEmpty - !!! was checkHaulableEmpty
+            yield return checkStoreCellEmpty;
 
             //Collect TargetQueue
             {
@@ -101,7 +96,7 @@ namespace ToolsForHaul
                 yield return Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch)
                                               .FailOnDestroyedOrNull(HaulableInd);
 
-                yield return Toils_Cart.WaitAnimalCart(CartInd, HaulableInd);
+                yield return Toils_Cart.WaitForAnimalCart(CartInd, HaulableInd);
 
                 yield return Toils_Collect.CollectInCarrier(CartInd, HaulableInd);
 
@@ -110,8 +105,8 @@ namespace ToolsForHaul
                 yield return Toils_Jump.JumpIfHaveTargetInQueue(HaulableInd, extractA);
             }
 
-            //JumpIf releaseAnimalCart
-            yield return checkStoreCellEmpty;
+            //JumpIf releaseAnimalCart !!! was checkStoreCellEmpty
+            yield return releaseAnimalCart;
 
             //Drop TargetQueue
             {
@@ -126,7 +121,7 @@ namespace ToolsForHaul
                 yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch)
                                             .FailOnBurningImmobile(StoreCellInd);
 
-                yield return Toils_Cart.WaitAnimalCart(CartInd, HaulableInd);
+                yield return Toils_Cart.WaitForAnimalCart(CartInd, HaulableInd);
 
                 yield return Toils_Collect.DropTheCarriedInCell(StoreCellInd, ThingPlaceMode.Direct, CartInd);
 

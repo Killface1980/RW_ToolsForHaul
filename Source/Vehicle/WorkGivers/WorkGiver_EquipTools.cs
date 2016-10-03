@@ -70,10 +70,7 @@ namespace ToolsForHaul
                 pawn.Reserve(t);
 
                 return jobNew;
-                //if (backpack.wearer.drafter.CanTakePlayerJob())
-                //    backpack.wearer.drafter.TakeOrderedJob(jobNew);
-                //else
-                //    backpack.wearer.drafter.QueueJob(jobNew);
+
             }
 
             JobFailReason.Is("NoBackpack".Translate());

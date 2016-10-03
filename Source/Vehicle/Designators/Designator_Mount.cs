@@ -53,7 +53,7 @@ namespace ToolsForHaul
                     pawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                     break;
                 }
-                else if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0))
+                if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0))
                 {
                     Pawn worker = null;
                     Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("MakeMount"));

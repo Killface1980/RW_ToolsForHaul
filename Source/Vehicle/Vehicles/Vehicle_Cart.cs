@@ -170,7 +170,7 @@ namespace ToolsForHaul
         {
             get
             {
-                if (!mountableComp.IsMounted || !this.Spawned)
+                if (!mountableComp.IsMounted || !Spawned)
                     return base.DrawPos;
                 return mountableComp.Position;
             }
@@ -178,7 +178,7 @@ namespace ToolsForHaul
 
         public override void DrawAt(Vector3 drawLoc)
         {
-            if (!this.Spawned)
+            if (!Spawned)
             {
                 base.DrawAt(drawLoc);
                 return;
@@ -186,39 +186,39 @@ namespace ToolsForHaul
 
             //Body and part location
             handleLoc = drawLoc;
-            handleLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Building) + 0.01f;
+            handleLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Building) + 0.05f;
             wheelLoc = drawLoc;
-            wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.04f;
+            wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.2f;
             bodyLoc = drawLoc;
-            bodyLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.03f;
+            bodyLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.15f;
 
             //Vertical
-            if (this.Rotation.AsInt % 2 == 0)
+            if (Rotation.AsInt % 2 == 0)
             {
                 wheelLoc.z += 0.025f * Mathf.Sin((wheelRotation * 0.10f) % (2 * Mathf.PI));
-                wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.02f;
+                wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.1f;
             }
 
             base.DrawAt(bodyLoc);
             //Wheels
-            //Horizen
-            if (this.Rotation.AsInt % 2 == 1)
+            //Horizontal
+            if (Rotation.AsInt % 2 == 1)
             {
-                Vector2 drawSize = this.def.graphic.drawSize;
-                int flip = (this.Rotation == Rot4.West) ? -1 : 1;
+                Vector2 drawSize = def.graphic.drawSize;
+                int flip = (Rotation == Rot4.West) ? -1 : 1;
                 Vector3 scale = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
                 Matrix4x4 matrix = new Matrix4x4();
                 Vector3 offset = new Vector3(-20f / 192f * drawSize.x * flip, 0, -24f / 192f * drawSize.y);
-                Quaternion quat = this.Rotation.AsQuat;
+                Quaternion quat = Rotation.AsQuat;
                 float x = 1f * Mathf.Sin((flip * wheelRotation * 0.05f) % (2 * Mathf.PI));
                 float y = 1f * Mathf.Cos((flip * wheelRotation * 0.05f) % (2 * Mathf.PI));
                 quat.SetLookRotation(new Vector3(x, 0, y), Vector3.up);
                 matrix.SetTRS(wheelLoc + offset, quat, scale);
-                Graphics.DrawMesh(MeshPool.plane10, matrix, graphic_Wheel.MatAt(this.Rotation), 0);
+                Graphics.DrawMesh(MeshPool.plane10, matrix, graphic_Wheel.MatAt(Rotation), 0);
             }
             else
-                graphic_Wheel.Draw(wheelLoc, this.Rotation, this);
-            graphic_Handle.Draw(handleLoc, this.Rotation, this);
+                graphic_Wheel.Draw(wheelLoc, Rotation, this);
+            graphic_Handle.Draw(handleLoc, Rotation, this);
         }
 
         public override string GetInspectString()

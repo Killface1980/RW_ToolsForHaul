@@ -13,48 +13,50 @@ namespace ToolsForHaul
         {
             Dictionary<StatDef, float> dict = new Dictionary<StatDef, float>();
 
-                // add weights for all worktypes, multiplied by job priority
-                foreach (WorkTypeDef workType in DefDatabase<WorkTypeDef>.AllDefsListForReading.Where(def => pawn.workSettings.WorkIsActive(def)))
+            dict.Add(StatDefOf.WorkSpeedGlobal, 0.5f);
+
+            // add weights for all worktypes, multiplied by job priority
+            foreach (WorkTypeDef workType in DefDatabase<WorkTypeDef>.AllDefsListForReading.Where(def => pawn.workSettings.WorkIsActive(def)))
+            {
+                foreach (KeyValuePair<StatDef, float> stat in GetStatsOfWorkType(pawn, workType))
                 {
-                    foreach (KeyValuePair<StatDef, float> stat in GetStatsOfWorkType(pawn, workType))
+                    int priority = pawn.workSettings.GetPriority(workType);
+
+                    float priorityAdjust;
+                    switch (priority)
                     {
-                        int priority = pawn.workSettings.GetPriority(workType);
+                        case 1:
+                            priorityAdjust = 1f;
+                            break;
+                        case 2:
+                            priorityAdjust = 0.5f;
+                            break;
+                        case 3:
+                            priorityAdjust = 0.25f;
+                            break;
+                        case 4:
+                            priorityAdjust = 0.125f;
+                            break;
+                        default:
+                            priorityAdjust = 0.5f;
+                            break;
+                    }
 
-                        float priorityAdjust;
-                        switch (priority)
-                        {
-                            case 1:
-                                priorityAdjust = 1f;
-                                break;
-                            case 2:
-                                priorityAdjust = 0.5f;
-                                break;
-                            case 3:
-                                priorityAdjust = 0.25f;
-                                break;
-                            case 4:
-                                priorityAdjust = 0.125f;
-                                break;
-                            default:
-                                priorityAdjust = 0.5f;
-                                break;
-                        }
+                    float weight = stat.Value * priorityAdjust;
 
-                        float weight = stat.Value * priorityAdjust;
-
-                        if (dict.ContainsKey(stat.Key))
-                        {
-                            dict[stat.Key] += weight;
-                        }
-                        else
-                        {
-                            dict.Add(stat.Key, weight);
-                        }
+                    if (dict.ContainsKey(stat.Key))
+                    {
+                        dict[stat.Key] += weight;
+                    }
+                    else
+                    {
+                        dict.Add(stat.Key, weight);
                     }
                 }
+            }
 
 
-           
+
             if (dict.Count > 0)
             {
                 // normalize weights

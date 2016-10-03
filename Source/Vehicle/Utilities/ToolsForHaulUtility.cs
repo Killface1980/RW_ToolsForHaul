@@ -205,7 +205,7 @@ namespace ToolsForHaul
                     Thing thing = GenClosest.ClosestThing_Global_Reachable(searchPos,
                                                         ListerHaulables.ThingsPotentiallyNeedingHauling(),
                                                         PathEndMode.ClosestTouch,
-                                                        TraverseParms.For(TraverseMode.ByPawn, pawn.NormalMaxDanger()),
+                                                        TraverseParms.For(pawn, pawn.NormalMaxDanger()),
                                                         9999,
                                                         predicate);
                     if (thing == null)
@@ -232,7 +232,7 @@ namespace ToolsForHaul
                     if (reservedMaxItem + job.targetQueueA.Count > thresholdItem)
                     {
                         List<IntVec3> availableCells = new List<IntVec3>();
-                        foreach (IntVec3 cell in slotGroup.CellsList.Where(cell => pawn.CanReserve(cell) && cell.Standable() && cell.GetStorable() == null))
+                        foreach (IntVec3 cell in slotGroup.CellsList.Where(cell => pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Deadly) && cell.Standable() && cell.GetStorable() == null))
                         {
                             // NEW cell in allowed area
                             if (cell.InAllowedArea(pawn))
@@ -300,7 +300,7 @@ namespace ToolsForHaul
             if (!targetQueue.NullOrEmpty())
                 foreach (TargetInfo target in targetQueue)
                     foreach (IntVec3 adjCell in GenAdjFast.AdjacentCells8Way(target))
-                        if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(haulable) && pawn.CanReserve(adjCell))
+                        if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(haulable) && pawn.CanReserveAndReach(adjCell, PathEndMode.ClosestTouch, Danger.Deadly))
                             return adjCell;
             /*
             StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(closestHaulable.Position, closestHaulable);
@@ -318,7 +318,7 @@ namespace ToolsForHaul
                     if (((!targetQueue.NullOrEmpty() && !targetQueue.Contains(cell)) || targetQueue.NullOrEmpty())
                         && cell.GetStorable() == null
                         && slotGroup.Settings.AllowedToAccept(haulable)
-                        && pawn.CanReserve(cell))
+                        && pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Deadly))
                         return cell;
             }
 

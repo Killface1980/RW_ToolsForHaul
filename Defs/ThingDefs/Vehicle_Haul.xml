@@ -47,7 +47,7 @@
     <graphicData>
       <texPath>Things/Pawn/Vehicle/Cart</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
-      <drawSize>(3,3)</drawSize>
+      <drawSize>(2.7,2.7)</drawSize>
     </graphicData>
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
@@ -58,7 +58,8 @@
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     <CostList>
-      <Steel>80</Steel>
+      <Steel>40</Steel>
+      <WoodLog>120</WoodLog>
     </CostList>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <killedLeavings>
