@@ -1,15 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using UnityEngine;         // Always needed
+using RimWorld;
+using UnityEngine;
+using Verse;
+// Always needed
 //using VerseBase;         // Material/Graphics handling functions are found here
-using Verse;               // RimWorld universal objects are here (like 'Building')
-using Verse.AI;          // Needed when you do something with the AI
+// RimWorld universal objects are here (like 'Building')
+// Needed when you do something with the AI
 //using Verse.Sound;       // Needed when you do something with Sound
 //using Verse.Noise;       // Needed when you do something with Noises
-using RimWorld;            // RimWorld specific functions are found here (like 'Building_Battery')
+
+// RimWorld specific functions are found here (like 'Building_Battery')
 //using RimWorld.Planet;   // RimWorld specific functions for world creation
 //using RimWorld.SquadAI;  // RimWorld specific functions for squad brains 
 
@@ -39,7 +39,7 @@ namespace ToolsForHaul
 
             PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.PrisonerTab, KnowledgeAmount.FrameDisplayed);
             Text.Font = GameFont.Small;
-            Rect innerRect1 = GenUI.ContractedBy(new Rect(0.0f, 0.0f, size.x, size.y), 10f);
+            Rect innerRect1 = new Rect(0.0f, 0.0f, size.x, size.y).ContractedBy(10f);
             GUI.BeginGroup(innerRect1);
             Rect mountedRect = new Rect(0.0f, 30.0f, innerRect1.width, fieldHeight);
             float mountedRectY = mountedRect.y;
@@ -90,17 +90,17 @@ namespace ToolsForHaul
                 if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
                 {
                     List<FloatMenuOption> options = new List<FloatMenuOption>();
-                    options.Add(new FloatMenuOption(Translator.Translate("ThingInfo"), () =>
+                    options.Add(new FloatMenuOption("ThingInfo".Translate(), () =>
                     {
-                        Find.WindowStack.Add((Window)new Dialog_InfoCard(thing));
+                        Find.WindowStack.Add(new Dialog_InfoCard(thing));
                     }));
-                    options.Add(new FloatMenuOption(Translator.Translate("DropThing"), () =>
+                    options.Add(new FloatMenuOption("DropThing".Translate(), () =>
                     {
                         Thing dummy;
                         cart.storage.TryDrop(thing, cart.Position, ThingPlaceMode.Near, out dummy);
                     }));
 
-                    Find.WindowStack.Add((Window)new FloatMenu(options, thing.LabelCap, false));
+                    Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap, false));
                 }
                 if (Mouse.IsOver(thingButtonRect))
                 {

@@ -30,7 +30,7 @@ namespace ToolsForHaul
                 return; 
             driver = pawn;
         }
-        public bool IsMounted { get { return (driver != null) ? true : false; } }
+        public bool IsMounted { get { return driver != null; } }
         public Pawn Driver { get { return driver; } }
         public void Dismount() 
         { 
@@ -66,14 +66,14 @@ namespace ToolsForHaul
                 if (!GenGrid.InBounds(position))
                     return driver.DrawPos;
 
-                return (driver.DrawPos - InteractionOffset * 1.3f);
+                return driver.DrawPos - InteractionOffset * 1.3f;
             } }
 
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_References.LookReference<Pawn>(ref driver, "driver");
-            Scribe_References.LookReference<Building_Door>(ref lastPassedDoor, "lastPassedDoor");
+            Scribe_References.LookReference(ref driver, "driver");
+            Scribe_References.LookReference(ref lastPassedDoor, "lastPassedDoor");
         }
 
         public override void CompTick()
@@ -90,7 +90,7 @@ namespace ToolsForHaul
                     if (Find.TickManager.TicksGame - tickLastDoorCheck >= TickCooldownDoorCheck
                     && (driver.Position.GetEdifice() is Building_Door || parent.Position.GetEdifice() is Building_Door))
                     {
-                        lastPassedDoor = ((driver.Position.GetEdifice() is Building_Door) ?
+                        lastPassedDoor = (driver.Position.GetEdifice() is Building_Door ?
                             driver.Position.GetEdifice() : parent.Position.GetEdifice()) as Building_Door;
                         lastPassedDoor.StartManualOpenBy(driver);
                         tickLastDoorCheck = Find.TickManager.TicksGame;

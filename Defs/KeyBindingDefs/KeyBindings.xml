@@ -15,7 +15,7 @@
   <KeyBindingDef ParentName="SelectionSpecialKeyBinding">
     <defName>CommandPutInInventory</defName>
     <label>put item in inventory </label>
-    <defaultKeyCodeA>V</defaultKeyCodeA>
+    <defaultKeyCodeA>P</defaultKeyCodeA>
   </KeyBindingDef>
 
 </KeyBindingDefs>

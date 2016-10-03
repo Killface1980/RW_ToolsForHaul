@@ -3,9 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using UnityEngine;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -120,8 +117,9 @@ namespace ToolsForHaul
             }
             else
             {
-                jobDef = cart.TryGetComp<CompMountable>().IsMounted && cart.TryGetComp<CompMountable>().Driver.RaceProps.Animal ?
-                    jobDefHaulWithAnimalCart : jobDefHaulWithCart;
+                if (cart.TryGetComp<CompMountable>().IsMounted &&
+                    cart.TryGetComp<CompMountable>().Driver.RaceProps.Animal) jobDef = jobDefHaulWithAnimalCart;
+                else jobDef = jobDefHaulWithCart;
                 targetC = cart;
                 maxItem = cart.MaxItem;
                 thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
@@ -170,7 +168,7 @@ namespace ToolsForHaul
                 Trace.AppendLine("End Drop remaining item");
                 Trace.AppendLine("No Job. Reason: " + JobFailReason.Reason);
                 Trace.LogMessage();
-                return (Job)null;
+                return null;
             }
 
             //Collect item
@@ -178,11 +176,10 @@ namespace ToolsForHaul
             IntVec3 searchPos;
             if (cart != null) searchPos = cart.Position;
             else searchPos = pawn.Position;
-            bool flag1 = false;
             foreach (SlotGroup slotGroup in Find.SlotGroupManager.AllGroupsListInPriorityOrder)
             {
                 Trace.AppendLine("Start searching slotGroup");
-                if (slotGroup.CellsList.Count() - slotGroup.HeldThings.Count() < maxItem)
+                if (slotGroup.CellsList.Count - slotGroup.HeldThings.Count() < maxItem)
                     continue;
 
                 //Counting valid items
@@ -234,20 +231,28 @@ namespace ToolsForHaul
                         List<IntVec3> availableCells = new List<IntVec3>();
                         foreach (IntVec3 cell in slotGroup.CellsList.Where(cell => pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Deadly) && cell.Standable() && cell.GetStorable() == null))
                         {
-                            // NEW cell in allowed area
-                            if (cell.InAllowedArea(pawn))
-                                job.targetQueueB.Add(cell);
-                            if (job.targetQueueB.Count >= job.targetQueueA.Count)
-                                break;
+                            StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(thing.Position, thing);
+                            var storeCell = cell;
+                            if (!StoreUtility.TryFindBestBetterStoreCellFor(thing, pawn, currentPriority, pawn.Faction, out storeCell, true))
+                            {
+                                if (cell.InAllowedArea(pawn))
+                                    job.targetQueueB.Add(cell);
+                                if (job.targetQueueB.Count >= job.targetQueueA.Count)
+                                    break;
+                            }
+                            else
+                            {
+                                if (storeCell.InAllowedArea(pawn))
+                                    job.targetQueueB.Add(storeCell);
+                                if (job.targetQueueB.Count >= job.targetQueueA.Count)
+                                    break;
+                            }
+
                         }
-                        flag1 = true;
                         break;
                     }
-                    else
-                        job.targetQueueA.Clear();
+                    job.targetQueueA.Clear();
                 }
-                if (flag1)
-                    break;
             }
             Trace.AppendLine("Elapsed Time");
             Trace.stopWatchStop();
@@ -274,7 +279,7 @@ namespace ToolsForHaul
                 JobFailReason.Is(NoEmptyPlaceLowerTrans);
             Trace.AppendLine("No Job. Reason: " + JobFailReason.Reason);
             Trace.LogMessage();
-            return (Job)null;
+            return null;
         }
 
         public static Job DismountInBase(Pawn pawn, Vehicle_Cart cart)
@@ -291,7 +296,7 @@ namespace ToolsForHaul
             JobFailReason.Is(NoEmptyPlaceForCart);
             Trace.AppendLine("No Job. Reason: " + JobFailReason.Reason);
             Trace.LogMessage();
-            return (Job)null;
+            return null;
         }
 
         public static IntVec3 FindStorageCell(Pawn pawn, Thing haulable, List<TargetInfo> targetQueue = null)

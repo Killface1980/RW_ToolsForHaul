@@ -1,5 +1,4 @@
 ﻿using RimWorld;
-using System;
 using Verse;
 
 namespace ToolsForHaul
@@ -26,10 +25,7 @@ namespace ToolsForHaul
 
         public void ExposeData()
         {
-            Scribe_Deep.LookDeep<ThingContainer>(ref backpack, "backpack", new object[]
-            {
-                this
-            });
+            Scribe_Deep.LookDeep(ref backpack, "backpack", this);
         }
 
         public void InventoryTrackerTick()

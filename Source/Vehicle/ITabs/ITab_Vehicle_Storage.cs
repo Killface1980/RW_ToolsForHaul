@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using UnityEngine;         // Always needed
+﻿using System.Linq;
+using RimWorld;
+using UnityEngine;
+using Verse;
+// Always needed
 //using VerseBase;         // Material/Graphics handling functions are found here
-using Verse;               // RimWorld universal objects are here (like 'Building')
-using Verse.AI;          // Needed when you do something with the AI
+// RimWorld universal objects are here (like 'Building')
+// Needed when you do something with the AI
 //using Verse.Sound;       // Needed when you do something with Sound
 //using Verse.Noise;       // Needed when you do something with Noises
-using RimWorld;            // RimWorld specific functions are found here (like 'Building_Battery')
+
+// RimWorld specific functions are found here (like 'Building_Battery')
 //using RimWorld.Planet;   // RimWorld specific functions for world creation
 //using RimWorld.SquadAI;  // RimWorld specific functions for squad brains 
 
@@ -30,7 +30,7 @@ namespace ToolsForHaul
 		{
 			get 
             {
-                Vehicle_Cart cart = Enumerable.First<object>(Find.Selector.SelectedObjects) as Vehicle_Cart;
+                Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
                 return (cart != null)? true : false;
             }
 		}
@@ -41,8 +41,8 @@ namespace ToolsForHaul
             PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.StorageTab, KnowledgeAmount.FrameDisplayed);
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.StorageTab, OpportunityType.Critical);
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.Stockpiles, OpportunityType.Critical);
-            allowances = ((Vehicle_Cart)Enumerable.First<object>(Find.Selector.SelectedObjects)).allowances;
-            Rect position = GenUI.ContractedBy(new Rect(0.0f, 0.0f, WinSize.x, WinSize.y), 10f);
+            allowances = ((Vehicle_Cart)Find.Selector.SelectedObjects.First()).allowances;
+            Rect position = new Rect(0.0f, 0.0f, WinSize.x, WinSize.y).ContractedBy(10f);
             GUI.BeginGroup(position);
 
             ThingFilterUI.DoThingFilterConfigWindow(new Rect(0.0f, 35f, position.width, position.height - 35f), ref scrollPosition, allowances, null);

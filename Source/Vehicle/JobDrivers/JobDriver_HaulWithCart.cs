@@ -17,8 +17,6 @@ namespace ToolsForHaul
         private const TargetIndex StoreCellInd = TargetIndex.B;
         private const TargetIndex CartInd = TargetIndex.C;
 
-        public JobDriver_HaulWithCart() : base() { }
-
         public override string GetReport()
         {
             Thing hauledThing = null;
@@ -33,7 +31,7 @@ namespace ToolsForHaul
             if (pawn.jobs.curJob.targetB != null)
             {
                 destLoc = pawn.jobs.curJob.targetB.Cell;
-                destGroup = StoreUtility.GetSlotGroup(destLoc);
+                destGroup = destLoc.GetSlotGroup();
             }
 
             if (destGroup != null)
@@ -82,7 +80,11 @@ namespace ToolsForHaul
             yield return Toils_Reserve.ReserveQueue(StoreCellInd);
 
             //JumpIf already mounted
-            yield return Toils_Jump.JumpIf(checkHaulableEmpty, () => { return (cart.GetComp<CompMountable>().Driver == pawn) ? true : false; });
+            yield return Toils_Jump.JumpIf(checkHaulableEmpty, () =>
+            {
+                if (cart.GetComp<CompMountable>().Driver == pawn) return true;
+                return false;
+            });
             
             //Mount on Target
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch)

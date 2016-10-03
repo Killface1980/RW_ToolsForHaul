@@ -68,6 +68,7 @@ namespace ToolsForHaul
         {
             ThingDef def = ThingDef.Named("VehicleCart");
             graphic_Wheel = GraphicDatabase.Get<Graphic_Multi>("Things/Pawn/Vehicle/Cart_Wheel", def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Multi;
+
             graphic_Handle = GraphicDatabase.Get<Graphic_Multi>("Things/Pawn/Vehicle/Cart_Handle", def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Multi;
             graphic_FullStorage = GraphicDatabase.Get<Graphic_Multi>("Things/Pawn/Vehicle/Cart_FullStorage", def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Multi;
         }
@@ -186,7 +187,7 @@ namespace ToolsForHaul
 
             //Body and part location
             handleLoc = drawLoc;
-            handleLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Building) + 0.05f;
+            handleLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Projectile) + 0.05f;
             wheelLoc = drawLoc;
             wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.2f;
             bodyLoc = drawLoc;
@@ -204,6 +205,9 @@ namespace ToolsForHaul
             //Horizontal
             if (Rotation.AsInt % 2 == 1)
             {
+                handleLoc.z += 0.1f;
+                wheelLoc.z += 0.1f;
+                bodyLoc.z += 0.1f;
                 Vector2 drawSize = def.graphic.drawSize;
                 int flip = (Rotation == Rot4.West) ? -1 : 1;
                 Vector3 scale = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);

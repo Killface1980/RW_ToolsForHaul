@@ -40,7 +40,6 @@ namespace ToolsForHaul
 
 
 
-
             ///
             //Toils Start
             ///
@@ -48,6 +47,7 @@ namespace ToolsForHaul
             yield return Toils_Goto.GotoCell(DestInd, PathEndMode.ClosestTouch);
 
             yield return Toils_General.Wait(CurJob.expiryInterval);
+
         }
 
     }
