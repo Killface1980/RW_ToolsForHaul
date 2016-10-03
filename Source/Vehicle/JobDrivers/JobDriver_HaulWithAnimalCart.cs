@@ -46,6 +46,13 @@ namespace ToolsForHaul
 
             return repString;
         }
+        private Thing HaulThingie
+        {
+            get
+            {
+                return (Pawn)base.CurJob.GetTarget(TargetIndex.A).Thing;
+            }
+        }
 
         protected override IEnumerable<Toil> MakeNewToils()
         {

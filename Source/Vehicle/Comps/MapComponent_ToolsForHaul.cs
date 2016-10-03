@@ -16,8 +16,8 @@ namespace ToolsForHaul
 
         public override void ExposeData()
         {
-            Scribe_Collections.LookDictionary(ref wasAutoEquipped, "wasAutoEquipped", LookMode.Value,LookMode.DefReference);
-            Scribe_Collections.LookDictionary(ref AutoInventory, "AutoInventory", LookMode.DefReference, LookMode.Value);
+            Scribe_Collections.LookDictionary(ref wasAutoEquipped, "wasAutoEquipped", LookMode.MapReference,LookMode.MapReference);
+            Scribe_Collections.LookDictionary(ref AutoInventory, "AutoInventory", LookMode.MapReference, LookMode.MapReference);
 
         }
     }

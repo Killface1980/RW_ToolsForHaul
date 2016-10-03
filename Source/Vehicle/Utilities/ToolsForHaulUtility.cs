@@ -178,6 +178,7 @@ namespace ToolsForHaul
             else searchPos = pawn.Position;
             foreach (SlotGroup slotGroup in Find.SlotGroupManager.AllGroupsListInPriorityOrder)
             {
+
                 Trace.AppendLine("Start searching slotGroup");
                 if (slotGroup.CellsList.Count - slotGroup.HeldThings.Count() < maxItem)
                     continue;
@@ -207,6 +208,7 @@ namespace ToolsForHaul
                                                         predicate);
                     if (thing == null)
                         continue;
+
                     IntVec3 center = thing.Position;
 
                     //Enqueue items in valid distance

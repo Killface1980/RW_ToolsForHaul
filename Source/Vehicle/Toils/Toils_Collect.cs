@@ -302,7 +302,7 @@ namespace ToolsForHaul
 
                 if (dropThing == null)
                 {
-                    Log.Error(toil.actor + "try drop null thing in " + actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
+                    Log.Error(toil.actor + " tried to drop null thing in " + actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
                     return;
                 }
                 IntVec3 destLoc = actor.jobs.curJob.GetTarget(StoreCellInd).Cell;

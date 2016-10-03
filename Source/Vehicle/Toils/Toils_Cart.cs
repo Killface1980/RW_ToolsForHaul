@@ -32,7 +32,7 @@ namespace ToolsForHaul
         public static Toil DismountAt(TargetIndex CartInd, TargetIndex StoreCellInd)
         {
             Toil toil = new Toil();
-            toil.initAction = () => 
+            toil.initAction = () =>
             {
                 Pawn actor = toil.GetActor();
                 Vehicle_Cart cart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as Vehicle_Cart;
@@ -51,9 +51,9 @@ namespace ToolsForHaul
             const int NearbyCell = 8;
             const int RegionCellOffset = 16;
             IntVec3 invalid = new IntVec3(0, 0, 0);
-            #if DEBUG
+#if DEBUG
             StringBuilder stringBuilder = new StringBuilder();
-            #endif
+#endif
             Toil toil = new Toil();
             toil.initAction = () =>
             {
@@ -68,13 +68,13 @@ namespace ToolsForHaul
                 //Find Valid Storage
                 foreach (IntVec3 cell in GenRadial.RadialCellsAround(cart.Position, NearbyCell, false))
                 {
-                    if (cell.IsValidStorageFor(cart) 
+                    if (cell.IsValidStorageFor(cart)
                         && ReservationUtility.CanReserveAndReach(actor, cell, PathEndMode.ClosestTouch, DangerUtility.NormalMaxDanger(actor)))
                     {
                         storeCell = cell;
-                        #if DEBUG
+#if DEBUG
                         stringBuilder.AppendLine("Found cell: " + storeCell);
-                        #endif
+#endif
                     }
                 }
 
@@ -84,19 +84,19 @@ namespace ToolsForHaul
                     int regionInd = 0;
                     List<Region> regions = new List<Region>();
                     regions.Add(cart.Position.GetRegion());
-                    #if DEBUG
+#if DEBUG
                     stringBuilder.AppendLine(actor.LabelCap + " Report");
-                    #endif
+#endif
                     bool flag1 = false;
                     while (regionInd < regions.Count)
                     {
-                        #if DEBUG
+#if DEBUG
                         stringBuilder.AppendLine("Region id: " + regions[regionInd].id);
-                        #endif
+#endif
                         if (regions[regionInd].extentsClose.CenterCell.InHorDistOf(cart.Position, NearbyCell + RegionCellOffset))
                         {
                             IntVec3 foundCell = IntVec3.Invalid;
-                            IntVec3 distCell = (regionInd > 0)? regions[regionInd - 1].extentsClose.CenterCell : cart.Position;
+                            IntVec3 distCell = (regionInd > 0) ? regions[regionInd - 1].extentsClose.CenterCell : cart.Position;
                             float distFoundCell = float.MaxValue;
                             foreach (IntVec3 cell in regions[regionInd].Cells)
                             {
@@ -116,9 +116,9 @@ namespace ToolsForHaul
                             if (flag1 == true)
                             {
                                 storeCell = foundCell;
-                                #if DEBUG
+#if DEBUG
                                 stringBuilder.AppendLine("Found cell: " + storeCell);
-                                #endif
+#endif
                                 break;
                             }
                             foreach (RegionLink link in regions[regionInd].links)
@@ -193,7 +193,7 @@ namespace ToolsForHaul
 
         public static Toil WaitForAnimalCart(TargetIndex CartInd, TargetIndex HaulableInd)
         {
-     //       Log.Message("WaitForAnimalCart");
+            //       Log.Message("WaitForAnimalCart");
             Toil toil = new Toil();
             int tickTime = 0;
             toil.initAction = () =>
@@ -209,16 +209,20 @@ namespace ToolsForHaul
                 if (cart.mountableComp.IsMounted)
                 {
                     //Worker has arrived and Animal cart is coming
-                    if (cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby") && (!actor.Position.AdjacentTo8WayOrInside(cart) || !actor.Position.AdjacentTo8WayOrInside(cart)))
+                    if (cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby") &&
+                        (!actor.Position.AdjacentTo8WayOrInside(cart) ||
+                         !actor.Position.AdjacentTo8WayOrInside(cart.mountableComp.Driver)))
+                    {
                         tickTime = 0;
+
+                    }
                     //Worker has arrived and Animal cart has arrived
                     else if (cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby") && (actor.Position.AdjacentTo8WayOrInside(cart) || actor.Position.AdjacentTo8WayOrInside(cart.mountableComp.Driver)))
                         toil.actor.jobs.curDriver.ReadyForNextToil();
                     //Worker has arrived but Animal cart is missing
                     else
                     {
-                        Job job = new Job(DefDatabase<JobDef>.GetNamed("Standby"), actor.jobs.curJob.GetTarget(HaulableInd), defaultWaitWorker);
-                       
+                        Job job = new Job(DefDatabase<JobDef>.GetNamed("Standby"), actor, defaultWaitWorker);
                         cart.mountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
                     }
                 }
@@ -239,7 +243,7 @@ namespace ToolsForHaul
                     {
                         //Animal cart has arrived
                         if (cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby") &&
-                            (actor.Position.AdjacentTo8WayOrInside(cart.mountableComp.Driver)|| actor.Position.AdjacentTo8WayOrInside(cart)))
+                            (actor.Position.AdjacentTo8WayOrInside(cart.mountableComp.Driver) || actor.Position.AdjacentTo8WayOrInside(cart)))
                         {
                             toil.actor.jobs.curDriver.ReadyForNextToil();
                         }
@@ -257,6 +261,6 @@ namespace ToolsForHaul
             return toil;
         }
 
-            
+
     }
 }
