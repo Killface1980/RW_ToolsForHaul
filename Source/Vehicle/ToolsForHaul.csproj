@@ -56,6 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backpack\Apparel_Backpack.cs" />
+    <Compile Include="RA\Class1.cs" />
+    <Compile Include="RA\CompEquipmentGizmoUser.cs" />
+    <Compile Include="RA\CompSlots.cs" />
+    <Compile Include="RA\CompEquipmentGizmoProvider.cs" />
+    <Compile Include="RA\Designator_PutInSlot.cs" />
     <Compile Include="RightTools\_ThinkNode_JobGiver.cs" />
     <Compile Include="RightTools\RightTools.cs" />
     <Compile Include="Comps\MapComponent_ToolsForHaul.cs" />
@@ -64,7 +69,7 @@
     <Compile Include="NoCCL\Detours.cs" />
     <Compile Include="StatsHelper.cs" />
     <None Include="Utilities\Class1.cs" />
-    <Compile Include="Utilities\Pawn_BackpackTracker.cs" />
+    <None Include="Utilities\Pawn_BackpackTracker.cs" />
     <Compile Include="Utilities\ToolsForHaulUtility.cs" />
     <Compile Include="Trace.cs" />
     <Compile Include="JobDrivers\JobDriver_Standby.cs" />
@@ -117,6 +122,9 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Pawns\RA_Races_Humanlike.xml">
+      <Link>Defs\RA_Races_Humanlike.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicles_unused.xml">
       <Link>Defs\ThingDefs\Vehicles_unused.xml</Link>

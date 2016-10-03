@@ -33,6 +33,13 @@
 			<li>
 				<compClass>CompQuality</compClass>
 			</li>
+      <li Class="RA.CompSlots_Properties">
+        <allowedThingCategoryDefs>
+          <li>Weapons</li>
+          <li>Apparel</li>
+        </allowedThingCategoryDefs>
+        <maxSlots>3</maxSlots>
+      </li>
 		</comps>
 	</ThingDef>
 
@@ -53,9 +60,8 @@
   </ThingDef>
 
 
-  <ThingDef ParentName="ApparelMakeableBase">
+  <ThingDef Name="Backpack" ParentName="ApparelMakeableBase" Abstract="True">
 		<thingClass>ToolsForHaul.Apparel_Backpack</thingClass>
-		<defName>Apparel_Backpack</defName>
 		<label>backpack</label>
 		<description> A backpack is a bag with straps that go over your shoulders, so that you can carry things on your back when you are walking or climbing.</description>
     <graphicData>
@@ -119,7 +125,29 @@
     </colorGenerator>
 	</ThingDef>
 
+  <ThingDef ParentName="Backpack">
+    <defName>BackpackLeather</defName>
+    <label>leather backpack</label>
+    <stuffCategories>
+      <li>Leathery</li>
+    </stuffCategories>
+  </ThingDef>
 
+  <ThingDef ParentName="Backpack">
+    <defName>BackpackCloth</defName>
+    <label>cloth backpack</label>
+    <stuffCategories>
+      <li>Fabric</li>
+    </stuffCategories>
+  </ThingDef>
 
+  <ThingDef ParentName="Backpack">
+    <defName>Apparel_Backpack</defName>
+    <label>cloth backpack OLD</label>
+    <stuffCategories>
+      <li>Fabric</li>
+    </stuffCategories>
+  </ThingDef>
+  
 
 </Defs>
