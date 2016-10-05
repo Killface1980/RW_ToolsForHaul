@@ -13,11 +13,11 @@ namespace ToolsForHaul
     [StaticConstructorOnStartup]
     public class Vehicle_Cart : ThingWithComps, IThingContainerOwner
     {
-
         #region Variables
         // ==================================
         private const int MaxItemPerBodySize = 4;
         private const int DefaultMaxItem = 4;
+        public bool despawnAtEdge;
 
         //Graphic data
         private static Graphic_Multi graphic_Handle;
@@ -27,7 +27,8 @@ namespace ToolsForHaul
         private Vector3 handleLoc;
         private Vector3 wheelLoc;
         private Vector3 bodyLoc;
-        private int wheelRotation;
+        private int rotor;
+
 
         //mount and storage data
         public CompMountable mountableComp;
@@ -38,13 +39,13 @@ namespace ToolsForHaul
         //slotGroupParent Interface
         public ThingFilter allowances;
 
-        public int MaxItem 
-        { 
-            get 
-            { 
-                return (mountableComp.IsMounted && mountableComp.Driver.RaceProps.Animal)? 
-                    Mathf.CeilToInt(mountableComp.Driver.BodySize * MaxItemPerBodySize) : DefaultMaxItem; 
-            } 
+        public int MaxItem
+        {
+            get
+            {
+                return (mountableComp.IsMounted && mountableComp.Driver.RaceProps.Animal) ?
+                    Mathf.CeilToInt(mountableComp.Driver.BodySize * MaxItemPerBodySize) : DefaultMaxItem;
+            }
         }
         public int MaxStack { get { return MaxItem * 100; } }
 
@@ -52,11 +53,11 @@ namespace ToolsForHaul
 
         #region Setup Work
 
-        public Vehicle_Cart():base()
+
+        public Vehicle_Cart() : base()
         {
-
-            wheelRotation = 0;
-
+            // current spin degree
+            rotor = 0;
             //Inventory Initialize. It should be moved in constructor
             storage = new ThingContainer(this);
             allowances = new ThingFilter();
@@ -133,6 +134,32 @@ namespace ToolsForHaul
                 mode = DestroyMode.Kill;
             base.Destroy(mode);
         }
+        // half of the quater of the cell
+        public const float wheelRadius = 0.0256f;
+
+
+
+
+
+        public void RotateWheelByDegree(int degree)
+        {
+            // nullify rotor counter if wheel made whole spin
+            if (rotor % 360 == 0)
+            {
+                rotor = 0;
+            }
+
+            if (Rotation == Rot4.East)
+            {
+                rotor += degree;
+            }
+            else
+            {
+                rotor -= degree;
+            }
+        }
+
+
 
         #endregion
 
@@ -146,7 +173,15 @@ namespace ToolsForHaul
         {
             base.Tick();
             if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy)
-                wheelRotation++;
+            {
+                // rotate rotor by parent's move speed value
+                int degree = Mathf.FloorToInt(mountableComp.Driver.GetStatValue(StatDefOf.MoveSpeed) / (GenDate.SecondsToTicks(1) * wheelRadius));
+                RotateWheelByDegree(degree);
+            }
+            if (GenGrid.InNoBuildEdgeArea(this.GetPosition()) && this.despawnAtEdge && base.Spawned && (this.mountableComp.Driver.Faction != Faction.OfPlayer || this.mountableComp.Driver.MentalState.def == MentalStateDefOf.WanderPsychotic))
+            {
+                this.DeSpawn();
+            }
         }
 
         #endregion
@@ -154,19 +189,20 @@ namespace ToolsForHaul
         #region Graphics / Inspections
         // ==================================
 
-      //private void UpdateGraphics()
-      //{
-      //}
+        //private void UpdateGraphics()
+        //{
+        //}
 
         public override Graphic Graphic
         {
             get
             {
-             // if (graphic_FullStorage == null)
-             //     UpdateGraphics();
-                return (storage.Count > 0)? graphic_FullStorage : base.Graphic;
+                // if (graphic_FullStorage == null)
+                //     UpdateGraphics();
+                return (storage.Count > 0) ? graphic_FullStorage : base.Graphic;
             }
         }
+
         public override Vector3 DrawPos
         {
             get
@@ -179,24 +215,33 @@ namespace ToolsForHaul
 
         public override void DrawAt(Vector3 drawLoc)
         {
-            if (!Spawned)
-            {
-                base.DrawAt(drawLoc);
-                return;
-            }
+            Vector2 drawSize = def.graphic.drawSize;
 
             //Body and part location
             handleLoc = drawLoc;
-            handleLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Projectile) + 0.05f;
+            handleLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.05f;
             wheelLoc = drawLoc;
             wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.2f;
             bodyLoc = drawLoc;
             bodyLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.15f;
 
+            if (!Spawned || mountableComp.Driver == null)
+            {
+                var standingBodyLoc = new Vector3(bodyLoc.x, bodyLoc.y, bodyLoc.z + 0.1f);
+                var standingWheelLoc = new Vector3(wheelLoc.x + -20f / 192f * drawSize.x * -1, wheelLoc.y, wheelLoc.z + 0.1f + -24f / 192f * drawSize.y);
+                var standingHandleLoc = new Vector3(handleLoc.x, handleLoc.y, handleLoc.z + 0.1f);
+
+                Graphic.Draw(standingBodyLoc, Rot4.West, this);
+                graphic_Wheel.Draw(standingWheelLoc, Rot4.West, this);
+                graphic_Handle.Draw(standingHandleLoc, Rot4.West, this);
+
+                return;
+            }
+
             //Vertical
             if (Rotation.AsInt % 2 == 0)
             {
-                wheelLoc.z += 0.025f * Mathf.Sin((wheelRotation * 0.10f) % (2 * Mathf.PI));
+                wheelLoc.z += 0.025f * Mathf.Sin((rotor * 0.10f) % (2 * Mathf.PI));
                 wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.1f;
             }
 
@@ -208,21 +253,23 @@ namespace ToolsForHaul
                 handleLoc.z += 0.1f;
                 wheelLoc.z += 0.1f;
                 bodyLoc.z += 0.1f;
-                Vector2 drawSize = def.graphic.drawSize;
                 int flip = (Rotation == Rot4.West) ? -1 : 1;
                 Vector3 scale = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
                 Matrix4x4 matrix = new Matrix4x4();
                 Vector3 offset = new Vector3(-20f / 192f * drawSize.x * flip, 0, -24f / 192f * drawSize.y);
                 Quaternion quat = Rotation.AsQuat;
-                float x = 1f * Mathf.Sin((flip * wheelRotation * 0.05f) % (2 * Mathf.PI));
-                float y = 1f * Mathf.Cos((flip * wheelRotation * 0.05f) % (2 * Mathf.PI));
+                float x = 1f * Mathf.Sin((rotor * 0.03f) % (2 * Mathf.PI));
+                float y = 1f * Mathf.Cos((rotor * 0.03f) % (2 * Mathf.PI));
                 quat.SetLookRotation(new Vector3(x, 0, y), Vector3.up);
                 matrix.SetTRS(wheelLoc + offset, quat, scale);
                 Graphics.DrawMesh(MeshPool.plane10, matrix, graphic_Wheel.MatAt(Rotation), 0);
             }
             else
                 graphic_Wheel.Draw(wheelLoc, Rotation, this);
-            graphic_Handle.Draw(handleLoc, Rotation, this);
+            if (mountableComp.Driver.RaceProps.Animal)
+            {
+                graphic_Handle.Draw(handleLoc, Rotation, this);
+            }
         }
 
         public override string GetInspectString()

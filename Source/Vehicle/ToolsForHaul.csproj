@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backpack\Apparel_Backpack.cs" />
+    <None Include="JobDrivers\Class1.cs" />
     <Compile Include="RA\Class1.cs" />
     <Compile Include="RA\Class2.cs" />
     <Compile Include="RA\CompTool.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="Toils\Toils_Cart.cs" />
     <None Include="WorkGivers\Class1.cs" />
+    <None Include="Vehicles\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
     <Compile Include="Comps\CompMountable.cs" />

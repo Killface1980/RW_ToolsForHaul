@@ -1,7 +1,13 @@
-﻿using System.Collections.Generic;
-using RimWorld;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.Sound;
+using RimWorld;
 
 namespace ToolsForHaul
 {
@@ -12,9 +18,10 @@ namespace ToolsForHaul
         public Thing vehicle;
 
         public Designator_Board()
+            : base()
         {
             useMouseIcon = true;
-            soundSucceeded = SoundDefOf.Click;
+            this.soundSucceeded = SoundDefOf.Click;
         }
 
         public override int DraggableDimensions { get { return 2; } }
@@ -23,7 +30,7 @@ namespace ToolsForHaul
         {
             List<Thing> thingList = loc.GetThingList();
 
-            foreach (Thing thing in thingList)
+            foreach (var thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
                 if (pawn != null && (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike)))
@@ -35,18 +42,18 @@ namespace ToolsForHaul
         public override void DesignateSingleCell(IntVec3 c)
         {
             List<Thing> thingList = c.GetThingList();
-            foreach (Thing thing in thingList)
+            foreach (var thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
-                if (pawn == null ||
-                    (pawn.Faction != Faction.OfPlayer || (!pawn.RaceProps.IsMechanoid && !pawn.RaceProps.Humanlike)))
-                    continue;
-                Pawn crew = pawn;
-                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Board"));
-                Find.Reservations.ReleaseAllForTarget(vehicle);
-                jobNew.targetA = vehicle;
-                crew.drafter.TakeOrderedJob(jobNew);
-                break;
+                if (pawn != null && (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike)))
+                {
+                    Pawn crew = pawn;
+                    Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Board"));
+                    Find.Reservations.ReleaseAllForTarget(vehicle);
+                    jobNew.targetA = vehicle;
+                    crew.drafter.TakeOrderedJob(jobNew);
+                    break;
+                }
             }
             DesignatorManager.Deselect();
         }
