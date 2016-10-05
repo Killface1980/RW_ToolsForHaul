@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ThingDefs>
+
+	<!-- 
+	- defaultOutfitTags - used to determine gear in preset outfit sets available in the outfits menu
+	- equippedStatOffsets - applies offset to the pawns stat when worn
+	- worngraphicPath - used to fraw apparel texture on the pawn. shows nothing if not set
+	 -->
+
+	<ThingDef Name="Toolbelt" ParentName="ApparelMakeableBase" Abstract="True">
+		<description>A toolbelt to keep your tools to yourself.</description>
+		<graphicData>
+			<texPath>Things/Items/Apparels/Various/Toolbelt/Toolbelt</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+		<tickerType>Normal</tickerType>
+		<apparel>
+			<bodyPartGroups>
+				<li>Legs</li>
+			</bodyPartGroups>
+			<worngraphicPath>Things/Items/Apparels/Various/Toolbelt/Toolbelt</worngraphicPath>
+			<layers>
+				<li>Accessory</li>
+			</layers>
+			<commonality>1</commonality>
+		</apparel>
+		<colorGenerator Class="ColorGenerator_Options">
+			<options>
+				<li>
+					<weight>10</weight>
+					<only>RGBA(0.4,0.3,0.15,1)</only>
+				</li>
+				<li>
+					<weight>15</weight>
+					<only>RGBA(0.6,0.45,0.18,1)</only>
+				</li>
+				<li>
+					<weight>20</weight>
+					<only>RGBA(0.8,0.6,0.23,1)</only>
+				</li>
+			</options>
+		</colorGenerator>
+		<comps>
+			<li Class="ToolsForHaul.CompSlots_Properties">
+				<allowedThingCategoryDefs>
+					<li>WeaponsMelee</li>
+				</allowedThingCategoryDefs>
+				<maxSlots>3</maxSlots>
+			</li>
+		</comps>
+	</ThingDef>
+
+	<ThingDef ParentName="Toolbelt">
+		<defName>ToolbeltLeather</defName>
+		<label>leather toolbelt</label>
+		<stuffCategories>
+			<li>Leathery</li>
+		</stuffCategories>
+	</ThingDef>
+
+	<ThingDef ParentName="Toolbelt">
+		<defName>ToolbeltCloth</defName>
+		<label>cloth toolbelt</label>
+		<stuffCategories>
+			<li>Fabric</li>
+		</stuffCategories>
+	</ThingDef>
+	
+</ThingDefs>

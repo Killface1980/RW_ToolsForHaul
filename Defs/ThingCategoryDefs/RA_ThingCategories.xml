@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ThingCategoryDefs>
+
+<!-- resourceReadoutRoot - toggle category display in resources list of main UI-->
+
+<ThingCategoryDef>
+	<defName>Root</defName>
+	<label>root</label>
+</ThingCategoryDef>
+				
+	<ThingCategoryDef>
+		<defName>Equipment</defName>
+		<label>equipment</label>
+		<parent>Root</parent>
+	</ThingCategoryDef>
+
+		<ThingCategoryDef>
+			<defName>Weapons</defName>
+			<label>weapons</label>
+			<parent>Equipment</parent>
+		</ThingCategoryDef>
+		    
+		    			<ThingCategoryDef>
+				<defName>WeaponsMelee</defName>
+				<label>melee weapons</label>
+				<parent>Weapons</parent>
+			</ThingCategoryDef>
+
+				<ThingCategoryDef>
+					<defName>WeaponsMeleeNeolithic</defName>
+					<label>neolithic melee weapons</label>
+					<parent>WeaponsMelee</parent>
+				</ThingCategoryDef>
+
+				<ThingCategoryDef>
+					<defName>WeaponsMeleeMedieval</defName>
+					<label>Medieval melee weapons</label>
+					<parent>WeaponsMelee</parent>
+				</ThingCategoryDef>
+
+			<ThingCategoryDef>
+				<defName>WeaponsRanged</defName>
+				<label>ranged weapons</label>
+				<parent>Weapons</parent>
+			</ThingCategoryDef>
+
+				<ThingCategoryDef>
+					<defName>WeaponsRangedNeolithic</defName>
+					<label>neolithic ranged weapons</label>
+					<parent>WeaponsRanged</parent>
+				</ThingCategoryDef>	
+
+		<ThingCategoryDef>
+		    	<defName>Tools</defName>
+		    	<label>tools</label>
+		    	<parent>Equipment</parent>
+		</ThingCategoryDef>
+
+		     <ThingCategoryDef>
+		     	<defName>ToolsNeolithic</defName>
+		     	<label>Neolithic tools</label>
+		     	<parent>Tools</parent>
+		     </ThingCategoryDef>
+
+		     <ThingCategoryDef>
+		     	<defName>ToolsMedieval</defName>
+		     	<label>Medieval tools</label>
+		     	<parent>Tools</parent>
+		     </ThingCategoryDef>
+
+	
+</ThingCategoryDefs>

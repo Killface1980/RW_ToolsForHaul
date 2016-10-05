@@ -1,5 +1,6 @@
 ﻿//#define DEBUG
 
+using ToolsForHaul;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -16,7 +17,7 @@ namespace ToolsForHaul
                 return true;
 
             //Should skip pawn that don't have backpack.
-            var backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
             if (backpack == null)
                 return true;
             if (backpack.MaxItem - backpack.numOfSavedItems == 0)

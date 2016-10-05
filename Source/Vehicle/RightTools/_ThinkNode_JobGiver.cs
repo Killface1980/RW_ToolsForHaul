@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System;
 using System.Collections.Generic;
+using ToolsForHaul;
 using Verse;
 using Verse.AI;
 using static ToolsForHaul.MapComponent_ToolsForHaul;
@@ -11,7 +12,6 @@ namespace ToolsForHaul
     {
         protected abstract Job TryGiveTerminalJob(Pawn pawn);
 
-
         public override ThinkResult TryIssueJobPackage(Pawn pawn)
         {
             Job job = this.TryGiveTerminalJob(pawn);
@@ -20,19 +20,19 @@ namespace ToolsForHaul
             if (jobNull)
             {
                 result = ThinkResult.NoJob;
-              if (wasAutoEquipped.ContainsKey(pawn) && pawn.mindState.IsIdle)
+              if (previousPawnWeapons.ContainsKey(pawn) && pawn.mindState.IsIdle)
               {
-                  ThingWithComps dummy;
-                  Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
-              
-                  Pawn wearer = backpack.wearer;
-                  if (wearer.equipment.Primary != null)
-                      wearer.equipment.TryTransferEquipmentToContainer(wearer.equipment.Primary, wearer.inventory.container, out dummy);
-                  else
-                      backpack.numOfSavedItems--;
-                  wearer.equipment.AddEquipment(wasAutoEquipped[pawn]);
-                  wearer.inventory.container.Remove(wasAutoEquipped[pawn]);
-                  wasAutoEquipped.Remove(pawn);
+                    ThingWithComps dummy;
+                    Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+
+                    Pawn wearer = backpack.wearer;
+                    if (wearer.equipment.Primary != null)
+                        wearer.equipment.TryTransferEquipmentToContainer(wearer.equipment.Primary, wearer.inventory.container, out dummy);
+                    else
+                        backpack.numOfSavedItems--;
+                    wearer.equipment.AddEquipment(previousPawnWeapons[pawn]);
+                    wearer.inventory.container.Remove(previousPawnWeapons[pawn]);
+                    previousPawnWeapons.Remove(pawn);
               }
             }
             else

@@ -44,10 +44,10 @@
 
   <JobDef>
     <defName>PutInSlot</defName>
-    <driverClass>RA.JobDriver_PutInSlot</driverClass>
+    <driverClass>ToolsForHaul.JobDriver_PutInSlot</driverClass>
     <reportString>Putting TargetA in TargetB.</reportString>
   </JobDef>
-  
+ 
   <JobDef>
     <defName>PutInInventory</defName>
     <driverClass>ToolsForHaul.JobDriver_PutInInventory</driverClass>

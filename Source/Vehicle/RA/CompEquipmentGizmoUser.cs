@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Verse;
 
-namespace RA
+namespace ToolsForHaul
 {
     public class CompEquipmentGizmoUser : ThingComp
     {
@@ -20,9 +20,9 @@ namespace RA
             foreach (ThingWithComps thing in Owner.apparel.WornApparel)
             // NOTE: check what type to return (If it's designator, command_action, command or gizmo)
             {
-                foreach (var thingComp in thing.AllComps.FindAll(comp => comp.GetType() == typeof(CompSlots)))
+                foreach (ThingComp thingComp in thing.AllComps.FindAll(comp => comp.GetType() == typeof(CompSlots)))
                 {
-                    var comp = (CompSlots)thingComp;
+                    CompSlots comp = (CompSlots)thingComp;
                     // reassign pawn owner in comp, if not already set
                     comp.owner = comp.owner != Owner ? Owner : comp.owner;
 
@@ -31,11 +31,11 @@ namespace RA
             }
 
             // iterate through all equipment (weapons)
-            foreach (var thing in Owner.equipment.AllEquipment)
+            foreach (ThingWithComps thing in Owner.equipment.AllEquipment)
             {
-                foreach (var thingComp in thing.AllComps.FindAll(comp => comp.GetType() == typeof(CompSlots)))
+                foreach (ThingComp thingComp in thing.AllComps.FindAll(comp => comp.GetType() == typeof(CompSlots)))
                 {
-                    var comp = (CompSlots)thingComp;
+                    CompSlots comp = (CompSlots)thingComp;
                     // reassign pawn owner in comp, if not already set
                     comp.owner = comp.owner != Owner ? Owner : comp.owner;
 
@@ -53,13 +53,13 @@ namespace RA
                 foreach (ThingWithComps thing in Owner.apparel.WornApparel)
                 // NOTE: check what type to return (If it's designator, command_action, command or gizmo)
                 {
-                    foreach (var thingComp in thing.AllComps.FindAll(comp => comp.GetType().IsSubclassOf(typeof(CompEquipmentGizmoProvider))))
+                    foreach (ThingComp thingComp in thing.AllComps.FindAll(comp => comp.GetType().IsSubclassOf(typeof(CompEquipmentGizmoProvider))))
                     {
-                        var comp = (CompEquipmentGizmoProvider)thingComp;
+                        CompEquipmentGizmoProvider comp = (CompEquipmentGizmoProvider)thingComp;
                         // reassign pawn owner in comp, if not already set
                         comp.owner = comp.owner != Owner ? Owner : comp.owner;
 
-                        foreach (var gizmo in comp.CompGetGizmosExtra())
+                        foreach (Command gizmo in comp.CompGetGizmosExtra())
                         {
                             yield return gizmo;
                         }
@@ -67,15 +67,15 @@ namespace RA
                 }
 
                 // iterate through all equipment (weapons)
-                foreach (var thing in Owner.equipment.AllEquipment)
+                foreach (ThingWithComps thing in Owner.equipment.AllEquipment)
                 {
-                    foreach (var thingComp in thing.AllComps.FindAll(comp => comp.GetType().IsSubclassOf(typeof(CompEquipmentGizmoProvider))))
+                    foreach (ThingComp thingComp in thing.AllComps.FindAll(comp => comp.GetType().IsSubclassOf(typeof(CompEquipmentGizmoProvider))))
                     {
-                        var comp = (CompEquipmentGizmoProvider)thingComp;
+                        CompEquipmentGizmoProvider comp = (CompEquipmentGizmoProvider)thingComp;
                         // reassign pawn owner in comp, if not already set
                         comp.owner = comp.owner != Owner ? Owner : comp.owner;
 
-                        foreach (var gizmo in comp.CompGetGizmosExtra())
+                        foreach (Command gizmo in comp.CompGetGizmosExtra())
                         {
                             yield return gizmo;
                         }

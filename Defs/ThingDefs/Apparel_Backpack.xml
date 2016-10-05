@@ -1,50 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-	<ThingDef Name="ApparelBackpackBase" Abstract="True">
-		<thingClass>ToolsForHaul.Apparel_Backpack</thingClass>
-		<category>Item</category>
-		<selectable>True</selectable>
-		<pathCost>10</pathCost>
-		<useHitPoints>True</useHitPoints>
+  <ThingDef Name="ApparelBackpackBase" Abstract="True">
+    <thingClass>ToolsForHaul.Apparel_Backpack</thingClass>
+    <category>Item</category>
+    <selectable>True</selectable>
+    <pathCost>10</pathCost>
+    <useHitPoints>True</useHitPoints>
     <graphicData>
       <onGroundRandomRotateAngle>35</onGroundRandomRotateAngle>
     </graphicData>
     <drawGUIOverlay>true</drawGUIOverlay>
     <statBases>
-			<MaxHitPoints>100</MaxHitPoints>
-			<Flammability>1.0</Flammability>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Flammability>1.0</Flammability>
       <DeteriorationRate>1</DeteriorationRate>
       <SellPriceFactor>0.5</SellPriceFactor>
     </statBases>
-		<altitudeLayer>Item</altitudeLayer>
-		<alwaysHaulable>True</alwaysHaulable>
-		<tickerType>Never</tickerType>
-		<thingCategories>
-			<li>Apparel</li>
-		</thingCategories>
-		<comps>
-			<li>
-				<compClass>CompForbiddable</compClass>
-			</li>
+    <altitudeLayer>Item</altitudeLayer>
+    <alwaysHaulable>True</alwaysHaulable>
+    <tickerType>Never</tickerType>
+    <thingCategories>
+      <li>Apparel</li>
+    </thingCategories>
+    <comps>
+      <li>
+        <compClass>CompForbiddable</compClass>
+      </li>
       <li>
         <compClass>CompColorable</compClass>
       </li>
-			<li>
-				<compClass>CompQuality</compClass>
-			</li>
-      <li Class="RA.CompSlots_Properties">
-        <allowedThingCategoryDefs>
-          <li>Weapons</li>
-          <li>Apparel</li>
-        </allowedThingCategoryDefs>
-        <maxSlots>3</maxSlots>
+      <li>
+        <compClass>CompQuality</compClass>
       </li>
-		</comps>
-	</ThingDef>
+    </comps>
+  </ThingDef>
 
 
-  
+
   <ThingDef Name="ApparelMakeableBase" ParentName="ApparelBackpackBase" Abstract="True">
     <recipeMaker>
       <workSpeedStat>TailoringSpeed</workSpeedStat>
@@ -61,9 +54,9 @@
 
 
   <ThingDef Name="Backpack" ParentName="ApparelMakeableBase" Abstract="True">
-		<thingClass>ToolsForHaul.Apparel_Backpack</thingClass>
-		<label>backpack</label>
-		<description> A backpack is a bag with straps that go over your shoulders, so that you can carry things on your back when you are walking or climbing.</description>
+    <thingClass>ToolsForHaul.Apparel_Backpack</thingClass>
+    <label>backpack</label>
+    <description>A backpack is a bag with straps that go over your shoulders, so that you can carry things on your back when you are walking or climbing.</description>
     <graphicData>
       <texPath>Things/Pawn/Humanlike/Apparel/Backpack/Backpack</texPath>
       <graphicClass>Graphic_Single</graphicClass>
@@ -74,8 +67,8 @@
       <li>Fabric</li>
       <li>Leathery</li>
     </stuffCategories>
-		<statBases>
-			<WorkToMake>17000</WorkToMake>
+    <statBases>
+      <WorkToMake>17000</WorkToMake>
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
@@ -84,19 +77,19 @@
     <equippedStatOffsets>
       <MoveSpeed>-0.05</MoveSpeed>
     </equippedStatOffsets>
-		<apparel>
-			<bodyPartGroups>
-				<li>Torso</li>
-			</bodyPartGroups>
+    <apparel>
+      <bodyPartGroups>
+        <li>Torso</li>
+      </bodyPartGroups>
       <worngraphicPath>Things/Pawn/Humanlike/Apparel/Backpack/Backpack</worngraphicPath>
-			<layers>
-				<li>Accessory</li>
-			</layers>
-			<commonality>1</commonality>
-			<tags>
-				<li>Backpack</li>
-			</tags>
-		</apparel>
+      <layers>
+        <li>Accessory</li>
+      </layers>
+      <commonality>1</commonality>
+      <tags>
+        <li>Backpack</li>
+      </tags>
+    </apparel>
     <colorGenerator Class="ColorGenerator_Options">
       <options>
         <li>
@@ -123,7 +116,7 @@
         </li>
       </options>
     </colorGenerator>
-	</ThingDef>
+  </ThingDef>
 
   <ThingDef ParentName="Backpack">
     <defName>BackpackLeather</defName>
@@ -131,6 +124,14 @@
     <stuffCategories>
       <li>Leathery</li>
     </stuffCategories>
+    <comps>
+    <li Class="ToolsForHaul.CompSlots_Properties">
+      <allowedThingCategoryDefs>
+        <li>Weapons</li>
+      </allowedThingCategoryDefs>
+      <maxSlots>2</maxSlots>
+    </li>
+    </comps>
   </ThingDef>
 
   <ThingDef ParentName="Backpack">
@@ -139,6 +140,15 @@
     <stuffCategories>
       <li>Fabric</li>
     </stuffCategories>
+    <comps>
+      <li Class="ToolsForHaul.CompSlots_Properties">
+        <allowedThingCategoryDefs>
+          <li>Weapons</li>
+          <li>Apparel</li>
+        </allowedThingCategoryDefs>
+        <maxSlots>4</maxSlots>
+      </li>
+    </comps>
   </ThingDef>
 
   <ThingDef ParentName="Backpack">
@@ -147,7 +157,16 @@
     <stuffCategories>
       <li>Fabric</li>
     </stuffCategories>
+    <comps>
+      <li Class="ToolsForHaul.CompSlots_Properties">
+        <allowedThingCategoryDefs>
+          <li>Weapons</li>
+          <li>Apparel</li>
+        </allowedThingCategoryDefs>
+        <maxSlots>8</maxSlots>
+      </li>
+    </comps>
   </ThingDef>
-  
+
 
 </Defs>

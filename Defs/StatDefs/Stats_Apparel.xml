@@ -20,18 +20,6 @@
         <factorMasterwork>2.4</factorMasterwork>
         <factorLegendary>2.8</factorLegendary>
       </li>
-      <li Class="StatPart_Health">
-        <curve>
-          <points>
-            <li>
-              <loc>(0,0.5)</loc>
-            </li>
-            <li>
-              <loc>(1,1)</loc>
-            </li>
-          </points>
-        </curve>
-      </li>
     </parts>
   </StatDef>
 

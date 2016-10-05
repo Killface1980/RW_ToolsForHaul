@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
-namespace RA
+namespace ToolsForHaul
 {
     public class CompSlots : CompEquipmentGizmoProvider, IThingContainerOwner
     {
@@ -26,16 +27,23 @@ namespace RA
             return parent.Position;
         }
 
+        private static readonly StatDef backpackMaxItem = DefDatabase<StatDef>.GetNamed("BackpackMaxItem");
+
+        public int MaxItem => Properties.maxSlots;
+        public int MaxStack { get { return MaxItem * 50; } }
+
         // initialises ThingContainer owner and restricts the max slots range
         public override void PostSpawnSetup()
         {
             slots = new ThingContainer(this);
 
-            if (Properties.maxSlots > 6)
-                Properties.maxSlots = 6;
+
+            if (Properties.maxSlots > 8)
+                Properties.maxSlots = 8;
 
             if (Properties.maxSlots < 1)
                 Properties.maxSlots = 1;
+
         }
 
         // apply remaining damage and scatter things in slots, if holder is destroyed
@@ -43,7 +51,7 @@ namespace RA
         {
             if (parent.HitPoints < 0)
             {
-                foreach (var thing in slots)
+                foreach (Thing thing in slots)
                     thing.HitPoints -= (int)totalDamageDealt - parent.HitPoints;
 
                 slots.TryDropAll(parent.Position, ThingPlaceMode.Near);
@@ -69,6 +77,7 @@ namespace RA
             if (owner?.jobs.curJob != null)
                 owner.jobs.EndCurrentJob(JobCondition.InterruptForced);
         }
+
 
         public override IEnumerable<Command> CompGetGizmosExtra()
         {
@@ -98,7 +107,9 @@ namespace RA
     {
         public List<ThingCategoryDef> allowedThingCategoryDefs = new List<ThingCategoryDef>();
         public List<ThingCategoryDef> forbiddenSubThingCategoryDefs = new List<ThingCategoryDef>();
-        public int maxSlots = 1;
+        public int maxSlots = 3;
+
+        
 
         public CompSlots_Properties()
         {

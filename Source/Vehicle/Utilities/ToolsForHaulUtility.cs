@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ToolsForHaul;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -59,6 +60,7 @@ namespace ToolsForHaul
             return lastItem;
         }
 
+
         public static List<Thing> Cart()
         {
             return Find.ListerThings.AllThings.FindAll(thing => thing is Vehicle_Cart);
@@ -112,8 +114,8 @@ namespace ToolsForHaul
                         if (pawn.inventory.container[i] == lastItem && (reservedMaxItem - (i + 1)) <= 0)
                         {
                             ShouldDrop = false;
-                            break;
-                        }
+                        break;
+                    }
             }
             else
             {
@@ -234,7 +236,7 @@ namespace ToolsForHaul
                         foreach (IntVec3 cell in slotGroup.CellsList.Where(cell => pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Deadly) && cell.Standable() && cell.GetStorable() == null))
                         {
                             StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(thing.Position, thing);
-                            var storeCell = cell;
+                            IntVec3 storeCell = cell;
                             if (!StoreUtility.TryFindBestBetterStoreCellFor(thing, pawn, currentPriority, pawn.Faction, out storeCell, true))
                             {
                                 if (cell.InAllowedArea(pawn))

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<!-- 
+	drawGUIOverlay - draws labels and other text below thing
+	techLevel- used for trader stock generators
+	statBases - base stat values for the thing
+	default values:
+		- MarketValue		= -
+		- Flammability		= 0
+		- MaxHitPoints		= 100
+		- WorkToMake		= 1
+		- DeteriorationRate	= 0
+	-->
+
+	<ThingDef Name="Item" ParentName="Thing" Abstract="True">
+		<thingClass>ThingWithComps</thingClass>
+		<comps>
+			<li Class="CompProperties_Forbiddable" />
+		</comps>
+		<soundInteract>Standard_Drop</soundInteract>
+		<soundDrop>Standard_Drop</soundDrop>
+		<pathCost>15</pathCost>
+		<category>Item</category>
+		<altitudeLayer>Item</altitudeLayer>
+		<alwaysHaulable>true</alwaysHaulable>
+		<drawGUIOverlay>true</drawGUIOverlay>
+		<techLevel>Neolithic</techLevel>
+	</ThingDef>
+
+</Defs>

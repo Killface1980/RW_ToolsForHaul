@@ -40,7 +40,7 @@ namespace ToolsForHaul
             if (backpack == null)
                 return true;
 
-            if (backpack.MaxItem / 2 < backpack.numOfSavedItems)
+            if (backpack.MaxItem - backpack.numOfSavedItems < 2)
             {
                 return true;
             }

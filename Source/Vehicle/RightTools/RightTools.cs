@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ToolsForHaul;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
@@ -45,9 +46,11 @@ namespace ToolsForHaul
             return result;
         }
 
+
         public static void EquipRigthTool(Pawn pawn, StatDef def)
         {
             Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            CompSlots slotsComp = backpack.TryGetComp<CompSlots>();
             bool flag = backpack != null;
             if (flag)
             {
@@ -76,8 +79,8 @@ namespace ToolsForHaul
                 {
                     ThingWithComps dummy;
 
-                    if (!MapComponent_ToolsForHaul.wasAutoEquipped.ContainsKey(pawn))
-                        MapComponent_ToolsForHaul.wasAutoEquipped.Add(pawn, pawn.equipment.Primary);
+                    if (!MapComponent_ToolsForHaul.previousPawnWeapons.ContainsKey(pawn))
+                        MapComponent_ToolsForHaul.previousPawnWeapons.Add(pawn, pawn.equipment.Primary);
 
                     pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container, out dummy);
                     pawn.equipment.AddEquipment(thingWithComps);

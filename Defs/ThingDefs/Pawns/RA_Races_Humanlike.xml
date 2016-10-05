@@ -120,7 +120,7 @@
 		</recipes>
 		<comps>
 			<li>
-				<compClass>RA.CompEquipmentGizmoUser</compClass>
+				<compClass>ToolsForHaul.CompEquipmentGizmoUser</compClass>
 			</li>
 		</comps>
 	</ThingDef>

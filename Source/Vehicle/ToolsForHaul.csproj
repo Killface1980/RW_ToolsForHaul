@@ -57,6 +57,9 @@
   <ItemGroup>
     <Compile Include="Backpack\Apparel_Backpack.cs" />
     <Compile Include="RA\Class1.cs" />
+    <Compile Include="RA\Class2.cs" />
+    <Compile Include="RA\CompTool.cs" />
+    <Compile Include="RA\JobDriver_PutInSlot.cs" />
     <Compile Include="RA\CompEquipmentGizmoUser.cs" />
     <Compile Include="RA\CompSlots.cs" />
     <Compile Include="RA\CompEquipmentGizmoProvider.cs" />
@@ -75,6 +78,7 @@
     <Compile Include="JobDrivers\JobDriver_Standby.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="Toils\Toils_Cart.cs" />
+    <None Include="WorkGivers\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
     <Compile Include="Comps\CompMountable.cs" />
@@ -113,18 +117,32 @@
     </Content>
     <Content Include="..\..\Defs\StatDefs\Stats_Apparel.xml">
       <Link>Defs\StatDefs\Stats_Apparel.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingCategoryDefs\ThingCategories.xml">
       <Link>Defs\ThingCategories.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Apparel_Backpack.xml">
       <Link>Defs\ThingDefs\Apparel_Backpack.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Pawns\RA_Races_Humanlike.xml">
       <Link>Defs\RA_Races_Humanlike.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\RA_Apparels_Various.xml">
+      <Link>Defs\ThingDefs\RA_Apparels_Various.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\RA_Items_Base.xml">
+      <Link>Defs\ThingDefs\RA_Items_Base.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\RA_Things_Base.xml">
+      <Link>Defs\ThingDefs\RA_Things_Base.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\RA_Weapons_Melee.xml">
+      <Link>Defs\ThingDefs\RA_Weapons_Melee.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicles_unused.xml">
       <Link>Defs\ThingDefs\Vehicles_unused.xml</Link>

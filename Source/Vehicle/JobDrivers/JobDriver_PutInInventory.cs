@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using ToolsForHaul;
 using Verse;
 using Verse.AI;
 using RimWorld;
@@ -86,7 +87,7 @@ namespace ToolsForHaul
 
                 //CollectIntoCarrier
                 Toil toilPutInInventory = new Toil();
-                toilPutInInventory.initAction = () => 
+                toilPutInInventory.initAction = () =>
                 {
                     if (pawn.inventory.container.Count < backpack.MaxItem
                         && backpack.wearer.inventory.container.TotalStackCount < backpack.MaxStack)
