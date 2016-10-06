@@ -28,7 +28,7 @@ namespace ToolsForHaul
             if (pawn.jobs.curJob.targetB != null)
             {
                 destLoc = pawn.jobs.curJob.targetB.Cell;
-                destGroup = StoreUtility.GetSlotGroup(destLoc);
+                destGroup = destLoc.GetSlotGroup();
             }
             this.FailOn(() => !pawn.CanReach(TargetThingA, PathEndMode.ClosestTouch, Danger.Deadly));
 

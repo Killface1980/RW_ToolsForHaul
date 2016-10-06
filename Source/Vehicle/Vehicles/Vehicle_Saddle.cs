@@ -26,7 +26,11 @@ namespace ToolsForHaul
         public CompMountable mountableComp;
         public ThingContainer storage = null;
         public ThingContainer GetContainer() { return storage; }
-        public IntVec3 GetPosition() { return Position; }
+
+        public IntVec3 GetPosition()
+        {
+            return Position;
+        }
 
         public int MaxItem { get { return (Rider != null) ? 3 : 2; } }
 
@@ -81,6 +85,7 @@ namespace ToolsForHaul
                 crew.holder = null;
                 crew.jobs.StopAll();
                 storage.TryDrop(crew, Position, ThingPlaceMode.Near, out dummy);
+                //     storage.TryDropAll(Position, ThingPlaceMode.Near);
             }
         }
         #endregion
@@ -142,7 +147,10 @@ namespace ToolsForHaul
                 commandUnboardAll.defaultDesc = "CommandGetOffDesc".Translate();
                 commandUnboardAll.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnboardAll");
                 commandUnboardAll.activateSound = SoundDef.Named("Click");
-                commandUnboardAll.action = () => { UnboardAll(); };
+                commandUnboardAll.action = () =>
+                {
+                    UnboardAll();
+                };
 
                 yield return commandUnboardAll;
 
@@ -248,22 +256,29 @@ namespace ToolsForHaul
             if (mountableComp.IsMounted)
             {
                 graphic_Saddle.Draw(saddleLoc, Rotation, this);
-                Vector3 crewLoc = drawLoc; crewLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
+                Vector3 crewLoc = drawLoc;
+                crewLoc.y = Altitudes.AltitudeFor(AltitudeLayer.PawnUnused) + 0.1f;
                 Vector3 crewsOffset = new Vector3(0.25f, 0.02f, -0.25f);
                 if (Rotation == Rot4.North || Rotation == Rot4.South)
                     crewsOffset.x = 0f;
-                foreach (Pawn pawn in storage.Where(x => x is Pawn).ToList())
+                else
                 {
-                    pawn.Rotation = Rotation;
-                    pawn.DrawAt(crewLoc + crewsOffset.RotatedBy(Rotation.AsAngle));
-
-                    if (pawn.stances.curStance is Stance_Warmup && Find.Selector.IsSelected(this))
-                    {
-                        Stance_Warmup stanceWarmup = pawn.stances.curStance as Stance_Warmup;
-                        float num2 = stanceWarmup.ticksLeft >= 300 ? (stanceWarmup.ticksLeft >= 450 ? 0.5f : 0.75f) : 1f;
-                        GenDraw.DrawAimPie(stanceWarmup.stanceTracker.pawn, stanceWarmup.focusTarg, (int)(stanceWarmup.ticksLeft * (double)num2), 0.2f);
-                    }
+                    crewLoc.z += 1f;
                 }
+                if (storage != null)
+                    foreach (Pawn pawn in storage.Where(x => x is Pawn).ToList())
+                    {
+                        if (pawn == null) continue;
+                        pawn.Rotation = Rotation;
+                        pawn.DrawAt(crewLoc + crewsOffset.RotatedBy(Rotation.AsAngle));
+
+                        if (pawn.stances.curStance is Stance_Warmup && Find.Selector.IsSelected(this))
+                        {
+                            Stance_Warmup stanceWarmup = pawn.stances.curStance as Stance_Warmup;
+                            float num2 = stanceWarmup.ticksLeft >= 300 ? (stanceWarmup.ticksLeft >= 450 ? 0.5f : 0.75f) : 1f;
+                            GenDraw.DrawAimPie(stanceWarmup.stanceTracker.pawn, stanceWarmup.focusTarg, (int)(stanceWarmup.ticksLeft * (double)num2), 0.2f);
+                        }
+                    }
             }
             else
                 base.DrawAt(drawLoc);

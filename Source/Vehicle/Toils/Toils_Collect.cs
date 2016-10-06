@@ -76,7 +76,7 @@ namespace ToolsForHaul
                                                                             NearbyCell,
                                                                             item => !targetQueue.Contains(item)
                                                                                 && item.def.defName == target.Thing.def.defName
-                                                                                && !FireUtility.IsBurning(item)
+                                                                                && !item.IsBurning()
                                                                                 && Find.Reservations.CanReserve(actor, item));
                 if (thing != null)
                 {
@@ -248,7 +248,9 @@ namespace ToolsForHaul
                 Pawn actor = toil.actor;
                 Job curJob = actor.jobs.curJob;
                 if (actor.inventory.container.Count <= 0)
+                {
                     return;
+                }
                 toil.actor.jobs.curJob.SetTarget(TargetIndex.A, actor.inventory.container.First());
                 Thing dropThing = toil.actor.jobs.curJob.targetA.Thing;
                 IntVec3 destLoc = actor.jobs.curJob.GetTarget(StoreCellInd).Cell;

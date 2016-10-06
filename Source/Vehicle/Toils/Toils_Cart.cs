@@ -59,17 +59,17 @@ namespace ToolsForHaul
             {
                 IntVec3 storeCell = IntVec3.Invalid;
                 Pawn actor = toil.GetActor();
-                Vehicle_Cart cart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as Vehicle_Cart;
-                if (cart == null)
+                Vehicle_Cart vehicleCart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as Vehicle_Cart;
+                if (vehicleCart == null)
                 {
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
                 //Find Valid Storage
-                foreach (IntVec3 cell in GenRadial.RadialCellsAround(cart.Position, NearbyCell, false))
+                foreach (IntVec3 cell in GenRadial.RadialCellsAround(vehicleCart.Position, NearbyCell, false))
                 {
-                    if (cell.IsValidStorageFor(cart)
-                        && ReservationUtility.CanReserveAndReach(actor, cell, PathEndMode.ClosestTouch, DangerUtility.NormalMaxDanger(actor)))
+                    if (cell.IsValidStorageFor(vehicleCart)
+                        && actor.CanReserveAndReach(cell, PathEndMode.ClosestTouch, actor.NormalMaxDanger()))
                     {
                         storeCell = cell;
 #if DEBUG
@@ -83,7 +83,7 @@ namespace ToolsForHaul
                     //Regionwise Flood-fill cellFinder
                     int regionInd = 0;
                     List<Region> regions = new List<Region>();
-                    regions.Add(cart.Position.GetRegion());
+                    regions.Add(vehicleCart.Position.GetRegion());
 #if DEBUG
                     stringBuilder.AppendLine(actor.LabelCap + " Report");
 #endif
@@ -93,17 +93,17 @@ namespace ToolsForHaul
 #if DEBUG
                         stringBuilder.AppendLine("Region id: " + regions[regionInd].id);
 #endif
-                        if (regions[regionInd].extentsClose.CenterCell.InHorDistOf(cart.Position, NearbyCell + RegionCellOffset))
+                        if (regions[regionInd].extentsClose.CenterCell.InHorDistOf(vehicleCart.Position, NearbyCell + RegionCellOffset))
                         {
                             IntVec3 foundCell = IntVec3.Invalid;
-                            IntVec3 distCell = (regionInd > 0) ? regions[regionInd - 1].extentsClose.CenterCell : cart.Position;
+                            IntVec3 distCell = (regionInd > 0) ? regions[regionInd - 1].extentsClose.CenterCell : vehicleCart.Position;
                             float distFoundCell = float.MaxValue;
                             foreach (IntVec3 cell in regions[regionInd].Cells)
                             {
                                 //Find best cell for placing cart
                                 if (cell.GetEdifice() == null && cell.GetZone() == null && cell.Standable()
                                 && !GenAdj.CellsAdjacentCardinal(cell, Rot4.North, IntVec2.One).Any(cardinal => cardinal.GetEdifice() is Building_Door)
-                                && ReservationUtility.CanReserveAndReach(actor, cell, PathEndMode.ClosestTouch, DangerUtility.NormalMaxDanger(actor)))
+                                && actor.CanReserveAndReach(cell, PathEndMode.ClosestTouch, actor.NormalMaxDanger()))
                                 {
                                     if (distCell.DistanceToSquared(cell) < distFoundCell)
                                     {
@@ -140,8 +140,8 @@ namespace ToolsForHaul
                         if (cell.DistanceToSquared(cart.Position) < NearbyCell)
                             storeCell = cell;
                 */
-                ReservationUtility.Reserve(actor, storeCell);
-                toil.actor.jobs.curJob.targetB = (storeCell != invalid && storeCell != IntVec3.Invalid) ? storeCell : cart.Position;
+                actor.Reserve(storeCell);
+                toil.actor.jobs.curJob.targetB = (storeCell != invalid && storeCell != IntVec3.Invalid) ? storeCell : vehicleCart.Position;
             };
             return toil;
         }

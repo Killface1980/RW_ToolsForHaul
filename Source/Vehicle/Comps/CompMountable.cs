@@ -23,51 +23,53 @@ namespace ToolsForHaul
         private Building_Door lastPassedDoor = null;
         private int tickLastDoorCheck = Find.TickManager.TicksGame;
         private const int TickCooldownDoorCheck = 96;
+        private int tickCheck = Find.TickManager.TicksGame;
+        private int tickCooldown = 60;
 
-        public void MountOn(Pawn pawn) 
-        { 
+        public void MountOn(Pawn pawn)
+        {
             if (driver != null)
-                return; 
+                return;
             driver = pawn;
         }
-        public bool IsMounted { get { return driver != null; } }
-        public Pawn Driver { get { return driver; } }
-        public void Dismount() 
-        { 
-            //if (Find.Reservations.IsReserved(parent, driver.Faction))
-            Find.Reservations.ReleaseAllForTarget(parent); 
-            driver = null; 
-        }
-        public void DismountAt(IntVec3 dismountPos) 
+        public bool IsMounted => driver != null;
+        public Pawn Driver => driver;
+
+        public void Dismount()
         {
-            Dismount();
+            //if (Find.Reservations.IsReserved(parent, driver.Faction))
+            Find.Reservations.ReleaseAllForTarget(parent);
+            driver = null;
+        }
+        public void DismountAt(IntVec3 dismountPos)
+        {
             //if (driver.Position.IsAdjacentTo8WayOrInside(dismountPos, driver.Rotation, new IntVec2(1,1)))
             if (dismountPos != IntVec3.Invalid)
+            {
+                Dismount();
                 parent.Position = dismountPos;
-            else
-                Log.Warning("Tried dismount at " + dismountPos);
+                return;
+            }
+            Log.Warning("Tried dismount at " + dismountPos);
         }
 
-        public Vector3 InteractionOffset
+        public Vector3 InteractionOffset => parent.def.interactionCellOffset.ToVector3().RotatedBy(driver.Rotation.AsAngle);
+
+        public Vector3 Position
         {
             get
             {
-                return parent.def.interactionCellOffset.ToVector3().RotatedBy(driver.Rotation.AsAngle);
-            }
-        }
-
-        public Vector3 Position { 
-            get {
-                Vector3 position = driver.DrawPos - InteractionOffset*1.3f;
+                Vector3 position = driver.DrawPos - InteractionOffset * 1.3f;
                 //No driver
                 if (driver == null)
                     return parent.DrawPos;
                 //Out of bound or Preventing cart from stucking door
-                if (!GenGrid.InBounds(position))
+                if (!position.InBounds())
                     return driver.DrawPos;
 
                 return driver.DrawPos - InteractionOffset * 1.3f;
-            } }
+            }
+        }
 
         public override void PostExposeData()
         {
@@ -81,28 +83,46 @@ namespace ToolsForHaul
             base.CompTick();
             if (IsMounted)
             {
-                if (driver.Dead || driver.Downed || driver.health.InPainShock || driver.InMentalState  //Abnormal
-                    || (!driver.RaceProps.Animal && driver.Faction != Faction.OfPlayer)
-                    || ForbidUtility.IsForbidden(parent, Faction.OfPlayer))
-                    Dismount();
-                else
+                if (driver.Dead || driver.Downed || driver.health.InPainShock || driver.MentalStateDef == MentalStateDefOf.WanderPsychotic || (ForbidUtility.IsForbidden(parent, Faction.OfPlayer) && driver.Faction == Faction.OfPlayer))
                 {
-                    if (Find.TickManager.TicksGame - tickLastDoorCheck >= TickCooldownDoorCheck
-                    && (driver.Position.GetEdifice() is Building_Door || parent.Position.GetEdifice() is Building_Door))
-                    {
-                        lastPassedDoor = (driver.Position.GetEdifice() is Building_Door ?
-                            driver.Position.GetEdifice() : parent.Position.GetEdifice()) as Building_Door;
-                        lastPassedDoor.StartManualOpenBy(driver);
-                        tickLastDoorCheck = Find.TickManager.TicksGame;
-                    }
-                    else if (Find.TickManager.TicksGame - tickLastDoorCheck >= TickCooldownDoorCheck && lastPassedDoor != null)
-                    {
-                        lastPassedDoor.StartManualCloseBy(driver);
-                        lastPassedDoor = null;
-                    }
-                    parent.Position = IntVec3Utility.ToIntVec3(Position);
-                    parent.Rotation = driver.Rotation;
+                    parent.Position = (IntVec3Utility.ToIntVec3(Position));
+                    parent.Rotation = (driver.Rotation);
+                    Dismount();
+                    return;
                 }
+                if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
+                {
+                    if (driver.Faction == Faction.OfPlayer && driver.CurJob != null && driver.CurJob.def.playerInterruptible && (driver.CurJob.def == JobDefOf.DoBill || driver.CurJob.def == JobDefOf.EnterCryptosleepCasket || driver.CurJob.def == JobDefOf.LayDown || driver.CurJob.def == JobDefOf.Lovin || driver.CurJob.def == JobDefOf.MarryAdjacentPawn || driver.CurJob.def == JobDefOf.Mate || driver.CurJob.def == JobDefOf.PrisonerAttemptRecruit || driver.CurJob.def == JobDefOf.Research || driver.CurJob.def == JobDefOf.SocialRelax || driver.CurJob.def == JobDefOf.SpectateCeremony || driver.CurJob.def == JobDefOf.StandAndBeSociallyActive || driver.CurJob.def == JobDefOf.TakeToBedToOperate || driver.CurJob.def == JobDefOf.TendPatient || driver.CurJob.def == JobDefOf.UseCommsConsole || driver.CurJob.def == JobDefOf.UseNeurotrainer || driver.CurJob.def == JobDefOf.VisitSickPawn || driver.CurJob.def == JobDefOf.Shear || driver.CurJob.def == JobDefOf.Ingest) && GridsUtility.Roofed(driver.Position))
+                    {
+                        parent.Position = (IntVec3Utility.ToIntVec3(Position));
+                        parent.Rotation = (driver.Rotation);
+                        if (!GenGrid.InBounds(driver.Position))
+                        {
+                            DismountAt(driver.Position);
+                            return;
+                        }
+                        DismountAt(driver.Position - IntVec3Utility.ToIntVec3(InteractionOffset));
+                        return;
+                    }
+                    else
+                    {
+                        tickCheck = Find.TickManager.TicksGame;
+                        tickCooldown = Rand.RangeInclusive(60, 180);
+                    }
+                }
+                if (Find.TickManager.TicksGame - tickLastDoorCheck >= 96 && (GridsUtility.GetEdifice(driver.Position) is Building_Door || GridsUtility.GetEdifice(parent.Position) is Building_Door))
+                {
+                    lastPassedDoor = (((GridsUtility.GetEdifice(driver.Position) is Building_Door) ? GridsUtility.GetEdifice(driver.Position) : GridsUtility.GetEdifice(parent.Position)) as Building_Door);
+                    lastPassedDoor.StartManualOpenBy(driver);
+                    tickLastDoorCheck = Find.TickManager.TicksGame;
+                }
+                else if (Find.TickManager.TicksGame - tickLastDoorCheck >= 96 && lastPassedDoor != null)
+                {
+                    lastPassedDoor.StartManualCloseBy(driver);
+                    lastPassedDoor = null;
+                }
+                parent.Position = (IntVec3Utility.ToIntVec3(Position));
+                parent.Rotation = (driver.Rotation);
             }
         }
 

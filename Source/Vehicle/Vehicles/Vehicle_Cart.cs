@@ -17,7 +17,6 @@ namespace ToolsForHaul
         // ==================================
         private const int MaxItemPerBodySize = 4;
         private const int DefaultMaxItem = 4;
-        public bool despawnAtEdge;
 
         //Graphic data
         private static Graphic_Multi graphic_Handle;
@@ -178,9 +177,9 @@ namespace ToolsForHaul
                 int degree = Mathf.FloorToInt(mountableComp.Driver.GetStatValue(StatDefOf.MoveSpeed) / (GenDate.SecondsToTicks(1) * wheelRadius));
                 RotateWheelByDegree(degree);
             }
-            if (GenGrid.InNoBuildEdgeArea(this.GetPosition()) && this.despawnAtEdge && base.Spawned && (this.mountableComp.Driver.Faction != Faction.OfPlayer || this.mountableComp.Driver.MentalState.def == MentalStateDefOf.WanderPsychotic))
+            if (GetPosition().InNoBuildEdgeArea()  && Spawned && (mountableComp.Driver.Faction != Faction.OfPlayer || mountableComp.Driver.MentalState.def == MentalStateDefOf.WanderPsychotic))
             {
-                this.DeSpawn();
+                DeSpawn();
             }
         }
 
@@ -228,12 +227,12 @@ namespace ToolsForHaul
             if (!Spawned || mountableComp.Driver == null)
             {
                 var standingBodyLoc = new Vector3(bodyLoc.x, bodyLoc.y, bodyLoc.z + 0.1f);
-                var standingWheelLoc = new Vector3(wheelLoc.x + -20f / 192f * drawSize.x * -1, wheelLoc.y, wheelLoc.z + 0.1f + -24f / 192f * drawSize.y);
-                var standingHandleLoc = new Vector3(handleLoc.x, handleLoc.y, handleLoc.z + 0.1f);
+                var standingWheelLoc = new Vector3(wheelLoc.x + -20f / 96f * drawSize.x * -1, wheelLoc.y, wheelLoc.z + 0.1f + -24f / 192f * drawSize.y);
+                //  var standingHandleLoc = new Vector3(handleLoc.x, handleLoc.y, handleLoc.z + 0.1f);
 
                 Graphic.Draw(standingBodyLoc, Rot4.West, this);
                 graphic_Wheel.Draw(standingWheelLoc, Rot4.West, this);
-                graphic_Handle.Draw(standingHandleLoc, Rot4.West, this);
+                //   graphic_Handle.Draw(standingHandleLoc, Rot4.West, this);
 
                 return;
             }
@@ -250,16 +249,17 @@ namespace ToolsForHaul
             //Horizontal
             if (Rotation.AsInt % 2 == 1)
             {
+                int flip = (Rotation == Rot4.West) ? -1 : 1;
                 handleLoc.z += 0.1f;
+                handleLoc.x += 1.2f * flip;
                 wheelLoc.z += 0.1f;
                 bodyLoc.z += 0.1f;
-                int flip = (Rotation == Rot4.West) ? -1 : 1;
                 Vector3 scale = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
                 Matrix4x4 matrix = new Matrix4x4();
-                Vector3 offset = new Vector3(-20f / 192f * drawSize.x * flip, 0, -24f / 192f * drawSize.y);
+                Vector3 offset = new Vector3(-20f / 96f * drawSize.x * flip, 0, -24f / 192f * drawSize.y);
                 Quaternion quat = Rotation.AsQuat;
-                float x = 1f * Mathf.Sin((rotor * 0.03f) % (2 * Mathf.PI));
-                float y = 1f * Mathf.Cos((rotor * 0.03f) % (2 * Mathf.PI));
+                float x = 1f * Mathf.Sin((rotor * 0.015f) % (2 * Mathf.PI));
+                float y = 1f * Mathf.Cos((rotor * 0.015f) % (2 * Mathf.PI));
                 quat.SetLookRotation(new Vector3(x, 0, y), Vector3.up);
                 matrix.SetTRS(wheelLoc + offset, quat, scale);
                 Graphics.DrawMesh(MeshPool.plane10, matrix, graphic_Wheel.MatAt(Rotation), 0);

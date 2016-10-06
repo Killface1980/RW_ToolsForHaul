@@ -19,8 +19,7 @@ namespace ToolsForHaul
 
         public override string GetReport()
         {
-            Thing hauledThing = null;
-            hauledThing = TargetThingA;
+            Thing hauledThing = TargetThingA;
             if (TargetThingA == null)  //Haul Cart
                 hauledThing = CurJob.targetC.Thing;
             this.FailOn(() => !pawn.CanReach(hauledThing, PathEndMode.ClosestTouch, Danger.Deadly));

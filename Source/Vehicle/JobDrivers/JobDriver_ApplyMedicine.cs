@@ -84,7 +84,7 @@ namespace ToolsForHaul
             Toil toilGoTodeliveree = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
             yield return toilGoTodeliveree;
 
-            int duration = (int) (1.0 / (double) StatExtension.GetStatValue((Thing) pawn, StatDefOf.HealingSpeed, true) * 600.0);
+            int duration = (int) (1.0 / (double) ((Thing) pawn).GetStatValue(StatDefOf.HealingSpeed, true) * 600.0);
             Toil toilDelivereeWait = new Toil();
             toilDelivereeWait.initAction = () =>
             {

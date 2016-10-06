@@ -30,7 +30,7 @@ namespace ToolsForHaul
             if (pawn.jobs.curJob.targetB != null)
             {
                 destLoc = pawn.jobs.curJob.targetB.Cell;
-                destGroup = StoreUtility.GetSlotGroup(destLoc);
+                destGroup = destLoc.GetSlotGroup();
             }
 
             if (destGroup != null)
@@ -76,7 +76,10 @@ namespace ToolsForHaul
             yield return Toils_Reserve.Reserve(StoreCellInd);
 
             //JumpIf already mounted
-            yield return Toils_Jump.JumpIf(toilGoToCell, () => { return (cart.GetComp<CompMountable>().Driver == pawn) ? true : false; });
+            yield return Toils_Jump.JumpIf(toilGoToCell, () =>
+            {
+                return (cart.GetComp<CompMountable>().Driver == pawn) ? true : false;
+            });
 
             //Mount on Target
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch)

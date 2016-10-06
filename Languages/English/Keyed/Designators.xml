@@ -6,7 +6,7 @@
   <DesignatorPutInDefaultDesc>Put in inventory. Capacity: </DesignatorPutInDefaultDesc>
   
   <!-- Failure messages -->
-  <CannotMount>Must designate colonist can be mounted.</CannotMount>
+  <CannotMount>Must designate colonist that can be mounted.</CannotMount>
     <NotPawn>Is not a pawn.</NotPawn>
     <NotColonyFaction>Is not in your faction.</NotColonyFaction>
     <NotHumanlikeOrMechanoid>Is not for humanlike or mechanoid.</NotHumanlikeOrMechanoid>
