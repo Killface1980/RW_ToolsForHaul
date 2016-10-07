@@ -66,7 +66,7 @@ namespace ToolsForHaul
             //Put off backpack. Should drop all from postWearer
             else if (postWearer != null && wearer == null)
             {
-                postWearer.inventory.container.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
+                postWearer.inventory?.container?.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
                 postWearer = null;
                 numOfSavedItems = 0;
             }

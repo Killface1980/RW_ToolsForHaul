@@ -42,11 +42,11 @@ namespace ToolsForHaul
 
         public IntVec3 ClosestTargetCell(Pawn pawn)
         {
-            var searchRange = 9999f;
-            var result = default(IntVec3);
+            float searchRange = 9999f;
+            IntVec3 result = default(IntVec3);
             foreach (IntVec3 cell in Targets(pawn))
             {
-                var lengthHorizontalSquared = (cell - pawn.Position).LengthHorizontalSquared;
+                float lengthHorizontalSquared = (cell - pawn.Position).LengthHorizontalSquared;
                 if (lengthHorizontalSquared < searchRange)
                 {
                     result = cell;
@@ -59,7 +59,7 @@ namespace ToolsForHaul
         // keep tool if it could be used for other jobs
         public bool ShouldKeepTool(Pawn pawn)
         {
-            var toolComp = pawn.equipment.Primary.TryGetComp<CompTool>();
+            CompTool toolComp = pawn.equipment.Primary.TryGetComp<CompTool>();
 
             if (toolComp == null)
                 return true;

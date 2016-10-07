@@ -11,7 +11,7 @@ namespace ToolsForHaul
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            return ToolsForHaulUtility.Cart() as IEnumerable<Thing>;
+            return ToolsForHaulUtility.Cart();
         }
 
         public override bool ShouldSkip(Pawn pawn)

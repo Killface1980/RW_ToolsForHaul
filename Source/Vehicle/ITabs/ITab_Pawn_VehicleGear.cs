@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
 using Verse;
+
 // Always needed
 //using VerseBase;         // Material/Graphics handling functions are found here
 // RimWorld universal objects are here (like 'Building')
@@ -77,9 +78,9 @@ namespace ToolsForHaul
             thingButtonRect.y = storageRect.y;
             foreach (Thing thing in cart.storage)
             {
-                if ((thing.ThingID.IndexOf("Human_Corpse") <= -1) ? false : true)
+                if (thing.ThingID.IndexOf("Human_Corpse") > -1)
                     Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconHuman_Corpse"), 1.0f);
-                else if ((thing.ThingID.IndexOf("Corpse") <= -1) ? false : true)
+                else if (thing.ThingID.IndexOf("Corpse") > -1)
                 {
                     Corpse corpse = thing as Corpse;
                     Widgets.ThingIcon(thingIconRect, corpse.innerPawn.def);

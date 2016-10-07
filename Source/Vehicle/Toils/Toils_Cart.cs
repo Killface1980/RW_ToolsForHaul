@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-using UnityEngine;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -113,7 +110,7 @@ namespace ToolsForHaul
                                     }
                                 }
                             }
-                            if (flag1 == true)
+                            if (flag1)
                             {
                                 storeCell = foundCell;
 #if DEBUG

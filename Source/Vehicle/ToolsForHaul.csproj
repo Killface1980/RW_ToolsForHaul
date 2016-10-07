@@ -55,10 +55,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ARB\CompAxles.cs" />
+    <Compile Include="ARB\CompProperties_Axles.cs" />
+    <Compile Include="ARB\CompProperties_Vehicles.cs" />
+    <Compile Include="ARB\CompVehicles.cs" />
+    <Compile Include="ARB\Class5.cs" />
     <Compile Include="Backpack\Apparel_Backpack.cs" />
     <None Include="JobDrivers\Class1.cs" />
-    <Compile Include="RA\Class1.cs" />
-    <Compile Include="RA\Class2.cs" />
+    <Compile Include="RA\CompWeaponExtensions.cs" />
+    <None Include="RA\RA_PawnRenderer.cs" />
     <Compile Include="RA\CompTool.cs" />
     <Compile Include="RA\JobDriver_PutInSlot.cs" />
     <Compile Include="RA\CompEquipmentGizmoUser.cs" />
@@ -72,15 +77,12 @@
     <Compile Include="NoCCL\SpecialInjector.cs" />
     <Compile Include="NoCCL\Detours.cs" />
     <Compile Include="StatsHelper.cs" />
-    <None Include="Utilities\Class1.cs" />
-    <None Include="Utilities\Pawn_BackpackTracker.cs" />
     <Compile Include="Utilities\ToolsForHaulUtility.cs" />
     <Compile Include="Trace.cs" />
     <Compile Include="JobDrivers\JobDriver_Standby.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="Toils\Toils_Cart.cs" />
     <None Include="WorkGivers\Class1.cs" />
-    <None Include="Vehicles\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
     <Compile Include="Comps\CompMountable.cs" />

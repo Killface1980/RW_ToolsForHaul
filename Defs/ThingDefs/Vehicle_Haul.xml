@@ -7,7 +7,7 @@
     <selectable>true</selectable>
     <tickerType>Normal</tickerType>
     <altitudeLayer>Item</altitudeLayer>
-		<useHitPoints>True</useHitPoints>
+    <useHitPoints>True</useHitPoints>
     <hasTooltip>true</hasTooltip>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
   </ThingDef>
@@ -22,13 +22,69 @@
     <alwaysHaulable>false</alwaysHaulable>
     <!-- <designateHaulable>false</designateHaulable> -->
     <comps>
-      <li>
-        <compClass>CompForbiddable</compClass>
-      </li>
+      <li Class="CompProperties_Forbiddable"/>
       <li>
         <compClass>ToolsForHaul.CompMountable</compClass>
       </li>
+      <li>
+        <compClass>CompQuality</compClass>
+      </li>
+      <li>
+        <compClass>CompColorable</compClass>
+      </li>
     </comps>
+    <!--<damageMultipliers>
+      <li>
+        <damageDef>Bomb</damageDef>
+        <multiplier>2.5</multiplier>
+      </li>
+      <li>
+        <damageDef>Thermobaric</damageDef>
+        <multiplier>2.5</multiplier>
+      </li>
+      <li>
+        <damageDef>Bullet</damageDef>
+        <multiplier>1.0</multiplier>
+      </li>
+      <li>
+        <damageDef>Fragment</damageDef>
+        <multiplier>0.5</multiplier>
+      </li>
+      <li>
+        <damageDef>Arrow</damageDef>
+        <multiplier>0.3</multiplier>
+      </li>
+      <li>
+        <damageDef>Electrical</damageDef>
+        <multiplier>0.8</multiplier>
+      </li>
+    </damageMultipliers>-->
+    <colorGenerator Class="ColorGenerator_Options">
+      <options>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.33,0.33,0.33,1)</only>
+        </li>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.65,0.65,0.65,1)</only>
+        </li>
+        <li>
+          <weight>30</weight>
+          <only>RGBA(0.4,0.3,0.15,1)</only>
+        </li>
+        <li>
+          <weight>6</weight>
+          <min>RGBA(0.3,0.3,0.3,1)</min>
+          <max>RGBA(0.5,0.5,0.5,1)</max>
+        </li>
+        <li>
+          <weight>2</weight>
+          <min>RGBA(0.5,0.5,0.5,1)</min>
+          <max>RGBA(1,1,1,1)</max>
+        </li>
+      </options>
+    </colorGenerator>
   </ThingDef>
 
 
@@ -45,12 +101,14 @@
       <li>Vehicles</li>
     </thingCategories>
     <graphicData>
-      <texPath>Things/Pawn/Vehicle/Cart</texPath>
+      <texPath>Things/Pawn/VehicleCart/Cart</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(2.7,2.7)</drawSize>
     </graphicData>
     <statBases>
-      <MaxHitPoints>200</MaxHitPoints>
+      <MaxHitPoints>150</MaxHitPoints>
+      <VehicleSpeed>0.75</VehicleSpeed>
+      <VehicleMaxItem>4</VehicleMaxItem>
     </statBases>
     <size>(1,1)</size>
     <inspectorTabs>
@@ -73,6 +131,7 @@
       <recipeUsers>
         <li>FueledSmithy</li>
         <li>ElectricSmithy</li>
+        <li>CraftingTable</li>
       </recipeUsers>
       <workAmount>2400</workAmount>
     <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
@@ -83,9 +142,388 @@
 		</li> -->
 	  </skillRequirements>
     </recipeMaker>
+    <comps>
+      <li Class="ToolsForHaul.CompProperties_Axles">
+        <axles>
+          <li>(-20,-40)</li>
+        </axles>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Vehicles">
+        <showsStorage>true</showsStorage>
+        <animalsCanDrive>true</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>false</motorizedWithoutFuel>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseVehicle">
+    <defName>VehicleTruck</defName>
+    <label>truck</label>
+    <hasInteractionCell>True</hasInteractionCell>
+    <interactionCellOffset>(0,0,1)</interactionCellOffset>
+    <passability>PassThroughOnly</passability>
+    <altitudeLayer>Item</altitudeLayer>
+    <description>A truck is what you drive when you're done taking shit off of other people.</description>
+    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <thingCategories>
+      <li>Vehicles</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Things/Pawn/VehicleTruck/Truck</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,3)</drawSize>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>300</MaxHitPoints>
+      <VehicleSpeed>9</VehicleSpeed>
+      <VehicleMaxItem>8</VehicleMaxItem>
+    </statBases>
+    <size>(1,1)</size>
+    <inspectorTabs>
+      <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
+      <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
+    </inspectorTabs>
+    <CostList>
+      <Steel>200</Steel>
+      <WoodLog>200</WoodLog>
+      <Plasteel>10</Plasteel>
+      <Components>10</Components>
+    </CostList>
+    <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <Steel>100</Steel>
+      <WoodLog>100</WoodLog>
+      <Plasteel>5</Plasteel>
+      <Components>5</Components>
+    </killedLeavings>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Smithing</soundWorking>
+      <recipeUsers>
+        <li>TableMachining</li>
+      </recipeUsers>
+      <workAmount>24000</workAmount>
+      <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+    </recipeMaker>
+    <comps>
+      <li Class="CompProperties_Explosive">
+        <explosiveRadius>2.9</explosiveRadius>
+        <explosiveDamageType>Bomb</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+        <!-- 				<startWickHitPointsPercent>0.10</startWickHitPointsPercent>
+				<wickTicks>
+					<min>300</min>
+					<max>600</max>
+				</wickTicks> -->
+      </li>
+      <li Class="CompProperties_Refuelable">
+        <!-- Fuel consumption only called once every 96 ticks -->
+        <fuelConsumptionRate>3000</fuelConsumptionRate>
+        <fuelCapacity>50.0</fuelCapacity>
+        <fuelFilter>
+          <thingDefs>
+            <li>Biodiesel</li>
+          </thingDefs>
+        </fuelFilter>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Axles">
+        <axles>
+          <li>(-35,-45)</li>
+          <li>(85,-45)</li>
+        </axles>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Vehicles">
+        <showsStorage>true</showsStorage>
+        <animalsCanDrive>false</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>false</motorizedWithoutFuel>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseVehicle">
+    <defName>VehicleATV</defName>
+    <label>ATV</label>
+    <hasInteractionCell>True</hasInteractionCell>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
+    <passability>PassThroughOnly</passability>
+    <altitudeLayer>Item</altitudeLayer>
+    <description>An ATV is what you drive when you want a concussion.</description>
+    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
+    <thingCategories>
+      <li>Vehicles</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Things/Pawn/VehicleATV/ATV</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,3)</drawSize>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>200</MaxHitPoints>
+      <VehicleSpeed>15</VehicleSpeed>
+      <VehicleMaxItem>2</VehicleMaxItem>
+    </statBases>
+    <size>(1,1)</size>
+    <inspectorTabs>
+      <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
+      <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
+    </inspectorTabs>
+    <CostList>
+      <Steel>150</Steel>
+      <Plasteel>10</Plasteel>
+      <Components>10</Components>
+    </CostList>
+    <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <Steel>75</Steel>
+      <Plasteel>5</Plasteel>
+      <Components>5</Components>
+    </killedLeavings>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Smithing</soundWorking>
+      <recipeUsers>
+        <li>TableMachining</li>
+      </recipeUsers>
+      <workAmount>22000</workAmount>
+      <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+    </recipeMaker>
+    <comps>
+      <li Class="CompProperties_Explosive">
+        <explosiveRadius>2.9</explosiveRadius>
+        <explosiveDamageType>Bomb</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+        <!-- 				<startWickHitPointsPercent>0.10</startWickHitPointsPercent>
+				<wickTicks>
+					<min>300</min>
+					<max>600</max>
+				</wickTicks> -->
+      </li>
+      <li Class="CompProperties_Refuelable">
+        <!-- Fuel consumption only called once every 96 ticks -->
+        <fuelConsumptionRate>2000</fuelConsumptionRate>
+        <fuelCapacity>50.0</fuelCapacity>
+        <fuelFilter>
+          <thingDefs>
+            <li>Biodiesel</li>
+          </thingDefs>
+        </fuelFilter>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Axles">
+        <axles>
+          <li>(-25,-45)</li>
+          <li>(55,-45)</li>
+        </axles>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Vehicles">
+        <showsStorage>false</showsStorage>
+        <animalsCanDrive>false</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>false</motorizedWithoutFuel>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseVehicle">
+    <defName>VehicleSpeeder</defName>
+    <label>Speeder</label>
+    <hasInteractionCell>True</hasInteractionCell>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
+    <passability>PassThroughOnly</passability>
+    <altitudeLayer>Item</altitudeLayer>
+    <description>Keep out of reach of lightsabers.</description>
+    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
+    <thingCategories>
+      <li>Vehicles</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Things/Pawn/VehicleSpeeder/Speeder</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,3)</drawSize>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>200</MaxHitPoints>
+      <VehicleSpeed>30</VehicleSpeed>
+      <VehicleMaxItem>2</VehicleMaxItem>
+    </statBases>
+    <size>(1,1)</size>
+    <fillPercent>0.99</fillPercent>
+    <inspectorTabs>
+      <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
+      <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
+    </inspectorTabs>
+    <CostList>
+      <Steel>150</Steel>
+      <Plasteel>15</Plasteel>
+      <Components>15</Components>
+    </CostList>
+    <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <Steel>75</Steel>
+      <Plasteel>7</Plasteel>
+      <Components>7</Components>
+    </killedLeavings>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Smithing</soundWorking>
+      <recipeUsers>
+        <li>ComponentAssemblyBench</li>
+      </recipeUsers>
+      <workAmount>22000</workAmount>
+      <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+      <researchPrerequisite>PoweredArmor</researchPrerequisite>
+    </recipeMaker>
+    <comps>
+      <li Class="CompProperties_Explosive">
+        <explosiveRadius>2.9</explosiveRadius>
+        <explosiveDamageType>Bomb</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+        <startWickHitPointsPercent>0.10</startWickHitPointsPercent>
+        <wickTicks>
+          <min>300</min>
+          <max>600</max>
+        </wickTicks>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Axles">
+        <axles>
+        </axles>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Vehicles">
+        <showsStorage>false</showsStorage>
+        <animalsCanDrive>false</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>true</motorizedWithoutFuel>
+      </li>
+    </comps>
+
   </ThingDef>
 
 
+  <!-- 	<ThingDef ParentName="BaseVehicle">
+		<defName>VehicleSaddle</defName>
+		<label>saddle</label>
+		<hasInteractionCell>True</hasInteractionCell>
+		<interactionCellOffset>(0,0,0)</interactionCellOffset>
+		<passability>PassThroughOnly</passability>
+		<altitudeLayer>Item</altitudeLayer>
+		<description>A saddle is a leather seat that you put on the back of an animal so that you can ride the animal.</description>
+		<thingClass>ToolsForHaul.Vehicle_Saddle</thingClass>
+		<thingCategories>
+			<li>Vehicles</li>
+		</thingCategories>
+		<graphicData>
+			<texPath>Things/Pawn/Vehicle/Saddle</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(2,2)</drawSize>
+		</graphicData>
+		<statBases>
+			<MaxHitPoints>100</MaxHitPoints>
+		</statBases>
+		<size>(1,1)</size>
+		<CostList>
+			<Steel>40</Steel>
+		</CostList>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<killedLeavings>
+			<Steel>20</Steel>
+		</killedLeavings>
+		<recipeMaker>
+			<workSpeedStat>TailoringSpeed</workSpeedStat>
+			<workSkill>Crafting</workSkill>
+			<effectWorking>Tailor</effectWorking>
+			<soundWorking>Recipe_Tailor</soundWorking>
+			<recipeUsers>
+				<li>ElectricTailoringBench</li>
+				<li>HandTailoringBench</li>
+			</recipeUsers>
+			<unfinishedThingDef>UnfinishedApparel</unfinishedThingDef>
+			<workAmount>5000</workAmount>
+		</recipeMaker>
+	</ThingDef> -->
 
-  
+  <!-- Food Service Trolley -->
+  <!--  <ThingDef ParentName="BaseVehicle">
+    <defName>VehicleTrolley</defName>
+    <label>trolley</label>
+    <hasInteractionCell>True</hasInteractionCell>
+    <interactionCellOffset>(0,0,1)</interactionCellOffset>
+    <passability>PassThroughOnly</passability>
+    <altitudeLayer>Item</altitudeLayer>
+    <description>A trolley is a small table on wheels which is used for serving drinks or food.</description>
+    <thingClass>ToolsForHaul.Vehicle_Trolley</thingClass>
+    <thingCategories>
+      <li>Vehicles</li>
+    </thingCategories>
+    <graphicPath>Things/Building/Furniture/EquipmentRack</graphicPath>
+    <graphicClass>Graphic_Single</graphicClass>
+    <graphicOverdraw>true</graphicOverdraw>
+    <targetHitChanceFactor>1.0</targetHitChanceFactor>
+    <statBases>
+      <MaxHitPoints>200</MaxHitPoints>
+    </statBases>
+    <size>(2,1)</size>
+    <building>
+      <preventDeterioration>true</preventDeterioration>
+      <fixedStorageSettings>
+        <priority>Important</priority>
+        <allowances>
+          <categories>
+            <li>FoodMeals</li>
+          </categories>
+        </allowances>
+      </fixedStorageSettings>
+    </building>
+    <inspectorTabs>
+      <li>ITab_Storage</li>
+    </inspectorTabs>
+    <CostList>
+      <Steel>40</Steel>
+    </CostList>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Smithing</soundWorking>
+      <recipeUsers>
+        <li>TableSmithing</li>
+      </recipeUsers>
+      <workAmount>1600</workAmount>
+    <unfinishedThingDef>UnfinishedWeapon</unfinishedThingDef>
+	  <skillRequirements>
+	  </skillRequirements>
+    </recipeMaker>
+  </ThingDef>
+   -->
+
+
+
 </ThingDefs>

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using UnityEngine;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using Verse.Sound;
-using RimWorld;
 
 namespace ToolsForHaul
 {
@@ -20,7 +14,6 @@ namespace ToolsForHaul
         public Designation designation;
 
         public Designator_ApplyMedicine()
-            : base()
         {
             useMouseIcon = true;
             soundSucceeded = SoundDefOf.Click;

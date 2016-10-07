@@ -2,6 +2,7 @@
 using RimWorld;
 using UnityEngine;
 using Verse;
+
 // Always needed
 //using VerseBase;         // Material/Graphics handling functions are found here
 // RimWorld universal objects are here (like 'Building')

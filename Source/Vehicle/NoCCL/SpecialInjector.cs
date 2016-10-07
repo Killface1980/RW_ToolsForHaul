@@ -55,9 +55,9 @@ namespace ToolsForHaul
             MethodInfo method = typeof(ThinkNode_JobGiver).GetMethod("TryIssueJobPackage", BindingFlags.Instance | BindingFlags.Public);
             MethodInfo method2 = typeof(_ThinkNode_JobGiver).GetMethod("TryIssueJobPackage", BindingFlags.Instance | BindingFlags.Public);
 
-            // draws hands on equipment, if corresponding Comp is specified
-            MethodInfo method3 = typeof(PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
-            MethodInfo method4 = typeof(RA_PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
+          //// draws hands on equipment, if corresponding Comp is specified
+          //MethodInfo method3 = typeof(PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
+          //MethodInfo method4 = typeof(RA_PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
 
             if (!Detours.TryDetourFromTo(method, method2))
             {

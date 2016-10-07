@@ -75,7 +75,7 @@
 					<minAge>18</minAge>
 				</li>
 			</lifeStageAges>
-			<soundMeleeHitPawn>Pawn_Melee_Punch_HitPawn</soundMeleeHitPawn>
+			<soundMeleeHitPawn>pawn_Melee_Punch_Hitpawn</soundMeleeHitpawn>
 			<soundMeleeHitBuilding>Pawn_Melee_Punch_HitBuilding</soundMeleeHitBuilding>
 			<soundMeleeMiss>Pawn_Melee_Punch_Miss</soundMeleeMiss>
 			<specialshadowData>

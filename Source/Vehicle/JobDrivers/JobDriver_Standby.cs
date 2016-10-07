@@ -1,12 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Verse;
 using Verse.AI;
-using RimWorld;
-
 
 namespace ToolsForHaul
 {
@@ -14,8 +8,6 @@ namespace ToolsForHaul
     {
         //Constants
         private const TargetIndex DestInd = TargetIndex.A;
-
-        public JobDriver_Standby() : base() { }
 
         public override string GetReport()
         {

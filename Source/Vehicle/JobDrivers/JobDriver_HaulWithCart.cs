@@ -1,12 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using RimWorld;
-
 
 namespace ToolsForHaul
 {

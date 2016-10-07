@@ -1,12 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using RimWorld;
-
 
 namespace ToolsForHaul
 {
@@ -16,8 +11,6 @@ namespace ToolsForHaul
         private const TargetIndex HaulableInd = TargetIndex.A;
         private const TargetIndex StoreCellInd = TargetIndex.B;
         private const TargetIndex CartInd = TargetIndex.C;
-
-        public JobDriver_HaulWithAnimalCart() : base() { }
 
         public override string GetReport()
         {
@@ -50,7 +43,7 @@ namespace ToolsForHaul
         {
             get
             {
-                return (Pawn)base.CurJob.GetTarget(TargetIndex.A).Thing;
+                return (Pawn)CurJob.GetTarget(TargetIndex.A).Thing;
             }
         }
 

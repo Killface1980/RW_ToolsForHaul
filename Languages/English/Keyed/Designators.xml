@@ -7,7 +7,7 @@
   
   <!-- Failure messages -->
   <CannotMount>Must designate colonist that can be mounted.</CannotMount>
-    <NotPawn>Is not a pawn.</NotPawn>
+    <NotPawn>Is not a pawn.</Notpawn>
     <NotColonyFaction>Is not in your faction.</NotColonyFaction>
     <NotHumanlikeOrMechanoid>Is not for humanlike or mechanoid.</NotHumanlikeOrMechanoid>
     <NotTrainedAnimal>The animal is not trained for 'Obedience'.</NotTrainedAnimal>

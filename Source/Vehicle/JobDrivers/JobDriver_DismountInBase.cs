@@ -1,13 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
-
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using RimWorld;
-
 
 namespace ToolsForHaul
 {
@@ -16,8 +10,6 @@ namespace ToolsForHaul
         //Constants
         private const TargetIndex CartInd = TargetIndex.A;
         private const TargetIndex StoreCellInd = TargetIndex.B;
-
-        public JobDriver_DismountInBase() : base() { }
 
         public override string GetReport()
         {

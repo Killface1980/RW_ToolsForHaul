@@ -1,13 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
-
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using RimWorld;
-
 
 namespace ToolsForHaul
 {
@@ -30,8 +24,6 @@ namespace ToolsForHaul
                 return (Pawn)CurJob.targetA.Thing;
             }
         }
-
-        public JobDriver_ApplyMedicine() : base() { }
 
         public override string GetReport()
         {
@@ -84,7 +76,7 @@ namespace ToolsForHaul
             Toil toilGoTodeliveree = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
             yield return toilGoTodeliveree;
 
-            int duration = (int) (1.0 / (double) ((Thing) pawn).GetStatValue(StatDefOf.HealingSpeed, true) * 600.0);
+            int duration = (int) (1.0 / pawn.GetStatValue(StatDefOf.HealingSpeed, true) * 600.0);
             Toil toilDelivereeWait = new Toil();
             toilDelivereeWait.initAction = () =>
             {

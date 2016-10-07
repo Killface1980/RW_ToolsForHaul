@@ -1,13 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
 using System.Linq;
-using ToolsForHaul;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using RimWorld;
-
 
 namespace ToolsForHaul
 {
@@ -16,8 +11,6 @@ namespace ToolsForHaul
         //Constants
         private const TargetIndex BackpackInd = TargetIndex.A;
         private const TargetIndex HaulableInd = TargetIndex.B;
-
-        public JobDriver_PutInInventory() : base() { }
 
         public override string GetReport()
         {
@@ -92,7 +85,7 @@ namespace ToolsForHaul
                     if (pawn.inventory.container.Count < backpack.MaxItem
                         && backpack.wearer.inventory.container.TotalStackCount < backpack.MaxStack)
                     {
-                        if (CurJob.targetB.Thing.TryGetComp<CompForbiddable>() != null && CurJob.targetB.Thing.TryGetComp<CompForbiddable>().Forbidden == true)
+                        if (CurJob.targetB.Thing.TryGetComp<CompForbiddable>() != null && CurJob.targetB.Thing.TryGetComp<CompForbiddable>().Forbidden)
                             CurJob.targetB.Thing.TryGetComp<CompForbiddable>().Forbidden = false;
                         if (pawn.inventory.container.TryAdd(CurJob.targetB.Thing, CurJob.maxNumToCarry))
                         {

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using UnityEngine;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using Verse.Sound;
-using RimWorld;
 
 namespace ToolsForHaul
 {
@@ -18,7 +13,7 @@ namespace ToolsForHaul
 
         private int numOfContents;
 
-        public Designator_PutInInventory() : base()
+        public Designator_PutInInventory()
         {
             useMouseIcon = true;
             designations = new List<Designation>();

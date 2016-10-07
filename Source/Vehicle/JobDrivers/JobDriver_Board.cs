@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using UnityEngine;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using RimWorld;
 
 namespace ToolsForHaul
 {
@@ -15,8 +10,6 @@ namespace ToolsForHaul
         //Constants
         private const TargetIndex MountableInd = TargetIndex.A;
         //private const TargetIndex MountCellInd = TargetIndex.B;
-
-        public JobDriver_Board() : base() { }
 
         public override string GetReport()
         {

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using ToolsForHaul;
-using UnityEngine;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using RimWorld;
-
-
 
 namespace ToolsForHaul
 {
@@ -83,7 +77,6 @@ namespace ToolsForHaul
                     toil.actor.jobs.curJob.SetTarget(HaulableInd, thing);
                     Find.Reservations.Reserve(actor, thing);
                     toil.actor.jobs.curDriver.JumpToToil(jumpToil);
-                    return;
                 }
             };
             return toil;
@@ -276,7 +269,7 @@ namespace ToolsForHaul
                     }
                 //Check item queue is valid storage for adjacent cell
                 foreach (IntVec3 adjCell in GenAdj.CellsAdjacent8Way(destLoc))
-                    if (actor.inventory.container.Count > 0 && adjCell.GetStorable() == null && StoreUtility.IsValidStorageFor(adjCell, actor.inventory.container.First()))
+                    if (actor.inventory.container.Count > 0 && adjCell.GetStorable() == null && adjCell.IsValidStorageFor(actor.inventory.container.First()))
                     {
                         Find.DesignationManager.RemoveAllDesignationsOn(actor.inventory.container.First());
                         actor.inventory.container.TryDrop(actor.inventory.container.First(), adjCell, ThingPlaceMode.Direct, out dummy);
@@ -356,7 +349,7 @@ namespace ToolsForHaul
                     }
                 //Check item queue is valid storage for adjacent cell
                 foreach (IntVec3 adjCell in GenAdj.CellsAdjacent8Way(destLoc))
-                    if (carrier.storage.Count > 0 && adjCell.GetStorable() == null && StoreUtility.IsValidStorageFor(adjCell, carrier.storage.First()))
+                    if (carrier.storage.Count > 0 && adjCell.GetStorable() == null && adjCell.IsValidStorageFor(carrier.storage.First()))
                     {
                         Find.DesignationManager.RemoveAllDesignationsOn(carrier.storage.First());
                         carrier.storage.TryDrop(carrier.storage.First(), adjCell, ThingPlaceMode.Direct, out dummy);

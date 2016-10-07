@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using RimWorld;
 
 namespace ToolsForHaul
 {
+    [StaticConstructorOnStartup]
     public class Vehicle_Saddle : ThingWithComps, IThingContainerOwner
     {
 
@@ -18,13 +17,13 @@ namespace ToolsForHaul
         private const int maxNumBoarding = 1;
 
         //Graphic data
-        private Graphic_Multi graphic_Saddle;
+        private  Graphic_Multi graphic_Saddle;
         //Body and part location
         private Vector3 saddleLoc;
 
         //mount and storage data
         public CompMountable mountableComp;
-        public ThingContainer storage = null;
+        public ThingContainer storage;
         public ThingContainer GetContainer() { return storage; }
 
         public IntVec3 GetPosition()
@@ -38,7 +37,7 @@ namespace ToolsForHaul
         {
             get
             {
-                return (storage.Where(x => x is Pawn).Count() > 0) ? storage.Where(x => x is Pawn).First() as Pawn : null;
+                return (storage.Any(x => x is Pawn)) ? storage.First(x => x is Pawn) as Pawn : null;
             }
         }
         public virtual void BoardOn(Pawn pawn)
@@ -61,16 +60,17 @@ namespace ToolsForHaul
             pawn.holder.owner = this;
             pawn.jobs.StartJob(new Job(JobDefOf.WaitCombat));
         }
+
         public virtual void Unboard(Pawn pawn)
         {
             if (storage.Count(x => x is Pawn) <= 0)
                 return;
 
-            Thing dummy;
             if (storage.Contains(pawn))
             {
                 pawn.holder = null;
                 pawn.jobs.StopAll();
+                Thing dummy;
                 storage.TryDrop(pawn, Position, ThingPlaceMode.Near, out dummy);
             }
         }
@@ -79,11 +79,14 @@ namespace ToolsForHaul
             if (storage.Count(x => x is Pawn) <= 0)
                 return;
 
-            Thing dummy;
-            foreach (Pawn crew in storage.Where(x => x is Pawn).ToList())
+            foreach (Thing thing in storage.Where(x => x is Pawn).ToList())
             {
+                Pawn crew = (Pawn) thing;
+                if (crew == null) continue;
+
                 crew.holder = null;
-                crew.jobs.StopAll();
+                crew.jobs?.StopAll();
+                Thing dummy;
                 storage.TryDrop(crew, Position, ThingPlaceMode.Near, out dummy);
                 //     storage.TryDropAll(Position, ThingPlaceMode.Near);
             }
@@ -93,7 +96,6 @@ namespace ToolsForHaul
         #region Setup Work
 
         public Vehicle_Saddle()
-            : base()
         {
             storage = new ThingContainer(this);
         }
@@ -104,13 +106,13 @@ namespace ToolsForHaul
             base.SpawnSetup();
             mountableComp = GetComp<CompMountable>();
 
-            UpdateGraphics();
+            LongEventHandler.ExecuteWhenFinished(UpdateGraphics);
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.LookDeep<ThingContainer>(ref storage, "storage");
+            Scribe_Deep.LookDeep(ref storage, "storage");
         }
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
@@ -125,7 +127,7 @@ namespace ToolsForHaul
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            foreach (var baseGizmo in base.GetGizmos())
+            foreach (Gizmo baseGizmo in base.GetGizmos())
                 yield return baseGizmo;
             if (mountableComp.IsMounted && storage.Count(x => x is Pawn) < maxNumBoarding)
             {
@@ -214,13 +216,14 @@ namespace ToolsForHaul
         {
             base.Tick();
             storage.ThingContainerTick();
-            foreach (Pawn crew in storage.Where(x => x is Pawn))
+            foreach (Thing thing in storage.Where(x => x is Pawn))
             {
+                Pawn crew = (Pawn) thing;
                 if (crew.Downed || crew.Dead)
                     Unboard(crew);
                 crew.Position = Position;
             }
-            if (mountableComp.IsMounted)
+            if (mountableComp != null && mountableComp.IsMounted)
                 return;
             UnboardAll();
         }
@@ -265,20 +268,22 @@ namespace ToolsForHaul
                 {
                     crewLoc.z += 1f;
                 }
-                if (storage != null)
-                    foreach (Pawn pawn in storage.Where(x => x is Pawn).ToList())
-                    {
-                        if (pawn == null) continue;
-                        pawn.Rotation = Rotation;
-                        pawn.DrawAt(crewLoc + crewsOffset.RotatedBy(Rotation.AsAngle));
+                if (storage == null) return;
 
-                        if (pawn.stances.curStance is Stance_Warmup && Find.Selector.IsSelected(this))
-                        {
-                            Stance_Warmup stanceWarmup = pawn.stances.curStance as Stance_Warmup;
-                            float num2 = stanceWarmup.ticksLeft >= 300 ? (stanceWarmup.ticksLeft >= 450 ? 0.5f : 0.75f) : 1f;
-                            GenDraw.DrawAimPie(stanceWarmup.stanceTracker.pawn, stanceWarmup.focusTarg, (int)(stanceWarmup.ticksLeft * (double)num2), 0.2f);
-                        }
+                foreach (Thing thing in storage.Where(x => x is Pawn).ToList())
+                {
+                    Pawn pawn = (Pawn) thing;
+                    if (pawn == null) continue;
+                    pawn.Rotation = Rotation;
+                    pawn.DrawAt(crewLoc + crewsOffset.RotatedBy(Rotation.AsAngle));
+
+                    if (pawn.stances.curStance is Stance_Warmup && Find.Selector.IsSelected(this))
+                    {
+                        Stance_Warmup stanceWarmup = pawn.stances.curStance as Stance_Warmup;
+                        float num2 = stanceWarmup.ticksLeft >= 300 ? (stanceWarmup.ticksLeft >= 450 ? 0.5f : 0.75f) : 1f;
+                        GenDraw.DrawAimPie(stanceWarmup.stanceTracker.pawn, stanceWarmup.focusTarg, (int)(stanceWarmup.ticksLeft * (double)num2), 0.2f);
                     }
+                }
             }
             else
                 base.DrawAt(drawLoc);

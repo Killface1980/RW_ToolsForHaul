@@ -1,36 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-
-  <ThingDef Name="UnfinishedBase" Abstract="True">
-    <thingClass>UnfinishedThing</thingClass>
-    <category>Item</category>
-    <label>Unfinished thing</label>
+  <ThingDef ParentName="UnfinishedBase">
+    <defName>UnfinishedCart</defName>
+    <label>Unfinished cart</label>
     <graphicData>
-      <texPath>Things/Item/Unfinished/UnfinishedSculpture</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
+      <texPath>Things/Pawn/VehicleCart/Cart</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,3)</drawSize>
     </graphicData>
-    <altitudeLayer>Item</altitudeLayer>
-    <useHitPoints>true</useHitPoints>
-    <isUnfinishedThing>true</isUnfinishedThing>
-    <selectable>true</selectable>
-    <tradeability>Never</tradeability>
-    <drawerType>RealtimeOnly</drawerType>
-    <!-- For CompForbiddable -->
-    <statBases>
-      <MaxHitPoints>50</MaxHitPoints>
-    </statBases>
-    <comps>
-      <li>
-        <compClass>CompForbiddable</compClass>
-      </li>
-    </comps>
-    <alwaysHaulable>true</alwaysHaulable>
-    <rotatable>false</rotatable>
-    <pathCost>15</pathCost>
-    <thingCategories>
-      <li>Unfinished</li>
-    </thingCategories>
     <stuffCategories>
       <li>Metallic</li>
       <li>Woody</li>
@@ -39,17 +17,28 @@
   </ThingDef>
 
   <ThingDef ParentName="UnfinishedBase">
-    <defName>UnfinishedCart</defName>
-    <label>Unfinished cart</label>
+    <defName>UnfinishedATV</defName>
+    <label>Unfinished ATV</label>
     <graphicData>
-      <texPath>Things/Pawn/Vehicle/Cart</texPath>
+      <texPath>Things/Pawn/VehicleATV/ATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
-      <drawSize>(2.7,2.7)</drawSize>
+      <drawSize>(3,3)</drawSize>
     </graphicData>
     <stuffCategories>
       <li>Metallic</li>
-      <li>Woody</li>
-      <li>Stony</li>
+    </stuffCategories>
+  </ThingDef>
+
+  <ThingDef ParentName="UnfinishedBase">
+    <defName>UnfinishedSpeeder</defName>
+    <label>Unfinished speeder</label>
+    <graphicData>
+      <texPath>Things/Pawn/VehicleSpeeder/Speeder</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,3)</drawSize>
+    </graphicData>
+    <stuffCategories>
+      <li>Metallic</li>
     </stuffCategories>
   </ThingDef>
 

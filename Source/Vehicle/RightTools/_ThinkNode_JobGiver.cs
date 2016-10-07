@@ -1,7 +1,4 @@
 ﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using ToolsForHaul;
 using Verse;
 using Verse.AI;
 using static ToolsForHaul.MapComponent_ToolsForHaul;
@@ -14,7 +11,7 @@ namespace ToolsForHaul
 
         public override ThinkResult TryIssueJobPackage(Pawn pawn)
         {
-            Job job = this.TryGiveTerminalJob(pawn);
+            Job job = TryGiveTerminalJob(pawn);
             bool jobNull = job == null;
             ThinkResult result;
             if (jobNull)
