@@ -436,7 +436,7 @@ namespace ToolsForHaul
                 Vector3 s = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
                 Quaternion asQuat = Rotation.AsQuat;
                 float x = 1f * Mathf.Sin((wheelRotation * 0.05f) % (2 * Mathf.PI));
-                float y = 1f * Mathf.Cos((wheelRotation * 0.05f) % (2 * Mathf.PI));
+                float z = 1f * Mathf.Cos((wheelRotation * 0.05f) % (2 * Mathf.PI));
                 asQuat.SetLookRotation(new Vector3(x, 0f, z), Vector3.up);
                 List<Vector3> list;
                 if (compAxles.GetAxleLocations(drawSize, num, out list))

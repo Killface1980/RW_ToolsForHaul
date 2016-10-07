@@ -59,7 +59,7 @@
     <Compile Include="ARB\CompProperties_Axles.cs" />
     <Compile Include="ARB\CompProperties_Vehicles.cs" />
     <Compile Include="ARB\CompVehicles.cs" />
-    <Compile Include="ARB\Class5.cs" />
+    <Compile Include="ARB\StatWorker_MoveSpeed.cs" />
     <Compile Include="Backpack\Apparel_Backpack.cs" />
     <None Include="JobDrivers\Class1.cs" />
     <Compile Include="RA\CompWeaponExtensions.cs" />
