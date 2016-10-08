@@ -63,6 +63,8 @@
     <Compile Include="ARB\CompVehicles.cs" />
     <Compile Include="Backpack\Apparel_Backpack.cs" />
     <None Include="JobDrivers\Class1.cs" />
+    <None Include="Designators\Vehicle\Class1.cs" />
+    <None Include="Designators\Vehicle\Class2.cs" />
     <Compile Include="RA\CompWeaponExtensions.cs" />
     <None Include="RA\RA_PawnRenderer.cs" />
     <Compile Include="RA\CompTool.cs" />

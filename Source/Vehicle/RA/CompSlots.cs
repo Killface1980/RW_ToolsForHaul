@@ -59,7 +59,7 @@ namespace ToolsForHaul
                 float penalty = 0f;
                 if (slots.Count != 0)
                 {
-                    penalty = slots.Count/Properties.maxSlots;
+                    penalty = slots.Count/MaxItem;
                 }
                 return penalty;
             }

@@ -15,15 +15,15 @@ namespace ToolsForHaul
             stringBuilder.Append(base.GetExplanation(req, numberSense));
             if (req.HasThing)
             {
-                CompSlots compInventory = ThingCompUtility.TryGetComp<CompSlots>(req.Thing);
+                CompSlots compInventory = ToolsForHaulUtility.TryGetBackpack(req.Thing as Pawn).TryGetComp<CompSlots>();
                 if (compInventory != null)
                 {
                     stringBuilder.AppendLine();
-                    stringBuilder.AppendLine(Translator.Translate("CR_CarriedWeight") + ": x" + GenText.ToStringPercent(compInventory.moveSpeedFactor));
+                    stringBuilder.AppendLine("CR_CarriedWeight".Translate() + ": x" + compInventory.moveSpeedFactor.ToStringPercent());
                     if (compInventory.encumberPenalty > 0f)
                     {
-                        stringBuilder.AppendLine(Translator.Translate("CR_Encumbered") + ": -" + GenText.ToStringPercent(compInventory.encumberPenalty));
-                        stringBuilder.AppendLine(Translator.Translate("CR_FinalModifier") + ": x" + GenText.ToStringPercent(GetStatFactor(req.Thing)));
+                        stringBuilder.AppendLine("CR_Encumbered".Translate() + ": -" + compInventory.encumberPenalty.ToStringPercent());
+                        stringBuilder.AppendLine("CR_FinalModifier".Translate() + ": x" + GetStatFactor(req.Thing).ToStringPercent());
                     }
                 }
             }
@@ -51,12 +51,11 @@ namespace ToolsForHaul
         {
             float result = 1f;
 
-
             foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart())
             {
                 if (vehicle_Cart == null)
                     continue;
-                
+
                 if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == thing.ThingID)
                 {
                     if (vehicle_Cart.IsCurrentlyMotorized())
@@ -72,13 +71,12 @@ namespace ToolsForHaul
 
             }
 
-            CompSlots compInventory = ThingCompUtility.TryGetComp<CompSlots>(thing);
-            if (compInventory != null)
-            {
-
-                result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
-                return result;
-            }
+          //CompSlots compInventory = ToolsForHaulUtility.TryGetBackpack(thing as Pawn).TryGetComp<CompSlots>();
+          //if (compInventory != null)
+          //{
+          //    result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
+          //    return result;
+          //}
             return result;
         }
     }
