@@ -48,7 +48,7 @@ namespace ToolsForHaul
                 }
                 Vehicle_Cart cart = toil.actor.jobs.curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
                 Apparel_Backpack backpack = toil.actor.jobs.curJob.GetTarget(CarrierInd).Thing as Apparel_Backpack;
-                CompSlots slotsComp = backpack.TryGetComp<CompSlots>();
+
                 if (cart == null && backpack == null)
                 {
                     Log.Error(actor.LabelCap + " Report: Don't have Carrier");

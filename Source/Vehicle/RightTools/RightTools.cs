@@ -46,6 +46,7 @@ namespace ToolsForHaul
         {
             Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
             CompSlots slotsComp = backpack.TryGetComp<CompSlots>();
+
             bool flag = backpack != null;
             if (flag)
             {

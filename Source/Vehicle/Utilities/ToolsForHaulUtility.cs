@@ -144,6 +144,8 @@ namespace ToolsForHaul
             if (cart == null)
             {
                 Apparel_Backpack backpack = TryGetBackpack(pawn);
+                CompSlots compInventory = ToolsForHaulUtility.TryGetBackpack(pawn).TryGetComp<CompSlots>();
+
                 jobDef = DefDatabase<JobDef>.GetNamed("HaulWithBackpack");
                 targetC = backpack;
                 maxItem = backpack.MaxItem;
