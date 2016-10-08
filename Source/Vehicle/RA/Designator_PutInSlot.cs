@@ -189,7 +189,7 @@ namespace ToolsForHaul
                     if (currentSlotInd < slotsComp.slots.Count)
                     {
                         slotRect.x = inventoryRect.x + Height/2 * (currentSlotInd % numOfMaxItemsPerRow);
-                        slotRect.y = inventoryRect.y + (Height / 2) * (currentSlotInd / numOfMaxItemsPerRow);
+                        slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
 
                         Thing currentThing = slotsComp.slots[currentSlotInd];
 
@@ -308,7 +308,7 @@ namespace ToolsForHaul
                         }
                     }
                     slotRect.x = inventoryRect.x + Height/2 * (currentSlotInd % numOfMaxItemsPerRow);
-                    slotRect.y = inventoryRect.y + (Height / 2) * (currentSlotInd / numOfMaxItemsPerRow);
+                    slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
                     //      slotRect.x += Height;
                 }
             }

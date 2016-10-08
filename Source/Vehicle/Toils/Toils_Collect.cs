@@ -93,7 +93,7 @@ namespace ToolsForHaul
                 Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
 
                 //Check haulThing is human_corpse. If other race has apparel, It need to change
-                if ((haulThing.ThingID.IndexOf("Human_Corpse") <= -1) ? false : true)
+                if (haulThing.ThingID.IndexOf("Human_Corpse") <= -1 ? false : true)
                 {
                     Corpse corpse = (Corpse)haulThing;
                     List<Apparel> wornApparel = corpse.innerPawn.apparel.WornApparel;
@@ -147,7 +147,7 @@ namespace ToolsForHaul
                 //Check haulThing is human_corpse. If other race has apparel, It need to change
 
                 Find.DesignationManager.RemoveAllDesignationsOn(haulThing);
-                if ((haulThing.ThingID.IndexOf("Human_Corpse") <= -1) ? false : true)
+                if (haulThing.ThingID.IndexOf("Human_Corpse") <= -1 ? false : true)
                 {
                     Corpse corpse = (Corpse)haulThing;
                     List<Apparel> wornApparel = corpse.innerPawn.apparel.WornApparel;

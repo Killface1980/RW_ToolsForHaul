@@ -74,7 +74,7 @@ namespace ToolsForHaul
                 if (i >= backpack.MaxItem)
                 {
                     thingIconRect.x = topLeft.x + widthPerItem * (i % numOfMaxItemsPerRow);
-                    thingIconRect.y = topLeft.y + (Height / 2) * (i / numOfMaxItemsPerRow);
+                    thingIconRect.y = topLeft.y + Height / 2 * (i / numOfMaxItemsPerRow);
                     Widgets.DrawTextureFitted(thingIconRect, NoAvailableTex, 1.0f);
                     continue;
                 }
@@ -82,7 +82,7 @@ namespace ToolsForHaul
                 if (i >= things.Count)
                 {
                     thingIconRect.x = topLeft.x + widthPerItem * (i % numOfMaxItemsPerRow);
-                    thingIconRect.y = topLeft.y + (Height / 2) * (i / numOfMaxItemsPerRow);
+                    thingIconRect.y = topLeft.y + Height / 2 * (i / numOfMaxItemsPerRow);
                     Widgets.DrawTextureFitted(thingIconRect, EmptyTex, 1.0f);
 
 
@@ -226,7 +226,7 @@ namespace ToolsForHaul
 
                 numOfCurItem++;
                 thingIconRect.x = topLeft.x + widthPerItem * (numOfCurItem % numOfMaxItemsPerRow);
-                thingIconRect.y = topLeft.y + (Height / 2) * (numOfCurItem / numOfMaxItemsPerRow);
+                thingIconRect.y = topLeft.y + Height / 2 * (numOfCurItem / numOfMaxItemsPerRow);
             }
 
             if (numOfCurItem == 0)

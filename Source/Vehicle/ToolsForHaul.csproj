@@ -55,11 +55,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ARB\Class1.cs" />
+    <Compile Include="ARB\StatWorker_MoveSpeed.cs" />
     <Compile Include="ARB\CompAxles.cs" />
     <Compile Include="ARB\CompProperties_Axles.cs" />
     <Compile Include="ARB\CompProperties_Vehicles.cs" />
     <Compile Include="ARB\CompVehicles.cs" />
-    <Compile Include="ARB\StatWorker_MoveSpeed.cs" />
     <Compile Include="Backpack\Apparel_Backpack.cs" />
     <None Include="JobDrivers\Class1.cs" />
     <Compile Include="RA\CompWeaponExtensions.cs" />
@@ -113,8 +114,11 @@
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\Defs\DesignationDefs\Designations.xml">
+      <Link>Defs\DesignatorDef\Designations.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
-      <Link>Defs\Jobs_Misc.xml</Link>
+      <Link>Defs\JobDefs\Jobs_Misc.xml</Link>
     </Content>
     <Content Include="..\..\Defs\KeyBindingDefs\KeyBindings.xml">
       <Link>Defs\KeyBindingDefs\KeyBindings.xml</Link>
@@ -122,6 +126,9 @@
     <Content Include="..\..\Defs\StatDefs\Stats_Apparel.xml">
       <Link>Defs\StatDefs\Stats_Apparel.xml</Link>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\StatDefs\Stats_Vehicle.xml">
+      <Link>Defs\StatDefs\Stats_Vehicle.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingCategoryDefs\ThingCategories.xml">
       <Link>Defs\ThingCategories.xml</Link>

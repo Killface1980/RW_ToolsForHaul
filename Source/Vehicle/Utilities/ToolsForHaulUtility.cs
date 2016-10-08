@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -36,7 +37,49 @@ namespace ToolsForHaul
                     return apparel as Apparel_Backpack;
             return null;
         }
+        /// <summary>
+        /// Calculates the actual current movement speed of a pawn
+        /// </summary>
+        /// <param name="pawn">Pawn to calculate speed of</param>
+        /// <returns>Move speed in cells per second</returns>
+        public static float GetMoveSpeed(Pawn pawn)
+        {
+            float movePerTick = 60 / pawn.GetStatValue(StatDefOf.MoveSpeed, false);    //Movement per tick
+            movePerTick += PathGrid.CalculatedCostAt(pawn.Position, false, pawn.Position);
+            Building edifice = pawn.Position.GetEdifice();
+            if (edifice != null)
+            {
+                movePerTick += (int)edifice.PathWalkCostFor(pawn);
+            }
 
+            //Case switch to handle walking, jogging, etc.
+            if (pawn.CurJob != null)
+            {
+                switch (pawn.CurJob.locomotionUrgency)
+                {
+                    case LocomotionUrgency.Amble:
+                        movePerTick *= 3;
+                        if (movePerTick < 60)
+                        {
+                            movePerTick = 60;
+                        }
+                        break;
+                    case LocomotionUrgency.Walk:
+                        movePerTick *= 2;
+                        if (movePerTick < 50)
+                        {
+                            movePerTick = 50;
+                        }
+                        break;
+                    case LocomotionUrgency.Jog:
+                        break;
+                    case LocomotionUrgency.Sprint:
+                        movePerTick = Mathf.RoundToInt(movePerTick * 0.75f);
+                        break;
+                }
+            }
+            return 60 / movePerTick;
+        }
         public static Thing TryGetBackpackLastItem(Pawn pawn)
         {
             Apparel_Backpack backpack = TryGetBackpack(pawn);
@@ -110,7 +153,7 @@ namespace ToolsForHaul
                 ShouldDrop = true;
                 if (lastItem != null)
                     for (int i = 0; i < pawn.inventory.container.Count; i++)
-                        if (pawn.inventory.container[i] == lastItem && (reservedMaxItem - (i + 1)) <= 0)
+                        if (pawn.inventory.container[i] == lastItem && reservedMaxItem - (i + 1) <= 0)
                         {
                             ShouldDrop = false;
                         break;

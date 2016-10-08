@@ -131,7 +131,7 @@
       <recipeUsers>
         <li>FueledSmithy</li>
         <li>ElectricSmithy</li>
-        <li>CraftingTable</li>
+        <li>TableMachining</li>
       </recipeUsers>
       <workAmount>2400</workAmount>
     <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
@@ -188,14 +188,14 @@
       <Steel>200</Steel>
       <WoodLog>200</WoodLog>
       <Plasteel>10</Plasteel>
-      <Components>10</Components>
+      <Component>10</Component>
     </CostList>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <killedLeavings>
       <Steel>100</Steel>
       <WoodLog>100</WoodLog>
       <Plasteel>5</Plasteel>
-      <Components>5</Components>
+      <Component>5</Component>
     </killedLeavings>
     <recipeMaker>
       <workSpeedStat>SmithingSpeed</workSpeedStat>
@@ -282,13 +282,13 @@
     <CostList>
       <Steel>150</Steel>
       <Plasteel>10</Plasteel>
-      <Components>10</Components>
+      <Component>10</Component>
     </CostList>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <killedLeavings>
       <Steel>75</Steel>
       <Plasteel>5</Plasteel>
-      <Components>5</Components>
+      <Component>5</Component>
     </killedLeavings>
     <recipeMaker>
       <workSpeedStat>SmithingSpeed</workSpeedStat>
@@ -376,13 +376,13 @@
     <CostList>
       <Steel>150</Steel>
       <Plasteel>15</Plasteel>
-      <Components>15</Components>
+      <Component>15</Component>
     </CostList>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <killedLeavings>
       <Steel>75</Steel>
       <Plasteel>7</Plasteel>
-      <Components>7</Components>
+      <Component>7</Component>
     </killedLeavings>
     <recipeMaker>
       <workSpeedStat>SmithingSpeed</workSpeedStat>

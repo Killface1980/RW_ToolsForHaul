@@ -82,8 +82,8 @@ namespace ToolsForHaul
             {
                 if (driver.Dead || driver.Downed || driver.health.InPainShock || driver.MentalStateDef == MentalStateDefOf.WanderPsychotic || (parent.IsForbidden(Faction.OfPlayer) && driver.Faction == Faction.OfPlayer))
                 {
-                    parent.Position = (Position.ToIntVec3());
-                    parent.Rotation = (driver.Rotation);
+                    parent.Position = Position.ToIntVec3();
+                    parent.Rotation = driver.Rotation;
                     Dismount();
                     return;
                 }
@@ -91,8 +91,8 @@ namespace ToolsForHaul
                 {
                     if (driver.Faction == Faction.OfPlayer && driver.CurJob != null && driver.CurJob.def.playerInterruptible && (driver.CurJob.def == JobDefOf.DoBill || driver.CurJob.def == JobDefOf.EnterCryptosleepCasket || driver.CurJob.def == JobDefOf.LayDown || driver.CurJob.def == JobDefOf.Lovin || driver.CurJob.def == JobDefOf.MarryAdjacentPawn || driver.CurJob.def == JobDefOf.Mate || driver.CurJob.def == JobDefOf.PrisonerAttemptRecruit || driver.CurJob.def == JobDefOf.Research || driver.CurJob.def == JobDefOf.SocialRelax || driver.CurJob.def == JobDefOf.SpectateCeremony || driver.CurJob.def == JobDefOf.StandAndBeSociallyActive || driver.CurJob.def == JobDefOf.TakeToBedToOperate || driver.CurJob.def == JobDefOf.TendPatient || driver.CurJob.def == JobDefOf.UseCommsConsole || driver.CurJob.def == JobDefOf.UseNeurotrainer || driver.CurJob.def == JobDefOf.VisitSickPawn || driver.CurJob.def == JobDefOf.Shear || driver.CurJob.def == JobDefOf.Ingest) && driver.Position.Roofed())
                     {
-                        parent.Position = (Position.ToIntVec3());
-                        parent.Rotation = (driver.Rotation);
+                        parent.Position = Position.ToIntVec3();
+                        parent.Rotation = driver.Rotation;
                         if (!driver.Position.InBounds())
                         {
                             DismountAt(driver.Position);
@@ -106,7 +106,7 @@ namespace ToolsForHaul
                 }
                 if (Find.TickManager.TicksGame - tickLastDoorCheck >= 96 && (driver.Position.GetEdifice() is Building_Door || parent.Position.GetEdifice() is Building_Door))
                 {
-                    lastPassedDoor = (((driver.Position.GetEdifice() is Building_Door) ? driver.Position.GetEdifice() : parent.Position.GetEdifice()) as Building_Door);
+                    lastPassedDoor = (driver.Position.GetEdifice() is Building_Door ? driver.Position.GetEdifice() : parent.Position.GetEdifice()) as Building_Door;
                     lastPassedDoor.StartManualOpenBy(driver);
                     tickLastDoorCheck = Find.TickManager.TicksGame;
                 }
@@ -115,8 +115,8 @@ namespace ToolsForHaul
                     lastPassedDoor.StartManualCloseBy(driver);
                     lastPassedDoor = null;
                 }
-                parent.Position = (Position.ToIntVec3());
-                parent.Rotation = (driver.Rotation);
+                parent.Position = Position.ToIntVec3();
+                parent.Rotation = driver.Rotation;
             }
         }
 

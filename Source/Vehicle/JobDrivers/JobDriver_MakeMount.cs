@@ -92,7 +92,7 @@ namespace ToolsForHaul
                     EndJobWith(JobCondition.Errored);
                     return;
                 }
-                if (cart != null && (cart.mountableComp.IsMounted && cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby")))
+                if (cart != null && cart.mountableComp.IsMounted && cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby"))
                     cart.mountableComp.Driver.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
                 EndJobWith(JobCondition.Succeeded);
             };

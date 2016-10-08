@@ -15,8 +15,8 @@ namespace ToolsForHaul
     {
         #region Variables
         // ==================================
-        public int DefaultMaxItem { get { return (int)this.GetStatValue(vehicleMaxItem, true); } }
-        public int MaxItemPerBodySize { get { return (int)this.GetStatValue(vehicleMaxItem, true); } }
+        public int DefaultMaxItem { get { return (int)this.GetStatValue(vehicleMaxItem); } }
+        public int MaxItemPerBodySize { get { return (int)this.GetStatValue(vehicleMaxItem); } }
         public bool instantiated;
 
         public bool ThreatDisabled()
@@ -30,7 +30,7 @@ namespace ToolsForHaul
         {
             get
             {
-                return this.GetStatValue(vehicleSpeed, true);
+                return this.GetStatValue(vehicleSpeed);
             }
         }
         public bool IsCurrentlyMotorized()
@@ -45,7 +45,7 @@ namespace ToolsForHaul
         private int tickCheck = Find.TickManager.TicksGame;
 
         private int tickCooldown = 60;
-        private static readonly StatDef vehicleSpeed = DefDatabase<StatDef>.GetNamed("VehicleSpeed", true);
+        private static readonly StatDef vehicleSpeed;
         private float _puddleHitpointCounter;
 
         //Graphic data
@@ -79,7 +79,7 @@ namespace ToolsForHaul
         public int MaxStack { get { return MaxItem * 100; } }
 
         // ARB
-        private static readonly StatDef vehicleMaxItem = DefDatabase<StatDef>.GetNamed("VehicleMaxItem", true);
+        private static readonly StatDef vehicleMaxItem = DefDatabase<StatDef>.GetNamed("VehicleMaxItem");
 
         private CompRefuelable refuelableComp
         {
@@ -140,9 +140,8 @@ namespace ToolsForHaul
 
         static Vehicle_Cart()
         {
-            vehicleSpeed = DefDatabase<StatDef>.GetNamed("VehicleSpeed", true);
-            vehicleMaxItem = DefDatabase<StatDef>.GetNamed("VehicleMaxItem", true);
-
+            vehicleSpeed = DefDatabase<StatDef>.GetNamed("VehicleSpeed");
+            vehicleMaxItem = DefDatabase<StatDef>.GetNamed("VehicleMaxItem");
         }
 
 
@@ -225,31 +224,12 @@ namespace ToolsForHaul
             if (mode == DestroyMode.Deconstruct)
                 mode = DestroyMode.Kill;
             else if (explosiveComp != null)
-                storage.ClearAndDestroyContents(0);
+                storage.ClearAndDestroyContents();
 
             storage.TryDropAll(Position, ThingPlaceMode.Near);
 
 
             base.Destroy(mode);
-        }
-        public const float wheelRadius = 0.0256f;
-
-        public void RotateWheelByDegree(int degree)
-        {
-            // nullify rotor counter if wheel made whole spin
-            if (wheelRotation % 360 == 0)
-            {
-                wheelRotation = 0;
-            }
-
-            if (Rotation == Rot4.East)
-            {
-                wheelRotation += degree;
-            }
-            else
-            {
-                wheelRotation -= degree;
-            }
         }
 
         public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
@@ -264,7 +244,7 @@ namespace ToolsForHaul
                 if (!fuelSpilled)
                 {
                     refuelableComp.ConsumeFuel(1f);
-                    Thing arg_94_0 = ThingMaker.MakeThing(ThingDef.Named("Puddle_Fuel"), null);
+                    Thing arg_94_0 = ThingMaker.MakeThing(ThingDef.Named("Puddle_Fuel"));
                     int hitPoints = 5;
                     GenSpawn.Spawn(arg_94_0, Position);
                     arg_94_0.HitPoints = hitPoints;
@@ -311,22 +291,26 @@ namespace ToolsForHaul
             if (!fueledByAI)
             {
                 if (mountableComp.IsMounted && mountableComp.Driver.Faction != Faction.OfPlayer && refuelableComp != null && refuelableComp.FuelPercent < 0.550000011920929)
-                    refuelableComp.Refuel(ThingMaker.MakeThing(refuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault(), null));
+                    refuelableComp.Refuel(ThingMaker.MakeThing(refuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
                 else if (mountableComp.IsMounted && mountableComp.Driver.Faction != Faction.OfPlayer && refuelableComp != null && refuelableComp.FuelPercent >= 0.550000011920929)
                     fueledByAI = true;
             }
-            if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy)
-            {    // rotate rotor by parent's move speed value
-                int degree = Mathf.FloorToInt(mountableComp.Driver.GetStatValue(StatDefOf.MoveSpeed) / (GenDate.SecondsToTicks(1) * wheelRadius));
-            RotateWheelByDegree(degree);
-            }
-            //if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy && compAxles.HasAxles())
-            //    wheelRotation +=  currentDriverSpeed / 3f;
+          //if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy)
+          //{    // rotate rotor by parent's move speed value
+          //    int degree = Mathf.FloorToInt(mountableComp.Driver.GetStatValue(StatDefOf.MoveSpeed) / (GenDate.SecondsToTicks(1) * wheelRadius));
+          //    RotateWheelByDegree(degree);
+          //}
+            if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy && compAxles.HasAxles())
+                wheelRotation +=  currentDriverSpeed / 3f;
+
             if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
             {
 #if CR
                 if (this.mountableComp.IsMounted && ((Pawn_PathFollower)this.mountableComp.Driver.pather).Moving && (!((Pawn_StanceTracker)this.mountableComp.Driver.stances).FullBodyBusy && this.compAxles.HasAxles()))
                     this.currentDriverSpeed = Utility.GetMoveSpeed(this.mountableComp.Driver);
+#else
+                if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy && compAxles.HasAxles())
+                    currentDriverSpeed = ToolsForHaulUtility.GetMoveSpeed(mountableComp.Driver);
 #endif
                 if (refuelableComp != null && mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy)
                     refuelableComp.Notify_UsedThisTick();
@@ -338,41 +322,40 @@ namespace ToolsForHaul
                 else VehicleSpeed = DesiredSpeed;
                 tickCheck = Find.TickManager.TicksGame;
             }
-            if (!fuelSpilled)
-                return;
-            if (HitPoints > compVehicles.FuelCatchesFireHitPointsPercent() * (double)MaxHitPoints)
-                fuelSpilled = false;
-            else if (refuelableComp != null && !refuelableComp.HasFuel)
-            {
-                _puddleHitpointCounter = 0.0f;
-            }
-            else
-            {
-                refuelableComp.ConsumeFuel(0.01f);
-                Thing thing1 = Position.GetThingList().FirstOrDefault(x => x.def == ThingDef.Named("Puddle_Fuel"));
-                if (thing1 != null)
+            if (fuelSpilled)
+                if (HitPoints > compVehicles.FuelCatchesFireHitPointsPercent()*(double) MaxHitPoints)
+                    fuelSpilled = false;
+                else if (refuelableComp != null && !refuelableComp.HasFuel)
                 {
-                    if (_puddleHitpointCounter <= 1.0)
-                    {
-                        _puddleHitpointCounter = _puddleHitpointCounter + 0.01f;
-                    }
-                    else
-                    {
-                        thing1.HitPoints = Mathf.Min(thing1.MaxHitPoints, thing1.HitPoints + 5);
-                        _puddleHitpointCounter = 0.0f;
-                    }
+                    _puddleHitpointCounter = 0.0f;
                 }
                 else
                 {
-                    Thing thing2 = ThingMaker.MakeThing(ThingDef.Named("Puddle_Fuel"), null);
-                    int num1 = 5;
-                    IntVec3 position = Position;
-                    GenSpawn.Spawn(thing2, position);
-                    int num2 = num1;
-                    thing2.HitPoints = num2;
-                    _puddleHitpointCounter = 0.0f;
+                    refuelableComp.ConsumeFuel(0.01f);
+                    Thing thing1 = Position.GetThingList().FirstOrDefault(x => x.def == ThingDef.Named("Puddle_Fuel"));
+                    if (thing1 != null)
+                    {
+                        if (_puddleHitpointCounter <= 1.0)
+                        {
+                            _puddleHitpointCounter = _puddleHitpointCounter + 0.01f;
+                        }
+                        else
+                        {
+                            thing1.HitPoints = Mathf.Min(thing1.MaxHitPoints, thing1.HitPoints + 5);
+                            _puddleHitpointCounter = 0.0f;
+                        }
+                    }
+                    else
+                    {
+                        Thing thing2 = ThingMaker.MakeThing(ThingDef.Named("Puddle_Fuel"));
+                        int num1 = 5;
+                        IntVec3 position = Position;
+                        GenSpawn.Spawn(thing2, position);
+                        int num2 = num1;
+                        thing2.HitPoints = num2;
+                        _puddleHitpointCounter = 0.0f;
+                    }
                 }
-            }
         }
         #endregion
 
@@ -435,8 +418,9 @@ namespace ToolsForHaul
                 int num = Rotation == Rot4.West ? -1 : 1;
                 Vector3 s = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
                 Quaternion asQuat = Rotation.AsQuat;
-                float x = 1f * Mathf.Sin((wheelRotation * 0.05f) % (2 * Mathf.PI));
-                float z = 1f * Mathf.Cos((wheelRotation * 0.05f) % (2 * Mathf.PI));
+                float x = 1f * Mathf.Sin(num * (wheelRotation * 0.05f) % (2 * Mathf.PI));
+                float z = 1f * Mathf.Cos(num * (wheelRotation * 0.05f) % (2 * Mathf.PI));
+
                 asQuat.SetLookRotation(new Vector3(x, 0f, z), Vector3.up);
                 List<Vector3> list;
                 if (compAxles.GetAxleLocations(drawSize, num, out list))
@@ -445,7 +429,7 @@ namespace ToolsForHaul
                     {
                         Matrix4x4 matrix = default(Matrix4x4);
                         matrix.SetTRS(wheelLoc + current, asQuat, s);
-                        Graphics.DrawMesh(MeshPool.plane10, matrix, graphic_Wheel_Single.MatAt(Rotation, null), 0);
+                        Graphics.DrawMesh(MeshPool.plane10, matrix, graphic_Wheel_Single.MatAt(Rotation), 0);
                     }
                 }
             }

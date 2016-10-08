@@ -93,7 +93,7 @@ namespace ToolsForHaul
                         if (regions[regionInd].extentsClose.CenterCell.InHorDistOf(vehicleCart.Position, NearbyCell + RegionCellOffset))
                         {
                             IntVec3 foundCell = IntVec3.Invalid;
-                            IntVec3 distCell = (regionInd > 0) ? regions[regionInd - 1].extentsClose.CenterCell : vehicleCart.Position;
+                            IntVec3 distCell = regionInd > 0 ? regions[regionInd - 1].extentsClose.CenterCell : vehicleCart.Position;
                             float distFoundCell = float.MaxValue;
                             foreach (IntVec3 cell in regions[regionInd].Cells)
                             {
@@ -138,7 +138,7 @@ namespace ToolsForHaul
                             storeCell = cell;
                 */
                 actor.Reserve(storeCell);
-                toil.actor.jobs.curJob.targetB = (storeCell != invalid && storeCell != IntVec3.Invalid) ? storeCell : vehicleCart.Position;
+                toil.actor.jobs.curJob.targetB = storeCell != invalid && storeCell != IntVec3.Invalid ? storeCell : vehicleCart.Position;
             };
             return toil;
         }

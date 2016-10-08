@@ -35,9 +35,9 @@ namespace ToolsForHaul
 
 
             //Backpack is full.
-            this.FailOn(() =>{ return (pawn.inventory.container.Count < backpack.MaxItem) ? false : true; });
+            this.FailOn(() =>{ return pawn.inventory.container.Count < backpack.MaxItem ? false : true; });
 
-            this.FailOn(() => { return (pawn == backpack.wearer) ? false : true; });
+            this.FailOn(() => { return pawn == backpack.wearer ? false : true; });
             ///
             //Define Toil
             ///
@@ -68,7 +68,7 @@ namespace ToolsForHaul
             yield return Toils_Reserve.ReserveQueue(HaulableInd);
 
 
-            yield return Toils_Jump.JumpIf(toilGoToThing, () => { return (CurJob.targetB.HasThing) ? true : false;  });
+            yield return Toils_Jump.JumpIf(toilGoToThing, () => { return CurJob.targetB.HasThing ? true : false;  });
 
             //Collect TargetQueue
             {

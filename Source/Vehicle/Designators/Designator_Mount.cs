@@ -39,7 +39,7 @@ namespace ToolsForHaul
             foreach (Thing thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
-                if (pawn != null && (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike)))
+                if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike))
                 {
                     Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
                     Find.Reservations.ReleaseAllForTarget(vehicle);
@@ -47,7 +47,7 @@ namespace ToolsForHaul
                     pawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                     break;
                 }
-                if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0))
+                if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal) && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0)
                 {
                     Pawn worker = null;
                     Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("MakeMount"));

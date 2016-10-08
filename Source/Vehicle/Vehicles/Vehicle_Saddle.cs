@@ -31,13 +31,13 @@ namespace ToolsForHaul
             return Position;
         }
 
-        public int MaxItem { get { return (Rider != null) ? 3 : 2; } }
+        public int MaxItem { get { return Rider != null ? 3 : 2; } }
 
         public Pawn Rider
         {
             get
             {
-                return (storage.Any(x => x is Pawn)) ? storage.First(x => x is Pawn) as Pawn : null;
+                return storage.Any(x => x is Pawn) ? storage.First(x => x is Pawn) as Pawn : null;
             }
         }
         public virtual void BoardOn(Pawn pawn)

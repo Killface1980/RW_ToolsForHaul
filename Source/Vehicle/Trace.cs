@@ -31,20 +31,20 @@ namespace ToolsForHaul
         [Conditional("DEBUG")]
         public static void DebugWriteHaulingPawn(Pawn pawn)
         {
-            AppendLine(pawn.LabelCap + " Report: Cart " + ToolsForHaulUtility.Cart().Count + " Job: " + ((pawn.CurJob != null) ? pawn.CurJob.def.defName : "No Job")
-                + " Backpack: " + ((ToolsForHaulUtility.TryGetBackpack(pawn) != null) ? "True" : "False")
+            AppendLine(pawn.LabelCap + " Report: Cart " + ToolsForHaulUtility.Cart().Count + " Job: " + (pawn.CurJob != null ? pawn.CurJob.def.defName : "No Job")
+                + " Backpack: " + (ToolsForHaulUtility.TryGetBackpack(pawn) != null ? "True" : "False")
                 + " lastGivenWorkType: " + pawn.mindState.lastGivenWorkType);
             foreach (Pawn other in Find.MapPawns.FreeColonistsSpawned)
             {
                 //Vanilla haul or Haul with backpack
                 if (other.CurJob != null && (other.CurJob.def == JobDefOf.HaulToCell || other.CurJob.def == DefDatabase<JobDef>.GetNamed("HaulWithBackpack")))
                     AppendLine(other.LabelCap + " Job: " + other.CurJob.def.defName
-                        + " Backpack: " + ((ToolsForHaulUtility.TryGetBackpack(other) != null) ? "True" : "False")
+                        + " Backpack: " + (ToolsForHaulUtility.TryGetBackpack(other) != null ? "True" : "False")
                         + " lastGivenWorkType: " + other.mindState.lastGivenWorkType);
             }
             foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart())
             {
-                string driver = ((cart.mountableComp.IsMounted) ? cart.mountableComp.Driver.LabelCap : "No Driver");
+                string driver = cart.mountableComp.IsMounted ? cart.mountableComp.Driver.LabelCap : "No Driver";
                 string state = "";
                 if (cart.IsForbidden(pawn.Faction))
                     state = string.Concat(state, "Forbidden ");

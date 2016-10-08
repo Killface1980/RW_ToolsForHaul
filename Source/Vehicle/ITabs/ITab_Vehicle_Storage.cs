@@ -32,7 +32,7 @@ namespace ToolsForHaul
 			get 
             {
                 Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
-                return (cart != null)? true : false;
+                return cart != null;
             }
 		}
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -21,6 +22,52 @@ namespace ToolsForHaul
             return slots;
         }
 
+#if CR            
+                public float moveSpeedFactor
+        {
+            get
+            {
+                return Mathf.Lerp(1f, 0.75f, currentWeight / this.parentPawn.GetStatValue(StatDef.Named("CarryWeight")));
+            }
+        }
+
+        public float encumberPenalty
+        {
+            get
+            {
+                float penalty = 0f;
+                if (availableWeight < 0)
+                {
+                    penalty = currentWeight / this.parentPawn.GetStatValue(StatDef.Named("CarryWeight")) - 1;
+                }
+                return penalty;
+            }
+        }
+#else
+        public float moveSpeedFactor
+        {
+            get
+            {
+                return Mathf.Lerp(1f, 0.75f, slots.Count / 8);
+            }
+        }
+
+        public float encumberPenalty
+        {
+            get
+            {
+                float penalty = 0f;
+                if (slots.Count != 0)
+                {
+                    penalty = slots.Count/Properties.maxSlots;
+                }
+                return penalty;
+            }
+        }
+#endif
+
+
+
         // IThingContainerOwner requirement
         public IntVec3 GetPosition()
         {
@@ -29,7 +76,11 @@ namespace ToolsForHaul
 
         private static readonly StatDef backpackMaxItem = DefDatabase<StatDef>.GetNamed("BackpackMaxItem");
 
-        public int MaxItem => Properties.maxSlots;
+        public int MaxItem
+        {
+            get { return Properties.maxSlots; }
+        }
+
         public int MaxStack { get { return MaxItem * 50; } }
 
         // initialises ThingContainer owner and restricts the max slots range
@@ -109,7 +160,7 @@ namespace ToolsForHaul
         public List<ThingCategoryDef> forbiddenSubThingCategoryDefs = new List<ThingCategoryDef>();
         public int maxSlots = 3;
 
-        
+
 
         public CompSlots_Properties()
         {
