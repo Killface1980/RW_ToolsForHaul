@@ -87,6 +87,17 @@ namespace ToolsForHaul
 
             yield return designator;
 
+            Designator_PutInSlot designator2 = new Designator_PutInSlot();
+            designator2.slotsComp = GetComp<CompSlots>();
+            designator2.defaultLabel = string.Format("Put in ({0}/{1})", GetComp<CompSlots>().slots.Count, MaxItem);
+            designator2.defaultDesc = string.Format("Put thing in {0}.", Label);
+            designator2.hotKey = KeyBindingDef.Named("CommandPutInInventory");
+            designator.activateSound = SoundDef.Named("Click");
+            // not used, but need to be defined, so that gizmo could accept actions
+            designator2.icon = def.uiIcon;
+            yield return designator2;
+
+
             Gizmo_BackpackEquipment gizmo = new Gizmo_BackpackEquipment();
 
             gizmo.backpack = this;

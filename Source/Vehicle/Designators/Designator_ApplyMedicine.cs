@@ -11,6 +11,8 @@ namespace ToolsForHaul
 
         public Thing medicine;
         public Pawn doctor;
+        public CompSlots slotsComp;
+
         public Designation designation;
 
         public Designator_ApplyMedicine()
@@ -44,7 +46,12 @@ namespace ToolsForHaul
                 {
                     Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("ApplyMedicine"));
                     jobNew.targetA = pawn;
-                    jobNew.targetB = medicine;
+
+                    Thing dummy;
+                    slotsComp.slots.TryDrop(medicine, doctor.Position, ThingPlaceMode.Direct, Medicine.GetMedicineCountToFullyHeal(jobNew.targetA.Thing as Pawn), out dummy);
+
+                    jobNew.targetB = dummy;
+
                     jobNew.maxNumToCarry = Medicine.GetMedicineCountToFullyHeal(jobNew.targetA.Thing as Pawn);
                     doctor.drafter.TakeOrderedJob(jobNew);
                     break;

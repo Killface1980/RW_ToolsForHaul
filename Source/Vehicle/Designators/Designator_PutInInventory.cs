@@ -61,15 +61,15 @@ namespace ToolsForHaul
         {
             Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInInventory"));
             jobNew.maxNumToCarry = 1;
-            jobNew.targetA = backpack;
-            jobNew.targetQueueB = new List<TargetInfo>();
+            jobNew.targetB = backpack;
+            jobNew.targetQueueA = new List<TargetInfo>();
 
             while (!designations.NullOrEmpty())
             {
-                jobNew.targetQueueB.Add(designations.First().target.Thing);
+                jobNew.targetQueueA.Add(designations.First().target.Thing);
                 designations.RemoveAt(0);
             }
-            if (!jobNew.targetQueueB.NullOrEmpty())
+            if (!jobNew.targetQueueA.NullOrEmpty())
                 //if (backpack.wearer.drafter.CanTakePlayerJob())
                     backpack.wearer.drafter.TakeOrderedJob(jobNew);
                 //else

@@ -63,9 +63,9 @@ namespace ToolsForHaul
             {
                 Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInInventory"));
                 jobNew.maxNumToCarry = 1;
-                jobNew.targetA = backpack;
-                jobNew.targetQueueB = new List<TargetInfo>();
-                jobNew.targetQueueB.Add(t);
+                jobNew.targetB = backpack;
+                jobNew.targetQueueA = new List<TargetInfo>();
+                jobNew.targetQueueA.Add(t);
                 pawn.Reserve(t);
 
                 return jobNew;

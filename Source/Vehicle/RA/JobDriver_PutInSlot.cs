@@ -10,6 +10,20 @@ namespace ToolsForHaul
         public const TargetIndex HaulableInd = TargetIndex.A;
         public const TargetIndex SlotterInd = TargetIndex.B;
 
+        public override string GetReport()
+        {
+            Thing hauledThing = TargetThingA;
+
+            string repString;
+            if (hauledThing != null)
+                repString = "ReportPutInInventory".Translate(hauledThing.LabelCap, CurJob.GetTarget(SlotterInd).Thing.LabelCap);
+            else
+                repString = "ReportPutSomethingInInventory".Translate(CurJob.GetTarget(SlotterInd).Thing.LabelCap);
+
+            return repString;
+        }
+
+
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ThingWithComps slotter = CurJob.GetTarget(SlotterInd).Thing as ThingWithComps;

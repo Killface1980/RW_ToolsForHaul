@@ -18,6 +18,7 @@ namespace ToolsForHaul
         private static readonly Texture2D MeleeWeaponTex = SolidColorMaterials.NewSolidColorTexture(0.6f, 0.15f, 0.15f, 0.75f);
         private static readonly Texture2D RangedWeaponTex = SolidColorMaterials.NewSolidColorTexture(0.09f, 0.25f, 0.6f, 0.75f);
 
+
         // overall gizmo width
         // Height = 75f
         //      public override float Width => slotsComp.Properties.maxSlots * Height + Height;
@@ -50,27 +51,16 @@ namespace ToolsForHaul
         {
             get
             {
-                switch (slotsComp.Properties.maxSlots)
-                {
-                    case 8:
-                        return Height * 2;
-                    default:
-                        return Height;
-                }
+                return Height;
             }
         }
+
         public override float Width
         {
             get
             {
-                switch (slotsComp.Properties.maxSlots)
-                {
-                    case 8:
-                        return Height * 3;
-                    default:
-                        return Height * 2;
 
-                }
+                return Height;
             }
         }
 
@@ -82,9 +72,9 @@ namespace ToolsForHaul
             GizmoResult result = DrawDesignator(designatorRect);
             GUI.DrawTexture(designatorRect, texPutInArrow);
 
-            Rect inventoryRect = new Rect(gizmoRect.x + designatorRect.width, gizmoRect.y, curWidth, Height);
-            Widgets.DrawWindowBackground(inventoryRect);
-            DrawSlots(inventoryRect);
+            //Rect inventoryRect = new Rect(gizmoRect.x + designatorRect.width, gizmoRect.y, curWidth, Height);
+            //Widgets.DrawWindowBackground(inventoryRect);
+            //     DrawSlots(inventoryRect);
 
             return result;
         }
@@ -188,13 +178,23 @@ namespace ToolsForHaul
                     // draw occupied slots
                     if (currentSlotInd < slotsComp.slots.Count)
                     {
-                        slotRect.x = inventoryRect.x + Height/2 * (currentSlotInd % numOfMaxItemsPerRow);
+                        slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % numOfMaxItemsPerRow);
                         slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
 
                         Thing currentThing = slotsComp.slots[currentSlotInd];
 
                         // draws greyish slot background
-                        Widgets.DrawTextureFitted(slotRect.ContractedBy(3f), texOccupiedSlotBG, 1f);
+                        if (currentThing.stackCount > currentThing.def.stackLimit)
+                        {
+                            var slot2 = slotRect;
+                            slot2.width *= 2;
+                            Widgets.DrawTextureFitted(slot2.ContractedBy(3f), texOccupiedSlotBG, 1f);
+                        }
+                        else
+                            Widgets.DrawTextureFitted(slotRect.ContractedBy(3f), texOccupiedSlotBG, 1f);
+
+
+
 
                         if (currentThing.def.IsMeleeWeapon)
                         {
@@ -215,6 +215,7 @@ namespace ToolsForHaul
                         // draw thing texture
                         Widgets.ThingIcon(slotRect, currentThing);
 
+
                         // interaction with slots
                         if (Widgets.ButtonInvisible(slotRect))
                         {
@@ -222,16 +223,16 @@ namespace ToolsForHaul
                             if (Event.current.button == 0)
                             {
                                 //Weapon
-                                if (currentThing != null && currentThing.def.equipmentType == EquipmentType.Primary && (currentThing.def.IsRangedWeapon|| currentThing.def.IsMeleeWeapon))
+                                if (currentThing != null && currentThing.def.equipmentType == EquipmentType.Primary && (currentThing.def.IsRangedWeapon || currentThing.def.IsMeleeWeapon))
                                 {
                                     slotsComp.SwapEquipment(currentThing as ThingWithComps);
                                 }
 
-                              //// equip weapon in slot
-                              //if (currentThing.def.equipmentType == EquipmentType.Primary)
-                              //{
-                              //    slotsComp.SwapEquipment(currentThing as ThingWithComps);
-                              //}
+                                //// equip weapon in slot
+                                //if (currentThing.def.equipmentType == EquipmentType.Primary)
+                                //{
+                                //    slotsComp.SwapEquipment(currentThing as ThingWithComps);
+                                //}
                             }
                             // mouse button released
                             else if (Event.current.button == 1)
@@ -256,8 +257,8 @@ namespace ToolsForHaul
                                 if (currentThing != null && currentThing.def.equipmentType == EquipmentType.Primary)
                                     options.Add(new FloatMenuOption("Equip".Translate(currentThing.LabelCap), () =>
                                     {
-                                            slotsComp.SwapEquipment(currentThing as ThingWithComps);
-                                        
+                                        slotsComp.SwapEquipment(currentThing as ThingWithComps);
+
                                     }));
 
 
@@ -297,7 +298,7 @@ namespace ToolsForHaul
                                         jobNew.ignoreForbidden = true;
                                         slotsComp.owner.drafter.TakeOrderedJob(jobNew);
                                     }));
-                               
+
 
 
                                 Find.WindowStack.Add(new FloatMenu(options, currentThing.LabelCap));
@@ -307,7 +308,7 @@ namespace ToolsForHaul
                             SoundDefOf.Click.PlayOneShotOnCamera();
                         }
                     }
-                    slotRect.x = inventoryRect.x + Height/2 * (currentSlotInd % numOfMaxItemsPerRow);
+                    slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % numOfMaxItemsPerRow);
                     slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
                     //      slotRect.x += Height;
                 }
@@ -323,6 +324,8 @@ namespace ToolsForHaul
         // draws number of selected objects
         public override bool DragDrawMeasurements => true;
 
+        private int numOfContents;
+
         // returning string text assigning false reason to AcceptanceReport
         public override AcceptanceReport CanDesignateCell(IntVec3 cell)
         {
@@ -337,7 +340,32 @@ namespace ToolsForHaul
                 return true;
             }
 
-            return false;
+            numOfContents = slotsComp.slots.Count;
+
+            int designationsTotalStackCount = 0;
+            foreach (Thing designation in slotsComp.designatedThings)
+                designationsTotalStackCount += designation.stackCount;
+
+            //No Item space or no stack space
+            if (slotsComp.designatedThings.Count + numOfContents >= slotsComp.MaxItem
+                || designationsTotalStackCount + slotsComp.slots.TotalStackCount >= slotsComp.MaxStack)
+                return new AcceptanceReport("BackpackIsFull".Translate());
+
+
+            foreach (Thing designation in slotsComp.designatedThings)
+            {
+                if (designation.def.category == ThingCategory.Item && !Find.Reservations.IsReserved(designation, Faction.OfPlayer))
+                    return true;
+            }
+            return new AcceptanceReport("InvalidPutInTarget".Translate());
+
+            //Thing firstItem = cell.GetFirstItem();
+            //if (firstItem != null && CanDesignateThing(firstItem).Accepted)
+            //{
+            //    return true;
+            //}
+            //
+            //return false;
         }
 
         public override AcceptanceReport CanDesignateThing(Thing thing)
@@ -417,6 +445,9 @@ namespace ToolsForHaul
         public override void SelectedUpdate()
         {
             GenUI.RenderMouseoverBracket();
+
+            //foreach (Thing thing in slotsComp.designatedThings)
+            //    designation.DesignationDraw();
         }
     }
 }

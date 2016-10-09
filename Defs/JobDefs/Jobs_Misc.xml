@@ -51,7 +51,7 @@
   <JobDef>
     <defName>PutInInventory</defName>
     <driverClass>ToolsForHaul.JobDriver_PutInInventory</driverClass>
-    <reportString>Put TargetB in TargetA.</reportString>
+    <reportString>Put TargetA in TargetB.</reportString>
   </JobDef>
 
   <JobDef>

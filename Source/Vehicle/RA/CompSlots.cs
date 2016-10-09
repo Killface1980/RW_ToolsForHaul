@@ -78,23 +78,35 @@ namespace ToolsForHaul
 
         public int MaxItem
         {
-            get { return Properties.maxSlots; }
+            get
+            {
+                return Properties.maxSlots;
+            }
         }
 
         public int MaxStack { get { return MaxItem * 50; } }
+
+        public int AvailableStackSpace(ThingDef td,Thing CarriedThing= null)
+        {
+            int b = Mathf.RoundToInt(owner.GetStatValue(StatDefOf.CarryingCapacity, true) / td.VolumePerUnit);
+            int num = Mathf.Min(td.stackLimit, b);
+            if (CarriedThing != null)
+            {
+                num -= CarriedThing.stackCount;
+            }
+            return num;
+        }
 
         // initialises ThingContainer owner and restricts the max slots range
         public override void PostSpawnSetup()
         {
             slots = new ThingContainer(this);
 
-
             if (Properties.maxSlots > 8)
                 Properties.maxSlots = 8;
 
             if (Properties.maxSlots < 1)
                 Properties.maxSlots = 1;
-
         }
 
         // apply remaining damage and scatter things in slots, if holder is destroyed
@@ -130,20 +142,20 @@ namespace ToolsForHaul
         }
 
 
-        public override IEnumerable<Command> CompGetGizmosExtra()
-        {
-            if (ParentIsEquipped)
-            {
-                yield return new Designator_PutInSlot
-                {
-                    slotsComp = this,
-                    defaultLabel = string.Format("Put in ({0}/{1})", slots.Count, Properties.maxSlots),
-                    defaultDesc = string.Format("Put thing in {0}.", parent.Label),
-                    // not used, but need to be defined, so that gizmo could accept actions
-                    icon = parent.def.uiIcon
-                };
-            }
-        }
+      //public override IEnumerable<Command> CompGetGizmosExtra()
+      //{
+      //    if (ParentIsEquipped)
+      //    {
+      //        yield return new Designator_PutInSlot
+      //        {
+      //            slotsComp = this,
+      //            defaultLabel = string.Format("Put in ({0}/{1})", slots.Count, Properties.maxSlots),
+      //            defaultDesc = string.Format("Put thing in {0}.", parent.Label),
+      //            // not used, but need to be defined, so that gizmo could accept actions
+      //            icon = parent.def.uiIcon
+      //        };
+      //    }
+      //}
 
         public override void PostExposeData()
         {

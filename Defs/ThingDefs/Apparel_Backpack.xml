@@ -162,6 +162,9 @@
         <allowedThingCategoryDefs>
           <li>Weapons</li>
           <li>Apparel</li>
+          <li>Foods</li>
+          <li>Medicine</li>
+          <li>BodyParts</li>
         </allowedThingCategoryDefs>
         <maxSlots>8</maxSlots>
       </li>

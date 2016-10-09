@@ -46,6 +46,12 @@ namespace ToolsForHaul
 
         public override IEnumerable<Command> CompGetGizmosExtra()
         {
+            foreach (Command current in base.CompGetGizmosExtra())
+            {
+                
+                yield return current;
+            }
+
             if (SpawnedAndWell(Owner))
             {
                 // NOTE: should use concatenation of both enumerables, but can't cast to the same type without error

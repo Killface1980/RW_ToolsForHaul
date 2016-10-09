@@ -65,6 +65,7 @@
     <None Include="JobDrivers\Class1.cs" />
     <None Include="Designators\Vehicle\Class1.cs" />
     <None Include="Designators\Vehicle\Class2.cs" />
+    <Compile Include="CR\IncendiaryFuel.cs" />
     <Compile Include="RA\CompWeaponExtensions.cs" />
     <None Include="RA\RA_PawnRenderer.cs" />
     <Compile Include="RA\CompTool.cs" />
@@ -72,7 +73,7 @@
     <Compile Include="RA\CompEquipmentGizmoUser.cs" />
     <Compile Include="RA\CompSlots.cs" />
     <Compile Include="RA\CompEquipmentGizmoProvider.cs" />
-    <Compile Include="RA\Designator_PutInSlot.cs" />
+    <Compile Include="Designators\Designator_PutInSlot.cs" />
     <Compile Include="RightTools\_ThinkNode_JobGiver.cs" />
     <Compile Include="RightTools\RightTools.cs" />
     <Compile Include="Comps\MapComponent_ToolsForHaul.cs" />
