@@ -244,10 +244,10 @@ namespace ToolsForHaul
                 if (!fuelSpilled)
                 {
                     refuelableComp.ConsumeFuel(1f);
-                    Thing arg_94_0 = ThingMaker.MakeThing(ThingDef.Named("Puddle_Fuel"));
+                    Thing fuelPuddle = ThingMaker.MakeThing(ThingDef.Named("Puddle_Fuel"));
                     int hitPoints = 5;
-                    GenSpawn.Spawn(arg_94_0, Position);
-                    arg_94_0.HitPoints = hitPoints;
+                    GenSpawn.Spawn(fuelPuddle, Position);
+                    fuelPuddle.HitPoints = hitPoints;
                     if (Random.value >= 0.5f)
                     {
                         FireUtility.TryStartFireIn(Position, 0.1f);

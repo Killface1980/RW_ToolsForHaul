@@ -65,6 +65,10 @@
     <None Include="JobDrivers\Class1.cs" />
     <None Include="Designators\Vehicle\Class1.cs" />
     <None Include="Designators\Vehicle\Class2.cs" />
+    <Compile Include="CCL\Class1.cs" />
+    <Compile Include="CCL\Class2.cs" />
+    <Compile Include="CCL\Class4.cs" />
+    <Compile Include="CCL\Class5.cs" />
     <Compile Include="CR\IncendiaryFuel.cs" />
     <Compile Include="RA\CompWeaponExtensions.cs" />
     <None Include="RA\RA_PawnRenderer.cs" />

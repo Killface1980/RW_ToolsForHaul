@@ -30,6 +30,7 @@ namespace Combat_Realism
                 }
             }
         }
+        private bool notOnFire = false;
 
         public override void Tick()
         {
@@ -40,7 +41,19 @@ namespace Combat_Realism
             }
             else
             {
-                FireUtility.TryStartFireIn(Position, maxFireSize);
+                if (!AttachmentUtility.HasAttachment(this, ThingDefOf.Fire))
+                {
+                    notOnFire = true;
+                }
+                if (AttachmentUtility.HasAttachment(this, ThingDefOf.Fire) && notOnFire)
+                {
+                    Fire fire = (Fire)AttachmentUtility.GetAttachment(this, ThingDefOf.Fire);
+                    if (fire != null)
+                    {
+                        fire.fireSize = 1.75f;
+                    }
+                    notOnFire = false;
+                }
             }
         }
     }

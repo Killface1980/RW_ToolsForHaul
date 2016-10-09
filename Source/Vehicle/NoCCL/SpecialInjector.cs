@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CommunityCoreLibrary;
 using RW_FacialStuff;
 using UnityEngine;
 using Verse;
@@ -59,14 +61,46 @@ namespace ToolsForHaul
           //MethodInfo method3 = typeof(PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
           //MethodInfo method4 = typeof(RA_PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
 
+
             if (!Detours.TryDetourFromTo(method, method2))
             {
                 Log.Message("Failed detour RightTools JobPackage");
             }
-          //if (!Detours.TryDetourFromTo(method3, method4))
-          //{
-          //    Log.Message("Failed detour RightTools PawnRenderer DrawEquipment");
-          //}
+            //if (!Detours.TryDetourFromTo(method3, method4))
+            //{
+            //    Log.Message("Failed detour RightTools PawnRenderer DrawEquipment");
+            //}
+
+
+            // CCL code for backpack injection on races
+
+            CompInjectionSet injectionSet = new CompInjectionSet
+            {
+                targetDefs = new List<string>(),
+                compProps = new CompProperties()
+            };
+            injectionSet.targetDefs.Add("Human");
+            injectionSet.targetDefs.Add("Jaffa");
+            injectionSet.targetDefs.Add("Orassans");
+
+            injectionSet.compProps.compClass = typeof(CompEquipmentGizmoUser);
+            List<ThingDef> thingDefs = DefInjectionQualifier.FilteredThingDefs(injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs);
+            if (!thingDefs.NullOrEmpty())
+            {
+
+                foreach (ThingDef thingDef in thingDefs)
+                {
+                    // TODO:  Make a full copy using the comp in this def as a template
+                    // Currently adds the comp in this def so all target use the same def
+                    if (!thingDef.HasComp(injectionSet.compProps.compClass))
+                    {
+                        thingDef.comps.Add(injectionSet.compProps);
+                    }
+                }
+
+            }
+
+
 
             GameObject initializer = new GameObject("TFHMapComponentInjector");
             initializer.AddComponent<MapComponentInjector>();
