@@ -6,7 +6,7 @@ using RimWorld;
 using Verse;
 using UnityEngine;
 
-namespace Combat_Realism
+namespace ToolsForHaul
 {
     public class IncendiaryFuel : Filth
     {
@@ -15,6 +15,9 @@ namespace Combat_Realism
         public override void SpawnSetup()
         {
             base.SpawnSetup();
+
+            spawnTick = Find.TickManager.TicksGame;
+
             List<Thing> list = new List<Thing>(Position.GetThingList());
             foreach (Thing thing in list)
             {
@@ -24,13 +27,17 @@ namespace Combat_Realism
                     if (fire != null)
                         fire.fireSize = maxFireSize;
                 }
-                else
-                {
-                    thing.TryAttachFire(maxFireSize);
-                }
+              //else
+              //{
+              //    if (thing.HitPoints < 5)
+              //    {
+              //        thing.TryAttachFire(maxFireSize);
+              //    }
+              //}
             }
         }
-        private bool notOnFire = false;
+        private int spawnTick;
+        private int fireTick = -5000;
 
         public override void Tick()
         {
@@ -41,20 +48,22 @@ namespace Combat_Realism
             }
             else
             {
-                if (!AttachmentUtility.HasAttachment(this, ThingDefOf.Fire))
+
+                if (this.HasAttachment(ThingDefOf.Fire) && Find.TickManager.TicksGame>fireTick)
                 {
-                    notOnFire = true;
-                }
-                if (AttachmentUtility.HasAttachment(this, ThingDefOf.Fire) && notOnFire)
-                {
-                    Fire fire = (Fire)AttachmentUtility.GetAttachment(this, ThingDefOf.Fire);
+                    Fire fire = (Fire)this.GetAttachment(ThingDefOf.Fire);
                     if (fire != null)
                     {
-                        fire.fireSize = 1.75f;
+                        fire.fireSize = maxFireSize;
                     }
-                    notOnFire = false;
+
+                    fireTick = Find.TickManager.TicksGame + 200;
                 }
             }
+          //if (spawnTick + 15000 < Find.TickManager.TicksGame)
+          //{
+          //    Destroy(DestroyMode.Vanish);
+          //}
         }
     }
 }

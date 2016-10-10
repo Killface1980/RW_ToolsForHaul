@@ -188,6 +188,8 @@ namespace ToolsForHaul
             base.ExposeData();
             Scribe_Deep.LookDeep(ref storage, "storage");
             Scribe_Deep.LookDeep(ref allowances, "allowances");
+            Scribe_Values.LookValue(ref tankLeaking, "tankLeaking");
+            Scribe_Values.LookValue(ref tankHitPos, "tankHitPos");
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -231,10 +233,22 @@ namespace ToolsForHaul
 
             base.Destroy(mode);
         }
+        private ThingDef fuelDefName = ThingDef.Named("Puddle_BioDiesel_Fuel");
+
+        bool tankLeaking;
+
 
         public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             base.PostApplyDamage(dinfo, totalDamageDealt);
+
+            if (dinfo.Def == DamageDefOf.Repair && tankLeaking)
+            {
+                tankLeaking = false;
+                tankHitPos = 1f;
+                return;
+            }
+
             if (dinfo.Def == DamageDefOf.Deterioration || dinfo.Def == DamageDefOf.Flame || dinfo.Def == DamageDefOf.Repair)
             {
                 return;
@@ -244,10 +258,9 @@ namespace ToolsForHaul
                 if (!fuelSpilled)
                 {
                     refuelableComp.ConsumeFuel(1f);
-                    Thing fuelPuddle = ThingMaker.MakeThing(ThingDef.Named("Puddle_Fuel"));
-                    int hitPoints = 5;
-                    GenSpawn.Spawn(fuelPuddle, Position);
-                    fuelPuddle.HitPoints = hitPoints;
+
+                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 6);
+
                     if (Random.value >= 0.5f)
                     {
                         FireUtility.TryStartFireIn(Position, 0.1f);
@@ -257,8 +270,18 @@ namespace ToolsForHaul
                 }
                 if (Random.value >= 0.5f)
                 {
+
                     FireUtility.TryStartFireIn(Position, 0.1f);
                 }
+            }
+            if (Random.value <= 0.15f)
+            {
+                tankLeaking = true;
+                tankHitPos = Math.Min(tankHitPos, Rand.Value);
+
+                int splash = (int)(refuelableComp.FuelPercent - tankHitPos * 15);
+
+                FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, splash);
             }
         }
 
@@ -295,13 +318,13 @@ namespace ToolsForHaul
                 else if (mountableComp.IsMounted && mountableComp.Driver.Faction != Faction.OfPlayer && refuelableComp != null && refuelableComp.FuelPercent >= 0.550000011920929)
                     fueledByAI = true;
             }
-          //if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy)
-          //{    // rotate rotor by parent's move speed value
-          //    int degree = Mathf.FloorToInt(mountableComp.Driver.GetStatValue(StatDefOf.MoveSpeed) / (GenDate.SecondsToTicks(1) * wheelRadius));
-          //    RotateWheelByDegree(degree);
-          //}
+            //if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy)
+            //{    // rotate rotor by parent's move speed value
+            //    int degree = Mathf.FloorToInt(mountableComp.Driver.GetStatValue(StatDefOf.MoveSpeed) / (GenDate.SecondsToTicks(1) * wheelRadius));
+            //    RotateWheelByDegree(degree);
+            //}
             if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy && compAxles.HasAxles())
-                wheelRotation +=  currentDriverSpeed / 3f;
+                wheelRotation += currentDriverSpeed / 3f;
 
             if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
             {
@@ -322,41 +345,29 @@ namespace ToolsForHaul
                 else VehicleSpeed = DesiredSpeed;
                 tickCheck = Find.TickManager.TicksGame;
             }
-            if (fuelSpilled)
-                if (HitPoints > compVehicles.FuelCatchesFireHitPointsPercent()*(double) MaxHitPoints)
-                    fuelSpilled = false;
-                else if (refuelableComp != null && !refuelableComp.HasFuel)
+
+            if (tankLeaking && Find.TickManager.TicksGame > tankSpillTick)
+            {
+                if (refuelableComp.FuelPercent > tankHitPos)
                 {
-                    _puddleHitpointCounter = 0.0f;
+                    refuelableComp.ConsumeFuel(0.5f);
+
+                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap);
+                    tankSpillTick = Find.TickManager.TicksGame + 100;
                 }
-                else
-                {
-                    refuelableComp.ConsumeFuel(0.01f);
-                    Thing thing1 = Position.GetThingList().FirstOrDefault(x => x.def == ThingDef.Named("Puddle_Fuel"));
-                    if (thing1 != null)
-                    {
-                        if (_puddleHitpointCounter <= 1.0)
-                        {
-                            _puddleHitpointCounter = _puddleHitpointCounter + 0.01f;
-                        }
-                        else
-                        {
-                            thing1.HitPoints = Mathf.Min(thing1.MaxHitPoints, thing1.HitPoints + 5);
-                            _puddleHitpointCounter = 0.0f;
-                        }
-                    }
-                    else
-                    {
-                        Thing thing2 = ThingMaker.MakeThing(ThingDef.Named("Puddle_Fuel"));
-                        int num1 = 5;
-                        IntVec3 position = Position;
-                        GenSpawn.Spawn(thing2, position);
-                        int num2 = num1;
-                        thing2.HitPoints = num2;
-                        _puddleHitpointCounter = 0.0f;
-                    }
-                }
+              //else
+              //{
+              //    if (!breakdownableComp.BrokenDown)
+              //        breakdownableComp.DoBreakdown();
+              //
+              //}
+            }
+
         }
+
+        private float tankHitPos = 1f;
+        private int tankSpillTick = -5000;
+
         #endregion
 
         #region Graphics / Inspections

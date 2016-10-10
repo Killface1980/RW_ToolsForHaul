@@ -1,8 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ThingDefinitions>
+
+  <ThingDef ParentName="BaseFilth">
+    <defName>Puddle_BioDiesel_Fuel</defName>
+    <label>biodiesel fuel puddle</label>
+    <description>Burns on the ground.</description>
+    <thingClass>ToolsForHaul.IncendiaryFuel</thingClass>
+    <useHitPoints>true</useHitPoints>
+    <tickerType>Normal</tickerType>
+    <statBases>
+      <Beauty>-10</Beauty>
+      <Cleanliness>-15</Cleanliness>
+      <MaxHitPoints>150</MaxHitPoints>
+      <Flammability>5.0</Flammability>   
+    </statBases>
+    <graphicData>
+      <texPath>Things/Filth/LiquidFuel</texPath>
+      <color>(180,180,20,255)</color>
+    </graphicData>
+    <filth>
+      <rainWashes>true</rainWashes>
+      <cleaningWorkToReduceThickness>70</cleaningWorkToReduceThickness>
+      <canFilthAttach>true</canFilthAttach>
+      <maxThickness>5</maxThickness>
+    </filth>
+  </ThingDef>
   
+  <!--
   <ThingDef>
-    <defName>Puddle_Fuel</defName>
+    <defName>BioDiesel_Fuel</defName>
     <label>fuel puddle</label>
     <thingClass>Combat_Realism.IncendiaryFuel</thingClass>
     <category>Item</category>
@@ -22,6 +48,6 @@
     <tickerType>Normal</tickerType>
     <description>Burns on the ground.</description>
   </ThingDef>
-
+-->
 
 </ThingDefinitions>
