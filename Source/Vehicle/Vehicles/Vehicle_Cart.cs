@@ -232,8 +232,9 @@ namespace ToolsForHaul
                     return;
                 }
 
-                mountableComp.DismountAt(myPawn.Position.RandomAdjacentCell8Way() - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
-               // mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
+                mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
+                myPawn.Position = myPawn.Position.RandomAdjacentCell8Way();
+                // mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
             };
 
             action_MakeMount = () =>

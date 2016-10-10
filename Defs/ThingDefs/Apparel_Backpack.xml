@@ -79,7 +79,7 @@
     </equippedStatOffsets>
     <apparel>
       <bodyPartGroups>
-        <li>Torso</li>
+        <li>Shoulders</li>
       </bodyPartGroups>
       <worngraphicPath>Things/Pawn/Humanlike/Apparel/Backpack/Backpack</worngraphicPath>
       <layers>
