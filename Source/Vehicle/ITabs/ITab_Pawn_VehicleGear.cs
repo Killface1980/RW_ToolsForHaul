@@ -101,7 +101,7 @@ namespace ToolsForHaul
                         cart.storage.TryDrop(thing, cart.Position, ThingPlaceMode.Near, out dummy);
                     }));
 
-                    Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap, false));
+                    Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap));
                 }
                 if (Mouse.IsOver(thingButtonRect))
                 {

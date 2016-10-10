@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<IncidentDefs>
+
+  <IncidentDef>
+    <defName>VisitorGroup</defName>
+    <!-- <workerClass>RaidSanity.IncidentWorker_VisitorGroup_Sanity</workerClass> -->
+	<workerClass>ToolsForHaul.IncidentWorker_VisitorGroup_Sanity</workerClass>
+    <baseChance>4</baseChance>
+    <pointsScaleable>true</pointsScaleable>
+  </IncidentDef>
+
+</IncidentDefs>

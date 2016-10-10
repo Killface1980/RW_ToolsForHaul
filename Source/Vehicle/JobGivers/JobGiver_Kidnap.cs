@@ -1,13 +1,16 @@
-﻿using RimWorld;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
 namespace ToolsForHaul
 {
-    public class JobGiver_TakeWoundedGuest : ThinkNode_JobGiver
+    public class JobGiver_Kidnap : ThinkNode_JobGiver
     {
+        public const float LordStateChangeSearchRadius = 8f;
+
+        private const float VictimSearchRadius = 20f;
+
         protected override Job TryGiveJob(Pawn pawn)
         {
             using (List<Thing>.Enumerator enumerator = ToolsForHaulUtility.Cart().GetEnumerator())
@@ -26,7 +29,8 @@ namespace ToolsForHaul
             {
                 return null;
             }
-            Pawn pawn2 = KidnapAIUtility.ReachableWoundedGuest(pawn);
+            Pawn pawn2;
+            KidnapAIUtility.TryFindGoodKidnapVictim(pawn, 20f, out pawn2);
             if (pawn2 == null)
             {
                 return null;
@@ -38,7 +42,5 @@ namespace ToolsForHaul
                 maxNumToCarry = 1
             };
         }
-
-
     }
 }

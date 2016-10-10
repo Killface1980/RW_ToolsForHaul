@@ -102,7 +102,7 @@ namespace ToolsForHaul
                 }
             }
             drawPos.y += GetAltitudeOffset(rot);
-            Material material = apparelGraphic.graphic.MatAt(rot, null);
+            Material material = apparelGraphic.graphic.MatAt(rot);
             material.shader = ShaderDatabase.Cutout;
             material.color = DrawColor;
 
@@ -209,7 +209,7 @@ namespace ToolsForHaul
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.LookValue(ref maxItem, "maxItem", (int)this.GetStatValue(backpackMaxItem));
+            Scribe_Values.LookValue(ref maxItem, "maxItem");
             Scribe_Values.LookValue(ref numOfSavedItems, "numOfSavedItems", 0);
         }
 

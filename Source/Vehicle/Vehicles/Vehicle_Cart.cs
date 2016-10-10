@@ -264,11 +264,9 @@ namespace ToolsForHaul
             };
             action_Refuel = () =>
             {
-                Find.Reservations.ReleaseAllForTarget(this);
-                Find.Reservations.Reserve(myPawn, this);
-                Job job = new Job(JobDefOf.Refuel, this);
-                myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
+                refuelableComp.Refuel(ThingMaker.MakeThing(refuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
             };
+
             action_Deconstruct = () =>
             {
                 Find.Reservations.ReleaseAllForTarget(this);
@@ -286,23 +284,23 @@ namespace ToolsForHaul
 
                 if (myPawn.Faction == Faction.OfPlayer && (myPawn.RaceProps.IsMechanoid || myPawn.RaceProps.Humanlike) && !alreadyMounted)
                 {
-                    yield return new FloatMenuOption("Mount".Translate(LabelShort), action_Mount); // right? Was this.LabelShort                
+                    yield return new FloatMenuOption("Mount".Translate(LabelShort), action_Mount);
                 }
 
-                if (HitPoints < MaxHitPoints * 0.9f || tankLeaking)
+                if (HitPoints < MaxHitPoints || tankLeaking)
                 {
-                    yield return new FloatMenuOption("Repair".Translate(LabelShort), action_Repair); // right? Was this.LabelShort                
+                    yield return new FloatMenuOption("Repair".Translate(LabelCap), action_Repair);
                 }
                 if (refuelableComp != null && refuelableComp.FuelPercent < 0.9f)
                 {
-                    yield return new FloatMenuOption("Refuel".Translate(LabelShort), action_Refuel); // right? Was this.LabelShort                
+                    yield return new FloatMenuOption("AllowRefueling".Translate(LabelShort), action_Refuel);
                 }
 
-                yield return new FloatMenuOption("Deconstruct".Translate(LabelShort), action_Deconstruct); // right? Was this.LabelShort
+                yield return new FloatMenuOption("Deconstruct".Translate(LabelShort), action_Deconstruct);
 
             }
             else if (myPawn == mountableComp.Driver)
-                yield return new FloatMenuOption("Dismount".Translate(LabelShort), action_Dismount); // right? Was this.LabelShort                
+                yield return new FloatMenuOption("Dismount".Translate(LabelShort), action_Dismount);
 
 
         }
@@ -321,8 +319,8 @@ namespace ToolsForHaul
         }
         private ThingDef fuelDefName = ThingDef.Named("Puddle_BioDiesel_Fuel");
 
-        private bool tankLeaking;
-        private int tankHitCount = 0;
+        public bool tankLeaking;
+        private int tankHitCount;
 
         public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
@@ -332,6 +330,8 @@ namespace ToolsForHaul
             {
                 tankLeaking = false;
                 tankHitPos = 1f;
+                if (breakdownableComp.BrokenDown)
+                    breakdownableComp.Notify_Repaired();
                 return;
             }
 
@@ -442,12 +442,11 @@ namespace ToolsForHaul
                     FilthMaker.MakeFilth(Position, fuelDefName, LabelCap);
                     tankSpillTick = Find.TickManager.TicksGame + 80;
                 }
-                //else
-                //{
-                //    if (!breakdownableComp.BrokenDown)
-                //        breakdownableComp.DoBreakdown();
-                //
-                //}
+                else
+                {
+                    if (!breakdownableComp.BrokenDown)
+                        breakdownableComp.DoBreakdown();
+                }
             }
 
         }
@@ -507,11 +506,12 @@ namespace ToolsForHaul
                 return;
             }
             wheelLoc = drawLoc;
-            wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.04f;
             bodyLoc = drawLoc;
-            bodyLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.03f;
             if (compAxles.HasAxles() && Rotation.AsInt % 2 == 1)
             {
+                wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.04f;
+                bodyLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.03f;
+
                 Vector2 drawSize = def.graphic.drawSize;
                 int num = Rotation == Rot4.West ? -1 : 1;
                 Vector3 s = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);

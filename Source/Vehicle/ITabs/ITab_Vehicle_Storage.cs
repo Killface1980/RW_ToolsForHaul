@@ -46,7 +46,7 @@ namespace ToolsForHaul
             Rect position = new Rect(0.0f, 0.0f, WinSize.x, WinSize.y).ContractedBy(10f);
             GUI.BeginGroup(position);
 
-            ThingFilterUI.DoThingFilterConfigWindow(new Rect(0.0f, 35f, position.width, position.height - 35f), ref scrollPosition, allowances, null);
+            ThingFilterUI.DoThingFilterConfigWindow(new Rect(0.0f, 35f, position.width, position.height - 35f), ref scrollPosition, allowances);
             GUI.EndGroup();
         }
     }

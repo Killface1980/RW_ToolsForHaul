@@ -55,14 +55,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="_TESTING\IncidentWorker_Raid_Sanity.cs" />
+    <Compile Include="_TESTING\IncidentWorker_RaidEnemy_Sanity.cs" />
+    <Compile Include="_TESTING\IncidentWorker_VisitorGroupTFH.cs" />
+    <Compile Include="_TESTING\IncidentWorker_VisitorGroup_Sanity.cs" />
     <None Include="ARB\Class1.cs" />
+    <Compile Include="Alerts\Class1.cs" />
     <Compile Include="ARB\StatWorker_MoveSpeed.cs" />
+    <None Include="Comps\BreakdownVehicles\Class1.cs" />
     <Compile Include="Comps\CompAxles.cs" />
     <Compile Include="Comps\CompProperties_Axles.cs" />
     <Compile Include="Comps\CompProperties_Vehicles.cs" />
     <Compile Include="Comps\CompVehicles.cs" />
     <Compile Include="Backpack\Apparel_Backpack.cs" />
-    <Compile Include="JobDrivers\Duties\JobGiver_TakeWoundedGuest.cs" />
+    <Compile Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
     <None Include="Designators\Vehicle\Designator_Claim.cs" />
     <Compile Include="CCL\ModHelperDef.cs" />
@@ -77,10 +83,10 @@
     <Compile Include="Comps\CompSlots.cs" />
     <Compile Include="Comps\CompEquipmentGizmoProvider.cs" />
     <Compile Include="Designators\Designator_PutInSlot.cs" />
-    <Compile Include="JobDrivers\Duties\JobGiver_ExitMapNearest.cs" />
-    <Compile Include="JobDrivers\Duties\JobGiver_ExitMapRandom.cs" />
-    <Compile Include="JobDrivers\Duties\JobGiver_Kidnap.cs" />
-    <Compile Include="JobDrivers\Duties\JobGiver_ExitMapPanic.cs" />
+    <Compile Include="JobGivers\JobGiver_ExitMapBest.cs" />
+    <Compile Include="JobGivers\JobGiver_ExitMapRandom.cs" />
+    <Compile Include="JobGivers\JobGiver_Kidnap.cs" />
+    <Compile Include="JobGivers\JobGiver_ExitMapPanic.cs" />
     <Compile Include="RightTools\_ThinkNode_JobGiver.cs" />
     <Compile Include="RightTools\RightTools.cs" />
     <Compile Include="Comps\MapComponent_ToolsForHaul.cs" />
@@ -196,9 +202,7 @@
       <Link>Languages\English\Misc_Gameplay.xml</Link>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="_TESTING\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

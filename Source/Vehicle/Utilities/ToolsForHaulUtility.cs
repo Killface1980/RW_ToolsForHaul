@@ -144,7 +144,7 @@ namespace ToolsForHaul
             if (cart == null)
             {
                 Apparel_Backpack backpack = TryGetBackpack(pawn);
-                CompSlots compInventory = ToolsForHaulUtility.TryGetBackpack(pawn).TryGetComp<CompSlots>();
+                CompSlots compInventory = TryGetBackpack(pawn).TryGetComp<CompSlots>();
 
                 jobDef = DefDatabase<JobDef>.GetNamed("HaulWithBackpack");
                 targetC = backpack;
@@ -281,7 +281,7 @@ namespace ToolsForHaul
                         {
                             StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(thing.Position, thing);
                             IntVec3 storeCell = cell;
-                            if (!StoreUtility.TryFindBestBetterStoreCellFor(thing, pawn, currentPriority, pawn.Faction, out storeCell, true))
+                            if (!StoreUtility.TryFindBestBetterStoreCellFor(thing, pawn, currentPriority, pawn.Faction, out storeCell))
                             {
                                 if (cell.InAllowedArea(pawn))
                                     job.targetQueueB.Add(cell);

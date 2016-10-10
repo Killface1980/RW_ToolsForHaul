@@ -22,7 +22,7 @@
       <rainWashes>true</rainWashes>
       <cleaningWorkToReduceThickness>100</cleaningWorkToReduceThickness>
       <canFilthAttach>true</canFilthAttach>
-      <maxThickness>10</maxThickness>
+      <maxThickness>5</maxThickness>
     </filth>
   </ThingDef>
   

@@ -88,7 +88,7 @@ namespace ToolsForHaul
 
         public int AvailableStackSpace(ThingDef td,Thing CarriedThing= null)
         {
-            int b = Mathf.RoundToInt(owner.GetStatValue(StatDefOf.CarryingCapacity, true) / td.VolumePerUnit);
+            int b = Mathf.RoundToInt(owner.GetStatValue(StatDefOf.CarryingCapacity) / td.VolumePerUnit);
             int num = Mathf.Min(td.stackLimit, b);
             if (CarriedThing != null)
             {

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+
+  <IncidentDef>
+    <defName>RaidEnemy</defName>
+    <label>enemy raid</label>
+    <!-- <workerClass>RaidSanity.IncidentWorker_RaidEnemy_Sanity</workerClass> -->
+	<workerClass>ToolsForHaul.IncidentWorker_RaidEnemy_Sanity</workerClass>
+    <baseChance>7.4</baseChance>
+    <category>ThreatBig</category>
+    <pointsScaleable>true</pointsScaleable>
+  </IncidentDef>
+
+</Defs>

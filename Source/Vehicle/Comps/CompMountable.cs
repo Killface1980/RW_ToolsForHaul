@@ -112,7 +112,16 @@ namespace ToolsForHaul
                         driver.CurJob.def == JobDefOf.UseNeurotrainer || 
                         driver.CurJob.def == JobDefOf.VisitSickPawn || 
                         driver.CurJob.def == JobDefOf.Shear || 
-                        driver.CurJob.def == JobDefOf.Ingest) && driver.Position.Roofed())
+                       
+                        driver.CurJob.def == JobDefOf.FeedPatient ||
+                        driver.CurJob.def == JobDefOf.PrisonerExecution ||
+                        driver.CurJob.def == JobDefOf.ManTurret ||
+                        driver.CurJob.def == JobDefOf.Train || 
+                        driver.health.NeedsMedicalRest ||
+                        driver.health.PrefersMedicalRest
+
+                        ) 
+                        && driver.Position.Roofed())
                     {
                         parent.Position = Position.ToIntVec3();
                         parent.Rotation = driver.Rotation;
@@ -122,6 +131,7 @@ namespace ToolsForHaul
                             return;
                         }
                         DismountAt(driver.Position - InteractionOffset.ToIntVec3());
+                        driver.Position = driver.Position.RandomAdjacentCell8Way();
                         return;
                     }
                     tickCheck = Find.TickManager.TicksGame;
