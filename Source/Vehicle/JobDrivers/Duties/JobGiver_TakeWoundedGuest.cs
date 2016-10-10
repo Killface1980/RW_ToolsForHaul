@@ -21,8 +21,8 @@ namespace ToolsForHaul
                     }
                 }
             }
-            IntVec3 vec;
-            if (!RCellFinder.TryFindBestExitSpot(pawn, out vec, TraverseMode.ByPawn))
+            IntVec3 intVec;
+            if (!RCellFinder.TryFindBestExitSpot(pawn, out intVec))
             {
                 return null;
             }
@@ -34,9 +34,11 @@ namespace ToolsForHaul
             return new Job(JobDefOf.Kidnap)
             {
                 targetA = pawn2,
-                targetB = vec,
+                targetB = intVec,
                 maxNumToCarry = 1
             };
         }
+
+
     }
 }

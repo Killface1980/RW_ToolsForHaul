@@ -20,9 +20,9 @@
     </graphicData>
     <filth>
       <rainWashes>true</rainWashes>
-      <cleaningWorkToReduceThickness>70</cleaningWorkToReduceThickness>
+      <cleaningWorkToReduceThickness>100</cleaningWorkToReduceThickness>
       <canFilthAttach>true</canFilthAttach>
-      <maxThickness>5</maxThickness>
+      <maxThickness>10</maxThickness>
     </filth>
   </ThingDef>
   

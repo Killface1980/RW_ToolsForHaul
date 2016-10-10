@@ -49,7 +49,7 @@ namespace ToolsForHaul
             Building edifice = pawn.Position.GetEdifice();
             if (edifice != null)
             {
-                movePerTick += (int)edifice.PathWalkCostFor(pawn);
+                movePerTick += edifice.PathWalkCostFor(pawn);
             }
 
             //Case switch to handle walking, jogging, etc.
@@ -80,6 +80,7 @@ namespace ToolsForHaul
             }
             return 60 / movePerTick;
         }
+
         public static Thing TryGetBackpackLastItem(Pawn pawn)
         {
             Apparel_Backpack backpack = TryGetBackpack(pawn);
@@ -101,7 +102,6 @@ namespace ToolsForHaul
             }
             return lastItem;
         }
-
 
         public static List<Thing> Cart()
         {

@@ -39,7 +39,13 @@ namespace ToolsForHaul
             foreach (Thing thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
-                if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike))
+
+                bool alreadyMounted = false;
+                foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart())
+                    if (cart.mountableComp.Driver == pawn)
+                        alreadyMounted = true;
+
+                if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !alreadyMounted)
                 {
                     Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
                     Find.Reservations.ReleaseAllForTarget(vehicle);

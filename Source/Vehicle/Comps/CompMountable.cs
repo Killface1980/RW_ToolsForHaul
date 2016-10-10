@@ -30,6 +30,7 @@ namespace ToolsForHaul
             driver = pawn;
         }
         public bool IsMounted => driver != null;
+
         public Pawn Driver => driver;
 
         public void Dismount()
@@ -50,7 +51,10 @@ namespace ToolsForHaul
             Log.Warning("Tried dismount at " + dismountPos);
         }
 
-        public Vector3 InteractionOffset => parent.def.interactionCellOffset.ToVector3().RotatedBy(driver.Rotation.AsAngle);
+        public Vector3 InteractionOffset
+        {
+            get { return parent.def.interactionCellOffset.ToVector3().RotatedBy(driver.Rotation.AsAngle); }
+        }
 
         public Vector3 Position
         {
@@ -89,7 +93,26 @@ namespace ToolsForHaul
                 }
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
                 {
-                    if (driver.Faction == Faction.OfPlayer && driver.CurJob != null && driver.CurJob.def.playerInterruptible && (driver.CurJob.def == JobDefOf.DoBill || driver.CurJob.def == JobDefOf.EnterCryptosleepCasket || driver.CurJob.def == JobDefOf.LayDown || driver.CurJob.def == JobDefOf.Lovin || driver.CurJob.def == JobDefOf.MarryAdjacentPawn || driver.CurJob.def == JobDefOf.Mate || driver.CurJob.def == JobDefOf.PrisonerAttemptRecruit || driver.CurJob.def == JobDefOf.Research || driver.CurJob.def == JobDefOf.SocialRelax || driver.CurJob.def == JobDefOf.SpectateCeremony || driver.CurJob.def == JobDefOf.StandAndBeSociallyActive || driver.CurJob.def == JobDefOf.TakeToBedToOperate || driver.CurJob.def == JobDefOf.TendPatient || driver.CurJob.def == JobDefOf.UseCommsConsole || driver.CurJob.def == JobDefOf.UseNeurotrainer || driver.CurJob.def == JobDefOf.VisitSickPawn || driver.CurJob.def == JobDefOf.Shear || driver.CurJob.def == JobDefOf.Ingest) && driver.Position.Roofed())
+                    if (driver.Faction == Faction.OfPlayer && driver.CurJob != null &&
+                        driver.CurJob.def.playerInterruptible &&
+                        (driver.CurJob.def == JobDefOf.DoBill ||
+                        driver.CurJob.def == JobDefOf.EnterCryptosleepCasket ||
+                        driver.CurJob.def == JobDefOf.LayDown ||
+                        driver.CurJob.def == JobDefOf.Lovin ||
+                        driver.CurJob.def == JobDefOf.MarryAdjacentPawn || 
+                        driver.CurJob.def == JobDefOf.Mate || 
+                        driver.CurJob.def == JobDefOf.PrisonerAttemptRecruit || 
+                        driver.CurJob.def == JobDefOf.Research || 
+                        driver.CurJob.def == JobDefOf.SocialRelax || 
+                        driver.CurJob.def == JobDefOf.SpectateCeremony || 
+                        driver.CurJob.def == JobDefOf.StandAndBeSociallyActive || 
+                        driver.CurJob.def == JobDefOf.TakeToBedToOperate || 
+                        driver.CurJob.def == JobDefOf.TendPatient || 
+                        driver.CurJob.def == JobDefOf.UseCommsConsole || 
+                        driver.CurJob.def == JobDefOf.UseNeurotrainer || 
+                        driver.CurJob.def == JobDefOf.VisitSickPawn || 
+                        driver.CurJob.def == JobDefOf.Shear || 
+                        driver.CurJob.def == JobDefOf.Ingest) && driver.Position.Roofed())
                     {
                         parent.Position = Position.ToIntVec3();
                         parent.Rotation = driver.Rotation;
@@ -133,7 +156,7 @@ namespace ToolsForHaul
                 com.defaultDesc = txtCommandDismountDesc.Translate();
                 com.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnmount");
                 com.activateSound = SoundDef.Named("Click");
-                com.action = () => { Dismount(); };
+                com.action = Dismount;
 
                 yield return com;
             }

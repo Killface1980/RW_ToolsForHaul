@@ -62,9 +62,9 @@
     <Compile Include="Comps\CompProperties_Vehicles.cs" />
     <Compile Include="Comps\CompVehicles.cs" />
     <Compile Include="Backpack\Apparel_Backpack.cs" />
-    <None Include="JobDrivers\Class1.cs" />
-    <None Include="Designators\Vehicle\Class1.cs" />
-    <None Include="Designators\Vehicle\Class2.cs" />
+    <Compile Include="JobDrivers\Duties\JobGiver_TakeWoundedGuest.cs" />
+    <None Include="Designators\Vehicle\Designator_Board.cs" />
+    <None Include="Designators\Vehicle\Designator_Claim.cs" />
     <Compile Include="CCL\ModHelperDef.cs" />
     <Compile Include="CCL\CompInjectionSet.cs" />
     <Compile Include="CCL\DefInjectionQualifier.cs" />
@@ -77,6 +77,10 @@
     <Compile Include="Comps\CompSlots.cs" />
     <Compile Include="Comps\CompEquipmentGizmoProvider.cs" />
     <Compile Include="Designators\Designator_PutInSlot.cs" />
+    <Compile Include="JobDrivers\Duties\JobGiver_ExitMapNearest.cs" />
+    <Compile Include="JobDrivers\Duties\JobGiver_ExitMapRandom.cs" />
+    <Compile Include="JobDrivers\Duties\JobGiver_Kidnap.cs" />
+    <Compile Include="JobDrivers\Duties\JobGiver_ExitMapPanic.cs" />
     <Compile Include="RightTools\_ThinkNode_JobGiver.cs" />
     <Compile Include="RightTools\RightTools.cs" />
     <Compile Include="Comps\MapComponent_ToolsForHaul.cs" />
@@ -143,6 +147,9 @@
       <Link>Defs\ThingDefs\Apparel_Backpack.xml</Link>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
+      <Link>Defs\ThingDefs\Items_IRResources.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
     </Content>
@@ -160,6 +167,9 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\RA_Weapons_Melee.xml">
       <Link>Defs\ThingDefs\RA_Weapons_Melee.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Things_Special.xml">
+      <Link>Defs\ThingDefs\Things_Special.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicles_unused.xml">
       <Link>Defs\ThingDefs\Vehicles_unused.xml</Link>

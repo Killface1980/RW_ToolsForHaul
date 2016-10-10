@@ -200,7 +200,12 @@ namespace ToolsForHaul
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
         {
-            Action action_Order;
+            Action action_Dismount;
+            Action action_Mount;
+            Action action_MakeMount;
+            Action action_Repair;
+            Action action_Refuel;
+            Action action_Deconstruct;
 
             // do nothing if not of colony
             if (myPawn.Faction != Faction.OfPlayer)
@@ -209,7 +214,61 @@ namespace ToolsForHaul
             foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn))
                 yield return fmo;
 
-            action_Order = () =>
+            action_Mount = () =>
+            {
+                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                Find.Reservations.ReleaseAllForTarget(this);
+                jobNew.targetA = this;
+                myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+            };
+
+            action_Dismount = () =>
+            {
+                mountableComp.Dismount();
+
+                if (!myPawn.Position.InBounds())
+                {
+                    mountableComp.DismountAt(myPawn.Position);
+                    return;
+                }
+
+                mountableComp.DismountAt(myPawn.Position.RandomAdjacentCell8Way() - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
+               // mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
+            };
+
+            action_MakeMount = () =>
+            {
+                Pawn worker = null;
+                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("MakeMount"));
+                Find.Reservations.ReleaseAllForTarget(this);
+                jobNew.maxNumToCarry = 1;
+                jobNew.targetA = this;
+                jobNew.targetB = myPawn;
+                foreach (Pawn colonyPawn in Find.MapPawns.FreeColonistsSpawned)
+                    if (colonyPawn.CurJob.def != jobNew.def && (worker == null || (worker.Position - myPawn.Position).LengthHorizontal > (colonyPawn.Position - myPawn.Position).LengthHorizontal))
+                        worker = colonyPawn;
+                if (worker == null)
+                {
+                    Messages.Message("NoWorkForMakeMount".Translate(), MessageSound.RejectInput);
+                }
+                else worker.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+            };
+
+            action_Repair = () =>
+            {
+                Find.Reservations.ReleaseAllForTarget(this);
+                Find.Reservations.Reserve(myPawn, this);
+                Job job = new Job(JobDefOf.Repair, this);
+                myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
+            };
+            action_Refuel = () =>
+            {
+                Find.Reservations.ReleaseAllForTarget(this);
+                Find.Reservations.Reserve(myPawn, this);
+                Job job = new Job(JobDefOf.Refuel, this);
+                myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
+            };
+            action_Deconstruct = () =>
             {
                 Find.Reservations.ReleaseAllForTarget(this);
                 Find.Reservations.Reserve(myPawn, this);
@@ -217,8 +276,34 @@ namespace ToolsForHaul
                 Job job = new Job(JobDefOf.Deconstruct, this);
                 myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
             };
+            if (!mountableComp.IsMounted)
+            {
+                bool alreadyMounted = false;
+                foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart())
+                    if (cart.mountableComp.Driver == myPawn)
+                        alreadyMounted = true;
 
-            yield return new FloatMenuOption("Deconstruct".Translate(LabelShort), action_Order); // right? Was this.LabelShort
+                if (myPawn.Faction == Faction.OfPlayer && (myPawn.RaceProps.IsMechanoid || myPawn.RaceProps.Humanlike) && !alreadyMounted)
+                {
+                    yield return new FloatMenuOption("Mount".Translate(LabelShort), action_Mount); // right? Was this.LabelShort                
+                }
+
+                if (HitPoints < MaxHitPoints * 0.9f || tankLeaking)
+                {
+                    yield return new FloatMenuOption("Repair".Translate(LabelShort), action_Repair); // right? Was this.LabelShort                
+                }
+                if (refuelableComp != null && refuelableComp.FuelPercent < 0.9f)
+                {
+                    yield return new FloatMenuOption("Refuel".Translate(LabelShort), action_Refuel); // right? Was this.LabelShort                
+                }
+
+                yield return new FloatMenuOption("Deconstruct".Translate(LabelShort), action_Deconstruct); // right? Was this.LabelShort
+
+            }
+            else if (myPawn == mountableComp.Driver)
+                yield return new FloatMenuOption("Dismount".Translate(LabelShort), action_Dismount); // right? Was this.LabelShort                
+
+
         }
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
@@ -235,8 +320,8 @@ namespace ToolsForHaul
         }
         private ThingDef fuelDefName = ThingDef.Named("Puddle_BioDiesel_Fuel");
 
-        bool tankLeaking;
-
+        private bool tankLeaking;
+        private int tankHitCount = 0;
 
         public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
@@ -277,6 +362,7 @@ namespace ToolsForHaul
             if (Random.value <= 0.15f)
             {
                 tankLeaking = true;
+                tankHitCount += 1;
                 tankHitPos = Math.Min(tankHitPos, Rand.Value);
 
                 int splash = (int)(refuelableComp.FuelPercent - tankHitPos * 15);
@@ -350,17 +436,17 @@ namespace ToolsForHaul
             {
                 if (refuelableComp.FuelPercent > tankHitPos)
                 {
-                    refuelableComp.ConsumeFuel(0.5f);
+                    refuelableComp.ConsumeFuel(0.35f);
 
                     FilthMaker.MakeFilth(Position, fuelDefName, LabelCap);
-                    tankSpillTick = Find.TickManager.TicksGame + 100;
+                    tankSpillTick = Find.TickManager.TicksGame + 80;
                 }
-              //else
-              //{
-              //    if (!breakdownableComp.BrokenDown)
-              //        breakdownableComp.DoBreakdown();
-              //
-              //}
+                //else
+                //{
+                //    if (!breakdownableComp.BrokenDown)
+                //        breakdownableComp.DoBreakdown();
+                //
+                //}
             }
 
         }

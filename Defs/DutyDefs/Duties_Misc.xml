@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <DutyDef>
+    <defName>Travel</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="JobGiver_GotoTravelDestination" />
+        <!-- Note this exit node can happen at odd times
+            like if you block siegers from hitting their siege location before they arrive-->
+        <li Class="ToolsForHaul.JobGiver_ExitMapRandom">
+          <locomotion>Walk</locomotion>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>ExitMapAnywhere</defName>
+    <thinkNode Class="ToolsForHaul.JobGiver_ExitMapRandom">
+      <locomotion>Walk</locomotion>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>ExitMapNearest</defName>
+    <thinkNode Class="ToolsForHaul.JobGiver_ExitMapNearest">
+      <locomotion>Walk</locomotion>
+    </thinkNode>
+  </DutyDef>
+  
+  <DutyDef>
+    <defName>Kidnap</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGiver_Kidnap" />
+        <li Class="ToolsForHaul.JobGiver_ExitMapNearest">
+          <locomotion>Jog</locomotion>
+          <jobMaxDuration>200</jobMaxDuration>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>TakeWoundedGuest</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGiver_TakeWoundedGuest" />
+        <li Class="ToolsForHaul.JobGiver_ExitMapNearest">
+          <locomotion>Jog</locomotion>
+          <jobMaxDuration>500</jobMaxDuration>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+  
+  </Defs>
