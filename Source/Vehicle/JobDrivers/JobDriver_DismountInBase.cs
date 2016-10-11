@@ -51,6 +51,10 @@ namespace ToolsForHaul
 
             Vehicle_Cart cart = TargetThingA as Vehicle_Cart;
 
+            if (cart.mountableComp.Driver!=null)
+            {
+                this.FailOnSomeonePhysicallyInteracting(CartInd);
+            }
 
             ///
             //Define Toil

@@ -30,6 +30,19 @@
   </ThingDef>
 
   <ThingDef ParentName="UnfinishedBase">
+    <defName>UnfinishedTruck</defName>
+    <label>Unfinished truck</label>
+    <graphicData>
+      <texPath>Things/Pawn/VehicleTruck/Truck</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,3)</drawSize>
+    </graphicData>
+    <stuffCategories>
+      <li>Metallic</li>
+    </stuffCategories>
+  </ThingDef>
+
+  <ThingDef ParentName="UnfinishedBase">
     <defName>UnfinishedSpeeder</defName>
     <label>Unfinished speeder</label>
     <graphicData>
@@ -42,4 +55,6 @@
     </stuffCategories>
   </ThingDef>
 
+
+  
 </Defs>

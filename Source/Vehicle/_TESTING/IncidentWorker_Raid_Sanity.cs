@@ -131,6 +131,7 @@ namespace ToolsForHaul
                     {
                         CellFinder.RandomClosewalkCellNear(current.Position, 5);
                         Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
+                        thing.SetFaction(parms.faction);
                         GenSpawn.Spawn(thing, current.Position);
 
                         Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));

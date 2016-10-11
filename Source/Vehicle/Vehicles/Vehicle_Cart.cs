@@ -6,12 +6,13 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.Sound;
 using Random = UnityEngine.Random;
 
 namespace ToolsForHaul
 {
     [StaticConstructorOnStartup]
-    public class Vehicle_Cart : ThingWithComps, IThingContainerOwner, IAttackTarget
+    public class Vehicle_Cart : Building, IThingContainerOwner, IAttackTarget//, IAssignableBuilding
     {
         #region Variables
         // ==================================
@@ -22,6 +23,16 @@ namespace ToolsForHaul
         public bool ThreatDisabled()
         {
             return !mountableComp.IsMounted;
+        }
+
+        // TODO make vehicles break down & get repaired like buildings
+        public override bool ClaimableBy(Faction fac)
+        {
+            if (mountableComp.Driver == null)
+            {
+                return true;
+            }
+            return false;
         }
 
         public float currentDriverSpeed;
@@ -144,10 +155,42 @@ namespace ToolsForHaul
             vehicleMaxItem = DefDatabase<StatDef>.GetNamed("VehicleMaxItem");
         }
 
+        private Sustainer sustainerAmbient;
+
+        //    public static ListerVehicles listerVehicles = new ListerVehicles();
+
+        HeadLights flooder;
 
         public override void SpawnSetup()
         {
+
             base.SpawnSetup();
+
+            // Undo base
+
+            {
+                CellRect cellRect = this.OccupiedRect();
+                for (int i = cellRect.minZ; i <= cellRect.maxZ; i++)
+                {
+                    for (int j = cellRect.minX; j <= cellRect.maxX; j++)
+                    {
+                        IntVec3 loc = new IntVec3(j, 0, i);
+                        MapMeshFlag mapMeshFlag = MapMeshFlag.Buildings;
+                        if (this.def.coversFloor)
+                        {
+                            mapMeshFlag |= MapMeshFlag.Terrain;
+                        }
+                        if (this.def.Fillage == FillCategory.Full)
+                        {
+                            mapMeshFlag |= MapMeshFlag.Roofs;
+                            mapMeshFlag |= MapMeshFlag.Snow;
+                        }
+                        Find.Map.mapDrawer.MapMeshDirty(loc, mapMeshFlag);
+                        Find.GlowGrid.MarkGlowGridDirty(loc);
+                    }
+                }
+            }
+
             mountableComp = GetComp<CompMountable>();
 
             if (allowances == null)
@@ -159,6 +202,15 @@ namespace ToolsForHaul
 
             LongEventHandler.ExecuteWhenFinished(UpdateGraphics);
         }
+
+        public override void DeSpawn()
+        {
+            base.DeSpawn();
+            ListerBuildingsRepairable.Notify_BuildingDeSpawned(this);
+
+        }
+
+        public bool repairable = true;
 
         private ThingDef VehicleDef
         {
@@ -190,12 +242,34 @@ namespace ToolsForHaul
             Scribe_Deep.LookDeep(ref allowances, "allowances");
             Scribe_Values.LookValue(ref tankLeaking, "tankLeaking");
             Scribe_Values.LookValue(ref tankHitPos, "tankHitPos");
+
+            HashSet<string> hashSet = new HashSet<string>();
+
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
             foreach (Gizmo baseGizmo in base.GetGizmos())
                 yield return baseGizmo;
+            if (GetComp<CompExplosive>() != null)
+            {
+
+                Command_Action command_Action = new Command_Action();
+                command_Action.icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate", true);
+                command_Action.defaultDesc = "CommandDetonateDesc".Translate();
+                command_Action.action = Command_Detonate;
+                if (GetComp<CompExplosive>().wickStarted)
+                {
+                    command_Action.Disable(null);
+                }
+                command_Action.defaultLabel = "CommandDetonateLabel".Translate();
+                yield return command_Action;
+            }
+        }
+
+        private void Command_Detonate()
+        {
+            GetComp<CompExplosive>().StartWick(null);
         }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
@@ -255,17 +329,7 @@ namespace ToolsForHaul
                 else worker.jobs.StartJob(jobNew, JobCondition.InterruptForced);
             };
 
-            action_Repair = () =>
-            {
-                Find.Reservations.ReleaseAllForTarget(this);
-                Find.Reservations.Reserve(myPawn, this);
-                Job job = new Job(JobDefOf.Repair, this);
-                myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
-            };
-            action_Refuel = () =>
-            {
-                refuelableComp.Refuel(ThingMaker.MakeThing(refuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
-            };
+
 
             action_Deconstruct = () =>
             {
@@ -287,15 +351,6 @@ namespace ToolsForHaul
                     yield return new FloatMenuOption("Mount".Translate(LabelShort), action_Mount);
                 }
 
-                if (HitPoints < MaxHitPoints || tankLeaking)
-                {
-                    yield return new FloatMenuOption("Repair".Translate(LabelCap), action_Repair);
-                }
-                if (refuelableComp != null && refuelableComp.FuelPercent < 0.9f)
-                {
-                    yield return new FloatMenuOption("AllowRefueling".Translate(LabelShort), action_Refuel);
-                }
-
                 yield return new FloatMenuOption("Deconstruct".Translate(LabelShort), action_Deconstruct);
 
             }
@@ -314,6 +369,8 @@ namespace ToolsForHaul
 
             storage.TryDropAll(Position, ThingPlaceMode.Near);
 
+            Find.Map.listerBuildings.Remove(this);
+
 
             base.Destroy(mode);
         }
@@ -326,12 +383,15 @@ namespace ToolsForHaul
         {
             base.PostApplyDamage(dinfo, totalDamageDealt);
 
+            // TODO make vehicles break down & get repaired like buildings
+            ListerBuildingsRepairable.Notify_BuildingTookDamage(this);
+
             if (dinfo.Def == DamageDefOf.Repair && tankLeaking)
             {
                 tankLeaking = false;
                 tankHitPos = 1f;
-                if (breakdownableComp.BrokenDown)
-                    breakdownableComp.Notify_Repaired();
+                //if (breakdownableComp.BrokenDown)
+                //    breakdownableComp.Notify_Repaired();
                 return;
             }
 
@@ -366,7 +426,7 @@ namespace ToolsForHaul
                 tankHitCount += 1;
                 tankHitPos = Math.Min(tankHitPos, Rand.Value);
 
-                int splash = (int)(refuelableComp.FuelPercent - tankHitPos * 15);
+                int splash = (int)(refuelableComp.FuelPercent - tankHitPos * 20);
 
                 FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, splash);
             }
@@ -398,6 +458,31 @@ namespace ToolsForHaul
                 instantiated = true;
             }
             base.Tick();
+
+            #region Headlights
+            /*
+                        // TODO Add headlights to xml & move the flooder initialization to mountableComp
+                        if (mountableComp.Driver != null && !compVehicles.AnimalsCanDrive() && flooder == null)
+                        {
+                            flooder = new HeadLights(Position, Rotation, this);
+                            CustomGlowFloodManager.RegisterFlooder(flooder);
+                            CustomGlowFloodManager.RefreshGlowFlooders();
+                        }
+                        if (mountableComp.Driver == null && flooder != null)
+                        {
+                            CustomGlowFloodManager.DeRegisterGlower(flooder);
+                            CustomGlowFloodManager.RefreshGlowFlooders();
+                            flooder = null;
+                        }
+                        // TODO optimized performance, lights only at night and when driver is mounted => light switch gizmo?
+                        if (flooder != null)
+                        {
+                            flooder.Position = Position + Rotation.FacingCell + Rotation.FacingCell;
+                            flooder.Orientation = Rotation;
+                            CustomGlowFloodManager.RefreshGlowFlooders();
+                        }
+                        */
+            #endregion
             if (!fueledByAI)
             {
                 if (mountableComp.IsMounted && mountableComp.Driver.Faction != Faction.OfPlayer && refuelableComp != null && refuelableComp.FuelPercent < 0.550000011920929)
@@ -439,14 +524,14 @@ namespace ToolsForHaul
                 {
                     refuelableComp.ConsumeFuel(0.35f);
 
-                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap);
+                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 3);
                     tankSpillTick = Find.TickManager.TicksGame + 80;
                 }
-                else
-                {
-                    if (!breakdownableComp.BrokenDown)
-                        breakdownableComp.DoBreakdown();
-                }
+                // else
+                // {
+                //     if (!breakdownableComp.BrokenDown)
+                //         breakdownableComp.DoBreakdown();
+                // }
             }
 
         }
@@ -505,6 +590,7 @@ namespace ToolsForHaul
                 base.DrawAt(drawLoc);
                 return;
             }
+
             wheelLoc = drawLoc;
             bodyLoc = drawLoc;
             if (compAxles.HasAxles() && Rotation.AsInt % 2 == 1)

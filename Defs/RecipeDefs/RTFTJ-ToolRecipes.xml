@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<RecipeDefs>
+
+<!-- 	<RecipeDef>
+		<defName>MakePickaxe</defName>
+		<label>make pickaxe</label>
+		<description>Makes a pickaxe</description>
+		<jobString>Making a tool.</jobString>
+		<workAmount>700</workAmount>
+		<workSpeedStat>StonecuttingSpeed</workSpeedStat>
+		<effectWorking>CutStone</effectWorking>
+    <soundWorking>Recipe_MakeStoneBlocks</soundWorking>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>10</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>WoodLog</li>
+					</thingDefs>
+				</filter>
+				<count>1</count>
+			</li>
+		</ingredients>
+		<products>
+			<RTFTJ_Pickaxe>1</RTFTJ_Pickaxe>
+		</products>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Steel</li>
+				<li>WoodLog</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<workSkill>Crafting</workSkill>
+	</RecipeDef>
+	
+	<RecipeDef>
+		<defName>MakeHandaxe</defName>
+		<label>make gardening axe</label>
+		<description>Makes a gardening axe</description>
+		<jobString>Making a tool.</jobString>
+		<workAmount>700</workAmount>
+		<workSpeedStat>StonecuttingSpeed</workSpeedStat>
+		<effectWorking>CutStone</effectWorking>
+    <soundWorking>Recipe_MakeStoneBlocks</soundWorking>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>10</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>WoodLog</li>
+					</thingDefs>
+				</filter>
+				<count>1</count>
+			</li>
+		</ingredients>
+		<products>
+			<RTFTJ_HandAxe>1</RTFTJ_HandAxe>
+		</products>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Steel</li>
+				<li>WoodLog</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<workSkill>Crafting</workSkill>
+	</RecipeDef>
+	
+	<RecipeDef>
+		<defName>MakeDrill</defName>
+		<label>make drill</label>
+		<description>Makes a drill</description>
+		<jobString>Making a tool.</jobString>
+		<workAmount>700</workAmount>
+		<workSpeedStat>StonecuttingSpeed</workSpeedStat>
+		<effectWorking>CutStone</effectWorking>
+    <soundWorking>Recipe_MakeStoneBlocks</soundWorking>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Plasteel</li>
+					</thingDefs>
+				</filter>
+				<count>75</count>
+			</li>
+		</ingredients>
+		<products>
+			<RTFTJ_Drill>1</RTFTJ_Drill>
+		</products>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Plasteel</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<workSkill>Crafting</workSkill>
+	</RecipeDef>
+	
+	<RecipeDef>
+		<defName>MakeChainsaw</defName>
+		<label>make chainsaw</label>
+		<description>Makes a chainsaw</description>
+		<jobString>Making a tool.</jobString>
+		<workAmount>700</workAmount>
+		<workSpeedStat>StonecuttingSpeed</workSpeedStat>
+		<effectWorking>CutStone</effectWorking>
+    <soundWorking>Recipe_MakeStoneBlocks</soundWorking>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Plasteel</li>
+					</thingDefs>
+				</filter>
+				<count>75</count>
+			</li>
+		</ingredients>
+		<products>
+			<RTFTJ_Chainsaw>1</RTFTJ_Chainsaw>
+		</products>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Plasteel</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<workSkill>Crafting</workSkill>
+	</RecipeDef>
+	
+	<RecipeDef>
+		<defName>MakeHammer</defName>
+		<label>make hammer</label>
+		<description>Makes a hammer</description>
+		<jobString>Making a tool.</jobString>
+		<workAmount>700</workAmount>
+		<workSpeedStat>StonecuttingSpeed</workSpeedStat>
+		<effectWorking>CutStone</effectWorking>
+    <soundWorking>Recipe_MakeStoneBlocks</soundWorking>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>10</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>WoodLog</li>
+					</thingDefs>
+				</filter>
+				<count>1</count>
+			</li>
+		</ingredients>
+		<products>
+			<RTFTJ_Hammer>1</RTFTJ_Hammer>
+		</products>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Steel</li>
+				<li>WoodLog</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<workSkill>Crafting</workSkill>
+	</RecipeDef>
+	
+	<RecipeDef>
+		<defName>MakeAutohammer</defName>
+		<label>make autohammer</label>
+		<description>Makes an autohammer</description>
+		<jobString>Making a tool.</jobString>
+		<workAmount>700</workAmount>
+		<workSpeedStat>StonecuttingSpeed</workSpeedStat>
+		<effectWorking>CutStone</effectWorking>
+    <soundWorking>Recipe_MakeStoneBlocks</soundWorking>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Plasteel</li>
+					</thingDefs>
+				</filter>
+				<count>75</count>
+			</li>
+		</ingredients>
+		<products>
+			<RTFTJ_Autohammer>1</RTFTJ_Autohammer>
+		</products>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Plasteel</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<workSkill>Crafting</workSkill>
+	</RecipeDef> -->
+	
+		<RecipeDef>
+		<defName>MakeBasicTools</defName>
+		<label>make basic tools</label>
+		<description>Makes a toolbelt with basic tools attached.</description>
+		<jobString>Making a toolbelt.</jobString>
+		<workAmount>1000</workAmount>
+		<workSpeedStat>StonecuttingSpeed</workSpeedStat>
+		<effectWorking>CutStone</effectWorking>
+    <soundWorking>Recipe_MakeStoneBlocks</soundWorking>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>30</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>WoodLog</li>
+					</thingDefs>
+				</filter>
+				<count>20</count>
+			</li>
+		</ingredients>
+		<products>
+			<ToolbeltBasic>1</ToolbeltBasic>
+		</products>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Steel</li>
+				<li>WoodLog</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<workSkill>Crafting</workSkill>
+		<researchPrerequisite>BasicConstruction</researchPrerequisite>
+	</RecipeDef>
+
+
+	<RecipeDef>
+		<defName>MakeModernTools</defName>
+		<label>make smithed tools</label>
+		<description>Makes a toolbelt with smithed tools attached.</description>
+		<jobString>Making a toolbelt.</jobString>
+		<workAmount>2000</workAmount>
+		<workSpeedStat>StonecuttingSpeed</workSpeedStat>
+		<effectWorking>CutStone</effectWorking>
+    <soundWorking>Recipe_MakeStoneBlocks</soundWorking>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>60</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>WoodLog</li>
+					</thingDefs>
+				</filter>
+				<count>30</count>
+			</li>
+		</ingredients>
+		<products>
+			<ToolbeltModern>1</ToolbeltModern>
+		</products>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Steel</li>
+				<li>WoodLog</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<workSkill>Crafting</workSkill>
+	</RecipeDef>
+
+	<RecipeDef>
+		<defName>MakeToolbeltAdv</defName>
+		<label>make advanced toolbelt</label>
+		<description>Makes a toolbelt with advanced tools attached.</description>
+		<jobString>Making a toolbelt.</jobString>
+		<workAmount>5000</workAmount>
+		<workSpeedStat>StonecuttingSpeed</workSpeedStat>
+		<effectWorking>CutStone</effectWorking>
+    <soundWorking>Recipe_MakeStoneBlocks</soundWorking>
+		<ingredients>
+					<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>50</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Plasteel</li>
+					</thingDefs>
+				</filter>
+				<count>70</count>
+			</li>
+		</ingredients>
+		<products>
+			<ToolbeltAdvanced>1</ToolbeltAdvanced>
+		</products>
+		<fixedIngredientFilter>
+			<thingDefs>
+				<li>Steel</li>
+				<li>WoodLog</li>
+				<li>Plasteel</li>
+			</thingDefs>
+		</fixedIngredientFilter>
+		<workSkill>Crafting</workSkill>
+		<recipeUsers>
+			<li>TableMachining</li>
+		</recipeUsers>
+	</RecipeDef>
+
+</RecipeDefs>

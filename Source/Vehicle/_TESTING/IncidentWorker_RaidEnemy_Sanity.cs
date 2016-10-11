@@ -83,8 +83,8 @@ namespace ToolsForHaul
                     string str = (current2.equipment == null || current2.equipment.Primary == null) ? "unarmed" : current2.equipment.Primary.LabelCap;
                     stringBuilder.AppendLine(current2.KindLabel + " - " + str);
                 }
-                Find.LetterStack.ReceiveLetter(this.GetLetterLabel(parms), this.GetLetterText(parms, list), this.GetLetterType(), letterLookTarget, stringBuilder.ToString());
-                if (this.GetLetterType() == LetterType.BadUrgent)
+                Find.LetterStack.ReceiveLetter(GetLetterLabel(parms), GetLetterText(parms, list), GetLetterType(), letterLookTarget, stringBuilder.ToString());
+                if (GetLetterType() == LetterType.BadUrgent)
                 {
                     TaleRecorder.RecordTale(TaleDefOf.RaidArrived, new object[0]);
                 }
@@ -135,11 +135,11 @@ namespace ToolsForHaul
                 maxPoints = 999999f;
             }
             if (!(from f in Find.FactionManager.AllFactions
-                  where this.FactionCanBeGroupSource(f, false) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
+                  where FactionCanBeGroupSource(f, false) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
                   select f).TryRandomElementByWeight((Faction f) => f.def.raidCommonality, out parms.faction))
             {
                 if (!(from f in Find.FactionManager.AllFactions
-                      where this.FactionCanBeGroupSource(f, true) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
+                      where FactionCanBeGroupSource(f, true) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
                       select f).TryRandomElementByWeight((Faction f) => f.def.raidCommonality, out parms.faction))
                 {
                     Log.Error("IncidentWorker_RaidEnemy could not fire even though we thought we could: no faction could generate with " + maxPoints + " points.");

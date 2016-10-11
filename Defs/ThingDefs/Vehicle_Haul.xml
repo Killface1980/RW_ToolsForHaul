@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ThingDefs>
-
+<!--
   <ThingDef Name="BaseThingWithComponents" Abstract="True">
-        
-    <category>Item</category>
+
+
+  </ThingDef>
+-->
+
+  <!-- ============================ Vehicle ========================== -->
+
+  <ThingDef  Name="BaseVehicle" Abstract="True">
+    <category>Building</category>
     <selectable>true</selectable>
     <tickerType>Normal</tickerType>
+
+    <castEdgeShadows>true</castEdgeShadows>
+    <staticSunShadowHeight>1</staticSunShadowHeight>
+    <stealable>true</stealable>
+
+    <sunShadowInfo>
+      <basewidth>1</basewidth>
+      <baseHeight>2</baseHeight>
+      <tallness>3</tallness>
+      <offset>(0.5,0.5,-0.1)</offset>
+    </sunShadowInfo>
+
     <altitudeLayer>Item</altitudeLayer>
     <useHitPoints>True</useHitPoints>
     <hasTooltip>true</hasTooltip>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
-  </ThingDef>
-  
-  
-  <!-- ============================ Vehicle ========================== -->
-
-  <ThingDef ParentName="BaseThingWithComponents" Name="BaseVehicle" Abstract="True">
+    <building>
+      <isEdifice>false</isEdifice>
+   <!--   <soundAmbient>MortarRound_Ambient</soundAmbient> -->
+    </building>
     <statBases>
       <Flammability>1.0</Flammability>
     </statBases>
@@ -60,7 +77,6 @@
         <multiplier>0.8</multiplier>
       </li>
     </damageMultipliers>-->
-
   </ThingDef>
 
 
@@ -88,7 +104,7 @@
       <VehicleSpeed>0.75</VehicleSpeed>
       <VehicleMaxItem>4</VehicleMaxItem>
     </statBases>
-    <size>(1,1)</size>
+    <size>(1,2)</size>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -112,13 +128,13 @@
         <li>TableMachining</li>
       </recipeUsers>
       <workAmount>2400</workAmount>
-    <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
-	  <skillRequirements>
-		<!-- <li>
+      <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
+      <skillRequirements>
+        <!-- <li>
 		  <skill>Crafting</skill>
 		  <minLevel>8</minLevel>
 		</li> -->
-	  </skillRequirements>
+      </skillRequirements>
     </recipeMaker>
     <comps>
       <li Class="ToolsForHaul.CompProperties_Axles">
@@ -159,7 +175,7 @@
       <VehicleSpeed>9</VehicleSpeed>
       <VehicleMaxItem>8</VehicleMaxItem>
     </statBases>
-    <size>(1,1)</size>
+    <size>(2,3)</size>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -186,7 +202,7 @@
         <li>TableMachining</li>
       </recipeUsers>
       <workAmount>24000</workAmount>
-      <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
+      <unfinishedThingDef>UnfinishedTruck</unfinishedThingDef>
       <skillRequirements>
         <li>
           <skill>Crafting</skill>
@@ -256,7 +272,7 @@
       <VehicleSpeed>15</VehicleSpeed>
       <VehicleMaxItem>2</VehicleMaxItem>
     </statBases>
-    <size>(1,1)</size>
+    <size>(1,2)</size>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -281,7 +297,7 @@
         <li>TableMachining</li>
       </recipeUsers>
       <workAmount>22000</workAmount>
-      <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
+      <unfinishedThingDef>UnfinishedATV</unfinishedThingDef>
       <skillRequirements>
         <li>
           <skill>Crafting</skill>
@@ -290,6 +306,11 @@
       </skillRequirements>
     </recipeMaker>
     <comps>
+      <li Class="CompProperties_Glower">
+        <glowRadius>6</glowRadius>
+        <glowColor>(217,112,33,0)</glowColor>
+      </li>
+
       <li Class="CompProperties_Explosive">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Bomb</explosiveDamageType>
@@ -376,7 +397,7 @@
       <VehicleSpeed>30</VehicleSpeed>
       <VehicleMaxItem>2</VehicleMaxItem>
     </statBases>
-    <size>(1,1)</size>
+    <size>(1,2)</size>
     <fillPercent>0.99</fillPercent>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
@@ -402,7 +423,7 @@
         <li>ComponentAssemblyBench</li>
       </recipeUsers>
       <workAmount>22000</workAmount>
-      <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
+      <unfinishedThingDef>UnfinishedSpeeder</unfinishedThingDef>
       <skillRequirements>
         <li>
           <skill>Crafting</skill>

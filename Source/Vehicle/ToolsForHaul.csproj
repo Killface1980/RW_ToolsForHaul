@@ -43,6 +43,10 @@
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ppumkin.LEDTechnology">
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\760900903\Assemblies\ppumkin.LEDTechnology.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,6 +60,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="_TESTING\IncidentWorker_Raid_Sanity.cs" />
+    <None Include="NoCCL\Class1.cs" />
+    <Compile Include="NoCCL\DetourAttribute.cs" />
+    <None Include="_TESTING\Class1.cs" />
+    <None Include="_TESTING\Class2.cs" />
+    <None Include="_TESTING\Class3.cs" />
+    <None Include="_TESTING\Class4.cs" />
+    <None Include="_TESTING\Designator_Claim.cs" />
+    <Compile Include="_TESTING\Class5.cs" />
     <Compile Include="_TESTING\IncidentWorker_RaidEnemy_Sanity.cs" />
     <Compile Include="_TESTING\IncidentWorker_VisitorGroupTFH.cs" />
     <Compile Include="_TESTING\IncidentWorker_VisitorGroup_Sanity.cs" />

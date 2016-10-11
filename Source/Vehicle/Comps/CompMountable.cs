@@ -28,6 +28,7 @@ namespace ToolsForHaul
             if (driver != null)
                 return;
             driver = pawn;
+        //    Find.ListerBuildings.Remove(parent as Building);
         }
         public bool IsMounted => driver != null;
 
@@ -38,6 +39,8 @@ namespace ToolsForHaul
             //if (Find.Reservations.IsReserved(parent, driver.Faction))
             Find.Reservations.ReleaseAllForTarget(parent);
             driver = null;
+            
+          //  Find.ListerBuildings.Add(parent as Building);
         }
         public void DismountAt(IntVec3 dismountPos)
         {
