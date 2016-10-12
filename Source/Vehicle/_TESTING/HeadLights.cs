@@ -19,6 +19,7 @@ namespace ToolsForHaul
 
 
         public List<GlowGridCache> ColorCellIndexCache { get; set; }
+        public List<GlowGridCache> ColorCellIndexCacheOriginal { get; set; }
         //public List<FloodBlocker> FloodBlockers { get; set; }
 
         Thing[] innerArray;
@@ -39,12 +40,12 @@ namespace ToolsForHaul
 
             //Color = new Color32(191, 63, 191, 1);
             //Color = new Color32(254, 255, 179, 0);
-            Color = new Color32(200, 200, 20, 0);
+            Color = new Color32(200, 200, 80, 0);
 
 
             innerArray = Find.EdificeGrid.InnerArray;
 
-            targetDistance = 18;
+            targetDistance = 20;
             angleModulus = 4;  //0 is 90 and the higher you go the more narrow the angle. //angle 45 is every two tiles? - actually its 90 because left side is 0->45 and then right is 45<-0
         }
 

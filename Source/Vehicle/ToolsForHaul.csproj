@@ -62,12 +62,12 @@
     <None Include="_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
-    <None Include="_TESTING\Class1.cs" />
+    <Compile Include="_TESTING\Repairable\ListerVehiclesRepairable.cs" />
     <None Include="_TESTING\Class2.cs" />
     <None Include="_TESTING\Class3.cs" />
     <None Include="_TESTING\Class4.cs" />
     <None Include="_TESTING\Designator_Claim.cs" />
-    <Compile Include="_TESTING\Class5.cs" />
+    <Compile Include="_TESTING\HeadLights.cs" />
     <Compile Include="_TESTING\IncidentWorker_RaidEnemy_Sanity.cs" />
     <Compile Include="_TESTING\IncidentWorker_VisitorGroupTFH.cs" />
     <Compile Include="_TESTING\IncidentWorker_VisitorGroup_Sanity.cs" />
@@ -171,9 +171,6 @@
     <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
     </Content>
-    <Content Include="..\..\Defs\ThingDefs\Pawns\RA_Races_Humanlike.xml">
-      <Link>Defs\RA_Races_Humanlike.xml</Link>
-    </Content>
     <Content Include="..\..\Defs\ThingDefs\RA_Apparels_Various.xml">
       <Link>Defs\ThingDefs\RA_Apparels_Various.xml</Link>
     </Content>
@@ -214,7 +211,9 @@
       <Link>Languages\English\Misc_Gameplay.xml</Link>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="_TESTING\TFHGlowFlood\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

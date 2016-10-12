@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ppumkin.LEDTechnology.Managers;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -26,7 +27,7 @@ namespace ToolsForHaul
         }
 
         // TODO make vehicles break down & get repaired like buildings
-        public override bool ClaimableBy(Faction fac)
+        public override bool ClaimableBy(Faction faction)
         {
             if (mountableComp.Driver == null)
             {
@@ -166,30 +167,6 @@ namespace ToolsForHaul
 
             base.SpawnSetup();
 
-            // Undo base
-
-            {
-                CellRect cellRect = this.OccupiedRect();
-                for (int i = cellRect.minZ; i <= cellRect.maxZ; i++)
-                {
-                    for (int j = cellRect.minX; j <= cellRect.maxX; j++)
-                    {
-                        IntVec3 loc = new IntVec3(j, 0, i);
-                        MapMeshFlag mapMeshFlag = MapMeshFlag.Buildings;
-                        if (this.def.coversFloor)
-                        {
-                            mapMeshFlag |= MapMeshFlag.Terrain;
-                        }
-                        if (this.def.Fillage == FillCategory.Full)
-                        {
-                            mapMeshFlag |= MapMeshFlag.Roofs;
-                            mapMeshFlag |= MapMeshFlag.Snow;
-                        }
-                        Find.Map.mapDrawer.MapMeshDirty(loc, mapMeshFlag);
-                        Find.GlowGrid.MarkGlowGridDirty(loc);
-                    }
-                }
-            }
 
             mountableComp = GetComp<CompMountable>();
 
@@ -206,7 +183,7 @@ namespace ToolsForHaul
         public override void DeSpawn()
         {
             base.DeSpawn();
-            ListerBuildingsRepairable.Notify_BuildingDeSpawned(this);
+        //    ListerVehiclesRepairable.Notify_VehicleDeSpawned(this);
 
         }
 
@@ -251,6 +228,9 @@ namespace ToolsForHaul
         {
             foreach (Gizmo baseGizmo in base.GetGizmos())
                 yield return baseGizmo;
+            if(Faction!= Faction.OfPlayer)
+                yield break;
+
             if (GetComp<CompExplosive>() != null)
             {
 
@@ -282,7 +262,7 @@ namespace ToolsForHaul
             Action action_Deconstruct;
 
             // do nothing if not of colony
-            if (myPawn.Faction != Faction.OfPlayer)
+            if (Faction != Faction.OfPlayer)
                 yield break;
 
             foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn))
@@ -369,9 +349,6 @@ namespace ToolsForHaul
 
             storage.TryDropAll(Position, ThingPlaceMode.Near);
 
-            Find.Map.listerBuildings.Remove(this);
-
-
             base.Destroy(mode);
         }
         private ThingDef fuelDefName = ThingDef.Named("Puddle_BioDiesel_Fuel");
@@ -384,7 +361,7 @@ namespace ToolsForHaul
             base.PostApplyDamage(dinfo, totalDamageDealt);
 
             // TODO make vehicles break down & get repaired like buildings
-            ListerBuildingsRepairable.Notify_BuildingTookDamage(this);
+      //      ListerVehiclesRepairable.Notify_VehicleTookDamage(this);
 
             if (dinfo.Def == DamageDefOf.Repair && tankLeaking)
             {
@@ -460,29 +437,47 @@ namespace ToolsForHaul
             base.Tick();
 
             #region Headlights
-            /*
-                        // TODO Add headlights to xml & move the flooder initialization to mountableComp
-                        if (mountableComp.Driver != null && !compVehicles.AnimalsCanDrive() && flooder == null)
-                        {
-                            flooder = new HeadLights(Position, Rotation, this);
-                            CustomGlowFloodManager.RegisterFlooder(flooder);
-                            CustomGlowFloodManager.RefreshGlowFlooders();
-                        }
-                        if (mountableComp.Driver == null && flooder != null)
-                        {
-                            CustomGlowFloodManager.DeRegisterGlower(flooder);
-                            CustomGlowFloodManager.RefreshGlowFlooders();
-                            flooder = null;
-                        }
-                        // TODO optimized performance, lights only at night and when driver is mounted => light switch gizmo?
-                        if (flooder != null)
-                        {
-                            flooder.Position = Position + Rotation.FacingCell + Rotation.FacingCell;
-                            flooder.Orientation = Rotation;
-                            CustomGlowFloodManager.RefreshGlowFlooders();
-                        }
-                        */
+
+            if (Find.GlowGrid.GameGlowAt(Position -Rotation.FacingCell) < 0.4f)
+            {
+                // TODO Add headlights to xml & move the flooder initialization to mountableComp
+                if (mountableComp.Driver != null && !compVehicles.AnimalsCanDrive() && flooder == null)
+                {
+                    flooder = new HeadLights(Position, Rotation, this);
+                    CustomGlowFloodManager.RegisterFlooder(flooder);
+                    CustomGlowFloodManager.RefreshGlowFlooders();
+                }
+                if (mountableComp.Driver == null && flooder != null)
+                {
+                    flooder.Clear();
+                    CustomGlowFloodManager.DeRegisterGlower(flooder);
+                    CustomGlowFloodManager.RefreshGlowFlooders();
+                    flooder = null;
+                }
+                // TODO optimized performance, lights only at night and when driver is mounted => light switch gizmo?
+                if (flooder != null)
+                {
+                    flooder.Position = Position + Rotation.FacingCell + Rotation.FacingCell;
+                    flooder.Orientation = Rotation;
+                    flooder.Clear();
+                    flooder.CalculateGlowFlood();
+                }
+            }
+            else
+            {
+                if (mountableComp.Driver == null && flooder!=null || flooder != null)
+                {
+                    CustomGlowFloodManager.DeRegisterGlower(flooder);
+                    CustomGlowFloodManager.RefreshGlowFlooders();
+                    flooder = null;
+                }
+
+            }
+
+
             #endregion
+
+
             if (!fueledByAI)
             {
                 if (mountableComp.IsMounted && mountableComp.Driver.Faction != Faction.OfPlayer && refuelableComp != null && refuelableComp.FuelPercent < 0.550000011920929)

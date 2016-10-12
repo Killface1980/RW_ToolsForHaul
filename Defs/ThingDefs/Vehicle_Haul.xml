@@ -14,23 +14,22 @@
     <selectable>true</selectable>
     <tickerType>Normal</tickerType>
 
-    <castEdgeShadows>true</castEdgeShadows>
-    <staticSunShadowHeight>1</staticSunShadowHeight>
     <stealable>true</stealable>
 
-    <sunShadowInfo>
-      <basewidth>1</basewidth>
-      <baseHeight>2</baseHeight>
-      <tallness>3</tallness>
-      <offset>(0.5,0.5,-0.1)</offset>
-    </sunShadowInfo>
-
+    <CanHaveFaction>true</CanHaveFaction>
+    
     <altitudeLayer>Item</altitudeLayer>
     <useHitPoints>True</useHitPoints>
     <hasTooltip>true</hasTooltip>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
     <building>
       <isEdifice>false</isEdifice>
+      <repairable>true</repairable>
+      <isSittable>true</isSittable>
+      <expandHomeArea>false</expandHomeArea>
+      <allowWireConnection>false</allowWireConnection>
+      <bed_humanlike>false</bed_humanlike>
+      <isInert>false</isInert>
    <!--   <soundAmbient>MortarRound_Ambient</soundAmbient> -->
     </building>
     <statBases>
@@ -51,32 +50,25 @@
         <compClass>CompColorable</compClass>
       </li>
     </comps>
-    <!--<damageMultipliers>
-      <li>
+    <li>
+      <damageDef>Arrow</damageDef>
+      <multiplier>0.3</multiplier>
+    </li>      <li>
         <damageDef>Bomb</damageDef>
-        <multiplier>2.5</multiplier>
-      </li>
-      <li>
-        <damageDef>Thermobaric</damageDef>
         <multiplier>2.5</multiplier>
       </li>
       <li>
         <damageDef>Bullet</damageDef>
         <multiplier>1.0</multiplier>
       </li>
+    <li>
+      <damageDef>Repair</damageDef>
+      <multiplier>0.3</multiplier>
+    </li>
       <li>
-        <damageDef>Fragment</damageDef>
-        <multiplier>0.5</multiplier>
-      </li>
-      <li>
-        <damageDef>Arrow</damageDef>
-        <multiplier>0.3</multiplier>
-      </li>
-      <li>
-        <damageDef>Electrical</damageDef>
+        <damageDef>EMP</damageDef>
         <multiplier>0.8</multiplier>
       </li>
-    </damageMultipliers>-->
   </ThingDef>
 
 
@@ -84,7 +76,6 @@
     <defName>VehicleCart</defName>
     <label>cart</label>
     <repairEffect>ConstructWood</repairEffect>
-    <pathCost>70</pathCost>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
@@ -104,7 +95,7 @@
       <VehicleSpeed>0.75</VehicleSpeed>
       <VehicleMaxItem>4</VehicleMaxItem>
     </statBases>
-    <size>(1,2)</size>
+    <size>(1,1)</size>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -155,7 +146,6 @@
     <defName>VehicleTruck</defName>
     <label>truck</label>
     <repairEffect>Repair</repairEffect>
-    <pathCost>70</pathCost>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
@@ -175,7 +165,7 @@
       <VehicleSpeed>9</VehicleSpeed>
       <VehicleMaxItem>8</VehicleMaxItem>
     </statBases>
-    <size>(2,3)</size>
+    <size>(1,1)</size>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -251,7 +241,6 @@
     <defName>VehicleATV</defName>
     <label>ATV</label>
     <repairEffect>Repair</repairEffect>
-    <pathCost>70</pathCost>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
@@ -272,7 +261,7 @@
       <VehicleSpeed>15</VehicleSpeed>
       <VehicleMaxItem>2</VehicleMaxItem>
     </statBases>
-    <size>(1,2)</size>
+    <size>(1,1)</size>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -306,11 +295,6 @@
       </skillRequirements>
     </recipeMaker>
     <comps>
-      <li Class="CompProperties_Glower">
-        <glowRadius>6</glowRadius>
-        <glowColor>(217,112,33,0)</glowColor>
-      </li>
-
       <li Class="CompProperties_Explosive">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Bomb</explosiveDamageType>
@@ -397,7 +381,7 @@
       <VehicleSpeed>30</VehicleSpeed>
       <VehicleMaxItem>2</VehicleMaxItem>
     </statBases>
-    <size>(1,2)</size>
+    <size>(1,1)</size>
     <fillPercent>0.99</fillPercent>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>

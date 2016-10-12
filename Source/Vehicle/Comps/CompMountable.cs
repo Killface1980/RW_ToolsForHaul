@@ -160,6 +160,8 @@ namespace ToolsForHaul
         {
             foreach (Command compCom in base.CompGetGizmosExtra())
                 yield return compCom;
+            if(parent.Faction!= Faction.OfPlayer)
+                yield break;
 
             Command_Action com = new Command_Action();
 
