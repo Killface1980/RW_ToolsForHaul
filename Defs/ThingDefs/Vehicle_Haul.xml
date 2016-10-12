@@ -15,8 +15,6 @@
     <tickerType>Normal</tickerType>
 
     <stealable>true</stealable>
-
-    <CanHaveFaction>true</CanHaveFaction>
     
     <altitudeLayer>Item</altitudeLayer>
     <useHitPoints>True</useHitPoints>
@@ -30,6 +28,7 @@
       <allowWireConnection>false</allowWireConnection>
       <bed_humanlike>false</bed_humanlike>
       <isInert>false</isInert>
+      <deconstructible>false</deconstructible>
    <!--   <soundAmbient>MortarRound_Ambient</soundAmbient> -->
     </building>
     <statBases>

@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 namespace ToolsForHaul
 {
     [StaticConstructorOnStartup]
-    public class Vehicle_Cart : Building, IThingContainerOwner, IAttackTarget//, IAssignableBuilding
+    public class Vehicle_Cart : Building, IThingContainerOwner, IAttackTarget
     {
         #region Variables
         // ==================================
@@ -29,7 +29,7 @@ namespace ToolsForHaul
         // TODO make vehicles break down & get repaired like buildings
         public override bool ClaimableBy(Faction faction)
         {
-            if (mountableComp.Driver == null)
+            if (!mountableComp.IsMounted)
             {
                 return true;
             }
@@ -63,7 +63,6 @@ namespace ToolsForHaul
         //Graphic data
         private Graphic_Single graphic_Wheel_Single;
         private Graphic_Multi graphic_FullStorage;
-
 
         //Body and part location
         private Vector3 wheelLoc;
@@ -167,6 +166,8 @@ namespace ToolsForHaul
 
             base.SpawnSetup();
 
+            // for now, to be removed
+            despawnAtEdge = true;
 
             mountableComp = GetComp<CompMountable>();
 
@@ -183,7 +184,7 @@ namespace ToolsForHaul
         public override void DeSpawn()
         {
             base.DeSpawn();
-        //    ListerVehiclesRepairable.Notify_VehicleDeSpawned(this);
+            //    ListerVehiclesRepairable.Notify_VehicleDeSpawned(this);
 
         }
 
@@ -219,16 +220,16 @@ namespace ToolsForHaul
             Scribe_Deep.LookDeep(ref allowances, "allowances");
             Scribe_Values.LookValue(ref tankLeaking, "tankLeaking");
             Scribe_Values.LookValue(ref tankHitPos, "tankHitPos");
-
-            HashSet<string> hashSet = new HashSet<string>();
-
+            Scribe_Values.LookValue(ref despawnAtEdge, "despawnAtEdge");
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
+
             foreach (Gizmo baseGizmo in base.GetGizmos())
                 yield return baseGizmo;
-            if(Faction!= Faction.OfPlayer)
+
+            if (Faction != Faction.OfPlayer)
                 yield break;
 
             if (GetComp<CompExplosive>() != null)
@@ -245,12 +246,25 @@ namespace ToolsForHaul
                 command_Action.defaultLabel = "CommandDetonateLabel".Translate();
                 yield return command_Action;
             }
+         // yield return new Command_Action
+         // {
+         //     defaultLabel = "CommandBedSetOwnerLabel".Translate(),
+         //     icon = ContentFinder<Texture2D>.Get("UI/Commands/AssignOwner", true),
+         //     defaultDesc = "CommandGraveAssignColonistDesc".Translate(),
+         //     action = delegate
+         //     {
+         //         Find.WindowStack.Add(new Dialog_AssignBuildingOwner(this));
+         //     },
+         //     hotKey = KeyBindingDefOf.Misc3
+         // };
         }
 
         private void Command_Detonate()
         {
-            GetComp<CompExplosive>().StartWick(null);
+            GetComp<CompExplosive>().StartWick();
         }
+
+
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
         {
@@ -361,7 +375,7 @@ namespace ToolsForHaul
             base.PostApplyDamage(dinfo, totalDamageDealt);
 
             // TODO make vehicles break down & get repaired like buildings
-      //      ListerVehiclesRepairable.Notify_VehicleTookDamage(this);
+            //      ListerVehiclesRepairable.Notify_VehicleTookDamage(this);
 
             if (dinfo.Def == DamageDefOf.Repair && tankLeaking)
             {
@@ -438,7 +452,7 @@ namespace ToolsForHaul
 
             #region Headlights
 
-            if (Find.GlowGrid.GameGlowAt(Position -Rotation.FacingCell) < 0.4f)
+            if (Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell) < 0.4f)
             {
                 // TODO Add headlights to xml & move the flooder initialization to mountableComp
                 if (mountableComp.Driver != null && !compVehicles.AnimalsCanDrive() && flooder == null)
@@ -465,7 +479,7 @@ namespace ToolsForHaul
             }
             else
             {
-                if (mountableComp.Driver == null && flooder!=null || flooder != null)
+                if (mountableComp.Driver == null && flooder != null || flooder != null)
                 {
                     CustomGlowFloodManager.DeRegisterGlower(flooder);
                     CustomGlowFloodManager.RefreshGlowFlooders();
@@ -625,5 +639,28 @@ namespace ToolsForHaul
             return stringBuilder.ToString();
         }
         #endregion
+
+
+
+
+
+
+        public IEnumerable<Pawn> AssigningCandidates
+        {
+            get
+            {
+                return Find.MapPawns.FreeColonists;
+            }
+        }
+
+
+
+        public int MaxAssignedPawnsCount
+        {
+            get
+            {
+                return 2;
+            }
+        }
     }
 }

@@ -28,19 +28,35 @@ namespace ToolsForHaul
             if (driver != null)
                 return;
             driver = pawn;
-        //    Find.ListerBuildings.Remove(parent as Building);
-        }
-        public bool IsMounted => driver != null;
 
-        public Pawn Driver => driver;
+            // Set faction of vehicle to whoever mounts it
+            Vehicle_Cart vehicleCart = parent as Vehicle_Cart;
+            if (vehicleCart != null && vehicleCart.Faction != driver.Faction  && vehicleCart.ClaimableBy(driver.Faction))
+            {
+                parent.SetFaction(driver.Faction);
+            }
+
+            //    Find.ListerBuildings.Remove(parent as Building);
+        }
+        public bool IsMounted
+        {
+            get { return driver != null; }
+        }
+
+        public Pawn Driver
+        {
+            get { return driver; }
+        }
 
         public void Dismount()
         {
             //if (Find.Reservations.IsReserved(parent, driver.Faction))
             Find.Reservations.ReleaseAllForTarget(parent);
             driver = null;
-            
-          //  Find.ListerBuildings.Add(parent as Building);
+            if (parent.Faction != Faction.OfPlayer)
+                parent.SetForbidden(true);
+            parent.SetFaction(null);;
+            //  Find.ListerBuildings.Add(parent as Building);
         }
         public void DismountAt(IntVec3 dismountPos)
         {
@@ -102,28 +118,28 @@ namespace ToolsForHaul
                         driver.CurJob.def == JobDefOf.EnterCryptosleepCasket ||
                         driver.CurJob.def == JobDefOf.LayDown ||
                         driver.CurJob.def == JobDefOf.Lovin ||
-                        driver.CurJob.def == JobDefOf.MarryAdjacentPawn || 
-                        driver.CurJob.def == JobDefOf.Mate || 
-                        driver.CurJob.def == JobDefOf.PrisonerAttemptRecruit || 
-                        driver.CurJob.def == JobDefOf.Research || 
-                        driver.CurJob.def == JobDefOf.SocialRelax || 
-                        driver.CurJob.def == JobDefOf.SpectateCeremony || 
-                        driver.CurJob.def == JobDefOf.StandAndBeSociallyActive || 
-                        driver.CurJob.def == JobDefOf.TakeToBedToOperate || 
-                        driver.CurJob.def == JobDefOf.TendPatient || 
-                        driver.CurJob.def == JobDefOf.UseCommsConsole || 
-                        driver.CurJob.def == JobDefOf.UseNeurotrainer || 
-                        driver.CurJob.def == JobDefOf.VisitSickPawn || 
-                        driver.CurJob.def == JobDefOf.Shear || 
-                       
+                        driver.CurJob.def == JobDefOf.MarryAdjacentPawn ||
+                        driver.CurJob.def == JobDefOf.Mate ||
+                        driver.CurJob.def == JobDefOf.PrisonerAttemptRecruit ||
+                        driver.CurJob.def == JobDefOf.Research ||
+                        driver.CurJob.def == JobDefOf.SocialRelax ||
+                        driver.CurJob.def == JobDefOf.SpectateCeremony ||
+                        driver.CurJob.def == JobDefOf.StandAndBeSociallyActive ||
+                        driver.CurJob.def == JobDefOf.TakeToBedToOperate ||
+                        driver.CurJob.def == JobDefOf.TendPatient ||
+                        driver.CurJob.def == JobDefOf.UseCommsConsole ||
+                        driver.CurJob.def == JobDefOf.UseNeurotrainer ||
+                        driver.CurJob.def == JobDefOf.VisitSickPawn ||
+                        driver.CurJob.def == JobDefOf.Shear ||
+
                         driver.CurJob.def == JobDefOf.FeedPatient ||
                         driver.CurJob.def == JobDefOf.PrisonerExecution ||
                         driver.CurJob.def == JobDefOf.ManTurret ||
-                        driver.CurJob.def == JobDefOf.Train || 
+                        driver.CurJob.def == JobDefOf.Train ||
                         driver.health.NeedsMedicalRest ||
                         driver.health.PrefersMedicalRest
 
-                        ) 
+                        )
                         && driver.Position.Roofed())
                     {
                         parent.Position = Position.ToIntVec3();
@@ -160,7 +176,8 @@ namespace ToolsForHaul
         {
             foreach (Command compCom in base.CompGetGizmosExtra())
                 yield return compCom;
-            if(parent.Faction!= Faction.OfPlayer)
+
+            if (parent.Faction != Faction.OfPlayer)
                 yield break;
 
             Command_Action com = new Command_Action();
@@ -194,26 +211,30 @@ namespace ToolsForHaul
             // order to drive
             Action action_Order;
             string verb;
-            if (!IsMounted)
+            if (parent.Faction == Faction.OfPlayer)
             {
-                action_Order = () =>
+                if (!IsMounted)
                 {
-                    Find.Reservations.ReleaseAllForTarget(parent);
-                    Find.Reservations.Reserve(myPawn, parent);
-                    Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Mount"), parent);
-                    myPawn.drafter.TakeOrderedJob(jobNew);
-                };
-                verb = txtMountOn;
-                yield return new FloatMenuOption(verb.Translate(parent.LabelShort), action_Order);
-            }
-            else if (IsMounted && myPawn == driver)
-            {
-                action_Order = () =>
+                    action_Order = () =>
+                    {
+                        Find.Reservations.ReleaseAllForTarget(parent);
+                        Find.Reservations.Reserve(myPawn, parent);
+                        Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Mount"), parent);
+                        myPawn.drafter.TakeOrderedJob(jobNew);
+                    };
+                    verb = txtMountOn;
+                    yield return new FloatMenuOption(verb.Translate(parent.LabelShort), action_Order);
+                }
+                else if (IsMounted && myPawn == driver)
                 {
-                    Dismount();
-                };
-                verb = txtDismount;
-                yield return new FloatMenuOption(verb.Translate(parent.LabelShort), action_Order);
+                    action_Order = () =>
+                    {
+                        Dismount();
+                    };
+                    verb = txtDismount;
+                    yield return new FloatMenuOption(verb.Translate(parent.LabelShort), action_Order);
+                }
+
             }
         }
 
