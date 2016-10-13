@@ -29,14 +29,14 @@ namespace ToolsForHaul
         {
             List<Thing> thingList = loc.GetThingList();
 
-            numOfContents = backpack.wearer.inventory.container.Count;
+                numOfContents = backpack.wearer.inventory.container.Count;
 
             int designationsTotalStackCount = 0;
             foreach (Designation designation in designations)
                 designationsTotalStackCount += designation.target.Thing.stackCount;
 
             //No Item space or no stack space
-            if (designations.Count + numOfContents >= backpack.MaxItem 
+            if (designations.Count + numOfContents >= backpack.MaxItem
                 || designationsTotalStackCount + backpack.wearer.inventory.container.TotalStackCount >= backpack.MaxStack)
                 return new AcceptanceReport("BackpackIsFull".Translate());
 
@@ -71,9 +71,9 @@ namespace ToolsForHaul
             }
             if (!jobNew.targetQueueA.NullOrEmpty())
                 //if (backpack.wearer.drafter.CanTakePlayerJob())
-                    backpack.wearer.drafter.TakeOrderedJob(jobNew);
-                //else
-                //    backpack.wearer.drafter.QueueJob(jobNew);
+                backpack.wearer.drafter.TakeOrderedJob(jobNew);
+            //else
+            //    backpack.wearer.drafter.QueueJob(jobNew);
             DesignatorManager.Deselect();
         }
 

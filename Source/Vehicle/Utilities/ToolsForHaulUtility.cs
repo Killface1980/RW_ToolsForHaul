@@ -146,7 +146,7 @@ namespace ToolsForHaul
             if (cart == null)
             {
                 Apparel_Backpack backpack = TryGetBackpack(pawn);
-                CompSlots compInventory = TryGetBackpack(pawn).TryGetComp<CompSlots>();
+                CompSlotsBackpack compInventory = TryGetBackpack(pawn).TryGetComp<CompSlotsBackpack>();
 
                 jobDef = DefDatabase<JobDef>.GetNamed("HaulWithBackpack");
                 targetC = backpack;

@@ -61,35 +61,40 @@
   <ItemGroup>
     <None Include="_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
+    <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
+    <Compile Include="Comps\CompSlotsToolbelt.cs" />
+    <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
+    <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
+    <Compile Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="_TESTING\HeadLights.cs" />
     <Compile Include="_TESTING\IncidentWorker_RaidEnemy_Sanity.cs" />
     <Compile Include="_TESTING\IncidentWorker_VisitorGroupTFH.cs" />
     <Compile Include="_TESTING\IncidentWorker_VisitorGroup_Sanity.cs" />
-    <None Include="ARB\Class1.cs" />
+    <None Include="_inactive\JobGiver_ExitMapRandom2.cs" />
     <Compile Include="Alerts\Class1.cs" />
     <Compile Include="ARB\StatWorker_MoveSpeed.cs" />
-    <None Include="Comps\BreakdownVehicles\Class1.cs" />
+    <None Include="_inactive\Class1.cs" />
     <Compile Include="Comps\CompAxles.cs" />
     <Compile Include="Comps\CompProperties_Axles.cs" />
     <Compile Include="Comps\CompProperties_Vehicles.cs" />
     <Compile Include="Comps\CompVehicles.cs" />
-    <Compile Include="Backpack\Apparel_Backpack.cs" />
+    <Compile Include="Things\Apparel_Backpack.cs" />
     <Compile Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
-    <None Include="Designators\Vehicle\Designator_Claim.cs" />
-    <Compile Include="CCL\ModHelperDef.cs" />
+    <None Include="_inactive\Designator_Claim.cs" />
+    <None Include="_inactive\ModHelperDef.cs" />
     <Compile Include="CCL\CompInjectionSet.cs" />
     <Compile Include="CCL\DefInjectionQualifier.cs" />
     <Compile Include="CR\IncendiaryFuel.cs" />
-    <Compile Include="Comps\CompWeaponExtensions.cs" />
-    <None Include="RA\RA_PawnRenderer.cs" />
-    <Compile Include="Comps\CompTool.cs" />
-    <Compile Include="JobDrivers\JobDriver_PutInSlot.cs" />
+    <None Include="_inactive\CompWeaponExtensions.cs" />
+    <None Include="_inactive\RA_PawnRenderer.cs" />
+    <None Include="_inactive\CompTool.cs" />
+    <Compile Include="JobDrivers\JobDriver_PutInBackpackSlot.cs" />
     <Compile Include="Comps\CompEquipmentGizmoUser.cs" />
-    <Compile Include="Comps\CompSlots.cs" />
+    <Compile Include="Comps\CompSlotsBackpack.cs" />
     <Compile Include="Comps\CompEquipmentGizmoProvider.cs" />
-    <Compile Include="Designators\Designator_PutInSlot.cs" />
+    <Compile Include="Designators\Designator_PutInBackpackSlot.cs" />
     <Compile Include="JobGivers\JobGiver_ExitMapBest.cs" />
     <Compile Include="JobGivers\JobGiver_ExitMapRandom.cs" />
     <Compile Include="JobGivers\JobGiver_Kidnap.cs" />
@@ -112,7 +117,7 @@
     <Compile Include="Comps\CompMountable.cs" />
     <Compile Include="Designators\Designator_ApplyMedicine.cs" />
     <Compile Include="Designators\Designator_Mount.cs" />
-    <Compile Include="Designators\Designator_PutInInventory.cs" />
+    <None Include="Designators\Designator_PutInInventory.cs" />
     <Compile Include="Gizmos\Gizmo_BackpackEquipment.cs" />
     <Compile Include="ITabs\ITab_Pawn_VehicleGear.cs">
       <SubType>Code</SubType>
@@ -127,13 +132,13 @@
     <Compile Include="JobDrivers\JobDriver_HaulWithBackpack.cs" />
     <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
     <Compile Include="JobDrivers\JobDriver_Mount.cs" />
-    <Compile Include="JobDrivers\JobDriver_PutInInventory.cs" />
+    <None Include="JobDrivers\JobDriver_PutInInventory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Toils\Toils_Collect.cs" />
-    <Compile Include="Vehicles\Vehicle_Cart.cs" />
+    <Compile Include="Things\Vehicle_Cart.cs" />
     <Compile Include="Designators\Designator_Board.cs" />
     <Compile Include="Designators\Designator_Move.cs" />
-    <Compile Include="Vehicles\Vehicle_Saddle.cs" />
+    <Compile Include="Things\Vehicle_Saddle.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
   <ItemGroup>

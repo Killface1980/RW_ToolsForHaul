@@ -40,7 +40,7 @@ namespace ToolsForHaul
 
             //Color = new Color32(191, 63, 191, 1);
             //Color = new Color32(254, 255, 179, 0);
-            Color = new Color32(200, 200, 80, 0);
+            Color = new Color32(210, 210, 140, 0);
 
 
             innerArray = Find.EdificeGrid.InnerArray;

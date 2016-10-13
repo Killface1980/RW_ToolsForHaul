@@ -2,12 +2,13 @@
 <Defs>
   
   <StatDef>
-    <defName>BackpackMaxItem</defName>
-    <label>Backpack max item</label>
-    <description>The maximum amount of items a backpack can carry at once.</description>
+    <defName>TFHMaxItem</defName>
+    <label>Inventory max item</label>
+    <description>The maximum amount of items a backpack or toolbelt can carry at once.</description>
     <category>Apparel</category>
     <toStringStyle>Integer</toStringStyle>
     <showIfUndefined>false</showIfUndefined>
+   <!--
     <parts>
       <li Class="StatPart_Quality">
         <factorAwful>0.6</factorAwful>
@@ -21,6 +22,7 @@
         <factorLegendary>2.8</factorLegendary>
       </li>
     </parts>
+    -->
   </StatDef>
 
 

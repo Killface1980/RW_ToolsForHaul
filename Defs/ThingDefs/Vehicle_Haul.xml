@@ -49,25 +49,6 @@
         <compClass>CompColorable</compClass>
       </li>
     </comps>
-    <li>
-      <damageDef>Arrow</damageDef>
-      <multiplier>0.3</multiplier>
-    </li>      <li>
-        <damageDef>Bomb</damageDef>
-        <multiplier>2.5</multiplier>
-      </li>
-      <li>
-        <damageDef>Bullet</damageDef>
-        <multiplier>1.0</multiplier>
-      </li>
-    <li>
-      <damageDef>Repair</damageDef>
-      <multiplier>0.3</multiplier>
-    </li>
-      <li>
-        <damageDef>EMP</damageDef>
-        <multiplier>0.8</multiplier>
-      </li>
   </ThingDef>
 
 
@@ -87,7 +68,7 @@
     <graphicData>
       <texPath>Things/Pawn/VehicleCart/Cart</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
-      <drawSize>(2.7,2.7)</drawSize>
+      <drawSize>(3,3)</drawSize>
     </graphicData>
     <statBases>
       <MaxHitPoints>150</MaxHitPoints>
@@ -253,7 +234,7 @@
     <graphicData>
       <texPath>Things/Pawn/VehicleATV/ATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
-      <drawSize>(2.7,2.7)</drawSize>
+      <drawSize>(3,3)</drawSize>
     </graphicData>
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>

@@ -14,15 +14,15 @@ namespace ToolsForHaul
             return false;
         }
 
-        public IEnumerable<CompSlots> EquippedSlottersComps()
+        public IEnumerable<CompSlotsBackpack> EquippedSlottersComps()
         {
             // iterate through all apparels
             foreach (ThingWithComps thing in Owner.apparel.WornApparel)
             // NOTE: check what type to return (If it's designator, command_action, command or gizmo)
             {
-                foreach (ThingComp thingComp in thing.AllComps.FindAll(comp => comp.GetType() == typeof(CompSlots)))
+                foreach (ThingComp thingComp in thing.AllComps.FindAll(comp => comp.GetType() == typeof(CompSlotsBackpack)))
                 {
-                    CompSlots comp = (CompSlots)thingComp;
+                    CompSlotsBackpack comp = (CompSlotsBackpack)thingComp;
                     // reassign pawn owner in comp, if not already set
                     comp.owner = comp.owner != Owner ? Owner : comp.owner;
 
@@ -33,9 +33,9 @@ namespace ToolsForHaul
             // iterate through all equipment (weapons)
             foreach (ThingWithComps thing in Owner.equipment.AllEquipment)
             {
-                foreach (ThingComp thingComp in thing.AllComps.FindAll(comp => comp.GetType() == typeof(CompSlots)))
+                foreach (ThingComp thingComp in thing.AllComps.FindAll(comp => comp.GetType() == typeof(CompSlotsBackpack)))
                 {
-                    CompSlots comp = (CompSlots)thingComp;
+                    CompSlotsBackpack comp = (CompSlotsBackpack)thingComp;
                     // reassign pawn owner in comp, if not already set
                     comp.owner = comp.owner != Owner ? Owner : comp.owner;
 

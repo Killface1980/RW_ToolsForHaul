@@ -52,12 +52,14 @@ namespace ToolsForHaul
         {
             //if (Find.Reservations.IsReserved(parent, driver.Faction))
             Find.Reservations.ReleaseAllForTarget(parent);
-            driver = null;
-            if (parent.Faction != Faction.OfPlayer)
+            if (driver.Faction != Faction.OfPlayer)
                 parent.SetForbidden(true);
-            parent.SetFaction(null);;
+            if(driver.Dead || driver.Downed)
+                parent.SetFaction(null);
+            driver = null;
             //  Find.ListerBuildings.Add(parent as Building);
         }
+
         public void DismountAt(IntVec3 dismountPos)
         {
             //if (driver.Position.IsAdjacentTo8WayOrInside(dismountPos, driver.Rotation, new IntVec2(1,1)))
@@ -107,9 +109,14 @@ namespace ToolsForHaul
                 {
                     parent.Position = Position.ToIntVec3();
                     parent.Rotation = driver.Rotation;
-                    Dismount();
+                    DismountAt(driver.Position - InteractionOffset.ToIntVec3());
                     return;
                 }
+                if (!driver.Spawned)
+                {
+                    parent.DeSpawn();
+                }
+
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
                 {
                     if (driver.Faction == Faction.OfPlayer && driver.CurJob != null &&

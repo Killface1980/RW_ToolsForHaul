@@ -85,9 +85,10 @@ namespace ToolsForHaul
 
             injectionSet.compProps.compClass = typeof(CompEquipmentGizmoUser);
             List<ThingDef> thingDefs = DefInjectionQualifier.FilteredThingDefs(injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs);
+
+
             if (!thingDefs.NullOrEmpty())
             {
-
                 foreach (ThingDef thingDef in thingDefs)
                 {
                     // TODO:  Make a full copy using the comp in this def as a template
@@ -97,7 +98,6 @@ namespace ToolsForHaul
                         thingDef.comps.Add(injectionSet.compProps);
                     }
                 }
-
             }
 
 

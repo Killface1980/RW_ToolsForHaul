@@ -10,7 +10,7 @@ using Verse.Sound;
 namespace ToolsForHaul
 {
     [StaticConstructorOnStartup]
-    public class Gizmo_BackpackEquipment : Gizmo
+    public class Gizmo_ToolbeltEquipment : Gizmo
     {
         private static string txtNoItem;
         private static string txtThingInfo;
@@ -21,7 +21,7 @@ namespace ToolsForHaul
 
 
         //Links
-        public Apparel_Backpack backpack;
+        public Apparel_Toolbelt toolbelt;
 
         //Constants
         private static readonly Texture2D FilledTex = SolidColorMaterials.NewSolidColorTexture(1f, 1f, 1f, 0.10f);
@@ -48,7 +48,7 @@ namespace ToolsForHaul
         {
             get
             {
-                switch (backpack.MaxItem)
+                switch (toolbelt.MaxItem)
                 {
                     case 8:
                         return Height * 2;
@@ -62,7 +62,7 @@ namespace ToolsForHaul
         //IconClickSound
         private SoundDef thingIconSound;
 
-        public Gizmo_BackpackEquipment()
+        public Gizmo_ToolbeltEquipment()
         {
             txtNoItem = "NoItem".Translate();
             txtThingInfo = "ThingInfo".Translate();
@@ -71,28 +71,26 @@ namespace ToolsForHaul
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft)
         {
-            Rect overRect = new Rect(topLeft.x, topLeft.y, curWidth, Height);
-            Widgets.DrawWindowBackground(overRect);
 
             //Equipment slot
-            Pawn wearer = backpack.wearer;
+            Pawn wearer = toolbelt.wearer;
 
             // Slots CompSlots
             {
-                Rect inventoryRect = new Rect(topLeft.x, topLeft.y, Width, Height);
+                Rect gizmoRect = new Rect(topLeft.x, topLeft.y, Width, Height);
 
-                Widgets.DrawWindowBackground(inventoryRect);
-                CompSlotsBackpack backpackSlots = backpack.GetComp<CompSlotsBackpack>();
-                DrawSlots(wearer, backpackSlots, inventoryRect);
+                Widgets.DrawWindowBackground(gizmoRect);
+                CompSlotsToolbelt toolbeltSlots = toolbelt.GetComp<CompSlotsToolbelt>();
+                DrawSlots(wearer, toolbeltSlots, gizmoRect);
             }
 
             return new GizmoResult(GizmoState.Clear);
         }
 
-        public void DrawSlots(Pawn wearer, CompSlotsBackpack SlotsBackpackComp, Rect inventoryRect)
+        public void DrawSlots(Pawn wearer, CompSlotsToolbelt SlotsToolbeltComp, Rect inventoryRect)
         {
             // draw text message if no contents inside
-            if (SlotsBackpackComp.slots.Count == 0)
+            if (SlotsToolbeltComp.slots.Count == 0)
             {
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleCenter;
@@ -104,29 +102,32 @@ namespace ToolsForHaul
             else
             {
                 Rect slotRect = new Rect(inventoryRect.x, inventoryRect.y, Height / 2, Height / 2);
+
                 for (int currentSlotInd = 0; currentSlotInd < numOfMaxItemsPerRow * numOfRow; currentSlotInd++)
                 {
-                    if (currentSlotInd >= backpack.MaxItem)
+
+                    if (currentSlotInd >= toolbelt.MaxItem)
                     {
                         slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % numOfMaxItemsPerRow);
                         slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
                         Widgets.DrawTextureFitted(slotRect, NoAvailableTex, 1.0f);
                     }
 
-                    if (currentSlotInd >= SlotsBackpackComp.slots.Count)
+                    if (currentSlotInd >= SlotsToolbeltComp.slots.Count)
                     {
                         slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % numOfMaxItemsPerRow);
                         slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
                         Widgets.DrawTextureFitted(slotRect, EmptyTex, 1.0f);
                     }
 
+
                     // draw occupied slots
-                    if (currentSlotInd < SlotsBackpackComp.slots.Count)
+                    if (currentSlotInd < SlotsToolbeltComp.slots.Count)
                     {
                         slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % numOfMaxItemsPerRow);
                         slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
 
-                        Thing currentThing = SlotsBackpackComp.slots[currentSlotInd];
+                        Thing currentThing = SlotsToolbeltComp.slots[currentSlotInd];
 
                         // draws greyish slot background
                         Widgets.DrawTextureFitted(slotRect.ContractedBy(3f), texOccupiedSlotBG, 1f);
@@ -159,7 +160,7 @@ namespace ToolsForHaul
                                 //Weapon
                                 if (currentThing != null && currentThing.def.equipmentType == EquipmentType.Primary && (currentThing.def.IsRangedWeapon || currentThing.def.IsMeleeWeapon))
                                 {
-                                    SlotsBackpackComp.SwapEquipment(currentThing as ThingWithComps);
+                                    SlotsToolbeltComp.SwapEquipment(currentThing as ThingWithComps);
                                 }
 
                                 //// equip weapon in slot
@@ -178,7 +179,7 @@ namespace ToolsForHaul
                                     new FloatMenuOption("Drop", () =>
                                     {
                                         Thing resultThing;
-                                        SlotsBackpackComp.slots.TryDrop(currentThing, wearer.Position,
+                                        SlotsToolbeltComp.slots.TryDrop(currentThing, wearer.Position,
                                             ThingPlaceMode.Near, out resultThing);
                                     })
                                 };
@@ -191,35 +192,20 @@ namespace ToolsForHaul
                                 if (currentThing != null && currentThing.def.equipmentType == EquipmentType.Primary)
                                     options.Add(new FloatMenuOption("Equip".Translate(currentThing.LabelCap), () =>
                                     {
-                                        SlotsBackpackComp.SwapEquipment(currentThing as ThingWithComps);
+                                        SlotsToolbeltComp.SwapEquipment(currentThing as ThingWithComps);
 
                                     }));
 
 
-                                //Medicine
-                                if (currentThing.def.IsMedicine)
-                                {
-                                    if (wearer.workSettings != null && wearer.workSettings.WorkIsActive(WorkTypeDefOf.Doctor))
-                                        options.Add(new FloatMenuOption("TreatPatientWithMedicine".Translate(), () =>
-                                        {
-                                            Designator_ApplyMedicine designator = new Designator_ApplyMedicine();
-                                            designator.SlotsBackpackComp = SlotsBackpackComp;
-                                            designator.medicine = currentThing;
-                                            designator.doctor = wearer;
-                                            designator.icon = currentThing.def.uiIcon;
-                                            designator.activateSound = SoundDef.Named("Click");
 
-                                            DesignatorManager.Select(designator);
-                                        }));
-                                }
                                 //Food
                                 if (currentThing.def.thingCategories.Contains(DefDatabase<ThingCategoryDef>.GetNamed("FoodMeals")))
                                 {
                                     //  if (compSlots.owner.needs.food.CurCategory != HungerCategory.Fed)
-                                    options.Add(new FloatMenuOption("ConsumeThing".Translate(currentThing.LabelCap), () =>
+                                    options.Add(new FloatMenuOption("ConsumeThing".Translate(currentThing.def.LabelCap), () =>
                                     {
                                         Thing dummy;
-                                        SlotsBackpackComp.slots.TryDrop(currentThing, wearer.Position, ThingPlaceMode.Direct, currentThing.def.ingestible.maxNumToIngestAtOnce, out dummy);
+                                        SlotsToolbeltComp.slots.TryDrop(currentThing, wearer.Position, ThingPlaceMode.Direct, currentThing.def.ingestible.maxNumToIngestAtOnce, out dummy);
 
                                         Job jobNew = new Job(JobDefOf.Ingest, dummy);
                                         jobNew.maxNumToCarry = currentThing.def.ingestible.maxNumToIngestAtOnce;
@@ -229,10 +215,10 @@ namespace ToolsForHaul
                                 }
                                 // Drugs
                                 if (currentThing.def.ingestible?.drugCategory >= DrugCategory.Any)
-                                    options.Add(new FloatMenuOption("ConsumeThing".Translate(currentThing.LabelCap), () =>
+                                    options.Add(new FloatMenuOption("ConsumeThing".Translate(), () =>
                                     {
                                         Thing dummy;
-                                        SlotsBackpackComp.slots.TryDrop(currentThing, wearer.Position, ThingPlaceMode.Direct, currentThing.def.ingestible.maxNumToIngestAtOnce, out dummy);
+                                        SlotsToolbeltComp.slots.TryDrop(currentThing, wearer.Position, ThingPlaceMode.Direct, currentThing.def.ingestible.maxNumToIngestAtOnce, out dummy);
 
                                         Job jobNew = new Job(JobDefOf.Ingest, dummy);
                                         jobNew.maxNumToCarry = dummy.def.ingestible.maxNumToIngestAtOnce;
@@ -255,8 +241,6 @@ namespace ToolsForHaul
                 }
             }
         }
-
-
 
     }
 

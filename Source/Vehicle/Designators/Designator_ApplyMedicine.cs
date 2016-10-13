@@ -11,7 +11,7 @@ namespace ToolsForHaul
 
         public Thing medicine;
         public Pawn doctor;
-        public CompSlots slotsComp;
+        public CompSlotsBackpack SlotsBackpackComp;
 
         public Designation designation;
 
@@ -48,7 +48,7 @@ namespace ToolsForHaul
                     jobNew.targetA = pawn;
 
                     Thing dummy;
-                    slotsComp.slots.TryDrop(medicine, doctor.Position, ThingPlaceMode.Direct, Medicine.GetMedicineCountToFullyHeal(jobNew.targetA.Thing as Pawn), out dummy);
+                    SlotsBackpackComp.slots.TryDrop(medicine, doctor.Position, ThingPlaceMode.Direct, Medicine.GetMedicineCountToFullyHeal(jobNew.targetA.Thing as Pawn), out dummy);
 
                     jobNew.targetB = dummy;
 

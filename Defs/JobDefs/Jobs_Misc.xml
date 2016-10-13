@@ -43,11 +43,17 @@
   <!--============= Backpack ===============-->
 
   <JobDef>
-    <defName>PutInSlot</defName>
-    <driverClass>ToolsForHaul.JobDriver_PutInSlot</driverClass>
+    <defName>PutInBackpackSlot</defName>
+    <driverClass>ToolsForHaul.JobDriver_PutInBackpackSlot</driverClass>
     <reportString>Putting TargetA in TargetB.</reportString>
   </JobDef>
- 
+
+  <JobDef>
+    <defName>PutInToolbeltSlot</defName>
+    <driverClass>ToolsForHaul.JobDriver_PutInToolbeltSlot</driverClass>
+    <reportString>Putting TargetA in TargetB.</reportString>
+  </JobDef>
+  
   <JobDef>
     <defName>PutInInventory</defName>
     <driverClass>ToolsForHaul.JobDriver_PutInInventory</driverClass>

@@ -45,7 +45,7 @@ namespace ToolsForHaul
         public static void EquipRigthTool(Pawn pawn, StatDef def)
         {
             Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
-            CompSlots slotsComp = backpack.TryGetComp<CompSlots>();
+            CompSlotsBackpack SlotsBackpackComp = backpack.TryGetComp<CompSlotsBackpack>();
 
             bool flag = backpack != null;
             if (flag)

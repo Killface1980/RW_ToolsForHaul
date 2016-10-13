@@ -13,7 +13,7 @@ namespace ToolsForHaul
             stringBuilder.Append(base.GetExplanation(req, numberSense));
             if (req.HasThing)
             {
-                CompSlots compInventory = ToolsForHaulUtility.TryGetBackpack(req.Thing as Pawn).TryGetComp<CompSlots>();
+                CompSlotsBackpack compInventory = ToolsForHaulUtility.TryGetBackpack(req.Thing as Pawn).TryGetComp<CompSlotsBackpack>();
                 if (compInventory != null)
                 {
                     stringBuilder.AppendLine();
