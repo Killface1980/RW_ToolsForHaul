@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ThingDef ParentName="MoteBase">
+    <defName>Mote_Tire_ATV</defName>
+    <graphicData>
+      <texPath>Things/Mote/Mote_Tire_ATV</texPath>
+    </graphicData>
+    <altitudeLayer>MoteLow</altitudeLayer>
+    <mote>
+      <fadeInTime>0.08</fadeInTime>
+      <solidTime>22</solidTime>
+      <fadeOutTime>26</fadeOutTime>
+    </mote>
+  </ThingDef>
+  
+</Defs>

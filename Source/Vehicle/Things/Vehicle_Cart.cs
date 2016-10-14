@@ -449,7 +449,7 @@ namespace ToolsForHaul
 
             #region Headlights
 
-            if (Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell) < 0.4f)
+            if (Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell - Rotation.FacingCell) < 0.4f)
             {
                 // TODO Add headlights to xml & move the flooder initialization to mountableComp
                 if (mountableComp.Driver != null && !compVehicles.AnimalsCanDrive() && flooder == null)
@@ -524,6 +524,52 @@ namespace ToolsForHaul
                 else VehicleSpeed = DesiredSpeed;
                 tickCheck = Find.TickManager.TicksGame;
             }
+            if (mountableComp.IsMounted)
+            {
+                if (mountableComp.Driver.pather.Moving)
+                {
+                    //Exhaustion fumes
+                    if (IsCurrentlyMotorized())
+                        MoteMaker.ThrowSmoke(Position.ToVector3(), 0.08f + currentDriverSpeed * 0.1f);
+
+                    // TODO  move imprints to xml, throw smoke only on motorized
+                    if (Find.TerrainGrid.TerrainAt(Position).takeFootprints || Find.SnowGrid.GetDepth(Position) > 0.4f)
+                    {
+
+                            MoteMaker.ThrowDustPuff(Position.ToVector3(), 0.4f + currentDriverSpeed * 0.05f);
+
+                        Vector3 normalized = (DrawPos - lastFootprintPlacePos).normalized;
+                        float rot = normalized.AngleFlat();
+                        float angle = 90;
+                        Vector3 b = normalized.RotatedBy(angle) * 0.17f;
+                        Vector3 loc = DrawPos + FootprintOffset + b;
+
+                        if ((DrawPos - this.lastFootprintPlacePos).MagnitudeHorizontalSquared() > 0.3f)
+                            if (loc.ShouldSpawnMotesAt() && !MoteCounter.SaturatedLowPriority)
+                            {
+                                MoteThrown moteThrown =
+                                    (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Tire_ATV"), null);
+                                moteThrown.exactRotation = rot;
+                                moteThrown.exactPosition = loc;
+                                GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
+                                lastFootprintPlacePos = DrawPos;
+                            }
+
+                    }
+                }
+
+                else
+                {
+                    if (IsCurrentlyMotorized())
+                        MoteMaker.ThrowSmoke(Position.ToVector3(), 0.08f);
+                }
+
+            }
+            if (HitPoints <= MaxHitPoints * 0.5f)
+            {
+                if (IsCurrentlyMotorized())
+                    MoteMaker.ThrowMicroSparks(Position.ToVector3());
+            }
 
             if (tankLeaking && Find.TickManager.TicksGame > tankSpillTick)
             {
@@ -543,7 +589,11 @@ namespace ToolsForHaul
 
         }
 
+        private static readonly Vector3 FootprintOffset = new Vector3(0f, 0f, -0.3f);
+        private Vector3 lastFootprintPlacePos;
+
         private float tankHitPos = 1f;
+
         private int tankSpillTick = -5000;
 
         #endregion

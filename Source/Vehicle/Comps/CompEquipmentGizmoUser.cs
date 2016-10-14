@@ -14,6 +14,7 @@ namespace ToolsForHaul
             return false;
         }
 
+        /*
         public IEnumerable<CompSlotsBackpack> EquippedSlottersComps()
         {
             // iterate through all apparels
@@ -43,7 +44,7 @@ namespace ToolsForHaul
                 }
             }
         }
-
+        */
         public override IEnumerable<Command> CompGetGizmosExtra()
         {
             foreach (Command current in base.CompGetGizmosExtra())

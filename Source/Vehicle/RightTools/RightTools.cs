@@ -44,32 +44,50 @@ namespace ToolsForHaul
 
         public static void EquipRigthTool(Pawn pawn, StatDef def)
         {
-            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
-            CompSlotsBackpack SlotsBackpackComp = backpack.TryGetComp<CompSlotsBackpack>();
+            Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+            CompSlotsToolbelt slotsToolbelt = toolbelt.GetComp<CompSlotsToolbelt>();
 
-            bool flag = backpack != null;
+            bool flag = toolbelt != null;
             if (flag)
             {
                 ThingWithComps thingWithComps = pawn.equipment.Primary;
                 float stat = GetMaxStat(pawn.equipment.Primary, def);
-                using (IEnumerator<Thing> enumerator = pawn.inventory.container.GetEnumerator())
+
+                foreach (ThingWithComps slot in slotsToolbelt.slots)
                 {
-                    while (enumerator.MoveNext())
+                    ThingWithComps thingWithComps2 = slot;
+                    bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
+                    if (!flag2)
                     {
-                        ThingWithComps thingWithComps2 = (ThingWithComps)enumerator.Current;
-                        bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
-                        if (!flag2)
+                        float maxStat = GetMaxStat(thingWithComps2, def);
+                        bool flag3 = stat < maxStat;
+                        if (flag3)
                         {
-                            float maxStat = GetMaxStat(thingWithComps2, def);
-                            bool flag3 = stat < maxStat;
-                            if (flag3)
-                            {
-                                stat = maxStat;
-                                thingWithComps = thingWithComps2;
-                            }
+                            stat = maxStat;
+                            thingWithComps = thingWithComps2;
                         }
                     }
+
                 }
+
+              //using (IEnumerator<Thing> enumerator = pawn.inventory.container.GetEnumerator())
+              //{
+              //    while (enumerator.MoveNext())
+              //    {
+              //        ThingWithComps thingWithComps2 = (ThingWithComps)enumerator.Current;
+              //        bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
+              //        if (!flag2)
+              //        {
+              //            float maxStat = GetMaxStat(thingWithComps2, def);
+              //            bool flag3 = stat < maxStat;
+              //            if (flag3)
+              //            {
+              //                stat = maxStat;
+              //                thingWithComps = thingWithComps2;
+              //            }
+              //        }
+              //    }
+              //}
                 bool unEquipped = thingWithComps != pawn.equipment.Primary;
                 if (unEquipped)
                 {
@@ -78,9 +96,12 @@ namespace ToolsForHaul
                     if (!MapComponent_ToolsForHaul.previousPawnWeapons.ContainsKey(pawn))
                         MapComponent_ToolsForHaul.previousPawnWeapons.Add(pawn, pawn.equipment.Primary);
 
-                    pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container, out dummy);
-                    pawn.equipment.AddEquipment(thingWithComps);
-                    pawn.inventory.container.Remove(thingWithComps);
+                    slotsToolbelt.SwapEquipment(thingWithComps);
+
+
+                  //pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container, out dummy);
+                  //pawn.equipment.AddEquipment(thingWithComps);
+                  //pawn.inventory.container.Remove(thingWithComps);
                 }
                 else
                 {

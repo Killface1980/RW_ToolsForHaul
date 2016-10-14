@@ -73,7 +73,7 @@
     <Compile Include="_TESTING\IncidentWorker_VisitorGroup_Sanity.cs" />
     <None Include="_inactive\JobGiver_ExitMapRandom2.cs" />
     <Compile Include="Alerts\Class1.cs" />
-    <Compile Include="ARB\StatWorker_MoveSpeed.cs" />
+    <Compile Include="StatWorker\StatWorker_MoveSpeed.cs" />
     <None Include="_inactive\Class1.cs" />
     <Compile Include="Comps\CompAxles.cs" />
     <Compile Include="Comps\CompProperties_Axles.cs" />

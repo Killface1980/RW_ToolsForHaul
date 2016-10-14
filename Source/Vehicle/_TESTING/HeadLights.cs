@@ -261,7 +261,7 @@ namespace ToolsForHaul
             //}
 
             //Log.Message("Anlge: updated glowgrid from cache");
-            //Dont really want this here but the timing of this particulr object is wierd so I need to mark it dirty
+            //Dont really want this here but the timing of this particulr object is weird so I need to mark it dirty
 
             //In this case we need to mark several positions as dirty as the internal updated works with regions only
             Find.MapDrawer.MapMeshDirty(Position, MapMeshFlag.GroundGlow);

@@ -16,7 +16,7 @@ namespace ToolsForHaul
         private const string txtMountOn = "MountOn";
         private const string txtDismount = "Dismount";
 
-        protected Pawn driver;
+        private Pawn driver;
         private Building_Door lastPassedDoor;
         private int tickLastDoorCheck = Find.TickManager.TicksGame;
         private const int TickCooldownDoorCheck = 96;
@@ -31,7 +31,7 @@ namespace ToolsForHaul
 
             // Set faction of vehicle to whoever mounts it
             Vehicle_Cart vehicleCart = parent as Vehicle_Cart;
-            if (vehicleCart != null && vehicleCart.Faction != driver.Faction  && vehicleCart.ClaimableBy(driver.Faction))
+            if (vehicleCart != null && vehicleCart.Faction != driver.Faction && vehicleCart.ClaimableBy(driver.Faction))
             {
                 parent.SetFaction(driver.Faction);
             }
@@ -54,7 +54,7 @@ namespace ToolsForHaul
             Find.Reservations.ReleaseAllForTarget(parent);
             if (driver.Faction != Faction.OfPlayer)
                 parent.SetForbidden(true);
-            if(driver.Dead || driver.Downed)
+            if ((driver.Dead || driver.Downed) && driver.Faction!= Faction.OfPlayer)
                 parent.SetFaction(null);
             driver = null;
             //  Find.ListerBuildings.Add(parent as Building);
@@ -175,7 +175,30 @@ namespace ToolsForHaul
                     lastPassedDoor = null;
                 }
                 parent.Position = Position.ToIntVec3();
-                parent.Rotation = driver.Rotation;
+
+                if (Driver.pather.Moving && !Driver.Position.InHorDistOf(Driver.pather.Destination.Cell, 0.3f))
+                {
+                    parent.Rotation = driver.Rotation;
+                }
+            }
+        }
+
+        private bool targetIsMoving
+        {
+            get
+            {
+                Vehicle_Cart cart = parent as Vehicle_Cart;
+                return cart.mountableComp.Driver != null && cart.mountableComp.Driver.pather != null && cart.mountableComp.Driver.pather.Moving;
+            }
+        }
+
+        private bool targetIsNearDestination
+        {
+            get
+            {
+                Vehicle_Cart cart = parent as Vehicle_Cart;
+                if (cart.mountableComp.driver.Position.AdjacentTo8WayOrInside(cart.mountableComp.driver.pather.Destination)) return true;
+                return false;
             }
         }
 

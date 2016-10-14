@@ -34,12 +34,15 @@ namespace ToolsForHaul
 
         public override bool ShouldSkip(Pawn pawn)
         {
-            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
-            //Should skip pawn that don't have backpack.
-            if (backpack == null)
+            Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+            //Should skip pawn that don't have a toolbelt.
+            if (toolbelt == null)
                 return true;
 
-            if (backpack.MaxItem - backpack.numOfSavedItems < 2)
+            // Skip it toolbelt full
+            CompSlotsToolbelt slotsToolbelt = toolbelt.GetComp<CompSlotsToolbelt>();
+        
+            if (toolbelt.MaxItem <= slotsToolbelt.slots.Count)
             {
                 return true;
             }
@@ -49,7 +52,11 @@ namespace ToolsForHaul
 
         public override bool HasJobOnThing(Pawn pawn, Thing t)
         {
-            if (!pawn.inventory.container.Contains(t.def) || pawn.equipment.Primary.def.Equals(t.def))
+            Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+            CompSlotsToolbelt slotsToolbelt = toolbelt.GetComp<CompSlotsToolbelt>();
+
+
+            if (!slotsToolbelt.slots.Contains(t.def) || pawn.equipment.Primary.def.Equals(t.def))
                 return true;
             return false;
 
@@ -57,13 +64,13 @@ namespace ToolsForHaul
 
         public override Job JobOnThing(Pawn pawn, Thing t)
         {
-            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
 
-            if (backpack != null)
+            if (toolbelt != null)
             {
                 Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInInventory"));
                 jobNew.maxNumToCarry = 1;
-                jobNew.targetB = backpack;
+                jobNew.targetB = toolbelt;
                 jobNew.targetQueueA = new List<TargetInfo>();
                 jobNew.targetQueueA.Add(t);
                 pawn.Reserve(t);
@@ -72,7 +79,7 @@ namespace ToolsForHaul
 
             }
 
-            JobFailReason.Is("NoBackpack".Translate());
+            JobFailReason.Is("NoToolbelt".Translate());
             return null;
         }
     }
