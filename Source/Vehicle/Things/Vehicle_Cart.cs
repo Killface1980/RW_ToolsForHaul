@@ -124,14 +124,13 @@ namespace ToolsForHaul
             }
         }
 
-        private CompVehicles compVehicles
+        public CompVehicles compVehicles
         {
             get
             {
                 return GetComp<CompVehicles>();
             }
         }
-
 
         #endregion
 
@@ -155,7 +154,6 @@ namespace ToolsForHaul
             vehicleMaxItem = DefDatabase<StatDef>.GetNamed("VehicleMaxItem");
         }
 
-        private Sustainer sustainerAmbient;
 
         //    public static ListerVehicles listerVehicles = new ListerVehicles();
 
@@ -163,10 +161,15 @@ namespace ToolsForHaul
 
         public override void SpawnSetup()
         {
-
             base.SpawnSetup();
-
             mountableComp = GetComp<CompMountable>();
+
+            if (mountableComp.Driver != null && IsCurrentlyMotorized())
+                LongEventHandler.ExecuteWhenFinished(delegate
+                {
+                    SoundInfo info = SoundInfo.InWorld(this, MaintenanceType.None);
+                    mountableComp.sustainerAmbient = compVehicles.Props.soundAmbient.TrySpawnSustainer(info);
+                });
 
             if (allowances == null)
             {
@@ -181,11 +184,9 @@ namespace ToolsForHaul
         public override void DeSpawn()
         {
             base.DeSpawn();
-            //    ListerVehiclesRepairable.Notify_VehicleDeSpawned(this);
-
+            if (mountableComp.sustainerAmbient != null)
+                mountableComp.sustainerAmbient.End();
         }
-
-        public bool repairable = true;
 
         private ThingDef VehicleDef
         {
@@ -530,13 +531,13 @@ namespace ToolsForHaul
                 {
                     //Exhaustion fumes
                     if (IsCurrentlyMotorized())
-                        MoteMaker.ThrowSmoke(Position.ToVector3(), 0.08f + currentDriverSpeed * 0.1f);
+                        MoteMaker.ThrowSmoke(Position.ToVector3(), 0.08f + currentDriverSpeed * 0.015f);
 
                     // TODO  move imprints to xml, throw smoke only on motorized
                     if (Find.TerrainGrid.TerrainAt(Position).takeFootprints || Find.SnowGrid.GetDepth(Position) > 0.4f)
                     {
 
-                            MoteMaker.ThrowDustPuff(Position.ToVector3(), 0.4f + currentDriverSpeed * 0.05f);
+                        MoteMaker.ThrowDustPuff(Position.ToVector3(), 0.5f);
 
                         Vector3 normalized = (DrawPos - lastFootprintPlacePos).normalized;
                         float rot = normalized.AngleFlat();
@@ -554,7 +555,6 @@ namespace ToolsForHaul
                                 GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
                                 lastFootprintPlacePos = DrawPos;
                             }
-
                     }
                 }
 

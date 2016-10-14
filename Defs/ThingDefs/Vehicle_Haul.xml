@@ -29,7 +29,6 @@
       <bed_humanlike>false</bed_humanlike>
       <isInert>false</isInert>
       <deconstructible>false</deconstructible>
-   <!--   <soundAmbient>MortarRound_Ambient</soundAmbient> -->
     </building>
     <statBases>
       <Flammability>1.0</Flammability>
@@ -307,6 +306,7 @@
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
+        <soundAmbient>VehicleATV_Ambience</soundAmbient>
       </li>
     </comps>
     <colorGenerator Class="ColorGenerator_Options">

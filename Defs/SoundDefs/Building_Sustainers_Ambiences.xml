@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DefPackage-SoundDef>
+
+  <SoundDef>
+    <defName>VehicleATV_Ambience_Start</defName>  
+    <eventNames />  
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Vehicles/VehicleATV/Start/VehicleATVStart_1a</clipPath>
+          </li>
+        </grains>      
+        <volumeRange>
+          <min>16</min>        
+          <max>16</max>
+        </volumeRange>      
+        <distRange>
+          <min>0</min>        
+          <max>50.27907</max>
+        </distRange>      
+        <sustainLoop>False</sustainLoop>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>VehicleATV_Ambience_Stop</defName>  
+    <eventNames />  
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Vehicles/VehicleATV/Stop/VehicleATVStop_1a</clipPath>
+          </li>
+        </grains>      
+        <volumeRange>
+          <min>16</min>        
+          <max>16</max>
+        </volumeRange>      
+        <distRange>
+          <min>0</min>        
+          <max>50.27907</max>
+        </distRange>      
+        <sustainLoop>False</sustainLoop>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>VehicleATV_Ambience</defName>  
+    <sustain>True</sustain>  
+    <eventNames />  
+    <priorityMode>PrioritizeNearest</priorityMode>  
+    <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>  
+    <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>  
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>      
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Vehicles/VehicleATV/Run/VehicleATVRun_Loop1a</clipPath>
+          </li>
+        </grains>      
+        <volumeRange>
+          <min>15</min>        
+          <max>25</max>
+        </volumeRange>      
+        <pitchRange>
+          <min>1</min>        
+          <max>1.4</max>
+        </pitchRange>      
+        <distRange>
+          <min>0</min>        
+          <max>30</max>
+        </distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+</DefPackage-SoundDef>

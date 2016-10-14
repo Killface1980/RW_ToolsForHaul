@@ -2,6 +2,7 @@
 using RimWorld;
 using Verse;
 using Verse.AI;
+using Verse.Sound;
 
 namespace ToolsForHaul
 {
@@ -72,7 +73,9 @@ namespace ToolsForHaul
             {
                 Pawn driver = TargetB.Thing as Pawn;
                 if (driver != null && TargetThingA.TryGetComp<CompMountable>() != null)
+                {
                     TargetThingA.TryGetComp<CompMountable>().MountOn(driver);
+                }
                 else
                 {
                     Log.Error(GetActor().LabelCap + ": Try make mount without target B Driver");

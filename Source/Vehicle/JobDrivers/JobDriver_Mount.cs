@@ -2,6 +2,7 @@
 using RimWorld;
 using Verse;
 using Verse.AI;
+using Verse.Sound;
 
 namespace ToolsForHaul
 {
@@ -56,6 +57,7 @@ namespace ToolsForHaul
                 Job curJob = actor.jobs.curJob;
 
                 TargetThingA.TryGetComp<CompMountable>().MountOn(actor);
+                SoundDef.Named("VehicleATV_Ambience_Start").PlayOneShotOnCamera();
             };
 
             yield return toilMountOn;

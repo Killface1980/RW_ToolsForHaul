@@ -4,6 +4,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.Sound;
 
 namespace ToolsForHaul
 {
@@ -23,6 +24,8 @@ namespace ToolsForHaul
         private int tickCheck = Find.TickManager.TicksGame;
         private int tickCooldown = 60;
 
+        public Sustainer sustainerAmbient;
+
         public void MountOn(Pawn pawn)
         {
             if (driver != null)
@@ -35,6 +38,9 @@ namespace ToolsForHaul
             {
                 parent.SetFaction(driver.Faction);
             }
+
+            SoundInfo info = SoundInfo.InWorld(parent, MaintenanceType.None);
+            sustainerAmbient = vehicleCart.compVehicles.Props.soundAmbient.TrySpawnSustainer(info);
 
             //    Find.ListerBuildings.Remove(parent as Building);
         }
@@ -50,13 +56,20 @@ namespace ToolsForHaul
 
         public void Dismount()
         {
+
+
             //if (Find.Reservations.IsReserved(parent, driver.Faction))
             Find.Reservations.ReleaseAllForTarget(parent);
             if (driver.Faction != Faction.OfPlayer)
                 parent.SetForbidden(true);
-            if ((driver.Dead || driver.Downed) && driver.Faction!= Faction.OfPlayer)
+            if ((driver.Dead || driver.Downed) && driver.Faction != Faction.OfPlayer)
                 parent.SetFaction(null);
             driver = null;
+
+            if (sustainerAmbient != null)
+            {
+                sustainerAmbient.End();
+            }
             //  Find.ListerBuildings.Add(parent as Building);
         }
 

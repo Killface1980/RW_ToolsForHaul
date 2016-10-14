@@ -2,7 +2,7 @@
 
 namespace ToolsForHaul
 {
-    internal class CompVehicles : ThingComp
+    public class CompVehicles : ThingComp
     {
         public CompProperties_Vehicles Props
         {
