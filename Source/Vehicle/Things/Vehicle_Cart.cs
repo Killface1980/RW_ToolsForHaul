@@ -449,41 +449,43 @@ namespace ToolsForHaul
             base.Tick();
 
             #region Headlights
-
-            if (Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell - Rotation.FacingCell) < 0.4f)
+            if (false)
             {
-                // TODO Add headlights to xml & move the flooder initialization to mountableComp
-                if (mountableComp.Driver != null && !compVehicles.AnimalsCanDrive() && flooder == null)
+                if (Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell - Rotation.FacingCell) < 0.4f)
                 {
-                    flooder = new HeadLights(Position, Rotation, this);
-                    CustomGlowFloodManager.RegisterFlooder(flooder);
-                    CustomGlowFloodManager.RefreshGlowFlooders();
+                    // TODO Add headlights to xml & move the flooder initialization to mountableComp
+                    if (mountableComp.Driver != null && !compVehicles.AnimalsCanDrive() && flooder == null)
+                    {
+                        flooder = new HeadLights(Position, Rotation, this);
+                        CustomGlowFloodManager.RegisterFlooder(flooder);
+                        CustomGlowFloodManager.RefreshGlowFlooders();
+                    }
+                    if (mountableComp.Driver == null && flooder != null)
+                    {
+                        flooder.Clear();
+                        CustomGlowFloodManager.DeRegisterGlower(flooder);
+                        CustomGlowFloodManager.RefreshGlowFlooders();
+                        flooder = null;
+                    }
+                    // TODO optimized performance, lights only at night and when driver is mounted => light switch gizmo?
+                    if (flooder != null)
+                    {
+                        flooder.Position = Position + Rotation.FacingCell + Rotation.FacingCell;
+                        flooder.Orientation = Rotation;
+                        flooder.Clear();
+                        flooder.CalculateGlowFlood();
+                    }
                 }
-                if (mountableComp.Driver == null && flooder != null)
+                else
                 {
-                    flooder.Clear();
-                    CustomGlowFloodManager.DeRegisterGlower(flooder);
-                    CustomGlowFloodManager.RefreshGlowFlooders();
-                    flooder = null;
-                }
-                // TODO optimized performance, lights only at night and when driver is mounted => light switch gizmo?
-                if (flooder != null)
-                {
-                    flooder.Position = Position + Rotation.FacingCell + Rotation.FacingCell;
-                    flooder.Orientation = Rotation;
-                    flooder.Clear();
-                    flooder.CalculateGlowFlood();
-                }
-            }
-            else
-            {
-                if (mountableComp.Driver == null && flooder != null || flooder != null)
-                {
-                    CustomGlowFloodManager.DeRegisterGlower(flooder);
-                    CustomGlowFloodManager.RefreshGlowFlooders();
-                    flooder = null;
-                }
+                    if (mountableComp.Driver == null && flooder != null || flooder != null)
+                    {
+                        CustomGlowFloodManager.DeRegisterGlower(flooder);
+                        CustomGlowFloodManager.RefreshGlowFlooders();
+                        flooder = null;
+                    }
 
+                }
             }
 
 
@@ -525,19 +527,15 @@ namespace ToolsForHaul
                 else VehicleSpeed = DesiredSpeed;
                 tickCheck = Find.TickManager.TicksGame;
             }
+
+
             if (mountableComp.IsMounted)
             {
                 if (mountableComp.Driver.pather.Moving)
                 {
-                    //Exhaustion fumes
-                    if (IsCurrentlyMotorized())
-                        MoteMaker.ThrowSmoke(Position.ToVector3(), 0.08f + currentDriverSpeed * 0.015f);
-
                     // TODO  move imprints to xml, throw smoke only on motorized
-                    if (Find.TerrainGrid.TerrainAt(Position).takeFootprints || Find.SnowGrid.GetDepth(Position) > 0.4f)
+                    if (Find.TerrainGrid.TerrainAt(Position).takeFootprints || Find.SnowGrid.GetDepth(Position) > 0.2f)
                     {
-
-                        MoteMaker.ThrowDustPuff(Position.ToVector3(), 0.5f);
 
                         Vector3 normalized = (DrawPos - lastFootprintPlacePos).normalized;
                         float rot = normalized.AngleFlat();
@@ -545,7 +543,7 @@ namespace ToolsForHaul
                         Vector3 b = normalized.RotatedBy(angle) * 0.17f;
                         Vector3 loc = DrawPos + FootprintOffset + b;
 
-                        if ((DrawPos - this.lastFootprintPlacePos).MagnitudeHorizontalSquared() > 0.3f)
+                        if ((DrawPos - this.lastFootprintPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
                             if (loc.ShouldSpawnMotesAt() && !MoteCounter.SaturatedLowPriority)
                             {
                                 MoteThrown moteThrown =
@@ -555,20 +553,25 @@ namespace ToolsForHaul
                                 GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
                                 lastFootprintPlacePos = DrawPos;
                             }
+                        MoteMaker.ThrowDustPuff(DrawPos, 1f);
                     }
+
+                    //Exhaustion fumes
+                    if (IsCurrentlyMotorized())
+                        MoteMaker.ThrowSmoke(DrawPos, 0.08f + currentDriverSpeed * 0.02f);
                 }
 
                 else
                 {
                     if (IsCurrentlyMotorized())
-                        MoteMaker.ThrowSmoke(Position.ToVector3(), 0.08f);
+                        MoteMaker.ThrowSmoke(DrawPos, 0.08f);
                 }
 
             }
             if (HitPoints <= MaxHitPoints * 0.5f)
             {
                 if (IsCurrentlyMotorized())
-                    MoteMaker.ThrowMicroSparks(Position.ToVector3());
+                    MoteMaker.ThrowMicroSparks(DrawPos);
             }
 
             if (tankLeaking && Find.TickManager.TicksGame > tankSpillTick)
@@ -591,6 +594,7 @@ namespace ToolsForHaul
 
         private static readonly Vector3 FootprintOffset = new Vector3(0f, 0f, -0.3f);
         private Vector3 lastFootprintPlacePos;
+        private const float FootprintIntervalDist = 0.3f;
 
         private float tankHitPos = 1f;
 

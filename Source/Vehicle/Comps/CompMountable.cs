@@ -32,6 +32,8 @@ namespace ToolsForHaul
                 return;
             driver = pawn;
 
+            driver.RaceProps.makesFootprints = false;
+
             // Set faction of vehicle to whoever mounts it
             Vehicle_Cart vehicleCart = parent as Vehicle_Cart;
             if (vehicleCart != null && vehicleCart.Faction != driver.Faction && vehicleCart.ClaimableBy(driver.Faction))
@@ -56,7 +58,7 @@ namespace ToolsForHaul
 
         public void Dismount()
         {
-
+            driver.RaceProps.makesFootprints = true;
 
             //if (Find.Reservations.IsReserved(parent, driver.Faction))
             Find.Reservations.ReleaseAllForTarget(parent);

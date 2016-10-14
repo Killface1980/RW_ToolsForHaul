@@ -11,12 +11,12 @@
           </li>
         </grains>      
         <volumeRange>
-          <min>16</min>        
-          <max>16</max>
+          <min>25</min>        
+          <max>25</max>
         </volumeRange>      
         <distRange>
           <min>0</min>        
-          <max>50.27907</max>
+          <max>80.27907</max>
         </distRange>      
         <sustainLoop>False</sustainLoop>
       </li>
@@ -34,12 +34,12 @@
           </li>
         </grains>      
         <volumeRange>
-          <min>16</min>        
-          <max>16</max>
+          <min>25</min>        
+          <max>25</max>
         </volumeRange>      
         <distRange>
           <min>0</min>        
-          <max>50.27907</max>
+          <max>80.27907</max>
         </distRange>      
         <sustainLoop>False</sustainLoop>
       </li>
@@ -62,7 +62,7 @@
           </li>
         </grains>      
         <volumeRange>
-          <min>15</min>        
+          <min>25</min>        
           <max>25</max>
         </volumeRange>      
         <pitchRange>
@@ -71,7 +71,7 @@
         </pitchRange>      
         <distRange>
           <min>0</min>        
-          <max>30</max>
+          <max>50</max>
         </distRange>
       </li>
     </subSounds>

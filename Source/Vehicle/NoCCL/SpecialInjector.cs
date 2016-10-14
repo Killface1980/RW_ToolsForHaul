@@ -61,7 +61,7 @@ namespace ToolsForHaul
           //MethodInfo method3 = typeof(PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
           //MethodInfo method4 = typeof(RA_PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
 
-
+            if (false)
             if (!Detours.TryDetourFromTo(method, method2))
             {
                 Log.Message("Failed detour RightTools JobPackage");
