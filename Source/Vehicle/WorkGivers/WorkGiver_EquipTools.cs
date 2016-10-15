@@ -40,9 +40,8 @@ namespace ToolsForHaul
                 return true;
 
             // Skip it toolbelt full
-            CompSlotsToolbelt slotsToolbelt = toolbelt.GetComp<CompSlotsToolbelt>();
         
-            if (toolbelt.MaxItem <= slotsToolbelt.slots.Count)
+            if (toolbelt.MaxItem <= toolbelt.slotsComp.slots.Count)
             {
                 return true;
             }
@@ -53,10 +52,8 @@ namespace ToolsForHaul
         public override bool HasJobOnThing(Pawn pawn, Thing t)
         {
             Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
-            CompSlotsToolbelt slotsToolbelt = toolbelt.GetComp<CompSlotsToolbelt>();
 
-
-            if (!slotsToolbelt.slots.Contains(t.def) || pawn.equipment.Primary.def.Equals(t.def))
+            if (!toolbelt.slotsComp.slots.Contains(t.def) || pawn.equipment.Primary.def.Equals(t.def))
                 return true;
             return false;
 
@@ -68,7 +65,7 @@ namespace ToolsForHaul
 
             if (toolbelt != null)
             {
-                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInInventory"));
+                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInToolbeltSlot"));
                 jobNew.maxNumToCarry = 1;
                 jobNew.targetB = toolbelt;
                 jobNew.targetQueueA = new List<TargetInfo>();

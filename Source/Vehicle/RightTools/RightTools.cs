@@ -45,7 +45,6 @@ namespace ToolsForHaul
         public static void EquipRigthTool(Pawn pawn, StatDef def)
         {
             Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
-            CompSlotsToolbelt slotsToolbelt = toolbelt.GetComp<CompSlotsToolbelt>();
 
             bool flag = toolbelt != null;
             if (flag)
@@ -53,7 +52,7 @@ namespace ToolsForHaul
                 ThingWithComps thingWithComps = pawn.equipment.Primary;
                 float stat = GetMaxStat(pawn.equipment.Primary, def);
 
-                foreach (ThingWithComps slot in slotsToolbelt.slots)
+                foreach (ThingWithComps slot in toolbelt.slotsComp.slots)
                 {
                     ThingWithComps thingWithComps2 = slot;
                     bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
@@ -96,7 +95,7 @@ namespace ToolsForHaul
                     if (!MapComponent_ToolsForHaul.previousPawnWeapons.ContainsKey(pawn))
                         MapComponent_ToolsForHaul.previousPawnWeapons.Add(pawn, pawn.equipment.Primary);
 
-                    slotsToolbelt.SwapEquipment(thingWithComps);
+                    toolbelt.slotsComp.SwapEquipment(thingWithComps);
 
 
                   //pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container, out dummy);

@@ -200,6 +200,14 @@ namespace ToolsForHaul
             numOfSavedItems = 0;
         }
 
+        public CompSlotsBackpack slotsComp
+        {
+            get
+            {
+                return GetComp<CompSlotsBackpack>();
+            }
+        }
+
         public override void SpawnSetup()
         {
             base.SpawnSetup();
@@ -235,8 +243,7 @@ namespace ToolsForHaul
                 postWearer = null;
                 numOfSavedItems = 0;
 
-                CompSlotsBackpack backpackSlots = GetComp<CompSlotsBackpack>();
-                backpackSlots.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
+                slotsComp.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
             }
             if (wearer != null && numOfSavedItems > wearer.inventory.container.Count)
                 numOfSavedItems = wearer.inventory.container.Count;
@@ -256,8 +263,8 @@ namespace ToolsForHaul
          // yield return designator;
 
             Designator_PutInBackpackSlot designator2 = new Designator_PutInBackpackSlot();
-            designator2.SlotsBackpackComp = GetComp<CompSlotsBackpack>();
-            designator2.defaultLabel = string.Format("Put in ({0}/{1})", GetComp<CompSlotsBackpack>().slots.Count, MaxItem);
+            designator2.SlotsBackpackComp = slotsComp;
+            designator2.defaultLabel = string.Format("Put in ({0}/{1})", slotsComp.slots.Count, MaxItem);
             designator2.defaultDesc = string.Format("Put thing in {0}.", Label);
             designator2.hotKey = KeyBindingDef.Named("CommandPutInInventory");
             designator2.activateSound = SoundDef.Named("Click");

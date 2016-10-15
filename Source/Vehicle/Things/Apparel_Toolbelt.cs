@@ -36,6 +36,14 @@ namespace ToolsForHaul
     //        numOfSavedItems = 0;
         }
 
+        public CompSlotsToolbelt slotsComp
+        {
+            get
+            {
+                return GetComp<CompSlotsToolbelt>();
+            }
+        }
+
         public override void SpawnSetup()
         {
             base.SpawnSetup();
@@ -68,8 +76,7 @@ namespace ToolsForHaul
             //Put off backpack. Should drop all from postWearer
             else if (postWearer != null && wearer == null)
             {
-                CompSlotsToolbelt toolbeltSlots = GetComp<CompSlotsToolbelt>();
-                toolbeltSlots.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
+                slotsComp.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
                 postWearer = null;
             }
 
@@ -78,8 +85,8 @@ namespace ToolsForHaul
         public override IEnumerable<Gizmo> GetWornGizmos()
         {
             Designator_PutInToolbeltSlot designator2 = new Designator_PutInToolbeltSlot();
-            designator2.SlotsToolbeltComp = GetComp<CompSlotsToolbelt>();
-            designator2.defaultLabel = string.Format("Put in ({0}/{1})", GetComp<CompSlotsToolbelt>().slots.Count, MaxItem);
+            designator2.SlotsToolbeltComp = slotsComp;
+            designator2.defaultLabel = string.Format("Put in ({0}/{1})", slotsComp.slots.Count, MaxItem);
             designator2.defaultDesc = string.Format("Put thing in {0}.", Label);
             designator2.hotKey = KeyBindingDef.Named("CommandPutInInventory");
             designator2.activateSound = SoundDef.Named("Click");

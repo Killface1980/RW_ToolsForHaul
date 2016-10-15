@@ -41,8 +41,11 @@ namespace ToolsForHaul
                 parent.SetFaction(driver.Faction);
             }
 
-            SoundInfo info = SoundInfo.InWorld(parent, MaintenanceType.None);
-            sustainerAmbient = vehicleCart.compVehicles.Props.soundAmbient.TrySpawnSustainer(info);
+            if ((parent as Vehicle_Cart).IsCurrentlyMotorized())
+            {
+                SoundInfo info = SoundInfo.InWorld(parent, MaintenanceType.None);
+                sustainerAmbient = vehicleCart.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+            }
 
             //    Find.ListerBuildings.Remove(parent as Building);
         }
@@ -191,19 +194,39 @@ namespace ToolsForHaul
                 }
                 parent.Position = Position.ToIntVec3();
 
-                if (Driver.pather.Moving && !Driver.Position.InHorDistOf(Driver.pather.Destination.Cell, 0.3f))
+                if (driver.pather.Moving)
                 {
-                    parent.Rotation = driver.Rotation;
+                    // Make sure the rotation isn't updated any more once the driver comes near the destination
+                    if (!driver.Position.InHorDistOf(driver.pather.Destination.Cell, 0.4f))
+                    {
+                        parent.Rotation = driver.Rotation;
+                    }
+                    if (driver.Position.AdjacentTo8WayOrInside(driver.pather.Destination))
+                    {
+                        // Make the breaks sound once and throw some dust if driver comes to his destination
+                        if (!soundPlayed)
+                        {
+                            SoundDef.Named("VehicleATV_Ambience_Break").PlayOneShot(driver.Position);
+                            MoteMaker.ThrowDustPuff(driver.Position, 1.2f);
+                            soundPlayed = true;
+                        }
+                    }
                 }
+                else
+                {
+                    soundPlayed = false;
+                }
+                
             }
         }
+
+        private bool soundPlayed;
 
         private bool targetIsMoving
         {
             get
             {
-                Vehicle_Cart cart = parent as Vehicle_Cart;
-                return cart.mountableComp.Driver != null && cart.mountableComp.Driver.pather != null && cart.mountableComp.Driver.pather.Moving;
+                return driver != null && driver.pather != null && driver.pather.Moving;
             }
         }
 

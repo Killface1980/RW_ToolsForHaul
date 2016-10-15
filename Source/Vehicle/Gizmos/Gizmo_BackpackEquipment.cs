@@ -43,7 +43,9 @@ namespace ToolsForHaul
 
         //EquipmentSlot Properties
         private const int numOfRow = 2;
-        private const int numOfMaxItemsPerRow = 4;
+
+        private int iconsPerRow = 2;
+
         private float curWidth
         {
             get
@@ -51,9 +53,19 @@ namespace ToolsForHaul
                 switch (backpack.MaxItem)
                 {
                     case 8:
-                        return Height * 2;
+                        {
+                            iconsPerRow = 4;
+                            return Height * 2;
+                        }
+                    case 6:
+                        {
+                            iconsPerRow = 3;
+                            return Height * 1.5f;
+                        }
                     default:
-                        return Height;
+                        {
+                            return Height;
+                        }
                 }
             }
         }
@@ -82,8 +94,7 @@ namespace ToolsForHaul
                 Rect inventoryRect = new Rect(topLeft.x, topLeft.y, Width, Height);
 
                 Widgets.DrawWindowBackground(inventoryRect);
-                CompSlotsBackpack backpackSlots = backpack.GetComp<CompSlotsBackpack>();
-                DrawSlots(wearer, backpackSlots, inventoryRect);
+                DrawSlots(wearer, backpack.slotsComp, inventoryRect);
             }
 
             return new GizmoResult(GizmoState.Clear);
@@ -103,28 +114,28 @@ namespace ToolsForHaul
             // draw slots
             else
             {
-                Rect slotRect = new Rect(inventoryRect.x, inventoryRect.y, Height / 2, Height / 2);
-                for (int currentSlotInd = 0; currentSlotInd < numOfMaxItemsPerRow * numOfRow; currentSlotInd++)
+                Rect slotRect = new Rect(inventoryRect.x, inventoryRect.y, Width / 2, Height / 2);
+                for (int currentSlotInd = 0; currentSlotInd < iconsPerRow * numOfRow; currentSlotInd++)
                 {
                     if (currentSlotInd >= backpack.MaxItem)
                     {
-                        slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % numOfMaxItemsPerRow);
-                        slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
+                        slotRect.x = inventoryRect.x + inventoryRect.width / iconsPerRow * (currentSlotInd % iconsPerRow);
+                        slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / iconsPerRow);
                         Widgets.DrawTextureFitted(slotRect, NoAvailableTex, 1.0f);
                     }
 
                     if (currentSlotInd >= SlotsBackpackComp.slots.Count)
                     {
-                        slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % numOfMaxItemsPerRow);
-                        slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
+                        slotRect.x = inventoryRect.x + inventoryRect.width / iconsPerRow * (currentSlotInd % iconsPerRow);
+                        slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / iconsPerRow);
                         Widgets.DrawTextureFitted(slotRect, EmptyTex, 1.0f);
                     }
 
                     // draw occupied slots
                     if (currentSlotInd < SlotsBackpackComp.slots.Count)
                     {
-                        slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % numOfMaxItemsPerRow);
-                        slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
+                        slotRect.x = inventoryRect.x + inventoryRect.width / iconsPerRow * (currentSlotInd % iconsPerRow);
+                        slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / iconsPerRow);
 
                         Thing currentThing = SlotsBackpackComp.slots[currentSlotInd];
 
@@ -249,8 +260,8 @@ namespace ToolsForHaul
                             SoundDefOf.Click.PlayOneShotOnCamera();
                         }
                     }
-                    slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % numOfMaxItemsPerRow);
-                    slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / numOfMaxItemsPerRow);
+                    slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % iconsPerRow);
+                    slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / iconsPerRow);
                     //      slotRect.x += Height;
                 }
             }

@@ -54,12 +54,14 @@
     <reportString>Putting TargetA in TargetB.</reportString>
   </JobDef>
   
+  <!--
   <JobDef>
     <defName>PutInInventory</defName>
     <driverClass>ToolsForHaul.JobDriver_PutInInventory</driverClass>
     <reportString>Put TargetA in TargetB.</reportString>
   </JobDef>
-
+-->
+  
   <JobDef>
     <defName>ApplyMedicine</defName>
     <driverClass>ToolsForHaul.JobDriver_ApplyMedicine</driverClass>

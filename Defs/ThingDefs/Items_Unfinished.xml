@@ -2,6 +2,21 @@
 <Defs>
 
   <ThingDef ParentName="UnfinishedBase">
+    <defName>UnfinishedWheelChair</defName>
+    <label>Unfinished wheel chair</label>
+    <graphicData>
+      <texPath>Things/Pawn/VehicleWheelChair/WheelChair</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(2,2)</drawSize>
+    </graphicData>
+    <stuffCategories>
+      <li>Metallic</li>
+      <li>Woody</li>
+      <li>Stony</li>
+    </stuffCategories>
+  </ThingDef>
+  
+  <ThingDef ParentName="UnfinishedBase">
     <defName>UnfinishedCart</defName>
     <label>Unfinished cart</label>
     <graphicData>

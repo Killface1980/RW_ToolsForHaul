@@ -32,40 +32,20 @@ namespace ToolsForHaul
             LongEventHandler.QueueLongEvent(Inject, "Initializing", true, null);
         }
 
-        public static object GetHiddenValue(Type type, object instance, string fieldName, FieldInfo info)
-        {
-            if (info == null)
-            {
-                info = type.GetField(fieldName, universalFlags);
-            }
-
-            return info?.GetValue(instance);
-        }
-
-        public static void SetHiddenValue(object value, Type type, object instance, string fieldName, FieldInfo info)
-        {
-            if (info == null)
-            {
-                info = type.GetField(fieldName, universalFlags);
-            }
-
-            info?.SetValue(instance, value);
-        }
-
         private static void Inject()
         {
             MethodInfo method = typeof(ThinkNode_JobGiver).GetMethod("TryIssueJobPackage", BindingFlags.Instance | BindingFlags.Public);
             MethodInfo method2 = typeof(_ThinkNode_JobGiver).GetMethod("TryIssueJobPackage", BindingFlags.Instance | BindingFlags.Public);
 
-          //// draws hands on equipment, if corresponding Comp is specified
-          //MethodInfo method3 = typeof(PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
-          //MethodInfo method4 = typeof(RA_PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
+            //// draws hands on equipment, if corresponding Comp is specified
+            //MethodInfo method3 = typeof(PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
+            //MethodInfo method4 = typeof(RA_PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            if (false)
-            if (!Detours.TryDetourFromTo(method, method2))
-            {
-                Log.Message("Failed detour RightTools JobPackage");
-            }
+            if (true)
+                if (!Detours.TryDetourFromTo(method, method2))
+                {
+                    Log.Message("Failed detour RightTools JobPackage");
+                }
             //if (!Detours.TryDetourFromTo(method3, method4))
             //{
             //    Log.Message("Failed detour RightTools PawnRenderer DrawEquipment");

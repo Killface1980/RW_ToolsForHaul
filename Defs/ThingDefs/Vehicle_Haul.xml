@@ -30,13 +30,13 @@
       <isInert>false</isInert>
       <deconstructible>false</deconstructible>
     </building>
+    <pathCost>30</pathCost>
     <statBases>
-      <Flammability>1.0</Flammability>
+      <Flammability>0.05</Flammability>
     </statBases>
     <alwaysHaulable>false</alwaysHaulable>
     <!-- <designateHaulable>false</designateHaulable> -->
     <comps>
-      <li Class="CompProperties_Breakdownable"/>
       <li Class="CompProperties_Forbiddable"/>
       <li>
         <compClass>ToolsForHaul.CompMountable</compClass>
@@ -445,6 +445,120 @@
       </options>
     </colorGenerator>
   </ThingDef>
+
+  <ThingDef ParentName="BaseVehicle">
+    <defName>VehicleWheelChair</defName>
+    <label>wheel chair</label>
+    <repairEffect>Repair</repairEffect>
+    <hasInteractionCell>True</hasInteractionCell>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
+    <passability>PassThroughOnly</passability>
+    <altitudeLayer>Item</altitudeLayer>
+    <description>For those who have some disability to walk</description>
+    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
+    <thingCategories>
+      <li>Vehicles</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Things/Pawn/VehicleWheelChair/WheelChair</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,3)</drawSize>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>200</MaxHitPoints>
+      <VehicleSpeed>4.62</VehicleSpeed>
+   <!--   <VehicleMaxItem>2</VehicleMaxItem>-->
+      <Beauty>3</Beauty>
+      <Comfort>0.5</Comfort>
+    </statBases>
+    <size>(1,1)</size>
+    <fillPercent>0.99</fillPercent>
+ <!--<inspectorTabs>
+      <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
+      <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
+    </inspectorTabs>
+   -->
+    <CostList>
+      <Steel>150</Steel>
+      <Plasteel>15</Plasteel>
+      <Component>1</Component>
+    </CostList>
+    <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <Steel>75</Steel>
+      <Plasteel>7</Plasteel>
+      <Component>1</Component>
+    </killedLeavings>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Machining</soundWorking>
+      <recipeUsers>
+        <li>ComponentAssemblyBench</li>
+      </recipeUsers>
+      <workAmount>22000</workAmount>
+      <unfinishedThingDef>UnfinishedWheelChair</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+      <researchPrerequisite>PoweredArmor</researchPrerequisite>
+    </recipeMaker>
+    <comps>
+      <li Class="CompProperties_Explosive">
+        <explosiveRadius>2.9</explosiveRadius>
+        <explosiveDamageType>Bomb</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+        <startWickHitPointsPercent>0.10</startWickHitPointsPercent>
+        <wickTicks>
+          <min>300</min>
+          <max>600</max>
+        </wickTicks>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Axles">
+        <axles>
+          <li>(-25,-40)</li>
+        </axles>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Vehicles">
+        <showsStorage>false</showsStorage>
+        <animalsCanDrive>false</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>true</motorizedWithoutFuel>
+      </li>
+    </comps>
+    <colorGenerator Class="ColorGenerator_Options">
+      <options>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.33,0.33,0.33,1)</only>
+        </li>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.65,0.65,0.65,1)</only>
+        </li>
+        <li>
+          <weight>30</weight>
+          <only>RGBA(0.4,0.3,0.15,1)</only>
+        </li>
+        <li>
+          <weight>6</weight>
+          <min>RGBA(0.3,0.3,0.3,1)</min>
+          <max>RGBA(0.5,0.5,0.5,1)</max>
+        </li>
+        <li>
+          <weight>2</weight>
+          <min>RGBA(0.5,0.5,0.5,1)</min>
+          <max>RGBA(1,1,1,1)</max>
+        </li>
+      </options>
+    </colorGenerator>
+  </ThingDef>
+
 
 
   <!-- 	<ThingDef ParentName="BaseVehicle">

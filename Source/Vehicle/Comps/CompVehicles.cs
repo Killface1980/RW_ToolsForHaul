@@ -4,7 +4,7 @@ namespace ToolsForHaul
 {
     public class CompVehicles : ThingComp
     {
-        public CompProperties_Vehicles Props
+        public CompProperties_Vehicles compProps
         {
             get
             {
@@ -14,22 +14,22 @@ namespace ToolsForHaul
 
         public bool ShowsStorage()
         {
-            return Props.showsStorage;
+            return compProps.showsStorage;
         }
 
         public bool AnimalsCanDrive()
         {
-            return Props.animalsCanDrive;
+            return compProps.animalsCanDrive;
         }
 
         public bool MotorizedWithoutFuel()
         {
-            return Props.motorizedWithoutFuel;
+            return compProps.motorizedWithoutFuel;
         }
 
         public float FuelCatchesFireHitPointsPercent()
         {
-            return Props.fuelCatchesFireHitPointsPercent;
+            return compProps.fuelCatchesFireHitPointsPercent;
         }
     }
 }

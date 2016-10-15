@@ -26,11 +26,10 @@ namespace ToolsForHaul
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            ThingWithComps slotter = CurJob.GetTarget(SlotterInd).Thing as ThingWithComps;
-            CompSlotsToolbelt compSlots = slotter.GetComp<CompSlotsToolbelt>();
+            Apparel_Toolbelt toolbelt = CurJob.GetTarget(SlotterInd).Thing as Apparel_Toolbelt;
 
             // no free slots
-            this.FailOn(() => compSlots.slots.Count >= (slotter as Apparel_Toolbelt).MaxItem);
+            this.FailOn(() => toolbelt.slotsComp.slots.Count >= (toolbelt as Apparel_Toolbelt).MaxItem);
 
 
             // reserve resources
@@ -48,7 +47,7 @@ namespace ToolsForHaul
             {
                 initAction = () =>
                 {
-                    if (!compSlots.slots.TryAdd(CurJob.targetA.Thing))
+                    if (!toolbelt.slotsComp.slots.TryAdd(CurJob.targetA.Thing))
                         EndJobWith(JobCondition.Incompletable);
                 }
             };
