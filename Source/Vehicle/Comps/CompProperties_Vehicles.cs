@@ -19,5 +19,8 @@ namespace ToolsForHaul
         {
             compClass = typeof(CompVehicles);
         }
+
+        public bool isMedical;
+
     }
 }

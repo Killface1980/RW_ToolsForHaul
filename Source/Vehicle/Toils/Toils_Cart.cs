@@ -26,6 +26,25 @@ namespace ToolsForHaul
             return toil;
         }
 
+        public static Toil MountOtherOn(TargetIndex CartInd, Pawn patient)
+        {
+            Toil toil = new Toil();
+            toil.initAction = () =>
+            {
+                Pawn actor = toil.GetActor();
+                Vehicle_Cart cart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as Vehicle_Cart;
+                if (cart == null)
+                {
+                    Log.Error(actor.LabelCap + " Report: Wheel chair is invalid.");
+                    toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
+                }
+
+                cart.GetComp<CompMountable>().MountOn(patient);
+            };
+            return toil;
+        }
+
+
         public static Toil DismountAt(TargetIndex CartInd, TargetIndex StoreCellInd)
         {
             Toil toil = new Toil();

@@ -445,9 +445,11 @@
       </options>
     </colorGenerator>
   </ThingDef>
+  
+  
 
   <ThingDef ParentName="BaseVehicle">
-    <defName>VehicleWheelChair</defName>
+      <defName>VehicleWheelChair</defName>
     <label>wheel chair</label>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
@@ -456,7 +458,9 @@
     <altitudeLayer>Item</altitudeLayer>
     <description>For those who have some disability to walk</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <isBodyPartOrImplant>true</isBodyPartOrImplant>
     <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
+    <bed_humanlike>true</bed_humanlike>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
@@ -467,11 +471,14 @@
     </graphicData>
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
-      <VehicleSpeed>4.62</VehicleSpeed>
+      <VehicleSpeed>3.5</VehicleSpeed>
    <!--   <VehicleMaxItem>2</VehicleMaxItem>-->
       <Beauty>3</Beauty>
       <Comfort>0.5</Comfort>
     </statBases>
+    <techHediffsTags>
+      <li>Advanced</li>
+    </techHediffsTags>
     <size>(1,1)</size>
     <fillPercent>0.99</fillPercent>
  <!--<inspectorTabs>
@@ -529,6 +536,7 @@
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
+        <isMedical>true</isMedical>
       </li>
     </comps>
     <colorGenerator Class="ColorGenerator_Options">

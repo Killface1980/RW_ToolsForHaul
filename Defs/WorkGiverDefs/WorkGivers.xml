@@ -30,6 +30,20 @@
     <canBeDoneByNonColonists>true</canBeDoneByNonColonists>
   </WorkGiverDef>
 -->
+    <WorkGiverDef>
+    <defName>TakeToWheelChair</defName>
+    <label>take an immovable pawn to a wheel chair</label>
+    <giverClass>ToolsForHaul.WorkGiver_TakeToWheelChair</giverClass>
+    <workType>Doctor</workType>
+    <verb>take</verb>
+    <gerund>taking</gerund>
+    <priorityInType>60</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  
+  
   <!-- ============= Hauling ============= -->
   
   <WorkGiverDef>

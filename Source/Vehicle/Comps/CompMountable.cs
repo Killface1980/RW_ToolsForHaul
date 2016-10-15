@@ -216,7 +216,7 @@ namespace ToolsForHaul
                 {
                     soundPlayed = false;
                 }
-                
+
             }
         }
 
@@ -250,27 +250,31 @@ namespace ToolsForHaul
 
             Command_Action com = new Command_Action();
 
-            if (IsMounted)
+            if (!driver.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
             {
-                com.defaultLabel = txtCommandDismountLabel.Translate();
-                com.defaultDesc = txtCommandDismountDesc.Translate();
-                com.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnmount");
-                com.activateSound = SoundDef.Named("Click");
-                com.action = Dismount;
 
-                yield return com;
-            }
-            else
-            {
-                Designator_Mount designator = new Designator_Mount();
+                if (IsMounted)
+                {
+                    com.defaultLabel = txtCommandDismountLabel.Translate();
+                    com.defaultDesc = txtCommandDismountDesc.Translate();
+                    com.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnmount");
+                    com.activateSound = SoundDef.Named("Click");
+                    com.action = Dismount;
 
-                designator.vehicle = parent;
-                designator.defaultLabel = txtCommandMountLabel.Translate();
-                designator.defaultDesc = txtCommandMountDesc.Translate();
-                designator.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconMount");
-                designator.activateSound = SoundDef.Named("Click");
+                    yield return com;
+                }
+                else
+                {
+                    Designator_Mount designator = new Designator_Mount();
 
-                yield return designator;
+                    designator.vehicle = parent;
+                    designator.defaultLabel = txtCommandMountLabel.Translate();
+                    designator.defaultDesc = txtCommandMountDesc.Translate();
+                    designator.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconMount");
+                    designator.activateSound = SoundDef.Named("Click");
+
+                    yield return designator;
+                }
             }
         }
 
@@ -293,7 +297,7 @@ namespace ToolsForHaul
                     verb = txtMountOn;
                     yield return new FloatMenuOption(verb.Translate(parent.LabelShort), action_Order);
                 }
-                else if (IsMounted && myPawn == driver)
+                else if (IsMounted && myPawn == driver && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
                 {
                     action_Order = () =>
                     {

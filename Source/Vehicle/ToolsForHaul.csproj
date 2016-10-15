@@ -29,7 +29,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -59,6 +59,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
+    <Compile Include="_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
+    <Compile Include="_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />
+    <Compile Include="_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
     <None Include="_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />

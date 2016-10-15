@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <!-- Added body parts -->
+
+  <HediffDef ParentName="AddedBodyPartBase">
+    <defName>HediffWheelChair</defName>
+    <label>bound to wheel chair</label>
+    <addedPartProps>
+      <isBionic>false</isBionic>
+      <isSolid>false</isSolid>
+      <partEfficiency>0.25</partEfficiency>
+    </addedPartProps>
+    <stages>
+      <li>
+          <capMods>
+            <li>
+              <capacity>Moving</capacity>
+              <offset>0</offset>
+            </li>
+          </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  
+  
+</Defs>

@@ -22,6 +22,11 @@ namespace ToolsForHaul
             return compProps.animalsCanDrive;
         }
 
+        public bool IsMedical()
+        {
+            return compProps.isMedical;
+        }
+
         public bool MotorizedWithoutFuel()
         {
             return compProps.motorizedWithoutFuel;

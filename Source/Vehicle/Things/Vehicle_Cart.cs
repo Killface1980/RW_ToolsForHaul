@@ -193,9 +193,23 @@ namespace ToolsForHaul
 
         public override void DeSpawn()
         {
-            base.DeSpawn();
-            if (mountableComp.sustainerAmbient != null)
-                mountableComp.sustainerAmbient.End();
+            bool hasChair = false;
+            foreach (Pawn pawn in Find.MapPawns.AllPawnsSpawned)
+            {
+                if (pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")) &&
+                    !ToolsForHaulUtility.IsDriver(pawn) && base.Position.AdjacentTo8WayOrInside(pawn.Position))
+                {
+                    mountableComp.MountOn(pawn);
+                    hasChair = true;
+                    break;
+                }
+            }
+            if (!hasChair)
+            {
+                base.DeSpawn();
+                if (mountableComp.sustainerAmbient != null)
+                    mountableComp.sustainerAmbient.End();
+            }
         }
 
         private ThingDef VehicleDef
@@ -577,11 +591,11 @@ namespace ToolsForHaul
                 }
 
             }
-          //if (HitPoints <= MaxHitPoints * 0.5f)
-          //{
-          //    if (IsCurrentlyMotorized())
-          //        MoteMaker.ThrowMicroSparks(base.DrawPos);
-          //}
+            //if (HitPoints <= MaxHitPoints * 0.5f)
+            //{
+            //    if (IsCurrentlyMotorized())
+            //        MoteMaker.ThrowMicroSparks(base.DrawPos);
+            //}
 
             if (tankLeaking && Find.TickManager.TicksGame > tankSpillTick)
             {

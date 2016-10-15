@@ -138,6 +138,8 @@ namespace ToolsForHaul
                 && !Driver.health.ShouldBeTendedNow;
         }
 
+
+
         public static Job HaulWithTools(Pawn pawn, Vehicle_Cart cart = null)
         {
             Trace.stopWatchStart();
@@ -167,8 +169,8 @@ namespace ToolsForHaul
                         if (pawn.inventory.container[i] == lastItem && reservedMaxItem - (i + 1) <= 0)
                         {
                             ShouldDrop = false;
-                        break;
-                    }
+                            break;
+                        }
             }
             else
             {
@@ -214,7 +216,7 @@ namespace ToolsForHaul
                     Trace.LogMessage();
                     return job;
                 }
-                if (cart != null && job.def == jobDefHaulWithCart && !cart.IsInValidStorage())
+                if (cart != null && job.def == jobDefHaulWithCart && !cart.IsInValidStorage() && !pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
                 {
                     Trace.AppendLine("In DismountInBase");
                     return DismountInBase(pawn, cart);
@@ -322,7 +324,7 @@ namespace ToolsForHaul
                 Trace.LogMessage();
                 return job;
             }
-            if (cart != null && job.def == jobDefHaulWithCart && !cart.IsInValidStorage())
+            if (cart != null && job.def == jobDefHaulWithCart && !cart.IsInValidStorage()&&!pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
             {
                 Trace.AppendLine("In DismountInBase: ");
                 return DismountInBase(pawn, cart);
@@ -385,6 +387,28 @@ namespace ToolsForHaul
             }
 
             return IntVec3.Invalid;
+        }
+
+        public static Vehicle_Cart FindWheelChair(Pawn patient, Pawn pawn)
+        {
+            foreach (Vehicle_Cart vehicle in Cart())
+            {
+                if (vehicle.compVehicles.IsMedical() && vehicle.mountableComp.Driver == null && pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Deadly) && vehicle.Faction==pawn.Faction)
+                {
+                    Debug.Log("Wheel chair found");
+                    return vehicle;
+                }
+            }
+                    Debug.Log("No wheel chair found");
+            return null;
+        }
+
+        public static bool IsDriver(Pawn pawn)
+        {
+            foreach (Vehicle_Cart vehicle in Cart())
+                if (vehicle.mountableComp.Driver == pawn)
+                    return true;
+            return false;
         }
     }
 }

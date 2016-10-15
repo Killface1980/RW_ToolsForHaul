@@ -1,6 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <JobDefs>
 
+  
+  <JobDef>
+    <defName>TakeToWheelChair</defName>
+    <driverClass>ToolsForHaul.JobDriver_TakeToWheelChair</driverClass>
+    <reportString>Taking TargetA to TargetB.</reportString>
+  </JobDef>
+  
 
   <!--=================== Work with tools =====================-->
   <!-- redefined, to set alwaysShowWeapon as true -->
@@ -42,6 +49,8 @@
   
   <!--============= Backpack ===============-->
 
+
+  
   <JobDef>
     <defName>PutInBackpackSlot</defName>
     <driverClass>ToolsForHaul.JobDriver_PutInBackpackSlot</driverClass>
