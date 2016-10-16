@@ -249,12 +249,11 @@
       <Steel>150</Steel>
       <Plasteel>10</Plasteel>
       <Component>10</Component>
+    <VehicleATVFrame>1</VehicleATVFrame>
     </CostList>
-    <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
     <killedLeavings>
-      <Steel>75</Steel>
-      <Plasteel>5</Plasteel>
-      <Component>5</Component>
+      <VehicleATVFrame>1</VehicleATVFrame>
     </killedLeavings>
     <recipeMaker>
       <workSpeedStat>SmithingSpeed</workSpeedStat>
@@ -278,6 +277,8 @@
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Bomb</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+        <startWickHitPointsPercent>0.05</startWickHitPointsPercent>
+        <chanceNeverExplodeFromDamage>0.9</chanceNeverExplodeFromDamage>
         <!-- 				<startWickHitPointsPercent>0.10</startWickHitPointsPercent>
 				<wickTicks>
 					<min>300</min>
@@ -460,7 +461,6 @@
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isBodyPartOrImplant>true</isBodyPartOrImplant>
     <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
-    <bed_humanlike>true</bed_humanlike>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>

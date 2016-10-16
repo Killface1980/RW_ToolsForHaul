@@ -29,7 +29,7 @@ namespace ToolsForHaul
             Apparel_Backpack backpack = CurJob.GetTarget(SlotterInd).Thing as Apparel_Backpack;
 
             // no free slots
-            this.FailOn(() => backpack.slotsComp.slots.Count >= (backpack as Apparel_Backpack).MaxItem);
+            this.FailOn(() => backpack.slotsComp.slots.Count >= backpack.MaxItem);
 
             // reserve resources
             yield return Toils_Reserve.ReserveQueue(HaulableInd);

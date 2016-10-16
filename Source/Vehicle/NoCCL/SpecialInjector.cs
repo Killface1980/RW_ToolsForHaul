@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CommunityCoreLibrary;
@@ -7,7 +6,6 @@ using RW_FacialStuff;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using Object = UnityEngine.Object;
 
 namespace ToolsForHaul
 {

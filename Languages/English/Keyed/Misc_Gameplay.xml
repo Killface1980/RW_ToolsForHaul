@@ -11,9 +11,9 @@
   <ReportStandby>Standing by</ReportStandby> 
   
   <!-- Cart -->
-  <InStorage>In Storage: </InStorage>
+  <InStorage>In Storage</InStorage>
   
   <!-- Saddle -->
-  <Rider>Rider: </Rider>
+  <Rider>Rider</Rider>
   
 </LanguageData>

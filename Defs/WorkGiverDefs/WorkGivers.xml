@@ -30,6 +30,7 @@
     <canBeDoneByNonColonists>true</canBeDoneByNonColonists>
   </WorkGiverDef>
 -->
+  <!--
     <WorkGiverDef>
     <defName>TakeToWheelChair</defName>
     <label>take an immovable pawn to a wheel chair</label>
@@ -42,7 +43,7 @@
       <li>Manipulation</li>
     </requiredCapacities>
   </WorkGiverDef>
-  
+  -->
   
   <!-- ============= Hauling ============= -->
   

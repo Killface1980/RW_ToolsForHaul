@@ -120,15 +120,15 @@ namespace ToolsForHaul
         {
             if (cart.Faction != Faction.OfPlayer) return false;
 
-            if (!cart.TryGetComp<CompMountable>().IsMounted) return true;
-            if (cart.TryGetComp<CompMountable>().Driver == pawn) return true;
+            if (!cart.mountableComp.IsMounted) return true;
+            if (cart.mountableComp.Driver == pawn) return true;
             if (!cart.IsForbidden(pawn.Faction)) return true;
             return false;
         }
 
         public static bool AvailableAnimalCart(Vehicle_Cart cart)
         {
-            Pawn Driver = cart.TryGetComp<CompMountable>().IsMounted ? cart.TryGetComp<CompMountable>().Driver : null;
+            Pawn Driver = cart.mountableComp.IsMounted ? cart.mountableComp.Driver : null;
             if (Driver == null)
                 return false;
 
@@ -174,8 +174,8 @@ namespace ToolsForHaul
             }
             else
             {
-                if (cart.TryGetComp<CompMountable>().IsMounted &&
-                    cart.TryGetComp<CompMountable>().Driver.RaceProps.Animal) jobDef = jobDefHaulWithAnimalCart;
+                if (cart.mountableComp.IsMounted &&
+                    cart.mountableComp.Driver.RaceProps.Animal) jobDef = jobDefHaulWithAnimalCart;
                 else jobDef = jobDefHaulWithCart;
                 targetC = cart;
                 maxItem = cart.MaxItem;
@@ -216,7 +216,7 @@ namespace ToolsForHaul
                     Trace.LogMessage();
                     return job;
                 }
-                if (cart != null && job.def == jobDefHaulWithCart && !cart.IsInValidStorage() && !pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
+                if (cart != null && job.def == jobDefHaulWithCart && !cart.IsInValidStorage())// && !pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
                 {
                     Trace.AppendLine("In DismountInBase");
                     return DismountInBase(pawn, cart);
@@ -324,7 +324,7 @@ namespace ToolsForHaul
                 Trace.LogMessage();
                 return job;
             }
-            if (cart != null && job.def == jobDefHaulWithCart && !cart.IsInValidStorage()&&!pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
+            if (cart != null && job.def == jobDefHaulWithCart && !cart.IsInValidStorage())//&&!pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
             {
                 Trace.AppendLine("In DismountInBase: ");
                 return DismountInBase(pawn, cart);

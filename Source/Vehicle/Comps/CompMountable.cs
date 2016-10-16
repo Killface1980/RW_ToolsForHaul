@@ -45,10 +45,12 @@ namespace ToolsForHaul
             {
                 SoundInfo info = SoundInfo.InWorld(parent, MaintenanceType.None);
                 sustainerAmbient = vehicleCart.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
-            }
 
-            //    Find.ListerBuildings.Remove(parent as Building);
+
+                //    Find.ListerBuildings.Remove(parent as Building);
+            }
         }
+
         public bool IsMounted
         {
             get { return driver != null; }
@@ -123,16 +125,60 @@ namespace ToolsForHaul
             base.CompTick();
             if (IsMounted)
             {
+                if (parent.IsBurning())
+                {
+                    bool flag = driver.RaceProps.ToolUser && !driver.story.WorkTagIsDisabled(WorkTags.Firefighting);
+                    Fire fire = null;
+
+                        IntVec3 c = driver.Position;
+                        if (c.InBounds())
+                        {
+                            List<Thing> thingList = c.GetThingList();
+                            for (int j = 0; j < thingList.Count; j++)
+                            {
+                                if (flag)
+                                {
+                                    Fire fire2 = thingList[j] as Fire;
+                                    if (fire2 != null && (fire == null || fire2.fireSize < fire.fireSize) && (fire2.parent == null || fire2.parent != driver))
+                                    {
+                                        fire = fire2;
+                                    }
+                                }
+                            }
+                        }
+                   
+                    if (fire != null)
+                    {
+                        if (!driver.InMentalState || driver.MentalState.def.allowBeatfire)
+                        {
+                            driver.natives.TryBeatFire(fire);
+                            return;
+                        }
+                        else
+                        {
+                            parent.Position = Position.ToIntVec3();
+                            DismountAt((driver.Position - InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
+                            return;
+                        }
+                    }
+                }
+
                 if (driver.Dead || driver.Downed || driver.health.InPainShock || driver.MentalStateDef == MentalStateDefOf.WanderPsychotic || (parent.IsForbidden(Faction.OfPlayer) && driver.Faction == Faction.OfPlayer))
                 {
                     parent.Position = Position.ToIntVec3();
-                    parent.Rotation = driver.Rotation;
-                    DismountAt(driver.Position - InteractionOffset.ToIntVec3());
+                    DismountAt((driver.Position - InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
                     return;
                 }
+
+                if ((parent as Vehicle_Cart).GetComp<CompExplosive>().wickStarted)
+                {
+                    DismountAt((driver.Position - InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
+                }
+
                 if (!driver.Spawned)
                 {
                     parent.DeSpawn();
+                    return;
                 }
 
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
@@ -207,7 +253,7 @@ namespace ToolsForHaul
                         if (!soundPlayed)
                         {
                             SoundDef.Named("VehicleATV_Ambience_Break").PlayOneShot(driver.Position);
-                            MoteMaker.ThrowDustPuff(driver.Position, 1.2f);
+                            MoteMaker.ThrowDustPuff(driver.Position, 0.8f);
                             soundPlayed = true;
                         }
                     }
@@ -250,9 +296,6 @@ namespace ToolsForHaul
 
             Command_Action com = new Command_Action();
 
-            if (!driver.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
-            {
-
                 if (IsMounted)
                 {
                     com.defaultLabel = txtCommandDismountLabel.Translate();
@@ -275,7 +318,7 @@ namespace ToolsForHaul
 
                     yield return designator;
                 }
-            }
+            
         }
 
         public IEnumerable<FloatMenuOption> CompGetFloatMenuOptionsForExtra(Pawn myPawn)
@@ -297,7 +340,7 @@ namespace ToolsForHaul
                     verb = txtMountOn;
                     yield return new FloatMenuOption(verb.Translate(parent.LabelShort), action_Order);
                 }
-                else if (IsMounted && myPawn == driver && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
+                else if (IsMounted && myPawn == driver)// && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
                 {
                     action_Order = () =>
                     {

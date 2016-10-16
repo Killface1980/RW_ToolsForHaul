@@ -21,7 +21,7 @@ namespace ToolsForHaul
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
-                cart.GetComp<CompMountable>().MountOn(actor);
+                cart.mountableComp.MountOn(actor);
             };
             return toil;
         }
@@ -39,7 +39,7 @@ namespace ToolsForHaul
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
 
-                cart.GetComp<CompMountable>().MountOn(patient);
+                cart.mountableComp.MountOn(patient);
             };
             return toil;
         }
@@ -57,7 +57,7 @@ namespace ToolsForHaul
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
-                cart.GetComp<CompMountable>().DismountAt(toil.actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
+                cart.mountableComp.DismountAt(toil.actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
             };
             return toil;
         }

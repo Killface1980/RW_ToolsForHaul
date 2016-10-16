@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ppumkin.LEDTechnology;
 using ppumkin.LEDTechnology.GlowFlooders;
 using UnityEngine;
 using Verse;
-using RimWorld;
 
 namespace ToolsForHaul
 {
@@ -90,7 +87,7 @@ namespace ToolsForHaul
 
             //Log.Message("Anlge: Not cached - doing calc");
             //start tile
-            addCellIndex(this.Position, false);
+            addCellIndex(Position, false);
             //next tiles
 
 
@@ -106,12 +103,12 @@ namespace ToolsForHaul
             {
 
                 if (andgleDistanceDelta == 0) //TODO CHECK BLOCKERS HERE, DUHHH!
-                    addCellIndex(Position.ToOffsetPositionDirection(distance, 0, this.Orientation), false);
+                    addCellIndex(Position.ToOffsetPositionDirection(distance, 0, Orientation), false);
 
                 for (int angleDelta = andgleDistanceDelta * (-1); angleDelta <= andgleDistanceDelta; angleDelta++)
                 {
                     //Log.Message("distance: " + distance + " xD:" + x + " zD:" + z + " mod:" + distance % 3);
-                    IntVec3 _pos = Position.ToOffsetPositionDirection(distance, angleDelta, this.Orientation);
+                    IntVec3 _pos = Position.ToOffsetPositionDirection(distance, angleDelta, Orientation);
                     if (_pos.InBounds())
                     {
                         ////Log.Message("Block?: X:" + _pos.x + " Z: " + _pos.z);
@@ -119,7 +116,6 @@ namespace ToolsForHaul
                         {
                             completeBlocker = true;
                             //addCellIndex(_pos, true); //it gets added in isBlocked method
-                            continue; //end of road buddy, neeeeext!
                         }
                         else
                         {
@@ -160,11 +156,11 @@ namespace ToolsForHaul
                     //block this tile
                     addCellIndex(position, true);
                     //block next forward tile to prevent further light going this way
-                    addCellIndex(position.TranslateDirection(this.Orientation), true);
+                    addCellIndex(position.TranslateDirection(Orientation), true);
 
                     //block next left and right tiles to prevent further light going this way and help with "angle" detection
-                    addCellIndex(position.TranslateDirection(this.Orientation, 1), true);
-                    addCellIndex(position.TranslateDirection(this.Orientation, -1), true);
+                    addCellIndex(position.TranslateDirection(Orientation, 1), true);
+                    addCellIndex(position.TranslateDirection(Orientation, -1), true);
                 }
                 thingBlockers = null;
                 //Log.Message("Blocking by Def: X: " + position.x + " Z: " + position.z);
@@ -182,17 +178,17 @@ namespace ToolsForHaul
             if (thisCellBlocked != null)
             {
                 //block the next cell ahead and repeat el'kapitan!
-                addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation), true);
+                addCellIndex(thisCellBlocked.Position.TranslateDirection(Orientation), true);
                 if (angleDelta < 0)
                 {
                     //pffff.. a bit ugly i know.. but i need to compensate for wide angles over distance
-                    addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -1), true);
+                    addCellIndex(thisCellBlocked.Position.TranslateDirection(Orientation, -1), true);
                     //addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -2), true);
                     //addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -3), true);
                 }
                 if (angleDelta > 0)
                 {
-                    addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, 1), true);
+                    addCellIndex(thisCellBlocked.Position.TranslateDirection(Orientation, 1), true);
                     //addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, 2), true);
                     //addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, 3), true);
                 }
@@ -214,8 +210,8 @@ namespace ToolsForHaul
 
             public FloodBlocker(IntVec3 position)
             {
-                this.X = position.x;
-                this.Z = position.z;
+                X = position.x;
+                Z = position.z;
             }
 
         }
@@ -227,11 +223,11 @@ namespace ToolsForHaul
             //protect from multipoe entires of the same index. I know we can use an array but in this case we want an IEnumarable list
             if (!ColorCellIndexCache.Any(x => x.CellGridIndex == _idx))
             {
-                ColorCellIndexCache.Add(new GlowGridCache()
+                ColorCellIndexCache.Add(new GlowGridCache
                 {
                     Position = position,
                     CellGridIndex = _idx,
-                    ColorAtCellIndex = isBlocked ? new Color32(0, 0, 0, 0) : this.Color,
+                    ColorAtCellIndex = isBlocked ? new Color32(0, 0, 0, 0) : Color,
                     IsBlocked = isBlocked
                 });
             }
@@ -269,7 +265,7 @@ namespace ToolsForHaul
 
         public override string ToString()
         {
-            return "AngledGlower - x:" + Position.x.ToString() + " z:" + Position.z.ToString();
+            return "AngledGlower - x:" + Position.x + " z:" + Position.z;
         }
 
     }

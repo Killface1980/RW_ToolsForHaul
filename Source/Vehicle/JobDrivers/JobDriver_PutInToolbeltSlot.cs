@@ -29,7 +29,7 @@ namespace ToolsForHaul
             Apparel_Toolbelt toolbelt = CurJob.GetTarget(SlotterInd).Thing as Apparel_Toolbelt;
 
             // no free slots
-            this.FailOn(() => toolbelt.slotsComp.slots.Count >= (toolbelt as Apparel_Toolbelt).MaxItem);
+            this.FailOn(() => toolbelt.slotsComp.slots.Count >= toolbelt.MaxItem);
 
 
             // reserve resources

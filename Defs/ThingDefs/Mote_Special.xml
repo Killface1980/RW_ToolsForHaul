@@ -1,10 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+  <!--=============== Bases ==============-->
+
+  <ThingDef Name="MoteBase" Abstract="True">
+    <thingClass>MoteThrown</thingClass>
+    <label>Mote</label>
+    <category>Mote</category>
+    <graphicData>
+      <graphicClass>Graphic_Mote</graphicClass>
+      <shaderType>Mote</shaderType>
+    </graphicData>
+    <altitudeLayer>MoteLow</altitudeLayer>
+    <tickerType>Normal</tickerType>
+    <useHitPoints>false</useHitPoints>
+    <isSaveable>false</isSaveable>
+    <rotatable>false</rotatable>
+  </ThingDef>
+
+  <!--=============== Fuel puddle ==============-->
 
   <ThingDef ParentName="MoteBase">
-    <defName>Mote_Tire_ATV</defName>
+    <defName>Mote_Trail_ATV</defName>
+    
+    <isSaveable>true</isSaveable>
+    <rotatable>true</rotatable>
+    
     <graphicData>
-      <texPath>Things/Mote/Mote_Tire_ATV</texPath>
+      <texPath>Things/Mote/Mote_Trail_ATV</texPath>
     </graphicData>
     <altitudeLayer>MoteLow</altitudeLayer>
     <mote>
@@ -13,5 +35,5 @@
       <fadeOutTime>2.6</fadeOutTime>
     </mote>
   </ThingDef>
-  
+
 </Defs>

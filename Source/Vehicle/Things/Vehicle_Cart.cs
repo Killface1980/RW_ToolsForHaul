@@ -193,23 +193,47 @@ namespace ToolsForHaul
 
         public override void DeSpawn()
         {
-            bool hasChair = false;
-            foreach (Pawn pawn in Find.MapPawns.AllPawnsSpawned)
-            {
-                if (pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")) &&
-                    !ToolsForHaulUtility.IsDriver(pawn) && base.Position.AdjacentTo8WayOrInside(pawn.Position))
-                {
-                    mountableComp.MountOn(pawn);
-                    hasChair = true;
-                    break;
-                }
-            }
-            if (!hasChair)
-            {
-                base.DeSpawn();
-                if (mountableComp.sustainerAmbient != null)
-                    mountableComp.sustainerAmbient.End();
-            }
+            //bool hasChair = false;
+            //foreach (Pawn pawn in Find.MapPawns.AllPawnsSpawned)
+            //{
+            //    if (pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")) &&
+            //        !ToolsForHaulUtility.IsDriver(pawn) && base.Position.AdjacentTo8WayOrInside(pawn.Position))
+            //    {
+            //        mountableComp.MountOn(pawn);
+            //        hasChair = true;
+            //        break;
+            //    }
+            //}
+            //if (!hasChair)
+            //{
+            base.DeSpawn();
+            if (mountableComp.sustainerAmbient != null)
+                mountableComp.sustainerAmbient.End();
+
+            // not working
+            //if (explosiveComp != null && explosiveComp.wickStarted)
+            //    if (tankLeaking)
+            //    {
+            //        FireUtility.TryStartFireIn(Position, 0.3f);
+            //        if (Rand.Value > 0.8f)
+            //        {
+            //            FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
+            //        }
+            //        if (Rand.Value > 0.7f)
+            //        {
+            //            FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
+            //        }
+            //        if (Rand.Value > 0.6f)
+            //        {
+            //            FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
+            //        }
+            //        if (Rand.Value > 0.5f)
+            //        {
+            //            FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
+            //        }
+            //
+            //    }
+            //}
         }
 
         private ThingDef VehicleDef
@@ -241,7 +265,7 @@ namespace ToolsForHaul
             Scribe_Deep.LookDeep(ref storage, "storage");
             Scribe_Deep.LookDeep(ref allowances, "allowances");
             Scribe_Values.LookValue(ref tankLeaking, "tankLeaking");
-            Scribe_Values.LookValue(ref tankHitPos, "tankHitPos");
+            Scribe_Values.LookValue(ref _tankHitPos, "tankHitPos");
             Scribe_Values.LookValue(ref despawnAtEdge, "despawnAtEdge");
         }
 
@@ -355,9 +379,9 @@ namespace ToolsForHaul
                 Job job = new Job(JobDefOf.Deconstruct, this);
                 myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
             };
+            bool alreadyMounted = false;
             if (!mountableComp.IsMounted)
             {
-                bool alreadyMounted = false;
                 foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart())
                     if (cart.mountableComp.Driver == myPawn)
                         alreadyMounted = true;
@@ -380,8 +404,11 @@ namespace ToolsForHaul
         {
             if (mode == DestroyMode.Deconstruct)
                 mode = DestroyMode.Kill;
-            else if (explosiveComp != null)
+            else if (explosiveComp != null && explosiveComp.wickStarted)
+            {
                 storage.ClearAndDestroyContents();
+
+            }
 
             storage.TryDropAll(Position, ThingPlaceMode.Near);
 
@@ -400,7 +427,7 @@ namespace ToolsForHaul
             if (dinfo.Def == DamageDefOf.Repair && tankLeaking)
             {
                 tankLeaking = false;
-                tankHitPos = 1f;
+                _tankHitPos = 1f;
                 //if (breakdownableComp.BrokenDown)
                 //    breakdownableComp.Notify_Repaired();
                 return;
@@ -410,36 +437,45 @@ namespace ToolsForHaul
             {
                 return;
             }
-            if (HitPoints < compVehicles.FuelCatchesFireHitPointsPercent() * MaxHitPoints && refuelableComp != null && refuelableComp.HasFuel)
+            bool makeHole = false;
+            if (!compVehicles.MotorizedWithoutFuel())
             {
-                if (!fuelSpilled)
+                if (HitPoints < compVehicles.FuelCatchesFireHitPointsPercent() * MaxHitPoints && refuelableComp != null && refuelableComp.HasFuel)
                 {
-                    refuelableComp.ConsumeFuel(1f);
-
-                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 6);
-
-                    if (Random.value >= 0.5f)
+                    if (!fuelSpilled)
                     {
-                        FireUtility.TryStartFireIn(Position, 0.1f);
+                        refuelableComp.ConsumeFuel(1f);
+
+                        FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 6);
+
+                        if (Random.value >= 0.5f)
+                        {
+                            this.TryAttachFire(0.1f);
+                        }
+                        fuelSpilled = true;
+                        makeHole = true;
                     }
-                    fuelSpilled = true;
-                    return;
+                    if (Random.value >= 0.5f && !makeHole)
+                    {
+                        this.TryAttachFire(0.1f);
+                    }
                 }
-                if (Random.value >= 0.5f)
+
+                if (Random.value <= 0.15f || makeHole)
                 {
+                    tankLeaking = true;
+                    tankHitCount += 1;
+                    _tankHitPos = Math.Min(_tankHitPos, Rand.Value);
 
-                    FireUtility.TryStartFireIn(Position, 0.1f);
+                    int splash = (int)(refuelableComp.FuelPercent - _tankHitPos * 20);
+
+                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, splash);
                 }
-            }
-            if (Random.value <= 0.15f)
-            {
-                tankLeaking = true;
-                tankHitCount += 1;
-                tankHitPos = Math.Min(tankHitPos, Rand.Value);
 
-                int splash = (int)(refuelableComp.FuelPercent - tankHitPos * 20);
-
-                FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, splash);
+                if (Random.value >= 0.5f && tankLeaking)
+                {
+                    FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
+                }
             }
         }
 
@@ -498,18 +534,13 @@ namespace ToolsForHaul
                         flooder.CalculateGlowFlood();
                     }
                 }
-                else
+                if (mountableComp.Driver == null && flooder != null || flooder != null)
                 {
-                    if (mountableComp.Driver == null && flooder != null || flooder != null)
-                    {
-                        CustomGlowFloodManager.DeRegisterGlower(flooder);
-                        CustomGlowFloodManager.RefreshGlowFlooders();
-                        flooder = null;
-                    }
-
+                    CustomGlowFloodManager.DeRegisterGlower(flooder);
+                    CustomGlowFloodManager.RefreshGlowFlooders();
+                    flooder = null;
                 }
             }
-
 
             #endregion
 
@@ -553,41 +584,44 @@ namespace ToolsForHaul
 
             if (mountableComp.IsMounted)
             {
+                Vector3 drawPos = mountableComp.Driver.Drawer.DrawPos;
+
                 if (mountableComp.Driver.pather.Moving)// || mountableComp.Driver.drafter.pawn.pather.Moving)
                 {
+
                     // TODO  move all variables like smoke amount and break sound to xml etc.
-                    if (Find.TerrainGrid.TerrainAt(mountableComp.Position.ToIntVec3()).takeFootprints || Find.SnowGrid.GetDepth(Position) > 0.2f)
+                    if (Find.TerrainGrid.TerrainAt(Position).takeFootprints || Find.SnowGrid.GetDepth(Position) > 0.2f)
                     {
 
-                        Vector3 normalized = (mountableComp.Position - lastFootprintPlacePos).normalized;
+                        Vector3 normalized = (drawPos - _lastFootprintPlacePos).normalized;
                         float rot = normalized.AngleFlat();
                         float angle = 90;
                         Vector3 b = normalized.RotatedBy(angle) * 0.17f;
-                        Vector3 loc = mountableComp.Position + FootprintOffset + b;
+                        Vector3 loc = drawPos + TrailOffset + b;
 
-                        if ((mountableComp.Position - this.lastFootprintPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
+                        if ((drawPos - _lastFootprintPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
                             if (loc.ShouldSpawnMotesAt() && !MoteCounter.SaturatedLowPriority)
                             {
                                 MoteThrown moteThrown =
-                                    (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Tire_ATV"), null);
+                                    (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Trail_ATV"), null);
                                 moteThrown.exactRotation = rot;
                                 moteThrown.exactPosition = loc;
                                 GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
-                                lastFootprintPlacePos = mountableComp.Position;
+                                _lastFootprintPlacePos = drawPos;
                             }
-                        MoteMaker.ThrowDustPuff(mountableComp.Position.ToIntVec3() - Rotation.FacingCell, 0.8f);
+                        MoteMaker.ThrowDustPuff(drawPos + DustOffset, 0.8f);
                     }
 
 
                     //Exhaustion fumes
                     if (!compVehicles.compProps.motorizedWithoutFuel)
-                        MoteMaker.ThrowSmoke(mountableComp.Position, 0.08f + currentDriverSpeed * 0.02f);
+                        MoteMaker.ThrowSmoke(drawPos + FumesOffset, 0.08f + currentDriverSpeed * 0.02f);
                 }
 
                 else
                 {
                     if (!compVehicles.compProps.motorizedWithoutFuel)
-                        MoteMaker.ThrowSmoke(mountableComp.Position, 0.08f);
+                        MoteMaker.ThrowSmoke(drawPos + FumesOffset, 0.08f);
                 }
 
             }
@@ -597,26 +631,29 @@ namespace ToolsForHaul
             //        MoteMaker.ThrowMicroSparks(base.DrawPos);
             //}
 
-            if (tankLeaking && Find.TickManager.TicksGame > tankSpillTick)
+            if (tankLeaking && Find.TickManager.TicksGame > _tankSpillTick)
             {
-                if (refuelableComp.FuelPercent > tankHitPos)
+                if (refuelableComp.FuelPercent > _tankHitPos)
                 {
                     refuelableComp.ConsumeFuel(0.15f);
 
-                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 2);
-                    tankSpillTick = Find.TickManager.TicksGame + 40;
+                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 1);
+                    _tankSpillTick = Find.TickManager.TicksGame + 15;
                 }
 
             }
 
         }
-        private static readonly Vector3 FootprintOffset = new Vector3(0f, 0f, -0.3f);
-        private Vector3 lastFootprintPlacePos;
-        private const float FootprintIntervalDist = 1f;
+        private static readonly Vector3 TrailOffset = new Vector3(0f, 0f, -0.3f);
+        private static readonly Vector3 FumesOffset = new Vector3(-0.3f, 0f, 0f);
+        private static readonly Vector3 DustOffset = new Vector3(-0.3f, 0f, -0.3f);
 
-        private float tankHitPos = 1f;
+        private Vector3 _lastFootprintPlacePos;
+        private const float FootprintIntervalDist = 0.6f;
 
-        private int tankSpillTick = -5000;
+        private float _tankHitPos = 1f;
+
+        private int _tankSpillTick = -5000;
 
         #endregion
 
@@ -679,19 +716,20 @@ namespace ToolsForHaul
 
                 Vector2 drawSize = def.graphic.drawSize;
                 int num = Rotation == Rot4.West ? -1 : 1;
-                Vector3 s = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
+                Vector3 vector3 = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
                 Quaternion asQuat = Rotation.AsQuat;
                 float x = 1f * Mathf.Sin(num * (wheelRotation * 0.05f) % (2 * Mathf.PI));
                 float z = 1f * Mathf.Cos(num * (wheelRotation * 0.05f) % (2 * Mathf.PI));
 
                 asQuat.SetLookRotation(new Vector3(x, 0f, z), Vector3.up);
+               
                 List<Vector3> list;
                 if (compAxles.GetAxleLocations(drawSize, num, out list))
                 {
                     foreach (Vector3 current in list)
                     {
                         Matrix4x4 matrix = default(Matrix4x4);
-                        matrix.SetTRS(wheelLoc + current, asQuat, s);
+                        matrix.SetTRS(wheelLoc + current, asQuat, vector3);
                         Graphics.DrawMesh(MeshPool.plane10, matrix, graphic_Wheel_Single.MatAt(Rotation), 0);
                     }
                 }
@@ -702,17 +740,30 @@ namespace ToolsForHaul
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append(base.GetInspectString());
-            stringBuilder.AppendLine("Driver".Translate());
+
+            string currentDriverString;
             if (mountableComp.Driver != null)
-                stringBuilder.Append(mountableComp.Driver.LabelCap.Translate());
+                currentDriverString = mountableComp.Driver.LabelCap;
             else
-                stringBuilder.Append("NoDriver".Translate());
+                currentDriverString = "NoDriver".Translate();
+
+            stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
             if (tankLeaking)
-                stringBuilder.Append("TankLeaking".Translate());
-            stringBuilder.AppendLine("InStorage".Translate());
+                stringBuilder.AppendLine("TankLeaking".Translate());
+            var text = this.storage.ContentsString;
+            stringBuilder.AppendLine(string.Concat(new object[]
+            {
+            "InStorage".Translate(),
+            ": ",
+            text
+            }));
+
+            stringBuilder.AppendLine();
             foreach (Thing thing in storage)
-                stringBuilder.Append(thing.LabelCap.Translate() + ", ");
-            stringBuilder.Remove(stringBuilder.Length - 3, 1);
+                stringBuilder.Append(thing.LabelCap + ", ");
+
+
+            //      stringBuilder.Remove(stringBuilder.Length - 4, 1);
             return stringBuilder.ToString();
         }
         #endregion

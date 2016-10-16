@@ -59,10 +59,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
-    <Compile Include="_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
-    <Compile Include="_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />
-    <Compile Include="_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
+    <None Include="_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
+    <None Include="_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
+    <None Include="_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />
+    <None Include="_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
     <None Include="_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
@@ -72,9 +72,9 @@
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="_TESTING\HeadLights.cs" />
-    <Compile Include="_TESTING\IncidentWorker_RaidEnemy_Sanity.cs" />
-    <Compile Include="_TESTING\IncidentWorker_VisitorGroupTFH.cs" />
-    <Compile Include="_TESTING\IncidentWorker_VisitorGroup_Sanity.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy_Sanity.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_VisitorGroupTFH.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_VisitorGroup_Sanity.cs" />
     <None Include="_inactive\JobGiver_ExitMapRandom2.cs" />
     <Compile Include="Alerts\Class1.cs" />
     <Compile Include="StatWorker\StatWorker_MoveSpeed.cs" />
@@ -195,6 +195,7 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Haul.xml">
       <Link>Defs\ThingDefs\Vehicle_Haul.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers.xml">
       <Link>Defs\WorkGivers.xml</Link>
