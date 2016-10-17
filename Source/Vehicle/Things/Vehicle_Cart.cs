@@ -17,7 +17,7 @@ namespace ToolsForHaul
     [StaticConstructorOnStartup]
     public class Vehicle_Cart : Building, IThingContainerOwner, IAttackTarget
     {
-#region Variables
+        #region Variables
         // ==================================
         public int DefaultMaxItem { get { return (int)this.GetStatValue(vehicleMaxItem); } }
         public int MaxItemPerBodySize { get { return (int)this.GetStatValue(vehicleMaxItem); } }
@@ -140,9 +140,9 @@ namespace ToolsForHaul
             }
         }
 
-#endregion
+        #endregion
 
-#region Setup Work
+        #region Setup Work
 
 
         public Vehicle_Cart()
@@ -485,9 +485,9 @@ namespace ToolsForHaul
 
 
 
-#endregion
+        #endregion
 
-#region Ticker
+        #region Ticker
         // ==================================
 
         /// <summary>
@@ -508,10 +508,9 @@ namespace ToolsForHaul
                 instantiated = true;
             }
             base.Tick();
-            tick_time += 0.1;
 
 
-#region Headlights
+            #region Headlights
 #if Headlights
             {
                 if (Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell - Rotation.FacingCell) < 0.4f)
@@ -547,7 +546,7 @@ namespace ToolsForHaul
                 }
             }
 #endif
-#endregion
+            #endregion
 
 
             if (!fueledByAI)
@@ -562,8 +561,12 @@ namespace ToolsForHaul
             //    int degree = Mathf.FloorToInt(mountableComp.Driver.GetStatValue(StatDefOf.MoveSpeed) / (GenDate.SecondsToTicks(1) * wheelRadius));
             //    RotateWheelByDegree(degree);
             //}
-            if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy && compAxles.HasAxles())
+            if (mountableComp.IsMounted && mountableComp.Driver.pather.Moving &&
+                !mountableComp.Driver.stances.FullBodyBusy && compAxles.HasAxles())
+            {
                 wheelRotation += currentDriverSpeed / 3f;
+                tick_time += 0.01f*currentDriverSpeed/5f;
+            }
 
             if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
             {
@@ -658,9 +661,9 @@ namespace ToolsForHaul
 
         private int _tankSpillTick = -5000;
 
-#endregion
+        #endregion
 
-#region Graphics / Inspections
+        #region Graphics / Inspections
         // ==================================
 
         //private void UpdateGraphics()
@@ -686,6 +689,7 @@ namespace ToolsForHaul
                 return graphic_FullStorage;
             }
         }
+        float wheel_shake;
 
         public override Vector3 DrawPos
         {
@@ -727,13 +731,10 @@ namespace ToolsForHaul
 
                 asQuat.SetLookRotation(new Vector3(x, 0f, z), Vector3.up);
 
-                float wheel_shake = (float)((Math.Sin(tick_time) + Math.Abs(Math.Sin(tick_time))) / 40.0);
+                wheel_shake = (float)((Math.Sin(tick_time) + Math.Abs(Math.Sin(tick_time))) / 40.0);
 
-                if (currentDriverSpeed>0)
-                {
-                wheelLoc.z = wheelLoc.z + wheel_shake*currentDriverSpeed/5;                    
-                }
-
+                    wheelLoc.z = wheelLoc.z + wheel_shake;
+                
                 Vector3 mountThingLoc = drawLoc; mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(this.Rotation.AsAngle);
 
@@ -785,7 +786,7 @@ namespace ToolsForHaul
             }));
             return stringBuilder.ToString();
         }
-#endregion
+        #endregion
 
 
 
