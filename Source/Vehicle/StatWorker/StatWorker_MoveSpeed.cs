@@ -13,7 +13,6 @@ namespace ToolsForHaul
             stringBuilder.Append(base.GetExplanation(req, numberSense));
             if (req.HasThing)
             {
-                float text;
 
                 foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart())
                 {
@@ -90,12 +89,17 @@ namespace ToolsForHaul
 
             }
 
-            CompSlotsBackpack compInventory = ToolsForHaulUtility.TryGetBackpack(thing as Pawn).TryGetComp<CompSlotsBackpack>();
-            if (compInventory != null)
-            {
-                result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
-                return result;
-            }
+       //   Apparel_Backpack apparelBackpack = ToolsForHaulUtility.TryGetBackpack(thing as Pawn);
+       //   if (apparelBackpack != null)
+       //   {
+       //       CompSlotsBackpack compInventory = apparelBackpack.slotsComp;
+       //       if (compInventory != null)
+       //       {
+       //           result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
+       //       }
+       //   }
+
+
             return result;
         }
     }
