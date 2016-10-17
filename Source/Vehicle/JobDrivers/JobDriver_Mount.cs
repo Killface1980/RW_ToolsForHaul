@@ -54,7 +54,6 @@ namespace ToolsForHaul
             {
                 Pawn actor = toilMountOn.actor;
                 Job curJob = actor.jobs.curJob;
-
                 TargetThingA.TryGetComp<CompMountable>().MountOn(actor);
             };
 

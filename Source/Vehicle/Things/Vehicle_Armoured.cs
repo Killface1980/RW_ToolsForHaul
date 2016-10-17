@@ -15,7 +15,7 @@ using Random = UnityEngine.Random;
 namespace ToolsForHaul
 {
     [StaticConstructorOnStartup]
-    public class Vehicle_Cart : Building, IThingContainerOwner, IAttackTarget
+    public class Vehicle_Armoured : Building_TurretGun, IThingContainerOwner, IAttackTarget
     {
         #region Variables
         // ==================================
@@ -145,7 +145,7 @@ namespace ToolsForHaul
         #region Setup Work
 
 
-        public Vehicle_Cart()
+        public Vehicle_Armoured()
         {
             // current spin degree
             wheelRotation = 0;
@@ -156,7 +156,7 @@ namespace ToolsForHaul
             allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
         }
 
-        static Vehicle_Cart()
+        static Vehicle_Armoured()
         {
             vehicleSpeed = DefDatabase<StatDef>.GetNamed("VehicleSpeed");
             vehicleMaxItem = DefDatabase<StatDef>.GetNamed("VehicleMaxItem");
@@ -565,7 +565,7 @@ namespace ToolsForHaul
                 !mountableComp.Driver.stances.FullBodyBusy && compAxles.HasAxles())
             {
                 wheelRotation += currentDriverSpeed / 3f;
-                tick_time += 0.01f*currentDriverSpeed/5f;
+                tick_time += 0.01f * currentDriverSpeed / 5f;
             }
 
             if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
@@ -729,8 +729,8 @@ namespace ToolsForHaul
 
                 wheel_shake = (float)((Math.Sin(tick_time) + Math.Abs(Math.Sin(tick_time))) / 40.0);
 
-                    wheelLoc.z = wheelLoc.z + wheel_shake;
-                
+                wheelLoc.z = wheelLoc.z + wheel_shake;
+
                 Vector3 mountThingLoc = drawLoc; mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(this.Rotation.AsAngle);
 

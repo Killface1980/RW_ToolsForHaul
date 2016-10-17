@@ -15,8 +15,8 @@
     <tickerType>Normal</tickerType>
 
     <stealable>true</stealable>
-    
-    <altitudeLayer>Item</altitudeLayer>
+    <combatTargetBuilding>true</combatTargetBuilding>
+    <altitudeLayer>Projectile</altitudeLayer>
     <useHitPoints>True</useHitPoints>
     <hasTooltip>true</hasTooltip>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
@@ -29,13 +29,14 @@
       <bed_humanlike>false</bed_humanlike>
       <isInert>false</isInert>
       <deconstructible>false</deconstructible>
+      <isJoySource>true</isJoySource>
     </building>
-    <pathCost>30</pathCost>
+    <pathCost>40</pathCost>
     <statBases>
       <Flammability>0.05</Flammability>
     </statBases>
     <alwaysHaulable>false</alwaysHaulable>
-    <!-- <designateHaulable>false</designateHaulable> -->
+     <designateHaulable>false</designateHaulable> 
     <comps>
       <li Class="CompProperties_Forbiddable"/>
       <li>
@@ -58,7 +59,7 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Item</altitudeLayer>
+    <altitudeLayer>Projectile</altitudeLayer>
     <description>A cart is an old-fashioned wooden vehicle that is used for transporting goods or people.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <thingCategories>
@@ -75,6 +76,7 @@
       <VehicleMaxItem>4</VehicleMaxItem>
     </statBases>
     <size>(1,1)</size>
+    <fillPercent>0.99</fillPercent>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -128,7 +130,7 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Item</altitudeLayer>
+    <altitudeLayer>Projectile</altitudeLayer>
     <description>A truck is what you drive when you're done taking shit off of other people.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <thingCategories>
@@ -145,6 +147,7 @@
       <VehicleMaxItem>8</VehicleMaxItem>
     </statBases>
     <size>(1,1)</size>
+    <fillPercent>0.99</fillPercent>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -223,7 +226,8 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Item</altitudeLayer>
+    <castEdgeShadows>true</castEdgeShadows>
+    <altitudeLayer>Projectile</altitudeLayer>
     <description>An ATV is what you drive when you want a concussion.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
@@ -240,6 +244,7 @@
       <VehicleSpeed>15</VehicleSpeed>
       <VehicleMaxItem>2</VehicleMaxItem>
     </statBases>
+    <fillPercent>0.99</fillPercent>
     <size>(1,1)</size>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
@@ -345,7 +350,7 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Item</altitudeLayer>
+    <altitudeLayer>Projectile</altitudeLayer>
     <description>Keep out of reach of lightsabers.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
@@ -456,7 +461,7 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Item</altitudeLayer>
+    <altitudeLayer>Projectile</altitudeLayer>
     <description>For those who have some disability to walk</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isBodyPartOrImplant>true</isBodyPartOrImplant>
@@ -575,7 +580,7 @@
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,0)</interactionCellOffset>
 		<passability>PassThroughOnly</passability>
-		<altitudeLayer>Item</altitudeLayer>
+		<altitudeLayer>Projectile</altitudeLayer>
 		<description>A saddle is a leather seat that you put on the back of an animal so that you can ride the animal.</description>
 		<thingClass>ToolsForHaul.Vehicle_Saddle</thingClass>
 		<thingCategories>
@@ -618,7 +623,7 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Item</altitudeLayer>
+    <altitudeLayer>Projectile</altitudeLayer>
     <description>A trolley is a small table on wheels which is used for serving drinks or food.</description>
     <thingClass>ToolsForHaul.Vehicle_Trolley</thingClass>
     <thingCategories>

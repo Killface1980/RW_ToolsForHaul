@@ -54,6 +54,7 @@ namespace ToolsForHaul
             if (!TargetThingA.IsForbidden(pawn.Faction))
                 this.FailOnForbidden(CartInd);
 
+            this.FailOn(() => !pawn.RaceProps.IsFlesh || !pawn.RaceProps.Humanlike);
 
             ///
             //Define Toil
@@ -79,7 +80,7 @@ namespace ToolsForHaul
                 if (cart.mountableComp.Driver == pawn) return true;
                 return false;
             });
-            
+
             //Mount on Target
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch)
                                         .FailOnDestroyedOrNull(CartInd);

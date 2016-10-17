@@ -118,8 +118,8 @@ namespace ToolsForHaul
 
         public static bool AvailableCart(Vehicle_Cart cart, Pawn pawn)
         {
-            if (cart.Faction != Faction.OfPlayer) return false;
 
+            if (cart.Faction != Faction.OfPlayer) return false;
             if (!cart.mountableComp.IsMounted) return true;
             if (cart.mountableComp.Driver == pawn) return true;
             if (!cart.IsForbidden(pawn.Faction)) return true;
@@ -180,7 +180,7 @@ namespace ToolsForHaul
                 else jobDef = jobDefHaulWithCart;
                 targetC = cart;
                 maxItem = cart.MaxItem;
-                thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
+                thresholdItem = (int)Math.Ceiling(maxItem * 0.25);
                 reservedMaxItem = cart.storage.Count;
                 remainingItems = cart.storage;
                 ShouldDrop = reservedMaxItem > 0 ? true : false;
@@ -412,6 +412,14 @@ namespace ToolsForHaul
         {
             foreach (Vehicle_Cart vehicle in Cart())
                 if (vehicle.mountableComp.Driver == pawn)
+                    return true;
+            return false;
+        }
+
+        public static bool IsDriverOfThisVehicle(Pawn pawn, Vehicle_Cart vehicleReq)
+        {
+            foreach (Vehicle_Cart vehicle in Cart())
+                if (vehicle.mountableComp.Driver == pawn && vehicle==vehicleReq)
                     return true;
             return false;
         }

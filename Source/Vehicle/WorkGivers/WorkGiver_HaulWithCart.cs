@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -20,6 +21,11 @@ namespace ToolsForHaul
             Trace.DebugWriteHaulingPawn(pawn);
             if (ToolsForHaulUtility.Cart().Count == 0)
                 return true;
+
+            if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
+                return true;
+
+
             //int countForbidden = 0;
             //foreach (var actualCart in cart)
             //{
@@ -41,15 +47,25 @@ namespace ToolsForHaul
             {
                 return null;
             }
-
+            List<Vehicle_Cart> cartsAvailable = new List<Vehicle_Cart>();
             foreach (Vehicle_Cart thing in ToolsForHaulUtility.Cart())
             {
-                if (ToolsForHaulUtility.AvailableAnimalCart(thing) || ToolsForHaulUtility.AvailableCart(thing, pawn))
+                if (ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, thing))
                 {
                     cart = thing;
                     break;
                 }
+                else if (ToolsForHaulUtility.AvailableAnimalCart(thing) || ToolsForHaulUtility.AvailableCart(thing, pawn))
+                {
+                    cartsAvailable.Add(thing);
+                }
             }
+            if (cart == null && cartsAvailable.Any())
+            {
+                cartsAvailable.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenBy(x => x.DefaultMaxItem);
+                cart = cartsAvailable.First();
+            }
+
             if (cart == null)
                 return null;
             if (cart.IsForbidden(pawn.Faction) || !pawn.CanReserveAndReach(cart, PathEndMode.ClosestTouch, pawn.NormalMaxDanger()))

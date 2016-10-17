@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -13,17 +14,35 @@ namespace ToolsForHaul
 
         protected override Job TryGiveJob(Pawn pawn)
         {
-            using (List<Thing>.Enumerator enumerator = ToolsForHaulUtility.Cart().GetEnumerator())
+            List<Thing> steelVehicle = new List<Thing>();
+            foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart())
             {
-                while (enumerator.MoveNext())
+                if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == pawn.ThingID)
                 {
-                    Vehicle_Cart vehicle_Cart = (Vehicle_Cart)enumerator.Current;
-                    if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == pawn.ThingID)
-                    {
-                        vehicle_Cart.despawnAtEdge = true;
-                    }
+                    vehicle_Cart.despawnAtEdge = true;
+                    break;
                 }
+                if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
+                    break;
+
+                if (!vehicle_Cart.IsBurning() && vehicle_Cart.Position.InHorDistOf(pawn.Position, 20f) && !vehicle_Cart.mountableComp.IsMounted && vehicle_Cart.HitPoints / vehicle_Cart.MaxHitPoints > 0.2f && vehicle_Cart.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicle_Cart, PathEndMode.InteractionCell, Danger.Deadly))
+                {
+                    steelVehicle.Add(vehicle_Cart);
+                }
+
             }
+
+            if (steelVehicle.Any())
+            {
+                IOrderedEnumerable<Thing> orderedEnumerable = steelVehicle.OrderBy(x => x.Position.DistanceToSquared(pawn.Position));
+                Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                orderedEnumerable.First().SetFaction(null);
+                job.targetA = orderedEnumerable.First();
+
+                return job;
+            }
+
+
             IntVec3 intVec;
             if (!RCellFinder.TryFindBestExitSpot(pawn, out intVec))
             {

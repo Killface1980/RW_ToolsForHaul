@@ -10,7 +10,7 @@ namespace ToolsForHaul
             get
             {
                 foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart())
-                    if (cart.tankLeaking)
+                    if (cart.Faction== Faction.OfPlayer&& cart.tankLeaking)
                         return cart;
 
                 return false;

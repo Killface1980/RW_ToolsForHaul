@@ -29,8 +29,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -56,19 +55,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
-    <None Include="_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
-    <None Include="_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />
-    <None Include="_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
-    <None Include="_TESTING\IncidentWorker_Raid_Sanity.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
+    <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
     <Compile Include="Comps\CompSlotsToolbelt.cs" />
     <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
     <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
+    <Compile Include="JobGivers\JobGiver_Steal.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="Things\Apparel_Toolbelt.cs" />
-    <Compile Include="_TESTING\HeadLights.cs" />
+    <None Include="Things\Vehicle_Armoured.cs" />
+    <Compile Include="_inactive\_TESTING\HeadLights.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy_Sanity.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_VisitorGroupTFH.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_VisitorGroup_Sanity.cs" />
@@ -212,7 +213,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="_TESTING\TFHGlowFlood\" />
+    <Folder Include="_inactive\_TESTING\TFHGlowFlood\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
