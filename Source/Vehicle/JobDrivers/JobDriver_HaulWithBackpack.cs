@@ -81,7 +81,7 @@ namespace ToolsForHaul
                                                     .FailOnDestroyedOrNull(HaulableInd);
                 yield return gotoThing;
 
-                yield return Toils_Collect.CollectInInventory(HaulableInd);
+                yield return Toils_Collect.CollectInBackpack(HaulableInd, backpack);
 
                 yield return Toils_Collect.CheckDuplicates(gotoThing, BackpackInd, HaulableInd);
 
@@ -99,7 +99,7 @@ namespace ToolsForHaul
                 yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch)
                                             .FailOnBurningImmobile(StoreCellInd);
 
-                yield return Toils_Collect.DropTheCarriedInCell(StoreCellInd, ThingPlaceMode.Direct, lastItem);
+                yield return Toils_Collect.DropTheCarriedFromBackpackInCell(StoreCellInd, ThingPlaceMode.Direct, lastItem, backpack);
 
                 yield return Toils_Jump.JumpIfHaveTargetInQueue(StoreCellInd, extractB);
             }

@@ -8,7 +8,7 @@ namespace ToolsForHaul
     {
         //Constants
         public const TargetIndex HaulableInd = TargetIndex.A;
-        public const TargetIndex SlotterInd = TargetIndex.B;
+        public const TargetIndex BackpackInd = TargetIndex.B;
 
         public override string GetReport()
         {
@@ -16,9 +16,9 @@ namespace ToolsForHaul
 
             string repString;
             if (hauledThing != null)
-                repString = "ReportPutInInventory".Translate(hauledThing.LabelCap, CurJob.GetTarget(SlotterInd).Thing.LabelCap);
+                repString = "ReportPutInInventory".Translate(hauledThing.LabelCap, CurJob.GetTarget(BackpackInd).Thing.LabelCap);
             else
-                repString = "ReportPutSomethingInInventory".Translate(CurJob.GetTarget(SlotterInd).Thing.LabelCap);
+                repString = "ReportPutSomethingInInventory".Translate(CurJob.GetTarget(BackpackInd).Thing.LabelCap);
 
             return repString;
         }
@@ -26,7 +26,7 @@ namespace ToolsForHaul
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            Apparel_Backpack backpack = CurJob.GetTarget(SlotterInd).Thing as Apparel_Backpack;
+            Apparel_Backpack backpack = CurJob.GetTarget(BackpackInd).Thing as Apparel_Backpack;
 
             // no free slots
             this.FailOn(() => backpack.slotsComp.slots.Count >= backpack.MaxItem);

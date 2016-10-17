@@ -43,7 +43,29 @@ namespace ToolsForHaul
         //EquipmentSlot Properties
         private const int numOfRow = 2;
 
-        private int iconsPerRow = 2;
+        private int iconsPerRow
+        {
+            get
+            {
+                switch (backpack.MaxItem)
+                {
+                    case 8:
+                        {
+                            return 4;
+                        }
+                    case 6:
+                        {
+                            return 3;
+                        }
+                    case 4:
+                        {
+                            return 2;
+                        }
+                    default:
+                        return 2;
+                }
+            }
+        }
 
         private float curWidth
         {
@@ -53,12 +75,10 @@ namespace ToolsForHaul
                 {
                     case 8:
                         {
-                            iconsPerRow = 4;
                             return Height * 2;
                         }
                     case 6:
                         {
-                            iconsPerRow = 3;
                             return Height * 1.5f;
                         }
                     default:
@@ -113,7 +133,7 @@ namespace ToolsForHaul
             // draw slots
             else
             {
-                Rect slotRect = new Rect(inventoryRect.x, inventoryRect.y, Width / 2, Height / 2);
+                Rect slotRect = new Rect(inventoryRect.x, inventoryRect.y, Width / iconsPerRow, Height / 2);
                 for (int currentSlotInd = 0; currentSlotInd < iconsPerRow * numOfRow; currentSlotInd++)
                 {
                     if (currentSlotInd >= backpack.MaxItem)

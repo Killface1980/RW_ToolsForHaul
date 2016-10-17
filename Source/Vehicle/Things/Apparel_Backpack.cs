@@ -239,14 +239,13 @@ namespace ToolsForHaul
             //Put off backpack. Should drop all from postWearer
             else if (postWearer != null && wearer == null)
             {
-                postWearer.inventory?.container?.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
-                postWearer = null;
-                numOfSavedItems = 0;
 
                 slotsComp.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
+                postWearer = null;
+                numOfSavedItems = 0;
             }
-            if (wearer != null && numOfSavedItems > wearer.inventory.container.Count)
-                numOfSavedItems = wearer.inventory.container.Count;
+            if (wearer != null && numOfSavedItems > slotsComp.slots.Count)
+                numOfSavedItems = slotsComp.slots.Count;
         }
 
         public override IEnumerable<Gizmo> GetWornGizmos()

@@ -596,10 +596,9 @@ namespace ToolsForHaul
                         Vector3 normalized = (drawPos - _lastFootprintPlacePos).normalized;
                         float rot = normalized.AngleFlat();
                         float angle = 90;
-                        Vector3 b = normalized.RotatedBy(angle) * 0.17f;
-                        Vector3 loc = drawPos + TrailOffset + b;
+                        Vector3 loc = drawPos + TrailOffset;
 
-                        if ((drawPos - _lastFootprintPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
+                        if ((loc - _lastFootprintPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
                             if (loc.ShouldSpawnMotesAt() && !MoteCounter.SaturatedLowPriority)
                             {
                                 MoteThrown moteThrown =
@@ -609,18 +608,19 @@ namespace ToolsForHaul
                                 GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
                                 _lastFootprintPlacePos = drawPos;
                             }
-                        MoteMaker.ThrowDustPuff(drawPos + DustOffset, 0.8f);
+                        if (!compVehicles.AnimalsCanDrive())
+                            MoteMaker.ThrowDustPuff(drawPos + DustOffset, 0.4f);
                     }
 
 
                     //Exhaustion fumes
-                    if (!compVehicles.compProps.motorizedWithoutFuel)
-                        MoteMaker.ThrowSmoke(drawPos + FumesOffset, 0.08f + currentDriverSpeed * 0.02f);
+                    if (!compVehicles.MotorizedWithoutFuel() && !compVehicles.AnimalsCanDrive())
+                        MoteMaker.ThrowSmoke(drawPos + FumesOffset, 0.08f + currentDriverSpeed * 0.04f);
                 }
 
                 else
                 {
-                    if (!compVehicles.compProps.motorizedWithoutFuel)
+                    if (!compVehicles.MotorizedWithoutFuel() && !compVehicles.AnimalsCanDrive())
                         MoteMaker.ThrowSmoke(drawPos + FumesOffset, 0.08f);
                 }
 
@@ -722,7 +722,7 @@ namespace ToolsForHaul
                 float z = 1f * Mathf.Cos(num * (wheelRotation * 0.05f) % (2 * Mathf.PI));
 
                 asQuat.SetLookRotation(new Vector3(x, 0f, z), Vector3.up);
-               
+
                 List<Vector3> list;
                 if (compAxles.GetAxleLocations(drawSize, num, out list))
                 {
@@ -757,13 +757,6 @@ namespace ToolsForHaul
             ": ",
             text
             }));
-
-            stringBuilder.AppendLine();
-            foreach (Thing thing in storage)
-                stringBuilder.Append(thing.LabelCap + ", ");
-
-
-            //      stringBuilder.Remove(stringBuilder.Length - 4, 1);
             return stringBuilder.ToString();
         }
         #endregion

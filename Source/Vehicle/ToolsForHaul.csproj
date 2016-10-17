@@ -175,9 +175,6 @@
     <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
     </Content>
-    <Content Include="..\..\Defs\ThingDefs\RA_Apparels_Various.xml">
-      <Link>Defs\ThingDefs\RA_Apparels_Various.xml</Link>
-    </Content>
     <Content Include="..\..\Defs\ThingDefs\RA_Items_Base.xml">
       <Link>Defs\ThingDefs\RA_Items_Base.xml</Link>
     </Content>

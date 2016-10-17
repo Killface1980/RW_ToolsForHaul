@@ -1,13 +1,20 @@
 ﻿//#define DEBUG
 
+using System.Collections.Generic;
 using RimWorld;
 using Verse;
 using Verse.AI;
 
 namespace ToolsForHaul
 {
-    public class WorkGiver_HaulWithBackpack : WorkGiver
+    public class WorkGiver_HaulWithBackpack : WorkGiver_Scanner
     {
+        public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
+        {
+            //return ToolsForHaulUtility.Cart();
+            return ListerHaulables.ThingsPotentiallyNeedingHauling();
+        }
+
         public override bool ShouldSkip(Pawn pawn)
         {
             Trace.DebugWriteHaulingPawn(pawn);

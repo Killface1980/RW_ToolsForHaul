@@ -97,15 +97,15 @@ namespace ToolsForHaul
             Thing lastItem = null;
             int lastItemInd = -1;
             Thing foodInInventory = FoodUtility.BestFoodInInventory(pawn);
-            if (pawn.inventory.container.Count > 0)
+            if (backpack.slotsComp.slots.Count > 0)
             {
                 if (backpack.numOfSavedItems > 0)
                 {
-                    lastItemInd = (backpack.numOfSavedItems >= pawn.inventory.container.Count ? pawn.inventory.container.Count : backpack.numOfSavedItems) - 1;
-                    lastItem = pawn.inventory.container[lastItemInd];
+                    lastItemInd = (backpack.numOfSavedItems >= backpack.MaxItem ? backpack.slotsComp.slots.Count : backpack.numOfSavedItems) - 1;
+                    lastItem = backpack.slotsComp.slots[lastItemInd];
                 }
-                if (foodInInventory != null && backpack.numOfSavedItems < pawn.inventory.container.Count
-                    && pawn.inventory.container[lastItemInd + 1] == foodInInventory)
+                if (foodInInventory != null && backpack.numOfSavedItems < backpack.slotsComp.slots.Count
+                    && backpack.slotsComp.slots[lastItemInd + 1] == foodInInventory)
                     lastItem = foodInInventory;
             }
             return lastItem;
@@ -161,12 +161,12 @@ namespace ToolsForHaul
                 targetC = backpack;
                 maxItem = backpack.MaxItem;
                 thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
-                reservedMaxItem = pawn.inventory.container.Count;
-                remainingItems = pawn.inventory.container;
+                reservedMaxItem = backpack.slotsComp.slots.Count;
+                remainingItems = backpack.slotsComp.slots;
                 ShouldDrop = true;
                 if (lastItem != null)
-                    for (int i = 0; i < pawn.inventory.container.Count; i++)
-                        if (pawn.inventory.container[i] == lastItem && reservedMaxItem - (i + 1) <= 0)
+                    for (int i = 0; i < backpack.slotsComp.slots.Count; i++)
+                        if (backpack.slotsComp.slots[i] == lastItem && reservedMaxItem - (i + 1) <= 0)
                         {
                             ShouldDrop = false;
                             break;
@@ -188,6 +188,7 @@ namespace ToolsForHaul
             {
                 targetQueueA = new List<TargetInfo>(),
                 targetQueueB = new List<TargetInfo>(),
+                numToBringList = new List<int>(),
                 targetC = targetC
             };
 
@@ -279,9 +280,12 @@ namespace ToolsForHaul
                                         && center.DistanceToSquared(item.Position) <= ValidDistance))
                     {
                         job.targetQueueA.Add(item);
+                        job.numToBringList.Add(item.def.stackLimit);
+
                         if (reservedMaxItem + job.targetQueueA.Count >= maxItem)
                             break;
                     }
+
 
                     //Find storage cell
                     Trace.AppendLine("Start Finding storage cell");
@@ -393,13 +397,13 @@ namespace ToolsForHaul
         {
             foreach (Vehicle_Cart vehicle in Cart())
             {
-                if (vehicle.compVehicles.IsMedical() && vehicle.mountableComp.Driver == null && pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Deadly) && vehicle.Faction==pawn.Faction)
+                if (vehicle.compVehicles.IsMedical() && vehicle.mountableComp.Driver == null && pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Deadly) && vehicle.Faction == pawn.Faction)
                 {
                     Debug.Log("Wheel chair found");
                     return vehicle;
                 }
             }
-                    Debug.Log("No wheel chair found");
+            Debug.Log("No wheel chair found");
             return null;
         }
 

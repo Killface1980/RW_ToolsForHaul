@@ -11,7 +11,8 @@ namespace ToolsForHaul
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            return ToolsForHaulUtility.Cart();
+            //return ToolsForHaulUtility.Cart();
+            return ListerHaulables.ThingsPotentiallyNeedingHauling();
         }
 
         public override bool ShouldSkip(Pawn pawn)
@@ -19,22 +20,31 @@ namespace ToolsForHaul
             Trace.DebugWriteHaulingPawn(pawn);
             if (ToolsForHaulUtility.Cart().Count == 0)
                 return true;
-          //int countForbidden = 0;
-          //foreach (var actualCart in cart)
-          //{
-          //    if (actualCart.IsForbidden(pawn.Faction))
-          //        countForbidden+=1;
-          //}
-          //if (cart.Count== countForbidden)
-          //{
-          //    return true;
-          //}
+            //int countForbidden = 0;
+            //foreach (var actualCart in cart)
+            //{
+            //    if (actualCart.IsForbidden(pawn.Faction))
+            //        countForbidden+=1;
+            //}
+            //if (cart.Count== countForbidden)
+            //{
+            //    return true;
+            //}
             return false;
         }
 
         public override Job JobOnThing(Pawn pawn, Thing t)
         {
-            Vehicle_Cart cart = t as Vehicle_Cart;
+            Vehicle_Cart cart = null;
+
+            foreach (Vehicle_Cart thing in ToolsForHaulUtility.Cart())
+            {
+                if (ToolsForHaulUtility.AvailableAnimalCart(thing) || ToolsForHaulUtility.AvailableCart(thing, pawn))
+                {
+                    cart = thing;
+                    break;
+                }
+            }
             if (cart == null)
                 return null;
             if (cart.IsForbidden(pawn.Faction) || !pawn.CanReserveAndReach(cart, PathEndMode.ClosestTouch, pawn.NormalMaxDanger()))

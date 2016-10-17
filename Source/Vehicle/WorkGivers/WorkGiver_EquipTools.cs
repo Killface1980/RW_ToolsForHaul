@@ -59,18 +59,19 @@ namespace ToolsForHaul
 
         }
 
-        public override Job JobOnThing(Pawn pawn, Thing t)
+        public override Job JobOnThing(Pawn pawn, Thing thing)
         {
             Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
 
             if (toolbelt != null)
             {
                 Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInToolbeltSlot"));
-                jobNew.maxNumToCarry = 1;
-                jobNew.targetB = toolbelt;
                 jobNew.targetQueueA = new List<TargetInfo>();
-                jobNew.targetQueueA.Add(t);
-                pawn.Reserve(t);
+                jobNew.numToBringList=new List<int>();
+                jobNew.targetB = toolbelt;
+                jobNew.targetQueueA.Add(thing);
+                jobNew.numToBringList.Add(thing.def.stackLimit);
+                pawn.Reserve(thing);
 
                 return jobNew;
 

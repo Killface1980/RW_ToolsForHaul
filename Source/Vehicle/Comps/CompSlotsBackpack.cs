@@ -48,7 +48,7 @@ namespace ToolsForHaul
         {
             get
             {
-                return Mathf.Lerp(1f, 0.75f, slots.Count / (parent as Apparel_Toolbelt).MaxItem);
+                return Mathf.Lerp(1f, 0.75f, slots.Count / (parent as Apparel_Backpack).MaxItem);
             }
         }
 

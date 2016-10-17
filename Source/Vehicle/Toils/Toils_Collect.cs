@@ -55,8 +55,8 @@ namespace ToolsForHaul
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                     return;
                 }
-                int curItemCount = (cart != null ? cart.storage.Count : actor.inventory.container.Count) + targetQueue.Count;
-                int curItemStack = (cart != null ? cart.storage.TotalStackCount : actor.inventory.container.TotalStackCount)
+                int curItemCount = (cart != null ? cart.storage.Count : backpack.slotsComp.slots.Count) + targetQueue.Count;
+                int curItemStack = (cart != null ? cart.storage.TotalStackCount : backpack.slotsComp.slots.TotalStackCount)
                                     + targetQueue.Sum(item => item.Thing.stackCount);
                 int maxItem = cart != null ? cart.MaxItem : backpack.MaxItem;
                 int maxStack = cart != null ? cart.MaxStack : backpack.MaxStack;
@@ -82,7 +82,8 @@ namespace ToolsForHaul
             return toil;
         }
 
-        public static Toil CollectInInventory(TargetIndex HaulableInd)
+        // OLD
+       /* public static Toil CollectInInventory(TargetIndex HaulableInd)
         {
 
             Toil toil = new Toil();
@@ -134,6 +135,42 @@ namespace ToolsForHaul
             });
             return toil;
         }
+        */
+        public static Toil CollectInBackpack(TargetIndex HaulableInd, Apparel_Backpack backpack)
+        {
+
+            Toil toil = new Toil();
+            toil.initAction = () =>
+            {
+                Pawn actor = toil.actor;
+                Job curJob = actor.jobs.curJob;
+                Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
+
+                
+                //Collecting TargetIndex ind
+                if (backpack.slotsComp.slots.TryAdd(haulThing))
+                {
+                    haulThing.holder = backpack.slotsComp.GetContainer();
+                    haulThing.holder.owner = backpack.slotsComp;
+                }
+
+            };
+            toil.FailOn(() =>
+            {
+                Pawn actor = toil.actor;
+                Job curJob = actor.jobs.curJob;
+                Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
+
+                if (!backpack.slotsComp.slots.CanAcceptAnyOf(haulThing))
+                    return true;
+
+
+
+                return false;
+            });
+            return toil;
+        }
+
 
         public static Toil CollectInCarrier(TargetIndex CarrierInd, TargetIndex HaulableInd)
         {
@@ -218,7 +255,7 @@ namespace ToolsForHaul
                     Log.Error(actor.LabelCap + " Report: Don't have Carrier");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
-                ThingContainer container = cart != null ? cart.storage : actor.inventory.container;
+                ThingContainer container = cart != null ? cart.storage : backpack.slotsComp.slots;
                 if (container.Count == 0)
                     return;
 
@@ -232,7 +269,8 @@ namespace ToolsForHaul
             };
             return toil;
         }
-
+//OLD
+/*
         public static Toil DropTheCarriedInCell(TargetIndex StoreCellInd, ThingPlaceMode placeMode)
         {
             Toil toil = new Toil();
@@ -313,6 +351,43 @@ namespace ToolsForHaul
             };
             return toil;
         }
+*/
+        public static Toil DropTheCarriedFromBackpackInCell(TargetIndex StoreCellInd, ThingPlaceMode placeMode, Thing lastItem, Apparel_Backpack backpack)
+        {
+            Toil toil = new Toil();
+            toil.initAction = () =>
+            {
+                Pawn actor = toil.actor;
+                Job curJob = actor.jobs.curJob;
+                if (backpack.slotsComp.slots.Count <= 0)
+                    return;
+
+                //Check dropThing is last item that should not be dropped
+                Thing dropThing = null;
+                if (lastItem != null)
+                    for (int i = 0; i + 1 < backpack.slotsComp.slots.Count; i++)
+                        if (backpack.slotsComp.slots[i] == lastItem)
+                            dropThing = backpack.slotsComp.slots[i + 1];
+                        else if (lastItem == null && backpack.slotsComp.slots.Count > 0)
+                            dropThing = backpack.slotsComp.slots.First();
+
+                if (dropThing == null)
+                {
+                    Log.Error(toil.actor + " tried to drop null thing in " + actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
+                    return;
+                }
+                IntVec3 destLoc = actor.jobs.curJob.GetTarget(StoreCellInd).Cell;
+                Thing dummy;
+
+                if (destLoc.GetStorable() == null)
+                {
+                    Find.DesignationManager.RemoveAllDesignationsOn(dropThing);
+                    backpack.slotsComp.slots.TryDrop(dropThing, destLoc, placeMode, out dummy);
+                }
+            };
+            return toil;
+        }
+
 
         public static Toil DropTheCarriedInCell(TargetIndex StoreCellInd, ThingPlaceMode placeMode, TargetIndex CarrierInd)
         {
@@ -358,7 +433,9 @@ namespace ToolsForHaul
             toil.FailOnDestroyedOrNull(CarrierInd);
             return toil;
         }
-
+        
+       // OLD
+        /*
         public static Toil DropAllInCell(TargetIndex StoreCellInd, ThingPlaceMode placeMode)
         {
             Toil toil = new Toil();
@@ -372,6 +449,7 @@ namespace ToolsForHaul
             };
             return toil;
         }
+        */
         #endregion
     }
 }

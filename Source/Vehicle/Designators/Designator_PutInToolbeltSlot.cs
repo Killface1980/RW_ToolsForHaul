@@ -269,6 +269,7 @@ namespace ToolsForHaul
 
                 job.targetQueueA.Add(thing);
                 job.numToBringList.Add(thing.def.stackLimit);
+                SlotsToolbeltComp.owner.Reserve(thing);
             }
             SlotsToolbeltComp.designatedThings.Clear();
 

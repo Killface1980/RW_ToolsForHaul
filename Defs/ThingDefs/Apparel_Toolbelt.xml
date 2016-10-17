@@ -9,6 +9,7 @@
 
 
   <ThingDef Name="ToolsForHaulApparelBase" Abstract="True">
+    <thingClass>Apparel</thingClass>
     <category>Item</category>
     <selectable>True</selectable>
     <pathCost>10</pathCost>
@@ -78,6 +79,7 @@
       <MarketValue>150</MarketValue>
     </statBases>  
     <tickerType>Normal</tickerType>
+    <costStuffCount>50</costStuffCount>
     <stuffCategories>
       <li>Leathery</li>
       <li>Fabric</li>
@@ -94,7 +96,8 @@
         <li>Toolbelt</li>
       </tags>
     </apparel>
-		<colorGenerator Class="ColorGenerator_Options">
+    <colorGenerator Class="ColorGenerator_StandardApparel" />
+<!--<colorGenerator Class="ColorGenerator_Options">
 			<options>
 				<li>
 					<weight>10</weight>
@@ -110,7 +113,8 @@
 				</li>
 			</options>
 		</colorGenerator>
-		<comps>
+		-->
+    <comps>
 			<li Class="ToolsForHaul.CompSlotsToolbelt_Properties">
 				<allowedThingCategoryDefs>
 					<li>WeaponsMelee</li>
@@ -139,6 +143,7 @@
       <MarketValue>500</MarketValue>
     </statBases>
     <tickerType>Normal</tickerType>
+    <costStuffCount>100</costStuffCount>
     <stuffCategories>
       <li>Leathery</li>
       <li>Fabric</li>
@@ -156,6 +161,8 @@
         <li>Toolbelt</li>
       </tags>
     </apparel>
+    <colorGenerator Class="ColorGenerator_StandardApparel" />
+    <!--
     <colorGenerator Class="ColorGenerator_Options">
       <options>
         <li>
@@ -172,6 +179,7 @@
         </li>
       </options>
     </colorGenerator>
+    -->
     <comps>
       <li Class="ToolsForHaul.CompSlotsToolbelt_Properties">
         <allowedThingCategoryDefs>

@@ -170,7 +170,8 @@ namespace ToolsForHaul
                     return;
                 }
 
-                if ((parent as Vehicle_Cart).GetComp<CompExplosive>().wickStarted)
+                CompExplosive compExplosive = (parent as Vehicle_Cart).GetComp<CompExplosive>();
+                if (compExplosive != null && compExplosive.wickStarted)
                 {
                     DismountAt((driver.Position - InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
                 }
