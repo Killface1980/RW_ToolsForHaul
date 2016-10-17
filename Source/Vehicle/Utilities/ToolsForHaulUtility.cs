@@ -160,10 +160,11 @@ namespace ToolsForHaul
                 jobDef = DefDatabase<JobDef>.GetNamed("HaulWithBackpack");
                 targetC = backpack;
                 maxItem = backpack.MaxItem;
-                thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
+               // thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
+                thresholdItem = 2;
                 reservedMaxItem = backpack.slotsComp.slots.Count;
                 remainingItems = backpack.slotsComp.slots;
-                ShouldDrop = true;
+                ShouldDrop = false;
                 if (lastItem != null)
                     for (int i = 0; i < backpack.slotsComp.slots.Count; i++)
                         if (backpack.slotsComp.slots[i] == lastItem && reservedMaxItem - (i + 1) <= 0)

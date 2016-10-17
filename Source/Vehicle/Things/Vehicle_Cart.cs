@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if Headlights
 using ppumkin.LEDTechnology.Managers;
+#endif
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -15,7 +17,7 @@ namespace ToolsForHaul
     [StaticConstructorOnStartup]
     public class Vehicle_Cart : Building, IThingContainerOwner, IAttackTarget
     {
-        #region Variables
+#region Variables
         // ==================================
         public int DefaultMaxItem { get { return (int)this.GetStatValue(vehicleMaxItem); } }
         public int MaxItemPerBodySize { get { return (int)this.GetStatValue(vehicleMaxItem); } }
@@ -138,9 +140,9 @@ namespace ToolsForHaul
             }
         }
 
-        #endregion
+#endregion
 
-        #region Setup Work
+#region Setup Work
 
 
         public Vehicle_Cart()
@@ -163,8 +165,9 @@ namespace ToolsForHaul
 
         //    public static ListerVehicles listerVehicles = new ListerVehicles();
 
+#if Headlights
         HeadLights flooder;
-
+#endif
         public override void SpawnSetup()
         {
             base.SpawnSetup();
@@ -482,9 +485,9 @@ namespace ToolsForHaul
 
 
 
-        #endregion
+#endregion
 
-        #region Ticker
+#region Ticker
         // ==================================
 
         /// <summary>
@@ -505,9 +508,11 @@ namespace ToolsForHaul
                 instantiated = true;
             }
             base.Tick();
+            tick_time += 0.1;
 
-            #region Headlights
-            if (false)
+
+#region Headlights
+#if Headlights
             {
                 if (Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell - Rotation.FacingCell) < 0.4f)
                 {
@@ -541,8 +546,8 @@ namespace ToolsForHaul
                     flooder = null;
                 }
             }
-
-            #endregion
+#endif
+#endregion
 
 
             if (!fueledByAI)
@@ -584,8 +589,6 @@ namespace ToolsForHaul
 
             if (mountableComp.IsMounted)
             {
-                Vector3 drawPos = mountableComp.Driver.Drawer.DrawPos;
-
                 if (mountableComp.Driver.pather.Moving)// || mountableComp.Driver.drafter.pawn.pather.Moving)
                 {
 
@@ -593,10 +596,10 @@ namespace ToolsForHaul
                     if (Find.TerrainGrid.TerrainAt(Position).takeFootprints || Find.SnowGrid.GetDepth(Position) > 0.2f)
                     {
 
-                        Vector3 normalized = (drawPos - _lastFootprintPlacePos).normalized;
+                        Vector3 normalized = (DrawPos - _lastFootprintPlacePos).normalized;
                         float rot = normalized.AngleFlat();
                         float angle = 90;
-                        Vector3 loc = drawPos + TrailOffset;
+                        Vector3 loc = DrawPos + TrailOffset;
 
                         if ((loc - _lastFootprintPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
                             if (loc.ShouldSpawnMotesAt() && !MoteCounter.SaturatedLowPriority)
@@ -606,22 +609,22 @@ namespace ToolsForHaul
                                 moteThrown.exactRotation = rot;
                                 moteThrown.exactPosition = loc;
                                 GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
-                                _lastFootprintPlacePos = drawPos;
+                                _lastFootprintPlacePos = DrawPos;
                             }
                         if (!compVehicles.AnimalsCanDrive())
-                            MoteMaker.ThrowDustPuff(drawPos + DustOffset, 0.4f);
+                            MoteMaker.ThrowDustPuff(DrawPos + DustOffset, 0.4f);
                     }
 
 
                     //Exhaustion fumes
                     if (!compVehicles.MotorizedWithoutFuel() && !compVehicles.AnimalsCanDrive())
-                        MoteMaker.ThrowSmoke(drawPos + FumesOffset, 0.08f + currentDriverSpeed * 0.04f);
+                        MoteMaker.ThrowSmoke(DrawPos + FumesOffset, 0.08f + currentDriverSpeed * 0.04f);
                 }
 
                 else
                 {
                     if (!compVehicles.MotorizedWithoutFuel() && !compVehicles.AnimalsCanDrive())
-                        MoteMaker.ThrowSmoke(drawPos + FumesOffset, 0.08f);
+                        MoteMaker.ThrowSmoke(DrawPos + FumesOffset, 0.08f);
                 }
 
             }
@@ -649,15 +652,15 @@ namespace ToolsForHaul
         private static readonly Vector3 DustOffset = new Vector3(-0.3f, 0f, -0.3f);
 
         private Vector3 _lastFootprintPlacePos;
-        private const float FootprintIntervalDist = 0.6f;
+        private const float FootprintIntervalDist = 0.8f;
 
         private float _tankHitPos = 1f;
 
         private int _tankSpillTick = -5000;
 
-        #endregion
+#endregion
 
-        #region Graphics / Inspections
+#region Graphics / Inspections
         // ==================================
 
         //private void UpdateGraphics()
@@ -698,6 +701,7 @@ namespace ToolsForHaul
                 return mountableComp.Position + vector.RotatedBy(mountableComp.Driver.Rotation.AsAngle);
             }
         }
+        double tick_time = 0;
 
         public override void DrawAt(Vector3 drawLoc)
         {
@@ -722,6 +726,24 @@ namespace ToolsForHaul
                 float z = 1f * Mathf.Cos(num * (wheelRotation * 0.05f) % (2 * Mathf.PI));
 
                 asQuat.SetLookRotation(new Vector3(x, 0f, z), Vector3.up);
+
+                float wheel_shake = (float)((Math.Sin(tick_time) + Math.Abs(Math.Sin(tick_time))) / 40.0);
+                wheelLoc.z = wheelLoc.z + wheel_shake;
+
+                Vector3 mountThingLoc = drawLoc; mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
+                Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(this.Rotation.AsAngle);
+
+                if (!this.storage.Any())
+                    foreach (Thing mountThing in storage)
+                    {
+                        Pawn p = (Pawn)mountThing;
+                        p.ExposeData();
+                        p.Rotation = this.Rotation;
+                        p.DrawAt(mountThingLoc + mountThingOffset);
+                        p.DrawGUIOverlay();
+                    }
+                if (this.Rotation.AsInt % 2 == 0) //Vertical
+                    wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
 
                 List<Vector3> list;
                 if (compAxles.GetAxleLocations(drawSize, num, out list))
@@ -759,7 +781,7 @@ namespace ToolsForHaul
             }));
             return stringBuilder.ToString();
         }
-        #endregion
+#endregion
 
 
 

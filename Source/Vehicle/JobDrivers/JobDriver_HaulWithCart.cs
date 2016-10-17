@@ -76,7 +76,7 @@ namespace ToolsForHaul
             //JumpIf already mounted
             yield return Toils_Jump.JumpIf(checkHaulableEmpty, () =>
             {
-                if (cart.GetComp<CompMountable>().Driver == pawn) return true;
+                if (cart.mountableComp.Driver == pawn) return true;
                 return false;
             });
             

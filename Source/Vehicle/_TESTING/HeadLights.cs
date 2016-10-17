@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if Headlinghts
+using System.Collections.Generic;
 using System.Linq;
 using ppumkin.LEDTechnology;
 using ppumkin.LEDTechnology.GlowFlooders;
@@ -312,3 +313,4 @@ namespace ToolsForHaul
 //                distance++;
 
 //            } while (distance < targetDistance);
+#endif

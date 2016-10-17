@@ -23,12 +23,11 @@ namespace ToolsForHaul
         private static string DesignatorPutInInventoryDefaultDesc = "DesignatorPutInDefaultDesc".Translate();
         private static readonly StatDef backpackMaxItem = DefDatabase<StatDef>.GetNamed("TFHMaxItem");
 
-        public int maxItem; //obsoleted
         public int numOfSavedItems;
         public Pawn postWearer;
 
         public int MaxItem { get { return (int)this.GetStatValue(backpackMaxItem); } }
-        public int MaxStack { get { return maxItem * 20; } }
+        public int MaxStack { get { return MaxItem * 20; } }
 
         public override void DrawWornExtras()
         {
@@ -211,13 +210,11 @@ namespace ToolsForHaul
         public override void SpawnSetup()
         {
             base.SpawnSetup();
-            maxItem = (int)this.GetStatValue(backpackMaxItem);
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.LookValue(ref maxItem, "maxItem");
             Scribe_Values.LookValue(ref numOfSavedItems, "numOfSavedItems", 0);
         }
 

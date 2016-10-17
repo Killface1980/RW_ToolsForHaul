@@ -74,7 +74,7 @@ namespace ToolsForHaul
             //JumpIf already mounted
             yield return Toils_Jump.JumpIf(toilGoToCell, () =>
             {
-                return cart.GetComp<CompMountable>().Driver == pawn ? true : false;
+                return cart.mountableComp.Driver == pawn ? true : false;
             });
 
             //Mount on Target

@@ -44,10 +44,6 @@
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ppumkin.LEDTechnology">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\760900903\Assemblies\ppumkin.LEDTechnology.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -132,10 +128,10 @@
     <Compile Include="JobDrivers\JobDriver_HaulWithCart.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="JobDrivers\JobDriver_Board.cs" />
+    <None Include="JobDrivers\JobDriver_Board.cs" />
     <Compile Include="JobDrivers\JobDriver_DismountInBase.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithBackpack.cs" />
-    <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
+    <None Include="JobDrivers\JobDriver_MakeMount.cs" />
     <Compile Include="JobDrivers\JobDriver_Mount.cs" />
     <None Include="JobDrivers\JobDriver_PutInInventory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -143,7 +139,7 @@
     <Compile Include="Things\Vehicle_Cart.cs" />
     <Compile Include="Designators\Designator_Board.cs" />
     <Compile Include="Designators\Designator_Move.cs" />
-    <Compile Include="Things\Vehicle_Saddle.cs" />
+    <None Include="Things\Vehicle_Saddle.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +168,7 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
       <Link>Defs\ThingDefs\Items_IRResources.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>

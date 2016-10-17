@@ -32,13 +32,16 @@ namespace ToolsForHaul
                 return;
             driver = pawn;
 
-            driver.RaceProps.makesFootprints = false;
-
             // Set faction of vehicle to whoever mounts it
             Vehicle_Cart vehicleCart = parent as Vehicle_Cart;
             if (vehicleCart != null && vehicleCart.Faction != driver.Faction && vehicleCart.ClaimableBy(driver.Faction))
             {
                 parent.SetFaction(driver.Faction);
+            }
+
+            if (!vehicleCart.compVehicles.AnimalsCanDrive())
+            {
+                driver.RaceProps.makesFootprints = false;
             }
 
             if ((parent as Vehicle_Cart).IsCurrentlyMotorized())
@@ -130,23 +133,23 @@ namespace ToolsForHaul
                     bool flag = driver.RaceProps.ToolUser && !driver.story.WorkTagIsDisabled(WorkTags.Firefighting);
                     Fire fire = null;
 
-                        IntVec3 c = driver.Position;
-                        if (c.InBounds())
+                    IntVec3 c = driver.Position;
+                    if (c.InBounds())
+                    {
+                        List<Thing> thingList = c.GetThingList();
+                        for (int j = 0; j < thingList.Count; j++)
                         {
-                            List<Thing> thingList = c.GetThingList();
-                            for (int j = 0; j < thingList.Count; j++)
+                            if (flag)
                             {
-                                if (flag)
+                                Fire fire2 = thingList[j] as Fire;
+                                if (fire2 != null && (fire == null || fire2.fireSize < fire.fireSize) && (fire2.parent == null || fire2.parent != driver))
                                 {
-                                    Fire fire2 = thingList[j] as Fire;
-                                    if (fire2 != null && (fire == null || fire2.fireSize < fire.fireSize) && (fire2.parent == null || fire2.parent != driver))
-                                    {
-                                        fire = fire2;
-                                    }
+                                    fire = fire2;
                                 }
                             }
                         }
-                   
+                    }
+
                     if (fire != null)
                     {
                         if (!driver.InMentalState || driver.MentalState.def.allowBeatfire)
@@ -297,29 +300,29 @@ namespace ToolsForHaul
 
             Command_Action com = new Command_Action();
 
-                if (IsMounted)
-                {
-                    com.defaultLabel = txtCommandDismountLabel.Translate();
-                    com.defaultDesc = txtCommandDismountDesc.Translate();
-                    com.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnmount");
-                    com.activateSound = SoundDef.Named("Click");
-                    com.action = Dismount;
+            if (IsMounted)
+            {
+                com.defaultLabel = txtCommandDismountLabel.Translate();
+                com.defaultDesc = txtCommandDismountDesc.Translate();
+                com.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnmount");
+                com.activateSound = SoundDef.Named("Click");
+                com.action = Dismount;
 
-                    yield return com;
-                }
-                else
-                {
-                    Designator_Mount designator = new Designator_Mount();
+                yield return com;
+            }
+            else
+            {
+                Designator_Mount designator = new Designator_Mount();
 
-                    designator.vehicle = parent;
-                    designator.defaultLabel = txtCommandMountLabel.Translate();
-                    designator.defaultDesc = txtCommandMountDesc.Translate();
-                    designator.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconMount");
-                    designator.activateSound = SoundDef.Named("Click");
+                designator.vehicle = parent;
+                designator.defaultLabel = txtCommandMountLabel.Translate();
+                designator.defaultDesc = txtCommandMountDesc.Translate();
+                designator.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconMount");
+                designator.activateSound = SoundDef.Named("Click");
 
-                    yield return designator;
-                }
-            
+                yield return designator;
+            }
+
         }
 
         public IEnumerable<FloatMenuOption> CompGetFloatMenuOptionsForExtra(Pawn myPawn)

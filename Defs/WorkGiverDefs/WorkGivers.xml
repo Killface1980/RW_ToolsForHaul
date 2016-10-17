@@ -64,8 +64,8 @@
     <giverClass>ToolsForHaul.WorkGiver_HaulWithBackpack</giverClass>
     <workType>Hauling</workType>
     <priorityInType>7</priorityInType>
-    <verb>haul with </verb>
-    <gerund>hauling with </gerund>
+    <verb>haul with backpack</verb>
+    <gerund>hauling with backpack </gerund>
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
@@ -79,8 +79,8 @@
     <workType>Hauling</workType>
     <priorityInType>9</priorityInType>
     <scanThings>true</scanThings>
-    <verb>haul with </verb>
-    <gerund>hauling with </gerund>
+    <verb>haul with cart</verb>
+    <gerund>hauling with cart</gerund>
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>

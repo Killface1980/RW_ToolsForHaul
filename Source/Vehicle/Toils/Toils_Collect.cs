@@ -352,7 +352,7 @@ namespace ToolsForHaul
             return toil;
         }
 */
-        public static Toil DropTheCarriedFromBackpackInCell(TargetIndex StoreCellInd, ThingPlaceMode placeMode, Thing lastItem, Apparel_Backpack backpack)
+        public static Toil DropTheCarriedFromBackpackInCell(TargetIndex StoreCellInd, ThingPlaceMode placeMode, Apparel_Backpack backpack)
         {
             Toil toil = new Toil();
             toil.initAction = () =>
@@ -364,11 +364,7 @@ namespace ToolsForHaul
 
                 //Check dropThing is last item that should not be dropped
                 Thing dropThing = null;
-                if (lastItem != null)
-                    for (int i = 0; i + 1 < backpack.slotsComp.slots.Count; i++)
-                        if (backpack.slotsComp.slots[i] == lastItem)
-                            dropThing = backpack.slotsComp.slots[i + 1];
-                        else if (lastItem == null && backpack.slotsComp.slots.Count > 0)
+
                             dropThing = backpack.slotsComp.slots.First();
 
                 if (dropThing == null)

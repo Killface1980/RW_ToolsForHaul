@@ -91,10 +91,6 @@ namespace ToolsForHaul
         public override void PostSpawnSetup()
         {
             slots = new ThingContainer(this);
-
-            var test = parent as Apparel_Backpack;
-        //    Properties.maxSlots= test.MaxItem;
-
         }
 
         // apply remaining damage and scatter things in slots, if holder is destroyed

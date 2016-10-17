@@ -27,8 +27,6 @@ namespace ToolsForHaul
             }
             this.FailOn(() => !pawn.CanReach(TargetThingA, PathEndMode.ClosestTouch, Danger.Deadly));
 
-
-
             if (destGroup != null)
                 destName = destGroup.parent.SlotYielderLabel();
 
@@ -45,11 +43,17 @@ namespace ToolsForHaul
         protected override IEnumerable<Toil> MakeNewToils()
         {
             Apparel_Backpack backpack = CurJob.GetTarget(BackpackInd).Thing as Apparel_Backpack;
-            Thing lastItem = ToolsForHaulUtility.TryGetBackpackLastItem(pawn);
 
             ///
             //Set fail conditions
             ///
+            // no free slots
+            this.FailOn(() => backpack.slotsComp.slots.Count >= backpack.MaxItem);
+            foreach (var category in CurJob.targetA.Thing.def.thingCategories)
+            {
+                this.FailOn(() => !backpack.slotsComp.Properties.allowedThingCategoryDefs.Contains(category));
+                this.FailOn(() => backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Contains(category));
+            }
 
 
             ///
@@ -60,6 +64,8 @@ namespace ToolsForHaul
             endOfJob.initAction = () => { EndJobWith(JobCondition.Succeeded); };
             Toil checkStoreCellEmpty = Toils_Jump.JumpIf(endOfJob, () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
             Toil checkHaulableEmpty = Toils_Jump.JumpIf(checkStoreCellEmpty, () => CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
+
+            Toil checkBackpackEmpty = Toils_Jump.JumpIf(endOfJob, () => backpack.slotsComp.slots.Count <= 0);
 
             ///
             //Toils Start
@@ -81,7 +87,17 @@ namespace ToolsForHaul
                                                     .FailOnDestroyedOrNull(HaulableInd);
                 yield return gotoThing;
 
-                yield return Toils_Collect.CollectInBackpack(HaulableInd, backpack);
+                //   yield return Toils_Collect.CollectInBackpack(HaulableInd, backpack);
+
+                Toil pickUpThingIntoSlot = new Toil
+                {
+                    initAction = () =>
+                    {
+                        if (!backpack.slotsComp.slots.TryAdd(CurJob.targetA.Thing))
+                            EndJobWith(JobCondition.Incompletable);
+                    }
+                };
+                yield return pickUpThingIntoSlot;
 
                 yield return Toils_Collect.CheckDuplicates(gotoThing, BackpackInd, HaulableInd);
 
@@ -93,15 +109,19 @@ namespace ToolsForHaul
 
             //Drop TargetQueue
             {
+                yield return checkBackpackEmpty;
+
                 Toil extractB = Toils_Collect.Extract(StoreCellInd);
                 yield return extractB;
 
-                yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch)
-                                            .FailOnBurningImmobile(StoreCellInd);
+                Toil gotoCell = Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch);
+                yield return gotoCell;
 
-                yield return Toils_Collect.DropTheCarriedFromBackpackInCell(StoreCellInd, ThingPlaceMode.Direct, lastItem, backpack);
+                yield return Toils_Collect.DropTheCarriedFromBackpackInCell(StoreCellInd, ThingPlaceMode.Direct, backpack);
 
-                yield return Toils_Jump.JumpIfHaveTargetInQueue(StoreCellInd, extractB);
+                yield return Toils_Jump.JumpIfHaveTargetInQueue(StoreCellInd, checkBackpackEmpty);
+
+                yield return Toils_Collect.CheckNeedStorageCell(gotoCell, BackpackInd, StoreCellInd);
             }
 
             yield return endOfJob;

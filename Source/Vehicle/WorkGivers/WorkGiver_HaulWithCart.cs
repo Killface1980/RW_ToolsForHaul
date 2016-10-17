@@ -37,6 +37,11 @@ namespace ToolsForHaul
         {
             Vehicle_Cart cart = null;
 
+            if (!HaulAIUtility.PawnCanAutomaticallyHaulFast(pawn, t))
+            {
+                return null;
+            }
+
             foreach (Vehicle_Cart thing in ToolsForHaulUtility.Cart())
             {
                 if (ToolsForHaulUtility.AvailableAnimalCart(thing) || ToolsForHaulUtility.AvailableCart(thing, pawn))

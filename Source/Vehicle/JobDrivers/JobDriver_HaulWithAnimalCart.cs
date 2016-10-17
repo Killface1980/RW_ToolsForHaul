@@ -81,7 +81,7 @@ namespace ToolsForHaul
             yield return Toils_Reserve.ReserveQueue(StoreCellInd);
 
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.Touch)
-                                        .FailOn(() => cart.Destroyed || !cart.TryGetComp<CompMountable>().IsMounted);
+                                        .FailOn(() => cart.Destroyed || !cart.mountableComp.IsMounted);
 
             //JumpIf toilCheckStoreCellEmpty
             yield return checkHaulableEmpty;

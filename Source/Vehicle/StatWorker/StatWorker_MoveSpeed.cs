@@ -13,6 +13,24 @@ namespace ToolsForHaul
             stringBuilder.Append(base.GetExplanation(req, numberSense));
             if (req.HasThing)
             {
+                float text;
+
+                foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart())
+                {
+                    if (vehicle_Cart == null)
+                        continue;
+
+                    if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == req.Thing.ThingID)
+                    {
+                        if (vehicle_Cart.IsCurrentlyMotorized())
+                        {
+                            stringBuilder.AppendLine();
+                            stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Cart.VehicleSpeed);
+                        }
+
+                    }
+                }
+
                 CompSlotsBackpack compInventory = ToolsForHaulUtility.TryGetBackpack(req.Thing as Pawn).TryGetComp<CompSlotsBackpack>();
                 if (compInventory != null)
                 {
@@ -24,6 +42,9 @@ namespace ToolsForHaul
                         stringBuilder.AppendLine("CR_FinalModifier".Translate() + ": x" + GetStatFactor(req.Thing).ToStringPercent());
                     }
                 }
+
+
+
             }
             return stringBuilder.ToString();
         }
@@ -69,12 +90,12 @@ namespace ToolsForHaul
 
             }
 
-          //CompSlots compInventory = ToolsForHaulUtility.TryGetBackpack(thing as Pawn).TryGetComp<CompSlots>();
-          //if (compInventory != null)
-          //{
-          //    result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
-          //    return result;
-          //}
+            CompSlotsBackpack compInventory = ToolsForHaulUtility.TryGetBackpack(thing as Pawn).TryGetComp<CompSlotsBackpack>();
+            if (compInventory != null)
+            {
+                result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
+                return result;
+            }
             return result;
         }
     }
