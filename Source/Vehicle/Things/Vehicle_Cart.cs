@@ -728,7 +728,11 @@ namespace ToolsForHaul
                 asQuat.SetLookRotation(new Vector3(x, 0f, z), Vector3.up);
 
                 float wheel_shake = (float)((Math.Sin(tick_time) + Math.Abs(Math.Sin(tick_time))) / 40.0);
-                wheelLoc.z = wheelLoc.z + wheel_shake;
+
+                if (currentDriverSpeed>0)
+                {
+                wheelLoc.z = wheelLoc.z + wheel_shake*currentDriverSpeed/5;                    
+                }
 
                 Vector3 mountThingLoc = drawLoc; mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(this.Rotation.AsAngle);
