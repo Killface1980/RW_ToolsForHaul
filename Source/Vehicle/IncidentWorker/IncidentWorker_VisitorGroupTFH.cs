@@ -108,6 +108,8 @@ namespace ToolsForHaul
             Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCart"));
             GenSpawn.Spawn(thing, pawn.Position);
             Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+            thing.SetFaction(faction);
+            thing.SetForbidden(true);
             Find.Reservations.ReleaseAllForTarget(thing);
             job.targetA = thing;
             pawn.jobs.StartJob(job, JobCondition.InterruptForced);

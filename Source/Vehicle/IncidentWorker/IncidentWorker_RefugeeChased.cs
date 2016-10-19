@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
@@ -58,9 +59,12 @@ namespace ToolsForHaul
                     CellFinder.RandomClosewalkCellNear(spawnSpot, 5);
                     Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
                     GenSpawn.Spawn(thing, spawnSpot);
-                    var cart = (thing as Vehicle_Cart).TryGetComp<CompRefuelable>();
-                    cart.Refuel(ThingMaker.MakeThing(cart.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
-
+                    Vehicle_Cart cart = (thing as Vehicle_Cart);
+                    var fuel = ThingMaker.MakeThing(cart.refuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault());
+                    fuel.stackCount += Mathf.FloorToInt(5 + Rand.Value * 0.3f);
+                    cart.refuelableComp.Refuel(fuel);
+                    int num2 = Mathf.FloorToInt(Rand.Value*0.9f*cart.MaxHitPoints);
+                    cart.TakeDamage(new DamageInfo(DamageDefOf.Bullet, num2, null, null, null));
                     Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
                     Find.Reservations.ReleaseAllForTarget(thing);
                     job.targetA = thing;

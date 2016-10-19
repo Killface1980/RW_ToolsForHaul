@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -73,6 +74,10 @@ namespace ToolsForHaul
                             current.jobs.StartJob(job, JobCondition.InterruptForced);
 
                             Vehicle_Cart vehicle = thing as Vehicle_Cart;
+
+                            int num2 = Mathf.FloorToInt(Rand.Value * 0.9f * vehicle.MaxHitPoints);
+                            vehicle.TakeDamage(new DamageInfo(DamageDefOf.Bullet, num2, null, null, null));
+
                             SoundInfo info = SoundInfo.InWorld(vehicle, MaintenanceType.None);
                             vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
                         }

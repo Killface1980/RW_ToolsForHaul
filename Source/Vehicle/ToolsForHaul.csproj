@@ -64,7 +64,7 @@
     <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
     <Compile Include="Components\CompSlotsToolbelt.cs" />
     <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
-    <Compile Include="IncidentWorker\Class1.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
     <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="JobGivers\JobGiver_Steal.cs" />
     <None Include="not working\JobDriver_Hunt.cs" />

@@ -102,7 +102,7 @@ namespace ToolsForHaul
         // ARB
         private static readonly StatDef vehicleMaxItem = DefDatabase<StatDef>.GetNamed("VehicleMaxItem");
 
-        private CompRefuelable refuelableComp
+        public CompRefuelable refuelableComp
         {
             get
             {
