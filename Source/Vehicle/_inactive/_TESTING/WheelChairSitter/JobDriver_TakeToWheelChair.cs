@@ -81,7 +81,7 @@ namespace ToolsForHaul
             yield return Toils_Reserve.Reserve(WheelChairIndex);
 
 
-            yield return Toils_Goto.GotoThing(WheelChairIndex, PathEndMode.ClosestTouch).FailOnDespawnedNullOrForbidden(WheelChairIndex).FailOnDespawnedNullOrForbidden(TakeeIndex).FailOn(() => CurJob.def == JobDefOf.Arrest && !Patient.CanBeArrested()).FailOn(() => !pawn.CanReach(WheelChair, PathEndMode.OnCell, Danger.Deadly)).FailOnSomeonePhysicallyInteracting(WheelChairIndex);
+            yield return Toils_Goto.GotoThing(WheelChairIndex, PathEndMode.ClosestTouch).FailOnDespawnedNullOrForbidden(WheelChairIndex).FailOnDespawnedNullOrForbidden(TakeeIndex).FailOn(() => CurJob.def == JobDefOf.Arrest && !Patient.CanBeArrested()).FailOn(() => !pawn.CanReach(WheelChair, PathEndMode.OnCell, Danger.Some)).FailOnSomeonePhysicallyInteracting(WheelChairIndex);
 
             yield return Toils_Haul.StartCarryThing(WheelChairIndex);
             yield return Toils_Goto.GotoThing(TakeeIndex, PathEndMode.InteractionCell);

@@ -25,6 +25,7 @@ namespace ToolsForHaul
         private int tickCooldown = 60;
 
         public Sustainer sustainerAmbient;
+        public CompDriver driverComp;
 
         public void MountOn(Pawn pawn)
         {
@@ -52,6 +53,12 @@ namespace ToolsForHaul
 
                 //    Find.ListerBuildings.Remove(parent as Building);
             }
+            if (pawn.RaceProps.Humanlike)
+            {
+                driverComp = new CompDriver { vehicle = parent as Vehicle_Cart };
+                driver.AllComps?.Add(driverComp);
+                driverComp.parent = driver;
+            }
         }
 
         public bool IsMounted
@@ -66,6 +73,14 @@ namespace ToolsForHaul
 
         public void Dismount()
         {
+            if (driver.RaceProps.Humanlike)
+            {
+                driver.AllComps?.Remove(driverComp);
+                driverComp.vehicle = null;
+                driverComp.parent = null;
+            }
+
+
             driver.RaceProps.makesFootprints = true;
 
             //if (Find.Reservations.IsReserved(parent, driver.Faction))
@@ -74,12 +89,15 @@ namespace ToolsForHaul
                 parent.SetForbidden(true);
             if ((driver.Dead || driver.Downed) && driver.Faction != Faction.OfPlayer)
                 parent.SetFaction(null);
+
             driver = null;
 
             if (sustainerAmbient != null)
             {
                 sustainerAmbient.End();
             }
+
+
             //  Find.ListerBuildings.Add(parent as Building);
         }
 
@@ -128,57 +146,7 @@ namespace ToolsForHaul
             base.CompTick();
             if (IsMounted)
             {
-                if (parent.IsBurning())
-                {
-                    bool flag = driver.RaceProps.ToolUser && !driver.story.WorkTagIsDisabled(WorkTags.Firefighting);
-                    Fire fire = null;
-
-                    IntVec3 c = driver.Position;
-                    if (c.InBounds())
-                    {
-                        List<Thing> thingList = c.GetThingList();
-                        for (int j = 0; j < thingList.Count; j++)
-                        {
-                            if (flag)
-                            {
-                                Fire fire2 = thingList[j] as Fire;
-                                if (fire2 != null && (fire == null || fire2.fireSize < fire.fireSize) && (fire2.parent == null || fire2.parent != driver))
-                                {
-                                    fire = fire2;
-                                }
-                            }
-                        }
-                    }
-
-                    if (fire != null)
-                    {
-                        if (!driver.InMentalState || driver.MentalState.def.allowBeatfire)
-                        {
-                            driver.natives.TryBeatFire(fire);
-                            return;
-                        }
-                        else
-                        {
-                            parent.Position = Position.ToIntVec3();
-                            DismountAt((driver.Position - InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
-                            return;
-                        }
-                    }
-                }
-
-                if (driver.Dead || driver.Downed || driver.health.InPainShock || driver.MentalStateDef == MentalStateDefOf.WanderPsychotic || (parent.IsForbidden(Faction.OfPlayer) && driver.Faction == Faction.OfPlayer))
-                {
-                    parent.Position = Position.ToIntVec3();
-                    DismountAt((driver.Position - InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
-                    return;
-                }
-
-                CompExplosive compExplosive = (parent as Vehicle_Cart).GetComp<CompExplosive>();
-                if (compExplosive != null && compExplosive.wickStarted)
-                {
-                    DismountAt((driver.Position - InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
-                }
-
+               
                 if (!driver.Spawned)
                 {
                     parent.DeSpawn();
@@ -187,46 +155,46 @@ namespace ToolsForHaul
 
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
                 {
-                    if (driver.Faction == Faction.OfPlayer && driver.CurJob != null &&
-                        driver.CurJob.def.playerInterruptible &&
-                        (driver.CurJob.def == JobDefOf.DoBill ||
-                        driver.CurJob.def == JobDefOf.EnterCryptosleepCasket ||
-                        driver.CurJob.def == JobDefOf.LayDown ||
-                        driver.CurJob.def == JobDefOf.Lovin ||
-                        driver.CurJob.def == JobDefOf.MarryAdjacentPawn ||
-                        driver.CurJob.def == JobDefOf.Mate ||
-                        driver.CurJob.def == JobDefOf.PrisonerAttemptRecruit ||
-                        driver.CurJob.def == JobDefOf.Research ||
-                        driver.CurJob.def == JobDefOf.SocialRelax ||
-                        driver.CurJob.def == JobDefOf.SpectateCeremony ||
-                        driver.CurJob.def == JobDefOf.StandAndBeSociallyActive ||
-                        driver.CurJob.def == JobDefOf.TakeToBedToOperate ||
-                        driver.CurJob.def == JobDefOf.TendPatient ||
-                        driver.CurJob.def == JobDefOf.UseCommsConsole ||
-                        driver.CurJob.def == JobDefOf.UseNeurotrainer ||
-                        driver.CurJob.def == JobDefOf.VisitSickPawn ||
-                        driver.CurJob.def == JobDefOf.Shear ||
-
-                        driver.CurJob.def == JobDefOf.FeedPatient ||
-                        driver.CurJob.def == JobDefOf.PrisonerExecution ||
-                        driver.CurJob.def == JobDefOf.ManTurret ||
-                        driver.CurJob.def == JobDefOf.Train ||
-                        driver.health.NeedsMedicalRest ||
-                        driver.health.PrefersMedicalRest
-
-                        )
-                        && driver.Position.Roofed())
+                    if (driver.Faction == Faction.OfPlayer && driver.CurJob != null)
                     {
-                        parent.Position = Position.ToIntVec3();
-                        parent.Rotation = driver.Rotation;
-                        if (!driver.Position.InBounds())
+                        if (driver.CurJob.def.playerInterruptible && (driver.CurJob.def == JobDefOf.DoBill ||
+                                                                      driver.CurJob.def == JobDefOf.EnterCryptosleepCasket ||
+                                                                      driver.CurJob.def == JobDefOf.LayDown ||
+                                                                      driver.CurJob.def == JobDefOf.Lovin ||
+                                                                      driver.CurJob.def == JobDefOf.MarryAdjacentPawn ||
+                                                                      driver.CurJob.def == JobDefOf.Mate ||
+                                                                      driver.CurJob.def == JobDefOf.PrisonerAttemptRecruit ||
+                                                                      driver.CurJob.def == JobDefOf.Research ||
+                                                                      driver.CurJob.def == JobDefOf.SocialRelax ||
+                                                                      driver.CurJob.def == JobDefOf.SpectateCeremony ||
+                                                                      driver.CurJob.def == JobDefOf.StandAndBeSociallyActive ||
+                                                                      driver.CurJob.def == JobDefOf.TakeToBedToOperate ||
+                                                                      driver.CurJob.def == JobDefOf.TendPatient ||
+                                                                      driver.CurJob.def == JobDefOf.UseCommsConsole ||
+                                                                      driver.CurJob.def == JobDefOf.UseNeurotrainer ||
+                                                                      driver.CurJob.def == JobDefOf.VisitSickPawn ||
+                                                                      driver.CurJob.def == JobDefOf.Shear ||
+
+                                                                      driver.CurJob.def == JobDefOf.FeedPatient ||
+                                                                      driver.CurJob.def == JobDefOf.PrisonerExecution ||
+                                                                      driver.CurJob.def == JobDefOf.ManTurret ||
+                                                                      driver.CurJob.def == JobDefOf.Train ||
+                                                                      driver.health.NeedsMedicalRest ||
+                                                                      driver.health.PrefersMedicalRest
+
+                            ) && driver.Position.Roofed())
                         {
-                            DismountAt(driver.Position);
+                            parent.Position = Position.ToIntVec3();
+                            parent.Rotation = driver.Rotation;
+                            if (!driver.Position.InBounds())
+                            {
+                                DismountAt(driver.Position);
+                                return;
+                            }
+                            DismountAt(driver.Position - InteractionOffset.ToIntVec3());
+                            driver.Position = driver.Position.RandomAdjacentCell8Way();
                             return;
                         }
-                        DismountAt(driver.Position - InteractionOffset.ToIntVec3());
-                        driver.Position = driver.Position.RandomAdjacentCell8Way();
-                        return;
                     }
                     tickCheck = Find.TickManager.TicksGame;
                     tickCooldown = Rand.RangeInclusive(60, 180);
@@ -285,7 +253,7 @@ namespace ToolsForHaul
             get
             {
                 Vehicle_Cart cart = parent as Vehicle_Cart;
-                if (cart.mountableComp.driver.Position.AdjacentTo8WayOrInside(cart.mountableComp.driver.pather.Destination)) return true;
+                if (driver.Position.AdjacentTo8WayOrInside(driver.pather.Destination)) return true;
                 return false;
             }
         }

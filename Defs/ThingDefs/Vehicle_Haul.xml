@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ThingDefs>
-<!--
+  <!--
   <ThingDef Name="BaseThingWithComponents" Abstract="True">
 
 
@@ -19,7 +19,10 @@
     <useHitPoints>True</useHitPoints>
     <hasTooltip>true</hasTooltip>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+    <staticSunShadowHeight>1.0</staticSunShadowHeight>
+    <blockLight>true</blockLight>
     <building>
+      <ai_combatDangerous>true</ai_combatDangerous>
       <isEdifice>false</isEdifice>
       <repairable>true</repairable>
       <isSittable>true</isSittable>
@@ -30,13 +33,43 @@
       <deconstructible>false</deconstructible>
       <isJoySource>true</isJoySource>
     </building>
+    <damageMultipliers>
+      <li>
+        <damageDef>Repair</damageDef>
+        <multiplier>0.5</multiplier>
+      </li>
+      <li>
+        <damageDef>Bomb</damageDef>
+        <multiplier>2.5</multiplier>
+      </li>
+      <li>
+        <damageDef>Flame</damageDef>
+        <multiplier>2.5</multiplier>
+      </li>
+      <li>
+        <damageDef>Bullet</damageDef>
+        <multiplier>1.0</multiplier>
+      </li>
+      <li>
+        <damageDef>Crush</damageDef>
+        <multiplier>0.5</multiplier>
+      </li>
+      <li>
+        <damageDef>Arrow</damageDef>
+        <multiplier>0.3</multiplier>
+      </li>
+      <li>
+        <damageDef>EMP</damageDef>
+        <multiplier>0.8</multiplier>
+      </li>
+    </damageMultipliers>
     <pathCost>40</pathCost>
     <statBases>
       <Flammability>0.05</Flammability>
       <SellPriceFactor>0.3</SellPriceFactor>
     </statBases>
     <alwaysHaulable>false</alwaysHaulable>
-     <designateHaulable>false</designateHaulable> 
+    <designateHaulable>false</designateHaulable>
     <comps>
       <li Class="CompProperties_Forbiddable"/>
       <li>
@@ -47,11 +80,6 @@
       </li>
       <li>
         <compClass>CompColorable</compClass>
-      </li>
-      <li Class="CompProperties_Art">
-        <nameMaker>ArtName_WeaponMelee</nameMaker>
-        <descriptionMaker>ArtDescription_WeaponMelee</descriptionMaker>
-        <minQualityForArtistic>Excellent</minQualityForArtistic>
       </li>
     </comps>
   </ThingDef>
@@ -74,6 +102,10 @@
       <texPath>Things/Pawn/VehicleCart/Cart</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
+      <damageData>
+        <!-- no damage marks because they don't move with the vehicle <rect>(0,0.12,1,0.76)</rect>-->
+        <enabled>false</enabled>
+      </damageData>
     </graphicData>
     <statBases>
       <MaxHitPoints>150</MaxHitPoints>
@@ -154,6 +186,10 @@
       <texPath>Things/Pawn/VehicleTruck/Truck</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
+      <damageData>
+        <!-- no damage marks because they don't move with the vehicle <rect>(0,0.12,1,0.76)</rect>-->
+        <enabled>false</enabled>
+      </damageData>
     </graphicData>
     <statBases>
       <MaxHitPoints>300</MaxHitPoints>
@@ -252,6 +288,10 @@
       <texPath>Things/Pawn/VehicleATV/ATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
+      <damageData>
+        <!-- no damage marks because they don't move with the vehicle <rect>(0,0.12,1,0.76)</rect>-->
+        <enabled>false</enabled>
+      </damageData>
     </graphicData>
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
@@ -268,7 +308,7 @@
       <Steel>150</Steel>
       <Plasteel>10</Plasteel>
       <Component>10</Component>
-    <VehicleATVFrame>1</VehicleATVFrame>
+      <VehicleATVFrame>1</VehicleATVFrame>
     </CostList>
     <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
     <killedLeavings>
@@ -293,10 +333,10 @@
     </recipeMaker>
     <comps>
       <li Class="CompProperties_Explosive">
-        <explosiveRadius>2.9</explosiveRadius>
+        <explosiveRadius>2.4</explosiveRadius>
         <explosiveDamageType>Bomb</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
-        <startWickHitPointsPercent>0.05</startWickHitPointsPercent>
+        <startWickHitPointsPercent>0.1</startWickHitPointsPercent>
         <chanceNeverExplodeFromDamage>0.9</chanceNeverExplodeFromDamage>
         <!-- 				<startWickHitPointsPercent>0.10</startWickHitPointsPercent>
 				<wickTicks>
@@ -375,6 +415,10 @@
       <texPath>Things/Pawn/VehicleSpeeder/Speeder</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
+      <damageData>
+        <!-- no damage marks because they don't move with the vehicle <rect>(0,0.12,1,0.76)</rect>-->
+        <enabled>false</enabled>
+      </damageData>
     </graphicData>
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
@@ -465,11 +509,11 @@
       </options>
     </colorGenerator>
   </ThingDef>
-  
-  
+
+
 
   <ThingDef ParentName="BaseVehicle">
-      <defName>VehicleWheelChair</defName>
+    <defName>VehicleWheelChair</defName>
     <label>wheel chair</label>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
@@ -487,11 +531,15 @@
       <texPath>Things/Pawn/VehicleWheelChair/WheelChair</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
+      <damageData>
+        <!-- no damage marks because they don't move with the vehicle <rect>(0,0.12,1,0.76)</rect>-->
+        <enabled>false</enabled>
+      </damageData>
     </graphicData>
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>3.5</VehicleSpeed>
-   <!--   <VehicleMaxItem>2</VehicleMaxItem>-->
+      <!--   <VehicleMaxItem>2</VehicleMaxItem>-->
       <Beauty>3</Beauty>
       <Comfort>0.5</Comfort>
     </statBases>
@@ -500,7 +548,7 @@
     </techHediffsTags>
     <size>(1,1)</size>
     <fillPercent>0.99</fillPercent>
- <!--<inspectorTabs>
+    <!--<inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
@@ -604,7 +652,10 @@
 			<texPath>Things/Pawn/Vehicle/Saddle</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(2,2)</drawSize>
-		</graphicData>
+	      <damageData>
+      <enabled>false</enabled>
+      </damageData>
+  </graphicData>
 		<statBases>
 			<MaxHitPoints>100</MaxHitPoints>
 		</statBases>

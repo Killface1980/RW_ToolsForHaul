@@ -15,7 +15,7 @@ namespace ToolsForHaul
             foreach (Thing thing in Find.ListerThings.AllThings)
             {
                 float statfloat = 0;
-                if (!thing.def.IsMeleeWeapon || !pawn.CanReserveAndReach(thing, PathEndMode.ClosestTouch, Danger.Deadly))
+                if (!thing.def.IsMeleeWeapon || !pawn.CanReserveAndReach(thing, PathEndMode.ClosestTouch, Danger.Some))
                     continue;
                 foreach (KeyValuePair<StatDef, float> stat in pawn.GetWeightedWorkStats())
                 {

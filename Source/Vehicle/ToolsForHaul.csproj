@@ -55,6 +55,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\CompDriver.cs" />
+    <None Include="_testing\ProjectileTFH.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />

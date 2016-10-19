@@ -75,8 +75,8 @@ namespace ToolsForHaul
 
                             Vehicle_Cart vehicle = thing as Vehicle_Cart;
 
-                            int num2 = Mathf.FloorToInt(Rand.Value * 0.9f * vehicle.MaxHitPoints);
-                            vehicle.TakeDamage(new DamageInfo(DamageDefOf.Bullet, num2, null, null, null));
+                            int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * vehicle.MaxHitPoints);
+                            vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null, null));
 
                             SoundInfo info = SoundInfo.InWorld(vehicle, MaintenanceType.None);
                             vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);

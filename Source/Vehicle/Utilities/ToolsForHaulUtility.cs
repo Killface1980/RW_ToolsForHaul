@@ -360,7 +360,7 @@ namespace ToolsForHaul
                     Trace.AppendLine("Start Finding storage cell");
                     if (reservedMaxItem + job.targetQueueA.Count > thresholdItem)
                     {
-                        foreach (IntVec3 cell in slotGroup.CellsList.Where(cell => pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Deadly) && cell.Standable() && cell.GetStorable() == null))
+                        foreach (IntVec3 cell in slotGroup.CellsList.Where(cell => pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Some) && cell.Standable() && cell.GetStorable() == null))
                         {
                             StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(thing.Position, thing);
                             IntVec3 storeCell = cell;
@@ -436,7 +436,7 @@ namespace ToolsForHaul
             if (!targetQueue.NullOrEmpty())
                 foreach (TargetInfo target in targetQueue)
                     foreach (IntVec3 adjCell in GenAdjFast.AdjacentCells8Way(target))
-                        if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(haulable) && pawn.CanReserveAndReach(adjCell, PathEndMode.ClosestTouch, Danger.Deadly))
+                        if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(haulable) && pawn.CanReserveAndReach(adjCell, PathEndMode.ClosestTouch, Danger.Some))
                             return adjCell;
             /*
             StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(closestHaulable.Position, closestHaulable);
@@ -465,7 +465,7 @@ namespace ToolsForHaul
         {
             foreach (Vehicle_Cart vehicle in Cart())
             {
-                if (vehicle.compVehicles.IsMedical() && vehicle.mountableComp.Driver == null && pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Deadly) && vehicle.Faction == pawn.Faction)
+                if (vehicle.compVehicles.IsMedical() && vehicle.mountableComp.Driver == null && pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Some) && vehicle.Faction == pawn.Faction)
                 {
                     Debug.Log("Wheel chair found");
                     return vehicle;

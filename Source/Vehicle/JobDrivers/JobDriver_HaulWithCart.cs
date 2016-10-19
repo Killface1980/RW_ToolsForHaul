@@ -17,7 +17,7 @@ namespace ToolsForHaul
             Thing hauledThing = TargetThingA;
             if (TargetThingA == null)  //Haul Cart
                 hauledThing = CurJob.targetC.Thing;
-            this.FailOn(() => !pawn.CanReach(hauledThing, PathEndMode.ClosestTouch, Danger.Deadly));
+            this.FailOn(() => !pawn.CanReach(hauledThing, PathEndMode.ClosestTouch, Danger.Some));
             IntVec3 destLoc = IntVec3.Invalid;
             string destName = null;
             SlotGroup destGroup = null;
