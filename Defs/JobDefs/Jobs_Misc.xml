@@ -9,6 +9,20 @@
   </JobDef>
   -->
 
+<!--
+  <JobDef>
+    <defName>Hunt</defName>
+    <driverClass>ToolsForHaul.JobDriver_Hunt</driverClass>
+    <reportString>hunting TargetA.</reportString>
+  -->
+    <!-- for when attacked by berserk -->
+  <!--
+    <canCheckOverrideOnDamage>true</canCheckOverrideOnDamage>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <suspendable>false</suspendable>
+  </JobDef>
+  -->
+
   <!--=================== Work with tools =====================-->
   <!-- redefined, to set alwaysShowWeapon as true -->
 
@@ -110,13 +124,13 @@
   </JobDef>
   
   
-  <!--
   <JobDef>
     <defName>MakeMount</defName>
     <driverClass>ToolsForHaul.JobDriver_MakeMount</driverClass>
     <reportString>Mount on TargetB.</reportString>
   </JobDef>
   
+  <!--
   <JobDef>
     <defName>Board</defName>
     <driverClass>ToolsForHaul.JobDriver_Board</driverClass>

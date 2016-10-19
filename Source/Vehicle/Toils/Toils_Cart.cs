@@ -171,7 +171,7 @@ namespace ToolsForHaul
         private const int defaultWaitWorker = 2056;
         private const int tickCheckInterval = 64;
 
-        public static Toil CallAnimalCart(TargetIndex CartInd, TargetIndex Ind)
+        public static Toil CallAnimalCart(TargetIndex CartInd, TargetIndex Ind, Pawn pawn = null)
         {
             Toil toil = new Toil();
             toil.initAction = () =>
@@ -183,7 +183,12 @@ namespace ToolsForHaul
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
-                Job job = new Job(DefDatabase<JobDef>.GetNamed("Standby"), toil.actor.jobs.curJob.GetTarget(Ind), defaultWaitWorker);
+                Job job;
+                if (pawn != null)
+                    job = new Job(DefDatabase<JobDef>.GetNamed("Standby"), pawn.Position, defaultWaitWorker);
+                else
+                    job = new Job(DefDatabase<JobDef>.GetNamed("Standby"), toil.actor.jobs.curJob.GetTarget(Ind), defaultWaitWorker);
+
                 cart.mountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
             };
             return toil;
@@ -226,14 +231,14 @@ namespace ToolsForHaul
                 {
                     //Worker has arrived and Animal cart is coming
                     if (cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby") &&
-                        (!actor.Position.AdjacentTo8WayOrInside(cart) ||
-                         !actor.Position.AdjacentTo8WayOrInside(cart.mountableComp.Driver)))
+                        (!actor.Position.InHorDistOf(cart.Position, 1f) ||
+                         !actor.Position.InHorDistOf(cart.mountableComp.Driver.Position, 1f)))
                     {
                         tickTime = 0;
 
                     }
                     //Worker has arrived and Animal cart has arrived
-                    else if (cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby") && (actor.Position.AdjacentTo8WayOrInside(cart) || actor.Position.AdjacentTo8WayOrInside(cart.mountableComp.Driver)))
+                    else if (cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby") && (actor.Position.InHorDistOf(cart.mountableComp.Driver.Position, 1f)))
                         toil.actor.jobs.curDriver.ReadyForNextToil();
                     //Worker has arrived but Animal cart is missing
                     else

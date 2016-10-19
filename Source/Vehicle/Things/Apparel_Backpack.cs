@@ -21,136 +21,15 @@ namespace ToolsForHaul
 
         private static string DesignatorPutInInventoryDefaultLabel = "DesignatorPutInDefaultLabel".Translate();
         private static string DesignatorPutInInventoryDefaultDesc = "DesignatorPutInDefaultDesc".Translate();
-        private static readonly StatDef backpackMaxItem = DefDatabase<StatDef>.GetNamed("TFHMaxItem");
+        private readonly StatDef BackpackMaxItem = DefDatabase<StatDef>.GetNamed("TFHMaxItem");
 
         public int numOfSavedItems;
         public Pawn postWearer;
 
-        public int MaxItem { get { return (int)this.GetStatValue(backpackMaxItem); } }
+        public int MaxItem { get { return (int)this.GetStatValue(BackpackMaxItem); } }
         public int MaxStack { get { return MaxItem * 20; } }
 
-        public override void DrawWornExtras()
-        {
-            if (wearer == null || !wearer.Spawned)
-            {
-                return;
-            }
-            Vector3 drawPos = wearer.Drawer.DrawPos;
-            Building_Bed buildingBed = wearer.CurrentBed();
-            if (buildingBed != null)
-            {
-                if (!buildingBed.def.building.bed_showSleeperBody)
-                {
-                    return;
-                }
-                drawPos.y = Altitudes.AltitudeFor(buildingBed.def.altitudeLayer);
-            }
-            else
-            {
-                drawPos.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
-            }
-            Vector3 s = new Vector3(1.5f, 1.5f, 1.5f);
 
-            // Get the graphic path
-            string path = def.graphicData.texPath + "_" + wearer?.story.BodyType;
-            Graphic graphic = GraphicDatabase.Get<Graphic_Multi>(path, ShaderDatabase.Cutout, def.graphicData.drawSize, DrawColor);
-            ApparelGraphicRecord apparelGraphic = new ApparelGraphicRecord(graphic, this);
-
-
-            Rot4 rot = wearer.Rotation;
-            float angle = 0f;
-            if (wearer.GetPosture() > 0)
-            {
-                rot = LayingFacing();
-                if (buildingBed != null)
-                {
-                    Rot4 rotation = buildingBed.Rotation;
-                    rotation.AsInt = (rotation.AsInt + 2);
-                    angle = rotation.AsAngle;
-                }
-                else if (wearer.Downed || wearer.Dead)
-                {
-                    Pawn_DrawTracker drawer = wearer.Drawer;
-                    float? num;
-                    if (drawer == null)
-                    {
-                        num = null;
-                    }
-                    else
-                    {
-                        PawnRenderer renderer = drawer.renderer;
-                        if (renderer == null)
-                        {
-                            num = null;
-                        }
-                        else
-                        {
-                            PawnDownedWiggler wiggler = renderer.wiggler;
-                            num = ((wiggler != null) ? new float?(wiggler.downedAngle) : null);
-                        }
-                    }
-                    float? num2 = num;
-                    if (num2.HasValue)
-                    {
-                        angle = num2.Value;
-                    }
-                }
-                else
-                {
-                    angle = rot.FacingCell.AngleFlat;
-                }
-            }
-            drawPos.y += GetAltitudeOffset(rot);
-            Material material = apparelGraphic.graphic.MatAt(rot);
-            material.shader = ShaderDatabase.Cutout;
-            material.color = DrawColor;
-
-            Matrix4x4 matrix = default(Matrix4x4);
-            matrix.SetTRS(drawPos, Quaternion.AngleAxis(angle, Vector3.up), s);
-            Graphics.DrawMesh((rot == Rot4.West) ? MeshPool.plane10Flip : MeshPool.plane10, matrix, material, 0);
-        }
-
-        // Copied from PawnRenderer
-        private Rot4 LayingFacing()
-        {
-            if (wearer == null)
-            {
-                return Rot4.Random;
-            }
-            if (wearer.GetPosture() == PawnPosture.LayingFaceUp)
-            {
-                return Rot4.South;
-            }
-            if (wearer.RaceProps.Humanlike)
-            {
-                switch (wearer.thingIDNumber % 4)
-                {
-                    case 0:
-                        return Rot4.South;
-                    case 1:
-                        return Rot4.South;
-                    case 2:
-                        return Rot4.East;
-                    case 3:
-                        return Rot4.West;
-                }
-            }
-            else
-            {
-                switch (wearer.thingIDNumber % 4)
-                {
-                    case 0:
-                        return Rot4.South;
-                    case 1:
-                        return Rot4.East;
-                    case 2:
-                        return Rot4.West;
-                    case 3:
-                        return Rot4.West;
-                }
-            }
-            return Rot4.Random;
-        }
 
 
         private float GetAltitudeOffset(Rot4 rotation)

@@ -97,6 +97,9 @@ namespace ToolsForHaul
                 yield return Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch)
                                               .FailOnDestroyedOrNull(HaulableInd);
 
+                yield return Toils_Cart.CallAnimalCart(CartInd, HaulableInd, pawn)
+                            .FailOnDestroyedOrNull(HaulableInd);
+
                 yield return Toils_Cart.WaitForAnimalCart(CartInd, HaulableInd);
 
                 yield return Toils_Collect.CollectInCarrier(CartInd, HaulableInd);
@@ -118,6 +121,8 @@ namespace ToolsForHaul
 
                 yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch)
                                             .FailOnBurningImmobile(StoreCellInd);
+
+                yield return Toils_Cart.CallAnimalCart(CartInd, HaulableInd, pawn);
 
                 yield return Toils_Cart.WaitForAnimalCart(CartInd, HaulableInd);
 

@@ -47,23 +47,15 @@ namespace ToolsForHaul
         {
             get
             {
-                switch (backpack.MaxItem)
+                if (backpack.slotsComp.slots.Count <= 4)
+                    return 2;
+                else
                 {
-                    case 8:
-                        {
-                            return 4;
-                        }
-                    case 6:
-                        {
-                            return 3;
-                        }
-                    case 4:
-                        {
-                            return 2;
-                        }
-                    default:
-                        return 2;
+                    int count = Mathf.FloorToInt(backpack.slotsComp.slots.Count - 4) / 2;
+
+                    return 2 + count;
                 }
+
             }
         }
 
@@ -71,23 +63,18 @@ namespace ToolsForHaul
         {
             get
             {
-                switch (backpack.MaxItem)
+                if (backpack.slotsComp.slots.Count <= 4)
+                    return Height;
+                else
                 {
-                    case 8:
-                        {
-                            return Height * 2;
-                        }
-                    case 6:
-                        {
-                            return Height * 1.5f;
-                        }
-                    default:
-                        {
-                            return Height;
-                        }
+                    int count = Mathf.FloorToInt(backpack.slotsComp.slots.Count - 4) / 2;
+
+                    return Height + count * Height * 0.5f;
                 }
+
             }
         }
+
         public override float Width { get { return curWidth; } }
 
         //IconClickSound

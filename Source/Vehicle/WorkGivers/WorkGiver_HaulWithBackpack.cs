@@ -42,7 +42,7 @@ namespace ToolsForHaul
 
         public override Job JobOnThing(Pawn pawn, Thing t)
         {
-            if ((t is Corpse))
+            if (t is Corpse)
             {
                 return null;
             }
@@ -51,9 +51,27 @@ namespace ToolsForHaul
             {
                 return null;
             }
+            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            if (backpack != null)
+            {
+                if (
+                    !t.def.thingCategories.Exists(
+                        category =>
+                            backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
+                                subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)) &&
+                            !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(
+                                subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))))
+                {
+                    JobFailReason.Is("Backpack can't hold that thing");
+                    return null;
+                }
+                else
+                {
 
-            if (ToolsForHaulUtility.TryGetBackpack(pawn) != null)
-                return ToolsForHaulUtility.HaulWithTools(pawn);
+                    return ToolsForHaulUtility.HaulWithTools(pawn);
+                }
+            }
+
             JobFailReason.Is("NoBackpack".Translate());
             return null;
         }

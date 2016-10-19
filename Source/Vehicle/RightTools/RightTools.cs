@@ -89,8 +89,6 @@ namespace ToolsForHaul
                 bool unEquipped = thingWithComps != pawn.equipment.Primary;
                 if (unEquipped)
                 {
-                    ThingWithComps dummy;
-
                     if (!MapComponent_ToolsForHaul.previousPawnWeapons.ContainsKey(pawn))
                         MapComponent_ToolsForHaul.previousPawnWeapons.Add(pawn, pawn.equipment.Primary);
 
@@ -101,14 +99,14 @@ namespace ToolsForHaul
                   //pawn.equipment.AddEquipment(thingWithComps);
                   //pawn.inventory.container.Remove(thingWithComps);
                 }
-                else
-                {
-                    bool flag5 = stat == 0f && def != StatDefOf.WorkSpeedGlobal;
-                    if (flag5)
-                    {
-                        EquipRigthTool(pawn, StatDefOf.WorkSpeedGlobal);
-                    }
-                }
+              //else
+              //{
+              //    bool flag5 = stat == 0f && def != StatDefOf.WorkSpeedGlobal;
+              //    if (flag5)
+              //    {
+              //        EquipRigthTool(pawn, StatDefOf.WorkSpeedGlobal);
+              //    }
+              //}
             }
         }
     }

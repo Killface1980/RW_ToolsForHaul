@@ -15,7 +15,6 @@
     <tickerType>Normal</tickerType>
 
     <stealable>true</stealable>
-    <combatTargetBuilding>true</combatTargetBuilding>
     <altitudeLayer>Projectile</altitudeLayer>
     <useHitPoints>True</useHitPoints>
     <hasTooltip>true</hasTooltip>
@@ -34,6 +33,7 @@
     <pathCost>40</pathCost>
     <statBases>
       <Flammability>0.05</Flammability>
+      <SellPriceFactor>0.3</SellPriceFactor>
     </statBases>
     <alwaysHaulable>false</alwaysHaulable>
      <designateHaulable>false</designateHaulable> 
@@ -47,6 +47,11 @@
       </li>
       <li>
         <compClass>CompColorable</compClass>
+      </li>
+      <li Class="CompProperties_Art">
+        <nameMaker>ArtName_WeaponMelee</nameMaker>
+        <descriptionMaker>ArtDescription_WeaponMelee</descriptionMaker>
+        <minQualityForArtistic>Excellent</minQualityForArtistic>
       </li>
     </comps>
   </ThingDef>
@@ -90,6 +95,15 @@
       <Steel>40</Steel>
     </killedLeavings>
     <recipeMaker>
+      <defaultIngredientFilter>
+        <categories>
+          <li>Root</li>
+        </categories>
+        <exceptedThingDefs>
+          <li>Silver</li>
+          <li>Gold</li>
+        </exceptedThingDefs>
+      </defaultIngredientFilter>
       <workSpeedStat>SmithingSpeed</workSpeedStat>
       <workSkill>Crafting</workSkill>
       <effectWorking>Smith</effectWorking>

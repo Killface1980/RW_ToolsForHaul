@@ -62,25 +62,28 @@
     <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
-    <Compile Include="Comps\CompSlotsToolbelt.cs" />
+    <Compile Include="Components\CompSlotsToolbelt.cs" />
     <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
+    <Compile Include="IncidentWorker\Class1.cs" />
     <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="JobGivers\JobGiver_Steal.cs" />
+    <None Include="not working\JobDriver_Hunt.cs" />
+    <None Include="not working\WorkGiver_HunterHunt.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="Things\Apparel_Toolbelt.cs" />
     <None Include="Things\Vehicle_Armoured.cs" />
     <Compile Include="_inactive\_TESTING\HeadLights.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy_Sanity.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_VisitorGroupTFH.cs" />
-    <Compile Include="IncidentWorker\IncidentWorker_VisitorGroup_Sanity.cs" />
+    <None Include="IncidentWorker\IncidentWorker_VisitorGroup_Sanity.cs" />
     <None Include="_inactive\JobGiver_ExitMapRandom2.cs" />
     <Compile Include="Alerts\Class1.cs" />
     <Compile Include="StatWorker\StatWorker_MoveSpeed.cs" />
     <None Include="_inactive\Class1.cs" />
-    <Compile Include="Comps\CompAxles.cs" />
-    <Compile Include="Comps\CompProperties_Axles.cs" />
-    <Compile Include="Comps\CompProperties_Vehicles.cs" />
-    <Compile Include="Comps\CompVehicles.cs" />
+    <Compile Include="Components\CompAxles.cs" />
+    <Compile Include="Components\CompProperties_Axles.cs" />
+    <Compile Include="Components\CompProperties_Vehicles.cs" />
+    <Compile Include="Components\CompVehicles.cs" />
     <Compile Include="Things\Apparel_Backpack.cs" />
     <Compile Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
@@ -93,9 +96,9 @@
     <None Include="_inactive\RA_PawnRenderer.cs" />
     <None Include="_inactive\CompTool.cs" />
     <Compile Include="JobDrivers\JobDriver_PutInBackpackSlot.cs" />
-    <Compile Include="Comps\CompEquipmentGizmoUser.cs" />
-    <Compile Include="Comps\CompSlotsBackpack.cs" />
-    <Compile Include="Comps\CompEquipmentGizmoProvider.cs" />
+    <Compile Include="Components\CompEquipmentGizmoUser.cs" />
+    <Compile Include="Components\CompSlotsBackpack.cs" />
+    <Compile Include="Components\CompEquipmentGizmoProvider.cs" />
     <Compile Include="Designators\Designator_PutInBackpackSlot.cs" />
     <Compile Include="JobGivers\JobGiver_ExitMapBest.cs" />
     <Compile Include="JobGivers\JobGiver_ExitMapRandom.cs" />
@@ -103,7 +106,7 @@
     <Compile Include="JobGivers\JobGiver_ExitMapPanic.cs" />
     <Compile Include="RightTools\_ThinkNode_JobGiver.cs" />
     <Compile Include="RightTools\RightTools.cs" />
-    <Compile Include="Comps\MapComponent_ToolsForHaul.cs" />
+    <Compile Include="Components\MapComponent_ToolsForHaul.cs" />
     <Compile Include="RightTools\MapComponentInjector.cs" />
     <Compile Include="NoCCL\SpecialInjector.cs" />
     <Compile Include="NoCCL\Detours.cs" />
@@ -116,7 +119,7 @@
     <None Include="WorkGivers\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
-    <Compile Include="Comps\CompMountable.cs" />
+    <Compile Include="Components\CompMountable.cs" />
     <Compile Include="Designators\Designator_ApplyMedicine.cs" />
     <Compile Include="Designators\Designator_Mount.cs" />
     <None Include="Designators\Designator_PutInInventory.cs" />
@@ -132,7 +135,7 @@
     <None Include="JobDrivers\JobDriver_Board.cs" />
     <Compile Include="JobDrivers\JobDriver_DismountInBase.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithBackpack.cs" />
-    <None Include="JobDrivers\JobDriver_MakeMount.cs" />
+    <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
     <Compile Include="JobDrivers\JobDriver_Mount.cs" />
     <None Include="JobDrivers\JobDriver_PutInInventory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -140,7 +143,7 @@
     <Compile Include="Things\Vehicle_Cart.cs" />
     <Compile Include="Designators\Designator_Board.cs" />
     <Compile Include="Designators\Designator_Move.cs" />
-    <None Include="Things\Vehicle_Saddle.cs" />
+    <Compile Include="Things\Vehicle_Saddle.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
   <ItemGroup>

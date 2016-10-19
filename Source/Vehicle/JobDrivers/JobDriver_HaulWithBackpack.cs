@@ -25,7 +25,7 @@ namespace ToolsForHaul
                 destLoc = pawn.jobs.curJob.targetB.Cell;
                 destGroup = destLoc.GetSlotGroup();
             }
-            this.FailOn(() => !pawn.CanReach(TargetThingA, PathEndMode.ClosestTouch, Danger.Deadly));
+            this.FailOn(() => !pawn.CanReserveAndReach(TargetThingA, PathEndMode.ClosestTouch, Danger.Deadly));
 
             if (destGroup != null)
                 destName = destGroup.parent.SlotYielderLabel();
@@ -49,11 +49,13 @@ namespace ToolsForHaul
             ///
             // no free slots
             this.FailOn(() => backpack.slotsComp.slots.Count >= backpack.MaxItem);
-            foreach (var category in CurJob.targetA.Thing.def.thingCategories)
-            {
-                this.FailOn(() => !backpack.slotsComp.Properties.allowedThingCategoryDefs.Contains(category));
-                this.FailOn(() => backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Contains(category));
-            }
+
+          //// hauling stuff not allowed
+          //foreach (ThingCategoryDef category in CurJob.targetA.Thing.def.thingCategories)
+          //{
+          //    this.FailOn(() => !backpack.slotsComp.Properties.allowedThingCategoryDefs.Contains(category));
+          //    this.FailOn(() => backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Contains(category));
+          //}
 
 
             ///

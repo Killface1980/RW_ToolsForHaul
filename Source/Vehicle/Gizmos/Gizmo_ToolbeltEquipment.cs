@@ -43,24 +43,37 @@ namespace ToolsForHaul
         //EquipmentSlot Properties
         private const int numOfRow = 2;
 
-        private  int iconsPerRow = 2;
+        private int iconsPerRow
+        {
+            get
+            {
+                if (toolbelt.slotsComp.slots.Count <= 4)
+                    return 2;
+                else
+                {
+                    int count = Mathf.FloorToInt(toolbelt.slotsComp.slots.Count - 4) / 2;
 
+                    return 2 + count;
+                }
+
+            }
+        }
         private float curWidth
         {
             get
             {
-                switch (toolbelt.MaxItem)
+                if (toolbelt.MaxItem <= 4)
+                    return Height;
+                else
                 {
-                    case 8:
-                    {
-                        iconsPerRow = 4;
-                        return Height * 2;
-                    }
-                    default:
-                        return Height;
+                    int count = Mathf.FloorToInt(toolbelt.MaxItem - 4) / 2;
+
+                    return Height + count * Height * 0.5f;
                 }
+
             }
         }
+
         public override float Width { get { return curWidth; } }
 
         //IconClickSound
@@ -68,7 +81,7 @@ namespace ToolsForHaul
 
         public Gizmo_ToolbeltEquipment()
         {
-            txtNoItem = "NoItem".Translate();
+            txtNoItem = "NoToolsOrWeapons".Translate();
             txtThingInfo = "ThingInfo".Translate();
             txtDropThing = "DropThing".Translate();
         }

@@ -81,7 +81,12 @@
     <comps>
     <li Class="ToolsForHaul.CompSlotsBackpack_Properties">
       <allowedThingCategoryDefs>
+        <li>Foods</li>
+        <li>Manufactured</li>
+        <li>PlantMatter</li>
+        <li>BodyParts</li>
         <li>Weapons</li>
+        <li>Apparel</li>
       </allowedThingCategoryDefs>
     </li>
     </comps>
@@ -104,6 +109,10 @@
     <comps>
       <li Class="ToolsForHaul.CompSlotsBackpack_Properties">
         <allowedThingCategoryDefs>
+          <li>Foods</li>
+          <li>Manufactured</li>
+          <li>PlantMatter</li>
+          <li>BodyParts</li>
           <li>Weapons</li>
           <li>Apparel</li>
         </allowedThingCategoryDefs>
@@ -127,11 +136,12 @@
     <comps>
       <li Class="ToolsForHaul.CompSlotsBackpack_Properties">
         <allowedThingCategoryDefs>
+          <li>Foods</li>
+          <li>Manufactured</li>
+          <li>PlantMatter</li>
+          <li>BodyParts</li>
           <li>Weapons</li>
           <li>Apparel</li>
-          <li>Foods</li>
-          <li>Medicine</li>
-          <li>BodyParts</li>
         </allowedThingCategoryDefs>
       </li>
     </comps>

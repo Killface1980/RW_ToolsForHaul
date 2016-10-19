@@ -48,16 +48,17 @@ namespace ToolsForHaul
                 return null;
             }
             List<Vehicle_Cart> cartsAvailable = new List<Vehicle_Cart>();
-            foreach (Vehicle_Cart thing in ToolsForHaulUtility.Cart())
+            foreach (Vehicle_Cart vehicleCart in ToolsForHaulUtility.Cart())
             {
-                if (ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, thing))
+                if (ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, vehicleCart))
                 {
-                    cart = thing;
+                    cart = vehicleCart;
                     break;
                 }
-                else if (ToolsForHaulUtility.AvailableAnimalCart(thing) || ToolsForHaulUtility.AvailableCart(thing, pawn))
+                else if (ToolsForHaulUtility.AvailableAnimalCart(vehicleCart) || ToolsForHaulUtility.AvailableCart(vehicleCart, pawn))
                 {
-                    cartsAvailable.Add(thing);
+                    if (!vehicleCart.tankLeaking)
+                        cartsAvailable.Add(vehicleCart);
                 }
             }
             if (cart == null && cartsAvailable.Any())
@@ -75,6 +76,13 @@ namespace ToolsForHaul
                 JobFailReason.Is(ToolsForHaulUtility.BurningLowerTrans);
                 return null;
             }
+
+            if (!cart.allowances.Allows(t))
+            {
+                JobFailReason.Is("Cart does not allow that thing");
+                return null;
+            }
+
             if (ListerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.storage.Count == 0)
             {
                 JobFailReason.Is("NoHaulable".Translate());
@@ -86,7 +94,7 @@ namespace ToolsForHaul
                 return null;
             }
             if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableCart(cart, pawn))
-                return ToolsForHaulUtility.HaulWithTools(pawn, cart);
+                return ToolsForHaulUtility.HaulWithTools(pawn, cart, t);
             JobFailReason.Is(ToolsForHaulUtility.NoAvailableCart);
             return null;
         }

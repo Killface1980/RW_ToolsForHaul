@@ -51,6 +51,8 @@ namespace ToolsForHaul
         {
             return (refuelableComp != null && refuelableComp.HasFuel) || compVehicles.MotorizedWithoutFuel();
         }
+
+
         public float VehicleSpeed;
         public bool despawnAtEdge;
 

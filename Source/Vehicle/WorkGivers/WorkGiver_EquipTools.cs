@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -40,7 +41,7 @@ namespace ToolsForHaul
                 return true;
 
             // Skip it toolbelt full
-        
+
             if (toolbelt.MaxItem <= toolbelt.slotsComp.slots.Count)
             {
                 return true;
@@ -52,10 +53,20 @@ namespace ToolsForHaul
         public override bool HasJobOnThing(Pawn pawn, Thing t)
         {
             Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+            if (toolbelt == null)
+                return false;
 
-            if (!toolbelt.slotsComp.slots.Contains(t.def) || pawn.equipment.Primary.def.Equals(t.def))
-                return true;
-            return false;
+            if (!pawn.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Some))
+                return false;
+
+            if (toolbelt.slotsComp.slots.Contains(t.def))
+                return false;
+
+            if (pawn.equipment.Primary != null && pawn.equipment.Primary.def.Equals(t.def))
+                return false;
+
+
+            return true;
 
         }
 
@@ -67,7 +78,7 @@ namespace ToolsForHaul
             {
                 Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInToolbeltSlot"));
                 jobNew.targetQueueA = new List<TargetInfo>();
-                jobNew.numToBringList=new List<int>();
+                jobNew.numToBringList = new List<int>();
                 jobNew.targetB = toolbelt;
                 jobNew.targetQueueA.Add(thing);
                 jobNew.numToBringList.Add(thing.def.stackLimit);
