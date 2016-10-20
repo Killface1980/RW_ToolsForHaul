@@ -29,7 +29,7 @@ namespace ToolsForHaul
 
         public override bool TryExecute(IncidentParms parms)
         {
-        //    if (!base.TryExecute(parms))
+            //    if (!base.TryExecute(parms))
             {
                 ResolveRaidPoints(parms);
                 if (!TryResolveRaidFaction(parms))
@@ -62,24 +62,46 @@ namespace ToolsForHaul
 
                         letterLookTarget = current;
 
-                        if (parms.faction.def.techLevel >= TechLevel.Industrial && value >= 0.5f && current.RaceProps.fleshType != FleshType.Mechanoid)
+                        if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.fleshType != FleshType.Mechanoid)
                         {
-                            CellFinder.RandomClosewalkCellNear(current.Position, 5);
-                            Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
-                            GenSpawn.Spawn(thing, current.Position);
+                            if (value >= 0.9f)
+                            {
+                                CellFinder.RandomClosewalkCellNear(current.Position, 5);
+                                Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
+                                GenSpawn.Spawn(thing, current.Position);
 
-                            Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
-                            Find.Reservations.ReleaseAllForTarget(thing);
-                            job.targetA = thing;
-                            current.jobs.StartJob(job, JobCondition.InterruptForced);
+                                Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                                Find.Reservations.ReleaseAllForTarget(thing);
+                                job.targetA = thing;
+                                current.jobs.StartJob(job, JobCondition.InterruptForced);
 
-                            Vehicle_Turret vehicle = thing as Vehicle_Turret;
+                                Vehicle_Turret vehicle = thing as Vehicle_Turret;
 
-                            int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * vehicle.MaxHitPoints);
-                            vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null, null));
+                                int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * vehicle.MaxHitPoints);
+                                vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null, null));
 
-                            SoundInfo info = SoundInfo.InWorld(vehicle, MaintenanceType.None);
-                            vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+                                SoundInfo info = SoundInfo.InWorld(vehicle, MaintenanceType.None);
+                                vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+                            }
+                            else if (value >= 0.5f)
+                            {
+                                CellFinder.RandomClosewalkCellNear(current.Position, 5);
+                                Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
+                                GenSpawn.Spawn(thing, current.Position);
+
+                                Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                                Find.Reservations.ReleaseAllForTarget(thing);
+                                job.targetA = thing;
+                                current.jobs.StartJob(job, JobCondition.InterruptForced);
+
+                                Vehicle_Cart vehicle = thing as Vehicle_Cart;
+
+                                int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * vehicle.MaxHitPoints);
+                                vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null, null));
+
+                                SoundInfo info = SoundInfo.InWorld(vehicle, MaintenanceType.None);
+                                vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+                            }
                         }
 
                     }
