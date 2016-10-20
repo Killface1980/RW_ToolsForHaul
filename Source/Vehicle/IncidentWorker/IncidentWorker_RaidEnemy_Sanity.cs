@@ -78,9 +78,9 @@ namespace ToolsForHaul
                                 Vehicle_Turret vehicle = thing as Vehicle_Turret;
 
                                 int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * vehicle.MaxHitPoints);
-                                vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null, null));
+                                vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null));
 
-                                SoundInfo info = SoundInfo.InWorld(vehicle, MaintenanceType.None);
+                                SoundInfo info = SoundInfo.InWorld(vehicle);
                                 vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
                             }
                             else if (value >= 0.5f)
@@ -97,9 +97,9 @@ namespace ToolsForHaul
                                 Vehicle_Cart vehicle = thing as Vehicle_Cart;
 
                                 int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * vehicle.MaxHitPoints);
-                                vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null, null));
+                                vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null));
 
-                                SoundInfo info = SoundInfo.InWorld(vehicle, MaintenanceType.None);
+                                SoundInfo info = SoundInfo.InWorld(vehicle);
                                 vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
                             }
                         }
@@ -159,7 +159,7 @@ namespace ToolsForHaul
                 maxPoints = 999999f;
             }
             if (!(from f in Find.FactionManager.AllFactions
-                  where FactionCanBeGroupSource(f, false) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
+                  where FactionCanBeGroupSource(f) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
                   select f).TryRandomElementByWeight(f => f.def.raidCommonality, out parms.faction))
             {
                 if (!(from f in Find.FactionManager.AllFactions

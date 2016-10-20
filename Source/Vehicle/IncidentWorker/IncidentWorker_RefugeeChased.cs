@@ -25,7 +25,7 @@ namespace ToolsForHaul
                 return false;
             }
             Faction faction = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Spacer);
-            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDefOf.SpaceRefugee, faction, PawnGenerationContext.NonPlayer, false, false, false, false, true, false, RelationWithColonistWeight, false, true, true, null, null, null, null, null, null);
+            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDefOf.SpaceRefugee, faction, PawnGenerationContext.NonPlayer, false, false, false, false, true, false, RelationWithColonistWeight, false, true, true, null, null, null, null, null);
             Pawn refugee = PawnGenerator.GeneratePawn(request);
             refugee.relations.everSeenByPlayer = true;
             Faction enemyFac;
@@ -50,7 +50,7 @@ namespace ToolsForHaul
             diaOption.action = delegate
             {
                 GenSpawn.Spawn(refugee, spawnSpot);
-                refugee.SetFaction(Faction.OfPlayer, null);
+                refugee.SetFaction(Faction.OfPlayer);
 
                 // Refugee stole vehicle?
                 float value = Rand.Value;
@@ -64,14 +64,14 @@ namespace ToolsForHaul
                     fuel.stackCount += Mathf.FloorToInt(5 + Rand.Value * 0.3f);
                     cart.refuelableComp.Refuel(fuel);
                     int num2 = Mathf.FloorToInt(Rand.Value*0.9f*cart.MaxHitPoints);
-                    cart.TakeDamage(new DamageInfo(DamageDefOf.Bullet, num2, null, null, null));
+                    cart.TakeDamage(new DamageInfo(DamageDefOf.Bullet, num2, null, null));
                     Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
                     Find.Reservations.ReleaseAllForTarget(thing);
                     job.targetA = thing;
                     refugee.jobs.StartJob(job, JobCondition.InterruptForced);
 
                     Vehicle_Cart vehicle = thing as Vehicle_Cart;
-                    SoundInfo info = SoundInfo.InWorld(vehicle, MaintenanceType.None);
+                    SoundInfo info = SoundInfo.InWorld(vehicle);
                     vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
@@ -100,7 +100,7 @@ namespace ToolsForHaul
             DiaOption diaOption3 = new DiaOption("RefugeeChasedInitial_Reject".Translate());
             diaOption3.action = delegate
             {
-                Find.WorldPawns.PassToWorld(refugee, PawnDiscardDecideMode.Decide);
+                Find.WorldPawns.PassToWorld(refugee);
             };
             diaOption3.link = diaNode2;
             diaNode.options.Add(diaOption3);

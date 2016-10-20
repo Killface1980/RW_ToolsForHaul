@@ -66,7 +66,7 @@ namespace ToolsForHaul
             {
                 if (gunInt == null)
                 {
-                    gunInt = ThingMaker.MakeThing(def.building.turretGunDef, null);
+                    gunInt = ThingMaker.MakeThing(def.building.turretGunDef);
                     foreach (Verb verb in GunCompEq.AllVerbs)
                     {
                         verb.caster = this;
@@ -127,9 +127,9 @@ namespace ToolsForHaul
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.LookValue(ref burstCooldownTicksLeft, "burstCooldownTicksLeft", 0, false);
-            Scribe_Values.LookValue(ref loaded, "loaded", false, false);
-            Scribe_Values.LookValue(ref holdFire, "holdFire", false, false);
+            Scribe_Values.LookValue(ref burstCooldownTicksLeft, "burstCooldownTicksLeft", 0);
+            Scribe_Values.LookValue(ref loaded, "loaded", false);
+            Scribe_Values.LookValue(ref holdFire, "holdFire", false);
         }
 
         public override void OrderAttack(TargetInfo targ)
@@ -314,7 +314,7 @@ namespace ToolsForHaul
 
         protected void BeginBurst()
         {
-            GunCompEq.PrimaryVerb.TryStartCastOn(CurrentTarget, false, true);
+            GunCompEq.PrimaryVerb.TryStartCastOn(CurrentTarget);
         }
 
         protected void BurstComplete()
@@ -405,19 +405,18 @@ namespace ToolsForHaul
         [DebuggerHidden]
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            IEnumerator<Gizmo> enumerator = base.GetGizmos().GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach (var gizmo in base.GetGizmos())
             {
-                Gizmo current = enumerator.Current;
-                yield return current;
+                yield return gizmo;
             }
+
             if (CanSetForcedTarget)
             {
                 yield return new Command_VerbTarget
                 {
                     defaultLabel = "CommandSetForceAttackTarget".Translate(),
                     defaultDesc = "CommandSetForceAttackTargetDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack", true),
+                    icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack"),
                     verb = GunCompEq.PrimaryVerb,
                     hotKey = KeyBindingDefOf.Misc4
                 };
@@ -428,7 +427,7 @@ namespace ToolsForHaul
                 {
                     defaultLabel = "CommandHoldFire".Translate(),
                     defaultDesc = "CommandHoldFireDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/Commands/HoldFire", true),
+                    icon = ContentFinder<Texture2D>.Get("UI/Commands/HoldFire"),
                     hotKey = KeyBindingDefOf.Misc6,
                     toggleAction = delegate
                     {

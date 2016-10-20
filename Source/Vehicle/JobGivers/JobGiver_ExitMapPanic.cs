@@ -63,7 +63,7 @@ namespace ToolsForHaul
             }
             if (flag)
             {
-                using (PawnPath pawnPath = PathFinder.FindPath(pawn.Position, vec, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.PassAnything, false), PathEndMode.OnCell))
+                using (PawnPath pawnPath = PathFinder.FindPath(pawn.Position, vec, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.PassAnything)))
                 {
                     IntVec3 cellBeforeBlocker;
                     Thing thing = pawnPath.FirstBlockingBuilding(out cellBeforeBlocker, pawn);

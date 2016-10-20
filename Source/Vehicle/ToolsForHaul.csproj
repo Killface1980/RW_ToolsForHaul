@@ -11,7 +11,8 @@
     <AssemblyName>ToolsForHaul</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -27,13 +28,15 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -177,21 +180,15 @@
       <Link>Defs\ThingDefs\Apparel_Backpack.xml</Link>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="..\..\Defs\ThingDefs\Apparel_Toolbelt.xml">
+      <Link>Defs\ThingDefs\Apparel_Toolbelt.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
       <Link>Defs\ThingDefs\Items_IRResources.xml</Link>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\ThingDefs\RA_Items_Base.xml">
-      <Link>Defs\ThingDefs\RA_Items_Base.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\ThingDefs\RA_Things_Base.xml">
-      <Link>Defs\ThingDefs\RA_Things_Base.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\ThingDefs\RA_Weapons_Melee.xml">
-      <Link>Defs\ThingDefs\RA_Weapons_Melee.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Things_Special.xml">
       <Link>Defs\ThingDefs\Things_Special.xml</Link>

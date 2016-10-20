@@ -63,8 +63,8 @@
   
   
   <ThingDef ParentName="ToolsForHaulToolbeltBase">
-    <defName>RTFTJ_Toolbelt</defName>
-    <label>toolbelt</label>
+    <defName>Basic_Toolbelt</defName>
+    <label>basic toolbelt</label>
     <description>A toolbelt to keep your tools to yourself.</description>
 		<graphicData>
 			<texPath>Things/Items/Apparels/Various/Toolbelt/Toolbelt</texPath>
@@ -127,8 +127,8 @@
 	</ThingDef>
 
   <ThingDef ParentName="ToolsForHaulToolbeltBase">
-    <defName>RTFTJ_ToolbeltAdv</defName>
-    <label>advanced toolbelt</label>
+    <defName>Professional_Toolbelt</defName>
+    <label>professional toolbelt</label>
     <description>An advanced toolbelt to keep your tools to yourself.</description>
     <graphicData>
       <texPath>Things/Items/Apparels/Various/Toolbelt/ADVToolbelt</texPath>

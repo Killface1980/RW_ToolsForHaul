@@ -177,7 +177,7 @@ namespace ToolsForHaul
             if (mountableComp.Driver != null && IsCurrentlyMotorized())
                 LongEventHandler.ExecuteWhenFinished(delegate
                 {
-                    SoundInfo info = SoundInfo.InWorld(this, MaintenanceType.None);
+                    SoundInfo info = SoundInfo.InWorld(this);
                     mountableComp.sustainerAmbient = compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
                 });
 
@@ -294,12 +294,12 @@ namespace ToolsForHaul
             {
 
                 Command_Action command_Action = new Command_Action();
-                command_Action.icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate", true);
+                command_Action.icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate");
                 command_Action.defaultDesc = "CommandDetonateDesc".Translate();
                 command_Action.action = Command_Detonate;
                 if (explosiveComp.wickStarted)
                 {
-                    command_Action.Disable(null);
+                    command_Action.Disable();
                     if (Rand.Value<= 0.8f)
                     {
                         if (!mountableComp.Driver.Position.InBounds())
@@ -448,6 +448,12 @@ namespace ToolsForHaul
         {
             base.PostApplyDamage(dinfo, totalDamageDealt);
 
+            if (HitPoints <= MaxHitPoints * 0.25f)
+            {
+                if (IsCurrentlyMotorized())
+                    MoteMaker.ThrowMicroSparks(base.DrawPos);
+            }
+
             if (dinfo.Def == DamageDefOf.Repair && tankLeaking)
             {
                 tankLeaking = false;
@@ -544,13 +550,11 @@ namespace ToolsForHaul
         {
             if (!instantiated)
             {
-                using (IEnumerator<Thing> enumerator = GetContainer().GetEnumerator())
+                foreach (var thing in GetContainer())
                 {
-                    while (enumerator.MoveNext())
-                    {
-                        enumerator.Current.holder.owner = this;
-                    }
+                    thing.holder.owner = this;
                 }
+
                 currentDriverSpeed = VehicleSpeed;
                 instantiated = true;
             }
@@ -660,7 +664,7 @@ namespace ToolsForHaul
                             if (loc.ShouldSpawnMotesAt() && !MoteCounter.SaturatedLowPriority)
                             {
                                 MoteThrown moteThrown =
-                                    (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Trail_ATV"), null);
+                                    (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Trail_ATV"));
                                 moteThrown.exactRotation = rot;
                                 moteThrown.exactPosition = loc;
                                 GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
@@ -713,24 +717,21 @@ namespace ToolsForHaul
             //    damagetick = Find.TickManager.TicksGame + 3600;
             //}
 
-            if (HitPoints <= MaxHitPoints * 0.25f)
-            {
-                if (IsCurrentlyMotorized())
-                    MoteMaker.ThrowMicroSparks(base.DrawPos);
-            }
 
-            if (tankLeaking && Find.TickManager.TicksGame > _tankSpillTick)
+
+            if (tankLeaking)
             {
-                if (refuelableComp.FuelPercent > _tankHitPos)
+                if (Find.TickManager.TicksGame > _tankSpillTick)
                 {
-                    refuelableComp.ConsumeFuel(0.15f);
+                    if (refuelableComp.FuelPercent > _tankHitPos)
+                    {
+                        refuelableComp.ConsumeFuel(0.15f);
 
-                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 1);
-                    _tankSpillTick = Find.TickManager.TicksGame + 15;
+                        FilthMaker.MakeFilth(Position, fuelDefName, LabelCap);
+                        _tankSpillTick = Find.TickManager.TicksGame + 15;
+                    }
                 }
-
             }
-
         }
         private static readonly Vector3 TrailOffset = new Vector3(0f, 0f, -0.3f);
         private static readonly Vector3 FumesOffset = new Vector3(-0.3f, 0f, 0f);

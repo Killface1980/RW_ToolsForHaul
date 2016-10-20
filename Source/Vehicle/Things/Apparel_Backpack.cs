@@ -111,7 +111,6 @@ namespace ToolsForHaul
                 postWearer = wearer;
             }
 
-            //TODO make them drop the current container stuff, not the inventory
             //Put off backpack. Should drop all from postWearer
             else if (postWearer != null && wearer == null)
             {

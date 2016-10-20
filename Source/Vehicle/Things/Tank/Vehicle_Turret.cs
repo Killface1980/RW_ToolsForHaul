@@ -233,7 +233,7 @@ namespace ToolsForHaul
             if (mountableComp.Driver != null && IsCurrentlyMotorized())
                 LongEventHandler.ExecuteWhenFinished(delegate
                 {
-                    SoundInfo info = SoundInfo.InWorld(this, MaintenanceType.None);
+                    SoundInfo info = SoundInfo.InWorld(this);
                     mountableComp.sustainerAmbient = compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
                 });
 
@@ -355,12 +355,12 @@ namespace ToolsForHaul
             {
 
                 Command_Action command_Action = new Command_Action();
-                command_Action.icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate", true);
+                command_Action.icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate");
                 command_Action.defaultDesc = "CommandDetonateDesc".Translate();
                 command_Action.action = Command_Detonate;
                 if (explosiveComp.wickStarted)
                 {
-                    command_Action.Disable(null);
+                    command_Action.Disable();
                     if (Rand.Value <= 0.8f)
                     {
                         if (!mountableComp.Driver.Position.InBounds())
@@ -604,12 +604,9 @@ namespace ToolsForHaul
         {
             if (!instantiated)
             {
-                using (IEnumerator<Thing> enumerator = GetContainer().GetEnumerator())
+                foreach (var thing in GetContainer())
                 {
-                    while (enumerator.MoveNext())
-                    {
-                        enumerator.Current.holder.owner = this;
-                    }
+                    thing.holder.owner = this;
                 }
                 currentDriverSpeed = VehicleSpeed;
                 instantiated = true;
@@ -721,7 +718,7 @@ namespace ToolsForHaul
                             if (loc.ShouldSpawnMotesAt() && !MoteCounter.SaturatedLowPriority)
                             {
                                 MoteThrown moteThrown =
-                                    (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Trail_ATV"), null);
+                                    (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Trail_ATV"));
                                 moteThrown.exactRotation = rot;
                                 moteThrown.exactPosition = loc;
                                 GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
@@ -786,7 +783,7 @@ namespace ToolsForHaul
                 {
                     refuelableComp.ConsumeFuel(0.15f);
 
-                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 1);
+                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap);
                     _tankSpillTick = Find.TickManager.TicksGame + 15;
                 }
 

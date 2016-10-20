@@ -41,8 +41,6 @@ namespace ToolsForHaul
                 return;
             driver = pawn;
 
-            driver.Position = parent.InteractionCell;
-
             Vehicle_Cart vehicleCart = parent as Vehicle_Cart;
             if (vehicleCart != null)
             {
@@ -58,7 +56,7 @@ namespace ToolsForHaul
                 }
                 if (vehicleCart.IsCurrentlyMotorized())
                 {
-                    SoundInfo info = SoundInfo.InWorld(parent, MaintenanceType.None);
+                    SoundInfo info = SoundInfo.InWorld(parent);
                     sustainerAmbient = vehicleCart.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
@@ -85,7 +83,7 @@ namespace ToolsForHaul
                 }
                 if (vehicleTurret.IsCurrentlyMotorized())
                 {
-                    SoundInfo info = SoundInfo.InWorld(parent, MaintenanceType.None);
+                    SoundInfo info = SoundInfo.InWorld(parent);
                     sustainerAmbient = vehicleTurret.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
