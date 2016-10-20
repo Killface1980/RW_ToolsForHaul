@@ -116,6 +116,11 @@ namespace ToolsForHaul
             return Find.ListerThings.AllThings.FindAll(thing => thing is Vehicle_Cart);
         }
 
+        public static List<Thing> CartTurret()
+        {
+            return Find.ListerThings.AllThings.FindAll(thing => thing is Vehicle_Turret);
+        }
+
         public static bool AvailableCart(Vehicle_Cart cart, Pawn pawn)
         {
 
@@ -478,6 +483,9 @@ namespace ToolsForHaul
         public static bool IsDriver(Pawn pawn)
         {
             foreach (Vehicle_Cart vehicle in Cart())
+                if (vehicle.mountableComp.Driver == pawn)
+                    return true;
+            foreach (Vehicle_Turret vehicle in CartTurret())
                 if (vehicle.mountableComp.Driver == pawn)
                     return true;
             return false;

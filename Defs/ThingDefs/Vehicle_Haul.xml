@@ -9,13 +9,13 @@
 
   <!-- ============================ Vehicle ========================== -->
 
-  <ThingDef  Name="BaseVehicle" Abstract="True">
+  <ThingDef  Name="VehicleBase" Abstract="True">
     <category>Building</category>
     <selectable>true</selectable>
     <tickerType>Normal</tickerType>
 
     <stealable>true</stealable>
-    <altitudeLayer>Projectile</altitudeLayer>
+    <altitudeLayer>Building</altitudeLayer>
     <useHitPoints>True</useHitPoints>
     <hasTooltip>true</hasTooltip>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
@@ -64,6 +64,7 @@
       </li>
     </damageMultipliers>
     <pathCost>40</pathCost>
+    <fillPercent>0.4</fillPercent>
     <statBases>
       <Flammability>0.05</Flammability>
       <SellPriceFactor>0.3</SellPriceFactor>
@@ -84,15 +85,14 @@
     </comps>
   </ThingDef>
 
-
-  <ThingDef ParentName="BaseVehicle">
+  <ThingDef ParentName="VehicleBase">
     <defName>VehicleCart</defName>
     <label>cart</label>
     <repairEffect>ConstructWood</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Projectile</altitudeLayer>
+    <altitudeLayer>Building</altitudeLayer>
     <description>A cart is an old-fashioned wooden vehicle that is used for transporting goods or people.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <thingCategories>
@@ -169,14 +169,14 @@
     </comps>
   </ThingDef>
 
-  <ThingDef ParentName="BaseVehicle">
+  <ThingDef ParentName="VehicleBase">
     <defName>VehicleTruck</defName>
     <label>truck</label>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Projectile</altitudeLayer>
+    <altitudeLayer>Building</altitudeLayer>
     <description>A truck is what you drive when you're done taking shit off of other people.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <thingCategories>
@@ -266,24 +266,13 @@
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
       </li>
+      <li Class="CompProperties_Breakdownable"/>
     </comps>
   </ThingDef>
 
-  <ThingDef ParentName="BaseVehicle">
+  <ThingDef ParentName="VehicleBase">
     <defName>VehicleATV</defName>
     <label>ATV</label>
-    <repairEffect>Repair</repairEffect>
-    <hasInteractionCell>True</hasInteractionCell>
-    <interactionCellOffset>(0,0,0)</interactionCellOffset>
-    <passability>PassThroughOnly</passability>
-    <castEdgeShadows>true</castEdgeShadows>
-    <altitudeLayer>Projectile</altitudeLayer>
-    <description>An ATV is what you drive when you want a concussion.</description>
-    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
-    <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
-    <thingCategories>
-      <li>Vehicles</li>
-    </thingCategories>
     <graphicData>
       <texPath>Things/Pawn/VehicleATV/ATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
@@ -293,44 +282,16 @@
         <enabled>false</enabled>
       </damageData>
     </graphicData>
+    <repairEffect>Repair</repairEffect>
+    <hasInteractionCell>True</hasInteractionCell>
+    <altitudeLayer>Building</altitudeLayer>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>15</VehicleSpeed>
       <VehicleMaxItem>2</VehicleMaxItem>
+      <Beauty>10</Beauty>
     </statBases>
-    <fillPercent>0.99</fillPercent>
-    <size>(1,1)</size>
-    <inspectorTabs>
-      <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
-      <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
-    </inspectorTabs>
-    <CostList>
-      <Steel>150</Steel>
-      <Plasteel>10</Plasteel>
-      <Component>10</Component>
-      <VehicleATVFrame>1</VehicleATVFrame>
-    </CostList>
-    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-    <killedLeavings>
-      <VehicleATVFrame>1</VehicleATVFrame>
-    </killedLeavings>
-    <recipeMaker>
-      <workSpeedStat>SmithingSpeed</workSpeedStat>
-      <workSkill>Crafting</workSkill>
-      <effectWorking>Smith</effectWorking>
-      <soundWorking>Recipe_Machining</soundWorking>
-      <recipeUsers>
-        <li>TableMachining</li>
-      </recipeUsers>
-      <workAmount>22000</workAmount>
-      <unfinishedThingDef>UnfinishedATV</unfinishedThingDef>
-      <skillRequirements>
-        <li>
-          <skill>Crafting</skill>
-          <minLevel>10</minLevel>
-        </li>
-      </skillRequirements>
-    </recipeMaker>
     <comps>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>2.4</explosiveRadius>
@@ -368,7 +329,50 @@
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
       </li>
+      <li Class="CompProperties_Breakdownable"/>
     </comps>
+
+    <passability>PassThroughOnly</passability>
+    <pathCost>50</pathCost>
+    <castEdgeShadows>true</castEdgeShadows>
+    <description>An ATV is what you drive when you want a concussion.</description>
+    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
+    <thingCategories>
+      <li>Vehicles</li>
+    </thingCategories>
+    <size>(1,1)</size>
+    <inspectorTabs>
+      <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
+      <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
+    </inspectorTabs>
+    <CostList>
+      <Steel>150</Steel>
+      <Plasteel>10</Plasteel>
+      <Component>10</Component>
+      <VehicleATVFrame>1</VehicleATVFrame>
+    </CostList>
+    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <VehicleATVFrame>1</VehicleATVFrame>
+    </killedLeavings>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Machining</soundWorking>
+      <recipeUsers>
+        <li>TableMachining</li>
+      </recipeUsers>
+      <workAmount>22000</workAmount>
+      <unfinishedThingDef>UnfinishedATV</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+    </recipeMaker>
     <colorGenerator Class="ColorGenerator_Options">
       <options>
         <li>
@@ -397,14 +401,14 @@
     </colorGenerator>
   </ThingDef>
 
-  <ThingDef ParentName="BaseVehicle">
+  <ThingDef ParentName="VehicleBase">
     <defName>VehicleSpeeder</defName>
     <label>Speeder</label>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Projectile</altitudeLayer>
+    <altitudeLayer>Building</altitudeLayer>
     <description>Keep out of reach of lightsabers.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
@@ -426,7 +430,6 @@
       <VehicleMaxItem>2</VehicleMaxItem>
     </statBases>
     <size>(1,1)</size>
-    <fillPercent>0.99</fillPercent>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -481,6 +484,7 @@
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
       </li>
+      <li Class="CompProperties_Breakdownable"/>
     </comps>
     <colorGenerator Class="ColorGenerator_Options">
       <options>
@@ -512,14 +516,14 @@
 
 
 
-  <ThingDef ParentName="BaseVehicle">
+  <ThingDef ParentName="VehicleBase">
     <defName>VehicleWheelChair</defName>
     <label>wheel chair</label>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Projectile</altitudeLayer>
+    <altitudeLayer>Building</altitudeLayer>
     <description>For those who have some disability to walk</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isBodyPartOrImplant>true</isBodyPartOrImplant>
@@ -547,7 +551,6 @@
       <li>Advanced</li>
     </techHediffsTags>
     <size>(1,1)</size>
-    <fillPercent>0.99</fillPercent>
     <!--<inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -636,13 +639,13 @@
 
 
 
-  <!-- 	<ThingDef ParentName="BaseVehicle">
+  <!-- 	<ThingDef ParentName="VehicleBase">
 		<defName>VehicleSaddle</defName>
 		<label>saddle</label>
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,0)</interactionCellOffset>
 		<passability>PassThroughOnly</passability>
-		<altitudeLayer>Projectile</altitudeLayer>
+		<altitudeLayer>Building</altitudeLayer>
 		<description>A saddle is a leather seat that you put on the back of an animal so that you can ride the animal.</description>
 		<thingClass>ToolsForHaul.Vehicle_Saddle</thingClass>
 		<thingCategories>
@@ -682,13 +685,13 @@
 	</ThingDef> -->
 
   <!-- Food Service Trolley -->
-  <!--  <ThingDef ParentName="BaseVehicle">
+  <!--  <ThingDef ParentName="VehicleBase">
     <defName>VehicleTrolley</defName>
     <label>trolley</label>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <passability>PassThroughOnly</passability>
-    <altitudeLayer>Projectile</altitudeLayer>
+    <altitudeLayer>Building</altitudeLayer>
     <description>A trolley is a small table on wheels which is used for serving drinks or food.</description>
     <thingClass>ToolsForHaul.Vehicle_Trolley</thingClass>
     <thingCategories>

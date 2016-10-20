@@ -8,7 +8,8 @@ namespace ToolsForHaul
 {
     public class CompDriver : ThingComp
     {
-        public Vehicle_Cart vehicle;
+        public Vehicle_Cart vehicleCart;
+        public Vehicle_Turret vehicleTurret;
 
         public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
         {
@@ -18,7 +19,10 @@ namespace ToolsForHaul
             if (hitChance <= hit)
             {
                 //apply damage to vehicle here
-                vehicle.TakeDamage(dinfo);
+                if (vehicleCart != null)
+                    vehicleCart.TakeDamage(dinfo);
+                if (vehicleTurret != null)
+                    vehicleTurret.TakeDamage(dinfo);
                 absorbed = true;
                 return;
             }

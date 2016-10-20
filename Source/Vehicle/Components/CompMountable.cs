@@ -33,32 +33,61 @@ namespace ToolsForHaul
                 return;
             driver = pawn;
 
-            // Set faction of vehicle to whoever mounts it
             Vehicle_Cart vehicleCart = parent as Vehicle_Cart;
-            if (vehicleCart != null && vehicleCart.Faction != driver.Faction && vehicleCart.ClaimableBy(driver.Faction))
+            if (vehicleCart != null)
             {
-                parent.SetFaction(driver.Faction);
+                // Set faction of vehicle to whoever mounts it
+                if (vehicleCart.Faction != driver.Faction && vehicleCart.ClaimableBy(driver.Faction))
+                {
+                    parent.SetFaction(driver.Faction);
+                }
+
+                if (!vehicleCart.compVehicles.AnimalsCanDrive())
+                {
+                    driver.RaceProps.makesFootprints = false;
+                }
+                if (vehicleCart.IsCurrentlyMotorized())
+                {
+                    SoundInfo info = SoundInfo.InWorld(parent, MaintenanceType.None);
+                    sustainerAmbient = vehicleCart.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+                }
+
+                if (pawn.RaceProps.Humanlike)
+                {
+                    driverComp = new CompDriver { vehicleCart = parent as Vehicle_Cart };
+                    driver.AllComps?.Add(driverComp);
+                    driverComp.parent = driver;
+                }
             }
 
-            if (!vehicleCart.compVehicles.AnimalsCanDrive())
+            Vehicle_Turret vehicleTurret = parent as Vehicle_Turret;
+            if (vehicleTurret != null)
             {
-                driver.RaceProps.makesFootprints = false;
+                // Set faction of vehicle to whoever mounts it
+                if (vehicleTurret.Faction != driver.Faction && vehicleTurret.ClaimableBy(driver.Faction))
+                {
+                    parent.SetFaction(driver.Faction);
+                }
+
+                if (!vehicleTurret.compVehicles.AnimalsCanDrive())
+                {
+                    driver.RaceProps.makesFootprints = false;
+                }
+                if (vehicleTurret.IsCurrentlyMotorized())
+                {
+                    SoundInfo info = SoundInfo.InWorld(parent, MaintenanceType.None);
+                    sustainerAmbient = vehicleTurret.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+                }
+
+                if (pawn.RaceProps.Humanlike)
+                {
+                    driverComp = new CompDriver { vehicleTurret = parent as Vehicle_Turret };
+                    driver.AllComps?.Add(driverComp);
+                    driverComp.parent = driver;
+                }
             }
 
-            if ((parent as Vehicle_Cart).IsCurrentlyMotorized())
-            {
-                SoundInfo info = SoundInfo.InWorld(parent, MaintenanceType.None);
-                sustainerAmbient = vehicleCart.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
 
-
-                //    Find.ListerBuildings.Remove(parent as Building);
-            }
-            if (pawn.RaceProps.Humanlike)
-            {
-                driverComp = new CompDriver { vehicle = parent as Vehicle_Cart };
-                driver.AllComps?.Add(driverComp);
-                driverComp.parent = driver;
-            }
         }
 
         public bool IsMounted
@@ -76,7 +105,8 @@ namespace ToolsForHaul
             if (driver.RaceProps.Humanlike)
             {
                 driver.AllComps?.Remove(driverComp);
-                driverComp.vehicle = null;
+                driverComp.vehicleCart = null;
+                driverComp.vehicleTurret = null;
                 driverComp.parent = null;
             }
 
@@ -86,9 +116,10 @@ namespace ToolsForHaul
             //if (Find.Reservations.IsReserved(parent, driver.Faction))
             Find.Reservations.ReleaseAllForTarget(parent);
             if (driver.Faction != Faction.OfPlayer)
+            {
                 parent.SetForbidden(true);
-            if ((driver.Dead || driver.Downed) && driver.Faction != Faction.OfPlayer)
                 parent.SetFaction(null);
+            }
 
             driver = null;
 
@@ -146,7 +177,7 @@ namespace ToolsForHaul
             base.CompTick();
             if (IsMounted)
             {
-               
+
                 if (!driver.Spawned)
                 {
                     parent.DeSpawn();

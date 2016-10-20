@@ -187,7 +187,7 @@ namespace ToolsForHaul
 
                 if (mountableComp.Driver.RaceProps.Humanlike)
                 {
-                    mountableComp.driverComp = new CompDriver { vehicle = this };
+                    mountableComp.driverComp = new CompDriver { vehicleCart = this };
                     mountableComp.Driver.AllComps?.Add(mountableComp.driverComp);
                     mountableComp.driverComp.parent = mountableComp.Driver;
                 }
@@ -407,7 +407,9 @@ namespace ToolsForHaul
                 foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart())
                     if (cart.mountableComp.Driver == myPawn)
                         alreadyMounted = true;
-
+                foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret())
+                    if (cart.mountableComp.Driver == myPawn)
+                        alreadyMounted = true;
                 if (myPawn.Faction == Faction.OfPlayer && (myPawn.RaceProps.IsMechanoid || myPawn.RaceProps.Humanlike) && !alreadyMounted)
                 {
                     yield return new FloatMenuOption("Mount".Translate(LabelShort), action_Mount);

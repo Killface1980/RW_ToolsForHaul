@@ -89,15 +89,35 @@ namespace ToolsForHaul
 
             }
 
-       //   Apparel_Backpack apparelBackpack = ToolsForHaulUtility.TryGetBackpack(thing as Pawn);
-       //   if (apparelBackpack != null)
-       //   {
-       //       CompSlotsBackpack compInventory = apparelBackpack.slotsComp;
-       //       if (compInventory != null)
-       //       {
-       //           result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
-       //       }
-       //   }
+            foreach (Vehicle_Turret vehicle_Cart in ToolsForHaulUtility.CartTurret())
+            {
+                if (vehicle_Cart == null)
+                    continue;
+
+                if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == thing.ThingID)
+                {
+                    if (vehicle_Cart.IsCurrentlyMotorized())
+                    {
+                        result = Mathf.Clamp(vehicle_Cart.VehicleSpeed, 2f, 100f);
+                    }
+                    else
+                    {
+                        result = Mathf.Clamp(vehicle_Cart.VehicleSpeed, 0.5f, 1f);
+                    }
+                    return result;
+                }
+
+            }
+
+            //   Apparel_Backpack apparelBackpack = ToolsForHaulUtility.TryGetBackpack(thing as Pawn);
+            //   if (apparelBackpack != null)
+            //   {
+            //       CompSlotsBackpack compInventory = apparelBackpack.slotsComp;
+            //       if (compInventory != null)
+            //       {
+            //           result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
+            //       }
+            //   }
 
 
             return result;

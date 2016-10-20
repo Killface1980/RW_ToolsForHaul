@@ -65,7 +65,7 @@ namespace ToolsForHaul
                         if (parms.faction.def.techLevel >= TechLevel.Industrial && value >= 0.5f && current.RaceProps.fleshType != FleshType.Mechanoid)
                         {
                             CellFinder.RandomClosewalkCellNear(current.Position, 5);
-                            Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
+                            Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
                             GenSpawn.Spawn(thing, current.Position);
 
                             Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
@@ -73,7 +73,7 @@ namespace ToolsForHaul
                             job.targetA = thing;
                             current.jobs.StartJob(job, JobCondition.InterruptForced);
 
-                            Vehicle_Cart vehicle = thing as Vehicle_Cart;
+                            Vehicle_Turret vehicle = thing as Vehicle_Turret;
 
                             int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * vehicle.MaxHitPoints);
                             vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null, null));

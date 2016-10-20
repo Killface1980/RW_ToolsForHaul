@@ -73,7 +73,12 @@
     <None Include="not working\WorkGiver_HunterHunt.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="Things\Apparel_Toolbelt.cs" />
-    <None Include="Things\Vehicle_Armoured.cs" />
+    <Compile Include="Things\Tank\Vehicle_Turret.cs" />
+    <None Include="Things\Tank\_Targeter.cs" />
+    <None Include="Things\Tank\_AttackTargetFinder.cs" />
+    <Compile Include="Things\Tank\Vehicle_TurretGun.cs" />
+    <Compile Include="Things\Tank\VehicleTurretTop.cs" />
+    <Compile Include="Things\Tank\Command_VerbTarget.cs" />
     <Compile Include="_inactive\_TESTING\HeadLights.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy_Sanity.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_VisitorGroupTFH.cs" />
@@ -191,8 +196,8 @@
     <Content Include="..\..\Defs\ThingDefs\Things_Special.xml">
       <Link>Defs\ThingDefs\Things_Special.xml</Link>
     </Content>
-    <Content Include="..\..\Defs\ThingDefs\Vehicles_unused.xml">
-      <Link>Defs\ThingDefs\Vehicles_unused.xml</Link>
+    <Content Include="..\..\Defs\ThingDefs\Vehicle_Gunned.xml">
+      <Link>Defs\ThingDefs\Vehicle_Gunned.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Haul.xml">
       <Link>Defs\ThingDefs\Vehicle_Haul.xml</Link>

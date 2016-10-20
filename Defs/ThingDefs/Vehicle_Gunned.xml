@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ThingDefs>
+
+  <ThingDef Name="BaseBullet" Abstract="True">
+    <category>Projectile</category>
+    <tickerType>Normal</tickerType>
+    <altitudeLayer>Projectile</altitudeLayer>
+    <thingClass>Bullet</thingClass>
+    <label>bullet</label>
+    <useHitPoints>False</useHitPoints>
+    <neverMultiSelect>True</neverMultiSelect>
+    <graphicData>
+      <shaderType>Transparent</shaderType>
+    </graphicData>
+  </ThingDef>
+
+  <ThingDef Name="BaseGun" Abstract="True">
+    <category>Item</category>
+    <thingClass>ThingWithComps</thingClass>
+    <equipmentType>Primary</equipmentType>
+    <pathCost>10</pathCost>
+    <useHitPoints>True</useHitPoints>
+    <selectable>True</selectable>
+    <graphicData>
+      <onGroundRandomRotateAngle>35</onGroundRandomRotateAngle>
+    </graphicData>
+    <drawGUIOverlay>true</drawGUIOverlay>
+    <statBases>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+      <DeteriorationRate>2</DeteriorationRate>
+      <SellPriceFactor>0.5</SellPriceFactor>
+    </statBases>
+    <altitudeLayer>Item</altitudeLayer>
+    <alwaysHaulable>True</alwaysHaulable>
+    <tickerType>Never</tickerType>
+    <techLevel>Industrial</techLevel>
+    <thingCategories>
+      <li>WeaponsRanged</li>
+    </thingCategories>
+    <inspectorTabs>
+      <li>ITab_Art</li>
+    </inspectorTabs>
+    <comps>
+      <li Class="CompProperties_Forbiddable"/>
+      <li>
+        <compClass>CompEquippable</compClass>
+      </li>
+      <li>
+        <compClass>CompQuality</compClass>
+      </li>
+      <li Class="CompProperties_Art">
+        <nameMaker>ArtName_WeaponGun</nameMaker>
+        <descriptionMaker>ArtDescription_WeaponGun</descriptionMaker>
+        <minQualityForArtistic>Excellent</minQualityForArtistic>
+      </li>
+    </comps>
+  </ThingDef>
+
+
+  <ThingDef Name="BaseHumanGun" ParentName="BaseGun" Abstract="True">
+    <weaponTags>
+      <li>Gun</li>
+    </weaponTags>
+  </ThingDef>
+  
+  <!--=============== Improvised turret ===============-->
+
+  <ThingDef ParentName="VehicleBase">
+    <defName>VehicleCombatATV</defName>
+    <label>CombatATV</label>
+    <graphicData>
+      <texPath>Things/Pawn/VehicleCombatATV/CombatATV</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,3)</drawSize>
+      <damageData>
+        <!-- no damage marks because they don't move with the vehicle <rect>(0,0.12,1,0.76)</rect>-->
+        <enabled>false</enabled>
+      </damageData>
+    </graphicData>
+    <repairEffect>Repair</repairEffect>
+    <hasInteractionCell>True</hasInteractionCell>
+    <altitudeLayer>Building</altitudeLayer>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
+    <statBases>
+      <MaxHitPoints>250</MaxHitPoints>
+      <VehicleSpeed>12</VehicleSpeed>
+      <Flammability>1.0</Flammability>
+      <VehicleMaxItem>2</VehicleMaxItem>
+      <WorkToMake>2500</WorkToMake>
+      <Beauty>-60</Beauty>
+    </statBases>
+    <comps>
+      <li Class="CompProperties_Refuelable">
+        <!-- Fuel consumption only called once every 96 ticks -->
+        <fuelConsumptionRate>2000</fuelConsumptionRate>
+        <fuelCapacity>50.0</fuelCapacity>
+        <fuelFilter>
+          <thingDefs>
+            <li>Biodiesel</li>
+          </thingDefs>
+        </fuelFilter>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Axles">
+        <axles>
+          <li>(-25,-45)</li>
+          <li>(55,-45)</li>
+        </axles>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Vehicles">
+        <showsStorage>false</showsStorage>
+        <animalsCanDrive>false</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>false</motorizedWithoutFuel>
+        <soundAmbient>VehicleATV_Ambience</soundAmbient>
+      </li>
+      <li Class="CompProperties_Breakdownable"/>
+    </comps>
+    <passability>PassThroughOnly</passability>
+    <pathCost>50</pathCost>
+    <castEdgeShadows>true</castEdgeShadows>
+    <description>An improvised vehicle turret that automatically fires at nearby enemies. Explodes when damaged. Its hacked-together AI brain isn't very smart, and can't be directly controlled, so beware of friendly fire.</description>
+    <thingClass>ToolsForHaul.Vehicle_TurretGun</thingClass>
+    <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
+    <thingCategories>
+      <li>Vehicles</li>
+    </thingCategories>
+
+    <size>(1,1)</size>
+    <inspectorTabs>
+      <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
+      <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
+    </inspectorTabs>
+    <CostList>
+      <Steel>150</Steel>
+      <Plasteel>10</Plasteel>
+      <Component>10</Component>
+      <VehicleATVFrame>1</VehicleATVFrame>
+    </CostList>
+    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <VehicleATVFrame>1</VehicleATVFrame>
+    </killedLeavings>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Machining</soundWorking>
+      <recipeUsers>
+        <li>TableMachining</li>
+      </recipeUsers>
+      <workAmount>22000</workAmount>
+      <unfinishedThingDef>UnfinishedATV</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+    </recipeMaker>
+    <colorGenerator Class="ColorGenerator_Options">
+      <options>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.33,0.33,0.33,1)</only>
+        </li>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.65,0.65,0.65,1)</only>
+        </li>
+        <li>
+          <weight>30</weight>
+          <only>RGBA(0.4,0.3,0.15,1)</only>
+        </li>
+        <li>
+          <weight>6</weight>
+          <min>RGBA(0.3,0.3,0.3,1)</min>
+          <max>RGBA(0.5,0.5,0.5,1)</max>
+        </li>
+        <li>
+          <weight>2</weight>
+          <min>RGBA(0.5,0.5,0.5,1)</min>
+          <max>RGBA(1,1,1,1)</max>
+        </li>
+      </options>
+    </colorGenerator>
+    
+    <specialDisplayRadius>25.9</specialDisplayRadius>
+    <building>
+      <ai_combatDangerous>true</ai_combatDangerous>
+      <turretGunDef>Gun_VehicleTurretImprovised</turretGunDef>
+      <turretBurstCooldownTicks>310</turretBurstCooldownTicks>
+      <turretTopgraphicPath>Things/Building/Security/TurretImprovised_Top</turretTopgraphicPath>
+      <isEdifice>false</isEdifice>
+      <repairable>true</repairable>
+      <isSittable>true</isSittable>
+      <expandHomeArea>false</expandHomeArea>
+      <allowWireConnection>false</allowWireConnection>
+      <bed_humanlike>false</bed_humanlike>
+      <isInert>false</isInert>
+      <deconstructible>false</deconstructible>
+      <isJoySource>true</isJoySource>
+    </building>
+    <researchPrerequisites>
+      <li>GunTurrets</li>
+    </researchPrerequisites>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseBullet">
+    <defName>Bullet_VehicleTurretImprovised</defName>
+    <label>improvised vehicle turret bullet</label>
+    <graphicData>
+      <texPath>Things/Projectile/Bullet_Small</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <projectile>
+      <damageDef>Bullet</damageDef>
+      <damageAmountBase>11</damageAmountBase>
+      <speed>70</speed>
+    </projectile>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseHumanGun">
+    <defName>Gun_VehicleTurretImprovised</defName>
+    <label>improvised vehicle turret gun</label>
+    <graphicData>
+      <texPath>Things/Item/Equipment/WeaponRanged/ChargeRifle</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <menuHidden>true</menuHidden>
+    <description>Jury-rigged gun attached to a vehicle turret.</description>
+    <soundInteract>InteractRifle</soundInteract>
+    <canBeSpawningInventory>false</canBeSpawningInventory>
+    <tradeability>Never</tradeability>
+    <destroyOnDrop>true</destroyOnDrop>
+    <canMakeOnMapGen>false</canMakeOnMapGen>
+    <statBases>
+      <AccuracyTouch>0.80</AccuracyTouch>
+      <AccuracyShort>0.64</AccuracyShort>
+      <AccuracyMedium>0.41</AccuracyMedium>
+      <AccuracyLong>0.22</AccuracyLong>
+      <RangedWeapon_Cooldown>0.66</RangedWeapon_Cooldown>
+    </statBases>
+    <weaponTags>
+      <li>TurretGun</li>
+    </weaponTags>
+    <verbs>
+      <li>
+        <verbClass>Verb_Shoot</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <projectileDef>Bullet_VehicleTurretImprovised</projectileDef>
+        <warmupTicks>90</warmupTicks>
+        <range>25.9</range>
+        <ticksBetweenBurstShots>8</ticksBetweenBurstShots>
+        <burstShotCount>3</burstShotCount>
+        <soundCast>GunShotA</soundCast>
+        <soundCastTail>GunTail_Light</soundCastTail>
+        <muzzleFlashScale>9</muzzleFlashScale>
+      </li>
+    </verbs>
+  </ThingDef>
+</ThingDefs>

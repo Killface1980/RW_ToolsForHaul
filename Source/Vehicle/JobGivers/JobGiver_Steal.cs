@@ -34,7 +34,17 @@ namespace ToolsForHaul
                     steelVehicle.Add(vehicle_Cart);
                 }
             }
-
+            foreach (Vehicle_Turret vehicle_Cart in ToolsForHaulUtility.CartTurret())
+            {
+                if (ToolsForHaulUtility.IsDriver(pawn))
+                    break;
+                if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
+                    break;
+                if (!vehicle_Cart.IsBurning() && vehicle_Cart.Position.InHorDistOf(pawn.Position, 12f) && !vehicle_Cart.mountableComp.IsMounted && (float)vehicle_Cart.HitPoints / vehicle_Cart.MaxHitPoints > 0.2f && vehicle_Cart.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicle_Cart, PathEndMode.InteractionCell, Danger.Deadly))
+                {
+                    steelVehicle.Add(vehicle_Cart);
+                }
+            }
             if (steelVehicle.Any() && !GenAI.InDangerousCombat(pawn))
             {
                 IOrderedEnumerable<Thing> orderedEnumerable = steelVehicle.OrderBy(x => x.Position.DistanceToSquared(pawn.Position));
