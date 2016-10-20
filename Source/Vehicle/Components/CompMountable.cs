@@ -27,11 +27,21 @@ namespace ToolsForHaul
         public Sustainer sustainerAmbient;
         public CompDriver driverComp;
 
+        private bool IsTank()
+        {
+            Vehicle_Turret vehicleCart = parent as Vehicle_Turret;
+            if (vehicleCart != null)
+                return true;
+            return false;
+        }
+
         public void MountOn(Pawn pawn)
         {
             if (driver != null)
                 return;
             driver = pawn;
+
+            driver.Position = parent.InteractionCell;
 
             Vehicle_Cart vehicleCart = parent as Vehicle_Cart;
             if (vehicleCart != null)
@@ -153,7 +163,12 @@ namespace ToolsForHaul
         {
             get
             {
-                Vector3 position = driver.DrawPos - InteractionOffset * 1.3f;
+                Vector3 position;
+                if (IsTank())
+                    position = driver.DrawPos + InteractionOffset * 1.3f;
+                else
+                    position = driver.DrawPos - InteractionOffset * 1.3f;
+
                 //No driver
                 if (driver == null)
                     return parent.DrawPos;
@@ -161,7 +176,10 @@ namespace ToolsForHaul
                 if (!position.InBounds())
                     return driver.DrawPos;
 
-                return driver.DrawPos - InteractionOffset * 1.3f;
+                if (IsTank())
+                    return driver.DrawPos + InteractionOffset * 1.3f;
+                else
+                    return driver.DrawPos - InteractionOffset * 1.3f;
             }
         }
 

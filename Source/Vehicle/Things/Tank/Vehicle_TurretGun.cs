@@ -158,6 +158,7 @@ namespace ToolsForHaul
         {
             base.Tick();
 
+
             if (!mountableComp.IsMounted)
             {
                 return;

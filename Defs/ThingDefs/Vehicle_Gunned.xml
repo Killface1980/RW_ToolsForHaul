@@ -67,6 +67,7 @@
   <!--=============== Improvised turret ===============-->
 
   <ThingDef ParentName="VehicleBase">
+    <thingClass>ToolsForHaul.Vehicle_TurretGun</thingClass>
     <defName>VehicleCombatATV</defName>
     <label>CombatATV</label>
     <graphicData>
@@ -80,8 +81,11 @@
     </graphicData>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
-    <altitudeLayer>Building</altitudeLayer>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
+    <size>(1,1)</size>
+    <passability>PassThroughOnly</passability>
+    <pathCost>50</pathCost>
+    <altitudeLayer>Building</altitudeLayer>
     <statBases>
       <MaxHitPoints>250</MaxHitPoints>
       <VehicleSpeed>12</VehicleSpeed>
@@ -117,17 +121,14 @@
       </li>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
-    <passability>PassThroughOnly</passability>
-    <pathCost>50</pathCost>
+
     <castEdgeShadows>true</castEdgeShadows>
     <description>An improvised vehicle turret that automatically fires at nearby enemies. Explodes when damaged. Its hacked-together AI brain isn't very smart, and can't be directly controlled, so beware of friendly fire.</description>
-    <thingClass>ToolsForHaul.Vehicle_TurretGun</thingClass>
     <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
 
-    <size>(1,1)</size>
     <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
@@ -260,4 +261,5 @@
       </li>
     </verbs>
   </ThingDef>
+  
 </ThingDefs>
