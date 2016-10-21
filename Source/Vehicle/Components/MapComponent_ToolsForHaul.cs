@@ -3,7 +3,6 @@ using Verse;
 
 namespace ToolsForHaul
 {
-
     public class MapComponent_ToolsForHaul : MapComponent
     {
 
@@ -15,7 +14,7 @@ namespace ToolsForHaul
 
         public override void ExposeData()
         {
-            Scribe_Collections.LookDictionary(ref previousPawnWeapons, "previousPawnWeapons", LookMode.MapReference,LookMode.MapReference);
+            Scribe_Collections.LookDictionary(ref previousPawnWeapons, "previousPawnWeapons", LookMode.MapReference, LookMode.MapReference);
             Scribe_Collections.LookList(ref AutoInventory, "AutoInventory", LookMode.DefReference);
 
         }

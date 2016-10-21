@@ -1,7 +1,8 @@
 ﻿using RimWorld;
+using ToolsForHaul.Utilities;
 using Verse;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Alerts
 {
     public class Alert_TankIsLeaking : Alert_High
     {

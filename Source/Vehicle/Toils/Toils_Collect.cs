@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Toils
 {
     public static class Toils_Collect
     {

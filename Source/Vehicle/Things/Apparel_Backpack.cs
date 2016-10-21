@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.Designators;
+using ToolsForHaul.Gizmos;
 using UnityEngine;
 using Verse;
 

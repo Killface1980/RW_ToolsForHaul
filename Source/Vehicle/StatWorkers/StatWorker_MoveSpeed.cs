@@ -1,9 +1,11 @@
 ﻿using System.Text;
 using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.StatWorkers
 {
     internal class StatWorker_MoveSpeed : StatWorker
     {
@@ -82,7 +84,12 @@ namespace ToolsForHaul
                     }
                     else
                     {
-                        result = Mathf.Clamp(vehicle_Cart.VehicleSpeed, 0.5f, 1f);
+                        int penalty = vehicle_Cart.storage.Count;
+                        int maxcount = vehicle_Cart.MaxItem;
+
+                        float buff = (float)penalty / maxcount;
+
+                        result -= Mathf.InverseLerp(0f, 0.4f, buff);
                     }
                     return result;
                 }

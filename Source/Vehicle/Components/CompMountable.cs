@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.Designators;
+using ToolsForHaul.JobDefs;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Components
 {
     public class CompMountable : ThingComp
     {
@@ -261,11 +263,6 @@ namespace ToolsForHaul
 
                 if (driver.pather.Moving)
                 {
-                    // Make sure the rotation isn't updated any more once the driver comes near the destination
-                    if (!driver.Position.InHorDistOf(driver.pather.Destination.Cell, 0.4f))
-                    {
-                        parent.Rotation = driver.Rotation;
-                    }
                     if (driver.Position.AdjacentTo8WayOrInside(driver.pather.Destination))
                     {
                         // Make the breaks sound once and throw some dust if driver comes to his destination
@@ -275,6 +272,11 @@ namespace ToolsForHaul
                             MoteMaker.ThrowDustPuff(driver.Position, 0.8f);
                             soundPlayed = true;
                         }
+                    }
+                    else
+                    {
+                        parent.Rotation = driver.Rotation;
+
                     }
                 }
                 else
@@ -353,7 +355,7 @@ namespace ToolsForHaul
                     {
                         Find.Reservations.ReleaseAllForTarget(parent);
                         Find.Reservations.Reserve(myPawn, parent);
-                        Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Mount"), parent);
+                        Job jobNew = new Job(HaulJobDefOf.Mount, parent);
                         myPawn.drafter.TakeOrderedJob(jobNew);
                     };
                     verb = txtMountOn;

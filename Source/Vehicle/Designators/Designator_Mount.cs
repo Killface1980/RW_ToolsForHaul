@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.JobDefs;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Designators
 {
     public class Designator_Mount : Designator
     {
@@ -51,7 +53,7 @@ namespace ToolsForHaul
                         alreadyMounted = true;
                 if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !alreadyMounted)
                 {
-                    Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                    Job jobNew = new Job(HaulJobDefOf.Mount);
                     Find.Reservations.ReleaseAllForTarget(vehicle);
                     jobNew.targetA = vehicle;
                     pawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
@@ -60,7 +62,7 @@ namespace ToolsForHaul
                 if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal) && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !alreadyMounted)
                 {
                     Pawn worker = null;
-                    Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("MakeMount"));
+                    Job jobNew = new Job(HaulJobDefOf.MakeMount);
                     Find.Reservations.ReleaseAllForTarget(vehicle);
                     jobNew.maxNumToCarry = 1;
                     jobNew.targetA = vehicle;

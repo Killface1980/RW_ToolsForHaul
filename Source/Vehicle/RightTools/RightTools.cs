@@ -1,4 +1,6 @@
 ﻿using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.Utilities;
 using Verse;
 
 namespace ToolsForHaul

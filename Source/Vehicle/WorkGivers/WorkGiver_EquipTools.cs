@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.JobDefs;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.WorkGivers
 {
     public class WorkGiver_EquipTools : WorkGiver_Scanner
     {
@@ -76,7 +78,7 @@ namespace ToolsForHaul
 
             if (toolbelt != null)
             {
-                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInToolbeltSlot"));
+                Job jobNew = new Job(HaulJobDefOf.PutInToolbeltSlot);
                 jobNew.targetQueueA = new List<TargetInfo>();
                 jobNew.numToBringList = new List<int>();
                 jobNew.targetB = toolbelt;

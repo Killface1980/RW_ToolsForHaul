@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.JobDefs;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Designators
 {
     class Designator_Board : Designator
     {
@@ -41,7 +42,7 @@ namespace ToolsForHaul
                 if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike))
                 {
                     Pawn crew = pawn;
-                    Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Board"));
+                    Job jobNew = new Job(HaulJobDefOf.Board);
                     Find.Reservations.ReleaseAllForTarget(vehicle);
                     jobNew.targetA = vehicle;
                     crew.drafter.TakeOrderedJob(jobNew);

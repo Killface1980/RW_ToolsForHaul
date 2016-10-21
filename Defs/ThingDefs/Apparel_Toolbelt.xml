@@ -115,7 +115,7 @@
 		</colorGenerator>
 		-->
     <comps>
-			<li Class="ToolsForHaul.CompSlotsToolbelt_Properties">
+			<li Class="ToolsForHaul.Components.CompSlotsToolbelt_Properties">
 				<allowedThingCategoryDefs>
 					<li>WeaponsMelee</li>
 				</allowedThingCategoryDefs>
@@ -181,7 +181,7 @@
     </colorGenerator>
     -->
     <comps>
-      <li Class="ToolsForHaul.CompSlotsToolbelt_Properties">
+      <li Class="ToolsForHaul.Components.CompSlotsToolbelt_Properties">
         <allowedThingCategoryDefs>
           <li>WeaponsMelee</li>
         </allowedThingCategoryDefs>

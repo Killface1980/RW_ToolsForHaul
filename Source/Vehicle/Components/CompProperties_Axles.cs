@@ -2,7 +2,7 @@
 using UnityEngine;
 using Verse;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Components
 {
     internal class CompProperties_Axles : CompProperties
     {

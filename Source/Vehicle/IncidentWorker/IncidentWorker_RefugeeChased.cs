@@ -2,12 +2,13 @@
 using System;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.JobDefs;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.IncidentWorkers
 {
     public class IncidentWorker_RefugeeChased : IncidentWorker
     {
@@ -65,7 +66,7 @@ namespace ToolsForHaul
                     cart.refuelableComp.Refuel(fuel);
                     int num2 = Mathf.FloorToInt(Rand.Value*0.9f*cart.MaxHitPoints);
                     cart.TakeDamage(new DamageInfo(DamageDefOf.Bullet, num2, null, null));
-                    Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                    Job job = new Job(HaulJobDefOf.Mount);
                     Find.Reservations.ReleaseAllForTarget(thing);
                     job.targetA = thing;
                     refugee.jobs.StartJob(job, JobCondition.InterruptForced);

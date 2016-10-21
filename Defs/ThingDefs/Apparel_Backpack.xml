@@ -79,7 +79,7 @@
       <li>Leathery</li>
     </stuffCategories>
     <comps>
-    <li Class="ToolsForHaul.CompSlotsBackpack_Properties">
+    <li Class="ToolsForHaul.Components.CompSlotsBackpack_Properties">
       <allowedThingCategoryDefs>
         <li>Foods</li>
         <li>Manufactured</li>
@@ -107,7 +107,7 @@
     </stuffCategories>
     <colorGenerator Class="ColorGenerator_StandardApparel" />
     <comps>
-      <li Class="ToolsForHaul.CompSlotsBackpack_Properties">
+      <li Class="ToolsForHaul.Components.CompSlotsBackpack_Properties">
         <allowedThingCategoryDefs>
           <li>Foods</li>
           <li>Manufactured</li>
@@ -134,7 +134,7 @@
       <li>Fabric</li>
     </stuffCategories>
     <comps>
-      <li Class="ToolsForHaul.CompSlotsBackpack_Properties">
+      <li Class="ToolsForHaul.Components.CompSlotsBackpack_Properties">
         <allowedThingCategoryDefs>
           <li>Foods</li>
           <li>Manufactured</li>

@@ -4,6 +4,8 @@ using System;
 using System.Diagnostics;
 using System.Text;
 using RimWorld;
+using ToolsForHaul.JobDefs;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
@@ -37,7 +39,7 @@ namespace ToolsForHaul
             foreach (Pawn other in Find.MapPawns.FreeColonistsSpawned)
             {
                 //Vanilla haul or Haul with backpack
-                if (other.CurJob != null && (other.CurJob.def == JobDefOf.HaulToCell || other.CurJob.def == DefDatabase<JobDef>.GetNamed("HaulWithBackpack")))
+                if (other.CurJob != null && (other.CurJob.def == JobDefOf.HaulToCell || other.CurJob.def == HaulJobDefOf.HaulWithBackpack))
                     AppendLine(other.LabelCap + " Job: " + other.CurJob.def.defName
                         + " Backpack: " + (ToolsForHaulUtility.TryGetBackpack(other) != null ? "True" : "False")
                         + " lastGivenWorkType: " + other.mindState.lastGivenWorkType);

@@ -2,9 +2,9 @@
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.JobDrivers
 {
-    class JobDriver_Standby : JobDriver
+    class JobDriver_StandBy : JobDriver
     {
         //Constants
         private const TargetIndex DestInd = TargetIndex.A;

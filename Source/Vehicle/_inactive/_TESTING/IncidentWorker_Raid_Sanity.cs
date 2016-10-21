@@ -134,7 +134,7 @@ namespace ToolsForHaul
                         thing.SetFaction(parms.faction);
                         GenSpawn.Spawn(thing, current.Position);
 
-                        Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                        Job job = new Job(HaulJobDefOf.Mount);
                         Find.Reservations.ReleaseAllForTarget(thing);
                         job.targetA = thing;
                         current.jobs.StartJob(job, JobCondition.InterruptForced);

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.JobDefs;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.IncidentWorkers
 {
     public class IncidentWorker_VisitorGroupTFH : IncidentWorker_NeutralGroup
     {
@@ -107,7 +108,7 @@ namespace ToolsForHaul
             CellFinder.RandomClosewalkCellNear(pawn.Position, 5);
             Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCart"));
             GenSpawn.Spawn(thing, pawn.Position);
-            Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+            Job job = new Job(HaulJobDefOf.Mount);
             thing.SetFaction(faction);
             thing.SetForbidden(true);
             Find.Reservations.ReleaseAllForTarget(thing);

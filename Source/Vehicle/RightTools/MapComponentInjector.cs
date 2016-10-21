@@ -1,6 +1,7 @@
 ﻿
 using System;
 using ToolsForHaul;
+using ToolsForHaul.Components;
 using UnityEngine;
 using Verse;
 

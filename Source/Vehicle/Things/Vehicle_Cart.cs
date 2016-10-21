@@ -6,6 +6,9 @@ using System.Text;
 using ppumkin.LEDTechnology.Managers;
 #endif
 using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.JobDefs;
+using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -75,13 +78,8 @@ namespace ToolsForHaul
 
 
         //mount and storage data
-        public CompMountable mountableComp
-        {
-            get
-            {
-                return GetComp<CompMountable>();
-            }
-        }
+        public CompMountable mountableComp;
+
         public ThingContainer storage;
         public ThingContainer GetContainer() { return storage; }
         public IntVec3 GetPosition() { return Position; }
@@ -102,45 +100,15 @@ namespace ToolsForHaul
         // ARB
         private static readonly StatDef vehicleMaxItem = DefDatabase<StatDef>.GetNamed("VehicleMaxItem");
 
-        public CompRefuelable refuelableComp
-        {
-            get
-            {
-                return GetComp<CompRefuelable>();
-            }
-        }
+        public CompRefuelable refuelableComp;
 
-        public CompExplosive explosiveComp
-        {
-            get
-            {
-                return GetComp<CompExplosive>();
-            }
-        }
+        public CompExplosive explosiveComp;
 
-        private CompBreakdownable breakdownableComp
-        {
-            get
-            {
-                return GetComp<CompBreakdownable>();
-            }
-        }
+        private CompBreakdownable breakdownableComp;
 
-        private CompAxles compAxles
-        {
-            get
-            {
-                return GetComp<CompAxles>();
-            }
-        }
+        private CompAxles compAxles;
 
-        public CompVehicles compVehicles
-        {
-            get
-            {
-                return GetComp<CompVehicles>();
-            }
-        }
+        public CompVehicles compVehicles;
 
         #endregion
 
@@ -173,6 +141,14 @@ namespace ToolsForHaul
         public override void SpawnSetup()
         {
             base.SpawnSetup();
+            mountableComp = GetComp<CompMountable>();
+            refuelableComp = GetComp<CompRefuelable>();
+            explosiveComp= GetComp<CompExplosive>();
+            breakdownableComp= GetComp<CompBreakdownable>();
+            compAxles=GetComp<CompAxles>();
+            compVehicles= GetComp<CompVehicles>();
+            
+
 
             if (mountableComp.Driver != null && IsCurrentlyMotorized())
                 LongEventHandler.ExecuteWhenFinished(delegate
@@ -248,25 +224,17 @@ namespace ToolsForHaul
             //}
         }
 
-        private ThingDef VehicleDef
-        {
-            get
-            {
-                return def;
-            }
-        }
-
         private void UpdateGraphics()
         {
             if (compAxles.HasAxles())
             {
-                string text = "Things/Pawn/" + VehicleDef.defName + "/Wheel";
+                string text = "Things/Pawn/" + def.defName + "/Wheel";
                 graphic_Wheel_Single = new Graphic_Single();
                 graphic_Wheel_Single = GraphicDatabase.Get<Graphic_Single>(text, def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Single;
             }
             if (compVehicles.ShowsStorage())
             {
-                string text2 = string.Concat("Things/Pawn/", VehicleDef.defName, "/", VehicleDef.defName, "_FullStorage");
+                string text2 = string.Concat("Things/Pawn/", def.defName, "/", def.defName, "_FullStorage");
                 graphic_FullStorage = new Graphic_Multi();
                 graphic_FullStorage = GraphicDatabase.Get<Graphic_Multi>(text2, def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Multi;
             }
@@ -300,7 +268,7 @@ namespace ToolsForHaul
                 if (explosiveComp.wickStarted)
                 {
                     command_Action.Disable();
-                    if (Rand.Value<= 0.8f)
+                    if (Rand.Value <= 0.8f)
                     {
                         if (!mountableComp.Driver.Position.InBounds())
                         {
@@ -312,7 +280,8 @@ namespace ToolsForHaul
                             mountableComp.Driver.Position = mountableComp.Driver.Position.RandomAdjacentCell8Way();
                         }
 
-                    }                }
+                    }
+                }
                 command_Action.defaultLabel = "CommandDetonateLabel".Translate();
                 yield return command_Action;
             }
@@ -354,7 +323,7 @@ namespace ToolsForHaul
 
             action_Mount = () =>
             {
-                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                Job jobNew = new Job(HaulJobDefOf.Mount);
                 Find.Reservations.ReleaseAllForTarget(this);
                 jobNew.targetA = this;
                 myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
@@ -368,7 +337,7 @@ namespace ToolsForHaul
                     return;
                 }
 
-                mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
+                mountableComp.DismountAt(myPawn.Position - def.interactionCellOffset.RotatedBy(myPawn.Rotation));
                 myPawn.Position = myPawn.Position.RandomAdjacentCell8Way();
                 // mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
             };
@@ -376,7 +345,7 @@ namespace ToolsForHaul
             action_MakeMount = () =>
             {
                 Pawn worker = null;
-                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("MakeMount"));
+                Job jobNew = new Job(HaulJobDefOf.MakeMount);
                 Find.Reservations.ReleaseAllForTarget(this);
                 jobNew.maxNumToCarry = 1;
                 jobNew.targetA = this;
@@ -614,20 +583,7 @@ namespace ToolsForHaul
                 }
 
                 float hitpointsPercent = (float)HitPoints / MaxHitPoints;
-                if (hitpointsPercent < 0.3f * Rand.Range(0.5f, 1f) && tankLeaking)
-                {
-                    if (!mountableComp.Driver.Position.InBounds())
-                    {
-                        mountableComp.DismountAt(mountableComp.Driver.Position);
-                        FireUtility.TryStartFireIn(Position, 0.1f);
-                        return;
-                    }
-                    mountableComp.DismountAt(mountableComp.Driver.Position - mountableComp.InteractionOffset.ToIntVec3());
-                    mountableComp.Driver.Position = mountableComp.Driver.Position.RandomAdjacentCell8Way();
-                    FireUtility.TryStartFireIn(Position, 0.1f);
 
-                    return;
-                }
 
 
                 if (explosiveComp != null && explosiveComp.wickStarted)
@@ -657,7 +613,6 @@ namespace ToolsForHaul
                     {
                         Vector3 normalized = (DrawPos - _lastFootprintPlacePos).normalized;
                         float rot = normalized.AngleFlat();
-                        float angle = 90;
                         Vector3 loc = DrawPos + TrailOffset;
 
                         if ((loc - _lastFootprintPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
@@ -686,6 +641,24 @@ namespace ToolsForHaul
                 }
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
                 {
+                    if (tankLeaking)
+                    {
+                        if (hitpointsPercent < 0.3f * Rand.Range(0.5f, 1f))
+                        {
+                            if (!mountableComp.Driver.Position.InBounds())
+                            {
+                                mountableComp.DismountAt(mountableComp.Driver.Position);
+                                FireUtility.TryStartFireIn(Position, 0.1f);
+                                return;
+                            }
+                            mountableComp.DismountAt(mountableComp.Driver.Position - mountableComp.InteractionOffset.ToIntVec3());
+                            mountableComp.Driver.Position = mountableComp.Driver.Position.RandomAdjacentCell8Way();
+                            FireUtility.TryStartFireIn(Position, 0.1f);
+
+                            return;
+                        }
+                    }
+
                     if (mountableComp.Driver.pather.Moving && !mountableComp.Driver.stances.FullBodyBusy && compAxles.HasAxles())
                         currentDriverSpeed = ToolsForHaulUtility.GetMoveSpeed(mountableComp.Driver);
 
@@ -703,7 +676,6 @@ namespace ToolsForHaul
 
             if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
             {
-
                 if (breakdownableComp != null && breakdownableComp.BrokenDown ||
                     refuelableComp != null && !refuelableComp.HasFuel)
                     VehicleSpeed = 0.75f;
@@ -716,8 +688,6 @@ namespace ToolsForHaul
             //    TakeDamage(new DamageInfo(DamageDefOf.Deterioration, 1, null, null, null));
             //    damagetick = Find.TickManager.TicksGame + 3600;
             //}
-
-
 
             if (tankLeaking)
             {
@@ -820,18 +790,18 @@ namespace ToolsForHaul
                 wheelLoc.z = wheelLoc.z + wheel_shake;
 
                 Vector3 mountThingLoc = drawLoc; mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
-                Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(this.Rotation.AsAngle);
+                Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
 
-                if (!this.storage.Any())
+                if (!storage.Any())
                     foreach (Thing mountThing in storage)
                     {
                         Pawn p = (Pawn)mountThing;
                         p.ExposeData();
-                        p.Rotation = this.Rotation;
+                        p.Rotation = Rotation;
                         p.DrawAt(mountThingLoc + mountThingOffset);
                         p.DrawGUIOverlay();
                     }
-                if (this.Rotation.AsInt % 2 == 0) //Vertical
+                if (Rotation.AsInt % 2 == 0) //Vertical
                     wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
 
                 List<Vector3> list;
@@ -861,7 +831,7 @@ namespace ToolsForHaul
             stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
             if (tankLeaking)
                 stringBuilder.AppendLine("TankLeaking".Translate());
-            var text = this.storage.ContentsString;
+            var text = storage.ContentsString;
             stringBuilder.AppendLine(string.Concat(new object[]
             {
             "InStorage".Translate(),

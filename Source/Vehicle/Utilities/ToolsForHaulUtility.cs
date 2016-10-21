@@ -4,11 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.JobDefs;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Utilities
 {
     public static class ToolsForHaulUtility
     {
@@ -17,9 +18,7 @@ namespace ToolsForHaul
         public static string NoEmptyPlaceLowerTrans;
         public static string NoAvailableCart;
         public static string BurningLowerTrans;
-        private static readonly JobDef jobDefHaulWithAnimalCart = DefDatabase<JobDef>.GetNamed("HaulWithAnimalCart");
-        private static readonly JobDef jobDefHaulWithCart = DefDatabase<JobDef>.GetNamed("HaulWithCart");
-        private static readonly JobDef jobDefDismountInBase = DefDatabase<JobDef>.GetNamed("DismountInBase");
+
         private const double ValidDistance = 30;
 
         static ToolsForHaulUtility()
@@ -162,7 +161,7 @@ namespace ToolsForHaul
             if (cart == null)
             {
 
-                jobDef = DefDatabase<JobDef>.GetNamed("HaulWithBackpack");
+                jobDef = HaulJobDefOf.HaulWithBackpack;
                 targetC = backpack;
                 maxItem = backpack.MaxItem;
                 // thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
@@ -181,11 +180,11 @@ namespace ToolsForHaul
             else
             {
                 if (cart.mountableComp.IsMounted &&
-                    cart.mountableComp.Driver.RaceProps.Animal) jobDef = jobDefHaulWithAnimalCart;
-                else jobDef = jobDefHaulWithCart;
+                    cart.mountableComp.Driver.RaceProps.Animal) jobDef = HaulJobDefOf.HaulWithAnimalCart;
+                else jobDef = HaulJobDefOf.HaulWithCart;
                 targetC = cart;
                 maxItem = cart.MaxItem;
-                thresholdItem = (int)Math.Ceiling(maxItem * 0.25);
+                thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
                 reservedMaxItem = cart.storage.Count;
                 remainingItems = cart.storage;
                 ShouldDrop = reservedMaxItem > 0 ? true : false;
@@ -223,7 +222,7 @@ namespace ToolsForHaul
                     Trace.LogMessage();
                     return job;
                 }
-                if (cart != null && job.def == jobDefHaulWithCart && !cart.IsInValidStorage())// && !pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
+                if (cart != null && job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())// && !pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
                 {
                     Trace.AppendLine("In DismountInBase");
                     return DismountInBase(pawn, cart);
@@ -401,7 +400,7 @@ namespace ToolsForHaul
                 Trace.LogMessage();
                 return job;
             }
-            if (cart != null && job.def == jobDefHaulWithCart && !cart.IsInValidStorage())//&&!pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
+            if (cart != null && job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())//&&!pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
             {
                 Trace.AppendLine("In DismountInBase: ");
                 return DismountInBase(pawn, cart);
@@ -420,7 +419,7 @@ namespace ToolsForHaul
 
         public static Job DismountInBase(Pawn pawn, Vehicle_Cart cart)
         {
-            Job job = new Job(jobDefDismountInBase);
+            Job job = new Job(HaulJobDefOf.DismountInBase);
             job.targetA = cart;
             job.targetB = FindStorageCell(pawn, cart);
             if (job.targetB != IntVec3.Invalid)

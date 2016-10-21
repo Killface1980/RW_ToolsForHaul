@@ -1,8 +1,9 @@
 ﻿using RimWorld;
+using ToolsForHaul.JobDefs;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Designators
 {
     public class Designator_Move : Designator
     {
@@ -27,7 +28,7 @@ namespace ToolsForHaul
 
         public override void DesignateSingleCell(IntVec3 c)
         {
-            Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Standby"), c, 4800);
+            Job jobNew = new Job(HaulJobDefOf.StandBy, c, 4800);
             driver.jobs.StartJob(jobNew, JobCondition.Incompletable);
 
             DesignatorManager.Deselect();

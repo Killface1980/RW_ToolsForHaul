@@ -2,7 +2,7 @@
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.JobDrivers
 {
     public class JobDriver_PutInToolbeltSlot : JobDriver
     {

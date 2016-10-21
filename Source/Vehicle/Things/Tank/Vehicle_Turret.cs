@@ -6,6 +6,9 @@ using System.Text;
 using ppumkin.LEDTechnology.Managers;
 #endif
 using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.JobDefs;
+using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -59,10 +62,10 @@ namespace ToolsForHaul
 
         public bool ThreatDisabled()
         {
-            CompPowerTrader comp = base.GetComp<CompPowerTrader>();
+            CompPowerTrader comp = GetComp<CompPowerTrader>();
             if (comp == null || !comp.PowerOn)
             {
-                CompMannable comp2 = base.GetComp<CompMannable>();
+                CompMannable comp2 = GetComp<CompMannable>();
                 if (comp2 == null || !comp2.MannedNow)
                 {
                     return true;
@@ -416,7 +419,7 @@ namespace ToolsForHaul
 
             action_Mount = () =>
             {
-                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                Job jobNew = new Job(HaulJobDefOf.Mount);
                 Find.Reservations.ReleaseAllForTarget(this);
                 jobNew.targetA = this;
                 myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
@@ -438,7 +441,7 @@ namespace ToolsForHaul
             action_MakeMount = () =>
             {
                 Pawn worker = null;
-                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("MakeMount"));
+                Job jobNew = new Job(HaulJobDefOf.MakeMount);
                 Find.Reservations.ReleaseAllForTarget(this);
                 jobNew.maxNumToCarry = 1;
                 jobNew.targetA = this;
@@ -877,18 +880,18 @@ namespace ToolsForHaul
                 wheelLoc.z = wheelLoc.z + wheel_shake;
 
                 Vector3 mountThingLoc = drawLoc; mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
-                Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(this.Rotation.AsAngle);
+                Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
 
-                if (!this.storage.Any())
+                if (!storage.Any())
                     foreach (Thing mountThing in storage)
                     {
                         Pawn p = (Pawn)mountThing;
                         p.ExposeData();
-                        p.Rotation = this.Rotation;
+                        p.Rotation = Rotation;
                         p.DrawAt(mountThingLoc + mountThingOffset);
                         p.DrawGUIOverlay();
                     }
-                if (this.Rotation.AsInt % 2 == 0) //Vertical
+                if (Rotation.AsInt % 2 == 0) //Vertical
                     wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
 
                 List<Vector3> list;
@@ -918,7 +921,7 @@ namespace ToolsForHaul
             stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
             if (tankLeaking)
                 stringBuilder.AppendLine("TankLeaking".Translate());
-            var text = this.storage.ContentsString;
+            var text = storage.ContentsString;
             stringBuilder.AppendLine(string.Concat(new object[]
             {
             "InStorage".Translate(),

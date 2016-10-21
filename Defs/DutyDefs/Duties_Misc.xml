@@ -8,7 +8,7 @@
         <li Class="JobGiver_GotoTravelDestination" />
         <!-- Note this exit node can happen at odd times
             like if you block siegers from hitting their siege location before they arrive-->
-        <li Class="ToolsForHaul.JobGiver_ExitMapRandom">
+        <li Class="ToolsForHaul.JobGivers.JobGiver_ExitMapRandom">
           <defaultLocomotion>Walk</defaultLocomotion>
         </li>
       </subNodes>
@@ -19,8 +19,8 @@
     <defName>Steal</defName>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="ToolsForHaul.JobGiver_Steal" />
-        <li Class="ToolsForHaul.JobGiver_ExitMapBest">
+        <li Class="ToolsForHaul.JobGivers.JobGiver_Steal" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_ExitMapBest">
           <defaultLocomotion>Jog</defaultLocomotion>
           <jobMaxDuration>200</jobMaxDuration>
           <forceCanDig>true</forceCanDig>
@@ -33,8 +33,8 @@
     <defName>Kidnap</defName>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="ToolsForHaul.JobGiver_Kidnap" />
-        <li Class="ToolsForHaul.JobGiver_ExitMapBest">
+        <li Class="ToolsForHaul.JobGivers.JobGiver_Kidnap" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_ExitMapBest">
           <defaultLocomotion>Jog</defaultLocomotion>
           <jobMaxDuration>200</jobMaxDuration>
           <forceCanDig>true</forceCanDig>
@@ -47,8 +47,8 @@
     <defName>TakeWoundedGuest</defName>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="ToolsForHaul.JobGiver_TakeWoundedGuest" />
-        <li Class="ToolsForHaul.JobGiver_ExitMapBest">
+        <li Class="ToolsForHaul.JobGivers.JobGiver_TakeWoundedGuest" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_ExitMapBest">
           <defaultLocomotion>Jog</defaultLocomotion>
           <jobMaxDuration>500</jobMaxDuration>
           <forceCanDig>true</forceCanDig>
@@ -61,8 +61,8 @@
     <defName>Steal</defName>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="JobGiver_Steal" />
-        <li Class="ToolsForHaul.JobGiver_ExitMapBest">
+        <li Class="ToolsForHaul.JobGivers.JobGiver_Steal" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_ExitMapBest">
           <defaultLocomotion>Jog</defaultLocomotion>
           <jobMaxDuration>200</jobMaxDuration>
           <forceCanDig>true</forceCanDig>
@@ -73,14 +73,14 @@
   
   <DutyDef>
     <defName>ExitMapRandom</defName>
-    <thinkNode Class="ToolsForHaul.JobGiver_ExitMapRandom">
+    <thinkNode Class="ToolsForHaul.JobGivers.JobGiver_ExitMapRandom">
       <defaultLocomotion>Walk</defaultLocomotion>
     </thinkNode>
   </DutyDef>
 
   <DutyDef>
     <defName>ExitMapBest</defName>
-    <thinkNode Class="ToolsForHaul.JobGiver_ExitMapBest">
+    <thinkNode Class="ToolsForHaul.JobGivers.JobGiver_ExitMapBest">
       <defaultLocomotion>Walk</defaultLocomotion>
     </thinkNode>
   </DutyDef>

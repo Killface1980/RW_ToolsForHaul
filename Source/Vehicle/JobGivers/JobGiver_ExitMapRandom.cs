@@ -1,8 +1,9 @@
 ﻿using RimWorld;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.JobGivers
 {
     public class JobGiver_ExitMapRandom : JobGiver_ExitMap
     {

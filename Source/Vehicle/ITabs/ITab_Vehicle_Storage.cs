@@ -14,7 +14,7 @@ using Verse;
 //using RimWorld.Planet;   // RimWorld specific functions for world creation
 //using RimWorld.SquadAI;  // RimWorld specific functions for squad brains 
 
-namespace ToolsForHaul
+namespace ToolsForHaul.ITabs
 {
     class Itab_Pawn_Vehicle_Storage : ITab_Storage
     {

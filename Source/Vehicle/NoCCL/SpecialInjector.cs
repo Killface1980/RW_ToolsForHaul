@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using CommunityCoreLibrary;
 using RW_FacialStuff;
+using ToolsForHaul.Components;
 using UnityEngine;
 using Verse;
 using Verse.AI;

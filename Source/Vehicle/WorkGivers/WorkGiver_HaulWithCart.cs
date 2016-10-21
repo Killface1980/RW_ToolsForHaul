@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.WorkGivers
 {
     public class WorkGiver_HaulWithCart : WorkGiver_Scanner
     {

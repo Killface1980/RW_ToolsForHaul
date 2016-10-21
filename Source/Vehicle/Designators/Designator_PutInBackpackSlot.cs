@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.JobDefs;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Designators
 {
     [StaticConstructorOnStartup]
     public class Designator_PutInBackpackSlot : Designator
@@ -251,7 +253,7 @@ namespace ToolsForHaul
             // plays corresponding sound
             base.FinalizeDesignationSucceeded();
 
-            Job job = new Job(DefDatabase<JobDef>.GetNamed("PutInBackpackSlot"))
+            Job job = new Job(HaulJobDefOf.PutInBackpackSlot)
             {
                 targetQueueA = new List<TargetInfo>(),
                 numToBringList = new List<int>(),

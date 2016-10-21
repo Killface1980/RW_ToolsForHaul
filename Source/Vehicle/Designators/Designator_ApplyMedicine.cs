@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.Components;
 using Verse;
 using Verse.AI;
+using ToolsForHaul.JobDefs;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Designators
 {
     public class Designator_ApplyMedicine : Designator
     {
@@ -44,7 +46,7 @@ namespace ToolsForHaul
                 Pawn pawn = thing as Pawn;
                 if (pawn != null && pawn.health.ShouldBeTendedNow)
                 {
-                    Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("ApplyMedicine"));
+                    Job jobNew = new Job(HaulJobDefOf.ApplyMedicine);
                     jobNew.targetA = pawn;
 
                     Thing dummy;

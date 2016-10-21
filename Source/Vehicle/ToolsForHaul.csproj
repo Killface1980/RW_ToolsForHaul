@@ -66,6 +66,7 @@
     <None Include="_inactive\_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
+    <Compile Include="Defs\HaulJobDefOf.cs" />
     <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
     <Compile Include="Components\CompSlotsToolbelt.cs" />
     <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
@@ -77,8 +78,8 @@
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="Things\Tank\Vehicle_Turret.cs" />
-    <None Include="Things\Tank\_Targeter.cs" />
-    <None Include="Things\Tank\_AttackTargetFinder.cs" />
+    <None Include="Things\Tank\nn\_Targeter.cs" />
+    <None Include="Things\Tank\nn\_AttackTargetFinder.cs" />
     <Compile Include="Things\Tank\Vehicle_TurretGun.cs" />
     <Compile Include="Things\Tank\VehicleTurretTop.cs" />
     <Compile Include="Things\Tank\Command_VerbTarget.cs" />
@@ -87,8 +88,8 @@
     <Compile Include="IncidentWorker\IncidentWorker_VisitorGroupTFH.cs" />
     <None Include="IncidentWorker\IncidentWorker_VisitorGroup_Sanity.cs" />
     <None Include="_inactive\JobGiver_ExitMapRandom2.cs" />
-    <Compile Include="Alerts\Class1.cs" />
-    <Compile Include="StatWorker\StatWorker_MoveSpeed.cs" />
+    <Compile Include="Alerts\Alert_TankIsLeaking.cs" />
+    <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
     <None Include="_inactive\Class1.cs" />
     <Compile Include="Components\CompAxles.cs" />
     <Compile Include="Components\CompProperties_Axles.cs" />
@@ -101,7 +102,7 @@
     <None Include="_inactive\ModHelperDef.cs" />
     <Compile Include="CCL\CompInjectionSet.cs" />
     <Compile Include="CCL\DefInjectionQualifier.cs" />
-    <Compile Include="CR\IncendiaryFuel.cs" />
+    <Compile Include="Things\IncendiaryFuel.cs" />
     <None Include="_inactive\CompWeaponExtensions.cs" />
     <None Include="_inactive\RA_PawnRenderer.cs" />
     <None Include="_inactive\CompTool.cs" />
@@ -123,7 +124,7 @@
     <Compile Include="StatsHelper.cs" />
     <Compile Include="Utilities\ToolsForHaulUtility.cs" />
     <Compile Include="Trace.cs" />
-    <Compile Include="JobDrivers\JobDriver_Standby.cs" />
+    <Compile Include="JobDrivers\JobDriver_StandBy.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="Toils\Toils_Cart.cs" />
     <None Include="WorkGivers\Class1.cs" />

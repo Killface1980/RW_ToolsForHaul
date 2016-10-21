@@ -4,7 +4,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Components
 {
     public class CompSlotsToolbelt : CompEquipmentGizmoProvider, IThingContainerOwner
     {

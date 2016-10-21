@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Text;
 using RimWorld;
+using ToolsForHaul.JobDefs;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Toils
 {
     public static class Toils_Cart
     {
@@ -185,9 +186,9 @@ namespace ToolsForHaul
                 }
                 Job job;
                 if (pawn != null)
-                    job = new Job(DefDatabase<JobDef>.GetNamed("Standby"), pawn.Position, defaultWaitWorker);
+                    job = new Job(HaulJobDefOf.StandBy, pawn.Position, defaultWaitWorker);
                 else
-                    job = new Job(DefDatabase<JobDef>.GetNamed("Standby"), toil.actor.jobs.curJob.GetTarget(Ind), defaultWaitWorker);
+                    job = new Job(HaulJobDefOf.StandBy, toil.actor.jobs.curJob.GetTarget(Ind), defaultWaitWorker);
 
                 cart.mountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
             };
@@ -206,7 +207,7 @@ namespace ToolsForHaul
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
-                if (cart.mountableComp.IsMounted && cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby"))
+                if (cart.mountableComp.IsMounted && cart.mountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy)
                     cart.mountableComp.Driver.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
             };
             return toil;
@@ -230,7 +231,7 @@ namespace ToolsForHaul
                 if (cart.mountableComp.IsMounted)
                 {
                     //Worker has arrived and Animal cart is coming
-                    if (cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby") &&
+                    if (cart.mountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy &&
                         (!actor.Position.InHorDistOf(cart.Position, 1f) ||
                          !actor.Position.InHorDistOf(cart.mountableComp.Driver.Position, 1f)))
                     {
@@ -238,12 +239,12 @@ namespace ToolsForHaul
 
                     }
                     //Worker has arrived and Animal cart has arrived
-                    else if (cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby") && (actor.Position.InHorDistOf(cart.mountableComp.Driver.Position, 1f)))
+                    else if (cart.mountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy && (actor.Position.InHorDistOf(cart.mountableComp.Driver.Position, 1f)))
                         toil.actor.jobs.curDriver.ReadyForNextToil();
                     //Worker has arrived but Animal cart is missing
                     else
                     {
-                        Job job = new Job(DefDatabase<JobDef>.GetNamed("Standby"), actor, defaultWaitWorker);
+                        Job job = new Job(HaulJobDefOf.StandBy, actor, defaultWaitWorker);
                         cart.mountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
                     }
                 }
@@ -263,13 +264,13 @@ namespace ToolsForHaul
                     if (cart.mountableComp.IsMounted)
                     {
                         //Animal cart has arrived
-                        if (cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby") &&
+                        if (cart.mountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy &&
                             (actor.Position.AdjacentTo8WayOrInside(cart.mountableComp.Driver) || actor.Position.AdjacentTo8WayOrInside(cart)))
                         {
                             toil.actor.jobs.curDriver.ReadyForNextToil();
                         }
                         //Animal cart would never come. Imcompletable.
-                        else if (cart.mountableComp.Driver.CurJob.def != DefDatabase<JobDef>.GetNamed("Standby") ||
+                        else if (cart.mountableComp.Driver.CurJob.def != HaulJobDefOf.StandBy ||
                                  tickTime >= defaultWaitWorker)
                         {
                             toil.actor.jobs.curDriver.EndJobWith(JobCondition.Incompletable);

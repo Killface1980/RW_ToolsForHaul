@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.JobDefs;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.JobDrivers
 {
     public class JobDriver_MakeMount : JobDriver
     {
@@ -42,7 +44,7 @@ namespace ToolsForHaul
             toilMakeStandby.initAction = () =>
             {
                 Pawn driver = CurJob.GetTarget(DriverInd).Thing as Pawn;
-                driver.jobs.StartJob(new Job(DefDatabase<JobDef>.GetNamed("Standby"), driver.Position, 2400 + (int)((pawn.Position - driver.Position).LengthHorizontal * 120)), JobCondition.InterruptForced);
+                driver.jobs.StartJob(new Job(HaulJobDefOf.StandBy, driver.Position, 2400 + (int)((pawn.Position - driver.Position).LengthHorizontal * 120)), JobCondition.InterruptForced);
             };
 
             Toil toilGoto = null;
@@ -94,7 +96,7 @@ namespace ToolsForHaul
                     EndJobWith(JobCondition.Errored);
                     return;
                 }
-                if (cart != null && cart.mountableComp.IsMounted && cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby"))
+                if (cart != null && cart.mountableComp.IsMounted && cart.mountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy)
                     cart.mountableComp.Driver.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
                 EndJobWith(JobCondition.Succeeded);
             };

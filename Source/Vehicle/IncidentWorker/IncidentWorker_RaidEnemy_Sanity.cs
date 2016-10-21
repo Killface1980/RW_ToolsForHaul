@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Text;
 using RimWorld;
+using ToolsForHaul.JobDefs;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 using Verse.Sound;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.IncidentWorkers
 {
     public class IncidentWorker_RaidEnemy_Sanity : IncidentWorker_Raid
     {
@@ -70,7 +71,7 @@ namespace ToolsForHaul
                                 Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
                                 GenSpawn.Spawn(thing, current.Position);
 
-                                Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                                Job job = new Job(HaulJobDefOf.Mount);
                                 Find.Reservations.ReleaseAllForTarget(thing);
                                 job.targetA = thing;
                                 current.jobs.StartJob(job, JobCondition.InterruptForced);
@@ -89,7 +90,7 @@ namespace ToolsForHaul
                                 Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
                                 GenSpawn.Spawn(thing, current.Position);
 
-                                Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                                Job job = new Job(HaulJobDefOf.Mount);
                                 Find.Reservations.ReleaseAllForTarget(thing);
                                 job.targetA = thing;
                                 current.jobs.StartJob(job, JobCondition.InterruptForced);

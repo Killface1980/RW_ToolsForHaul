@@ -1,6 +1,6 @@
 ﻿using Verse;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Components
 {
     public class CompVehicles : ThingComp
     {

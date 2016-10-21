@@ -1,12 +1,13 @@
 ﻿
 using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.Components;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Gizmos
 {
     [StaticConstructorOnStartup]
     public class Gizmo_ToolbeltEquipment : Gizmo
@@ -117,7 +118,7 @@ namespace ToolsForHaul
             // draw slots
             else
             {
-                Rect slotRect = new Rect(inventoryRect.x, inventoryRect.y, inventoryRect.width / iconsPerRow, Height / 2);
+                Rect slotRect = new Rect(inventoryRect.x, inventoryRect.y, inventoryRect.width / iconsPerRow-1f, Height / 2-1f);
 
                 for (int currentSlotInd = 0; currentSlotInd < iconsPerRow * numOfRow; currentSlotInd++)
                 {

@@ -106,13 +106,13 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.CompProperties_Axles">
+      <li Class="ToolsForHaul.Components.CompProperties_Axles">
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.CompProperties_Vehicles">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicles">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
@@ -130,8 +130,8 @@
     </thingCategories>
 
     <inspectorTabs>
-      <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
-      <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
+      <li>ToolsForHaul.ITabs.Itab_Pawn_Vehicle_Storage</li>
+      <li>ToolsForHaul.ITabs.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     <CostList>
       <Steel>150</Steel>

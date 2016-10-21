@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.JobDefs;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.JobGivers
 {
     public class JobGiver_Kidnap : ThinkNode_JobGiver
     {
@@ -50,7 +52,7 @@ namespace ToolsForHaul
             if (steelVehicle.Any())
             {
                 IOrderedEnumerable<Thing> orderedEnumerable = steelVehicle.OrderBy(x => x.Position.DistanceToSquared(pawn.Position));
-                Job job = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                Job job = new Job(HaulJobDefOf.Mount);
                 orderedEnumerable.First().SetFaction(null);
                 job.targetA = orderedEnumerable.First();
 

@@ -2,7 +2,7 @@
 using RimWorld;
 using Verse;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Components
 {
     public class CompEquipmentGizmoProvider : ThingComp
     {

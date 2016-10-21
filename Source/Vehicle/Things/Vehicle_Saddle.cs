@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Text;
 using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.Designators;
+using ToolsForHaul.JobDefs;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -52,7 +55,7 @@ namespace ToolsForHaul
                 Messages.Message(pawn.LabelCap + "cannot board on " + LabelCap + ": " + pawn.LabelCap + "is starving or exhausted", MessageSound.RejectInput);
                 return;
             }
-            Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Standby"), mountableComp.Driver.Position, 4800);
+            Job jobNew = new Job(HaulJobDefOf.StandBy, mountableComp.Driver.Position, 4800);
             mountableComp.Driver.jobs.StartJob(jobNew, JobCondition.Incompletable);
 
             storage.TryAdd(pawn);
@@ -182,7 +185,7 @@ namespace ToolsForHaul
                 fmoBoard.priority = MenuOptionPriority.High;
                 fmoBoard.action = () =>
                 {
-                    Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Board"), this);
+                    Job jobNew = new Job(HaulJobDefOf.Board, this);
                     myPawn.drafter.TakeOrderedJob(jobNew);
                 };
                 if (storage.Count(x => x is Pawn) >= 1)

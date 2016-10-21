@@ -4,7 +4,7 @@
   <IncidentDef>
     <defName>VisitorGroup</defName>
     <label>visitor group</label>
-	<workerClass>ToolsForHaul.IncidentWorker_VisitorGroupTFH</workerClass>
+	<workerClass>ToolsForHaul.IncidentWorkers.IncidentWorker_VisitorGroupTFH</workerClass>
     <category>AllyArrival</category>
     <baseChance>4</baseChance>
     <pointsScaleable>true</pointsScaleable>
@@ -13,7 +13,7 @@
   <IncidentDef>
     <defName>RefugeeChased</defName>
     <label>chased refugee</label>
-    <workerClass>ToolsForHaul.IncidentWorker_RefugeeChased</workerClass>
+    <workerClass>ToolsForHaul.IncidentWorkers.IncidentWorker_RefugeeChased</workerClass>
     <baseChance>2.5</baseChance>
     <populationEffect>Increase</populationEffect>
     <minRefireDays>8</minRefireDays>

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Verse;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Components
 {
     public class CompEquipmentGizmoUser : ThingComp
     {
