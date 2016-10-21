@@ -8,7 +8,7 @@ namespace ToolsForHaul.JobDefs
         public static readonly JobDef HaulWithCart = DefDatabase<JobDef>.GetNamed("HaulWithCart");
         public static readonly JobDef HaulWithBackpack = DefDatabase<JobDef>.GetNamed("HaulWithBackpack");
         public static readonly JobDef DismountInBase = DefDatabase<JobDef>.GetNamed("DismountInBase");
-        public static readonly JobDef StandBy = DefDatabase<JobDef>.GetNamed("Standby");
+        public static readonly JobDef StandBy = DefDatabase<JobDef>.GetNamed("StandBy");
         public static readonly JobDef Mount = DefDatabase<JobDef>.GetNamed("Mount");
         public static readonly JobDef ApplyMedicine = DefDatabase<JobDef>.GetNamed("ApplyMedicine");
         public static readonly JobDef Board = DefDatabase<JobDef>.GetNamed("Board");
