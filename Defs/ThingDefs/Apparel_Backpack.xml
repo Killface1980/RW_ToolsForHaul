@@ -6,7 +6,7 @@
     <thingCategories>
       <li>Apparel</li>
     </thingCategories>
-    
+    <tickerType>Normal</tickerType>
     <label>backpack</label>
     <description>A backpack is a bag with straps that go over your shoulders, so that you can carry things on your back when you are walking or climbing.</description>
     <graphicData>
@@ -83,6 +83,7 @@
       <allowedThingCategoryDefs>
         <li>Foods</li>
         <li>Manufactured</li>
+        <li>ResourcesRaw</li>
         <li>PlantMatter</li>
         <li>BodyParts</li>
         <li>Weapons</li>

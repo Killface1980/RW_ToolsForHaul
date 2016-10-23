@@ -33,7 +33,7 @@ namespace ToolsForHaul
         [Conditional("DEBUG")]
         public static void DebugWriteHaulingPawn(Pawn pawn)
         {
-            AppendLine(pawn.LabelCap + " Report: Cart " + ToolsForHaulUtility.Cart().Count + " Job: " + (pawn.CurJob != null ? pawn.CurJob.def.defName : "No Job")
+            AppendLine(pawn.LabelCap + " Report: Cart " + ToolsForHaulUtility.Cart.Count + " Job: " + (pawn.CurJob != null ? pawn.CurJob.def.defName : "No Job")
                 + " Backpack: " + (ToolsForHaulUtility.TryGetBackpack(pawn) != null ? "True" : "False")
                 + " lastGivenWorkType: " + pawn.mindState.lastGivenWorkType);
             foreach (Pawn other in Find.MapPawns.FreeColonistsSpawned)
@@ -44,7 +44,7 @@ namespace ToolsForHaul
                         + " Backpack: " + (ToolsForHaulUtility.TryGetBackpack(other) != null ? "True" : "False")
                         + " lastGivenWorkType: " + other.mindState.lastGivenWorkType);
             }
-            foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart())
+            foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart)
             {
                 string driver = cart.mountableComp.IsMounted ? cart.mountableComp.Driver.LabelCap : "No Driver";
                 string state = "";

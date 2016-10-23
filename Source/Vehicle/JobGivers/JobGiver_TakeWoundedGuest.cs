@@ -9,14 +9,14 @@ namespace ToolsForHaul.JobGivers
     {
         protected override Job TryGiveJob(Pawn pawn)
         {
-            foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart())
+            foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart)
             {
                 if (cart.mountableComp.IsMounted && !cart.mountableComp.Driver.RaceProps.Animal && cart.mountableComp.Driver.ThingID == pawn.ThingID)
                 {
                     cart.despawnAtEdge = true;
                 }
             }
-            foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret())
+            foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret)
             {
                 if (cart.mountableComp.IsMounted && !cart.mountableComp.Driver.RaceProps.Animal && cart.mountableComp.Driver.ThingID == pawn.ThingID)
                 {

@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CommunityCoreLibrary;
+using RimWorld;
 using RW_FacialStuff;
 using ToolsForHaul.Components;
+using ToolsForHaul.Detoured;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Object = UnityEngine.Object;
 
 namespace ToolsForHaul
 {
@@ -36,19 +40,20 @@ namespace ToolsForHaul
             MethodInfo method = typeof(ThinkNode_JobGiver).GetMethod("TryIssueJobPackage", BindingFlags.Instance | BindingFlags.Public);
             MethodInfo method2 = typeof(_ThinkNode_JobGiver).GetMethod("TryIssueJobPackage", BindingFlags.Instance | BindingFlags.Public);
 
-            //// draws hands on equipment, if corresponding Comp is specified
-            //MethodInfo method3 = typeof(PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
-            //MethodInfo method4 = typeof(RA_PawnRenderer).GetMethod("DrawEquipment", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            if (true)
-                if (!Detours.TryDetourFromTo(method, method2))
-                {
-                    Log.Message("Failed detour RightTools JobPackage");
-                }
-            //if (!Detours.TryDetourFromTo(method3, method4))
-            //{
-            //    Log.Message("Failed detour RightTools PawnRenderer DrawEquipment");
-            //}
+            MethodInfo method3 = typeof(Pawn_ApparelTracker).GetMethod("TryDrop",  BindingFlags.Instance | BindingFlags.Public);
+            MethodInfo method4 = typeof(_Pawn_ApparelTracker).GetMethod("_TryDrop", BindingFlags.Instance | BindingFlags.Public);
+
+            if (!Detours.TryDetourFromTo(method, method2))
+            {
+                Log.Message("Failed detour RightTools JobPackage");
+            }
+
+            if (!Detours.TryDetourFromTo(method3, method4))
+            {
+                Log.Message("Failed detour Pawn_ApparelTracker TryDrop");
+            }
+
 
 
             // CCL code for backpack injection on races
@@ -58,6 +63,7 @@ namespace ToolsForHaul
                 targetDefs = new List<string>(),
                 compProps = new CompProperties()
             };
+
             injectionSet.targetDefs.Add("Human");
             injectionSet.targetDefs.Add("Jaffa");
             injectionSet.targetDefs.Add("Orassans");

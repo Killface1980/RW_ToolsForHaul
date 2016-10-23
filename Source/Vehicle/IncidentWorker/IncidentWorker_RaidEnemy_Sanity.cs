@@ -82,7 +82,7 @@ namespace ToolsForHaul.IncidentWorkers
                                 vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null));
 
                                 SoundInfo info = SoundInfo.InWorld(vehicle);
-                                vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+                                vehicle.mountableComp.sustainerAmbient = vehicle.vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
                             }
                             else if (value >= 0.5f)
                             {
@@ -101,7 +101,7 @@ namespace ToolsForHaul.IncidentWorkers
                                 vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null));
 
                                 SoundInfo info = SoundInfo.InWorld(vehicle);
-                                vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+                                vehicle.mountableComp.sustainerAmbient = vehicle.vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
                             }
                         }
 

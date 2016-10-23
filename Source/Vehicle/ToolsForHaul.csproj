@@ -11,8 +11,7 @@
     <AssemblyName>ToolsForHaul</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -28,10 +27,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -58,6 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Defs\HaulStatDefOf.cs" />
     <Compile Include="Components\CompDriver.cs" />
     <None Include="_testing\ProjectileTFH.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
@@ -67,6 +66,7 @@
     <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="Defs\HaulJobDefOf.cs" />
+    <Compile Include="Detours\Class1.cs" />
     <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
     <Compile Include="Components\CompSlotsToolbelt.cs" />
     <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
@@ -152,9 +152,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Toils\Toils_Collect.cs" />
     <Compile Include="Things\Vehicle_Cart.cs" />
-    <Compile Include="Designators\Designator_Board.cs" />
+    <None Include="Designators\Designator_Board.cs" />
     <Compile Include="Designators\Designator_Move.cs" />
-    <Compile Include="Things\Vehicle_Saddle.cs" />
+    <None Include="Things\Vehicle_Saddle.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.Designators;
 using ToolsForHaul.Gizmos;
+using ToolsForHaul.StatDefs;
 using UnityEngine;
 using Verse;
+using Object = UnityEngine.Object;
 
 namespace ToolsForHaul
 {
@@ -22,64 +26,18 @@ namespace ToolsForHaul
         public virtual IEnumerable<Gizmo> GetWornGizmos();
         */
 
-        private static string DesignatorPutInInventoryDefaultLabel = "DesignatorPutInDefaultLabel".Translate();
-        private static string DesignatorPutInInventoryDefaultDesc = "DesignatorPutInDefaultDesc".Translate();
-        private readonly StatDef BackpackMaxItem = DefDatabase<StatDef>.GetNamed("TFHMaxItem");
-
         public int numOfSavedItems;
         public Pawn postWearer;
 
-        public int MaxItem { get { return (int)this.GetStatValue(BackpackMaxItem); } }
+        public int MaxItem;
         public int MaxStack { get { return MaxItem * 20; } }
-
-
-
-
-        private float GetAltitudeOffset(Rot4 rotation)
-        {
-            if (rotation == Rot4.North)
-            {
-                return 0.1f;
-            }
-            float offset = 0.0375f;
-            bool hasOnSkin = false;
-            bool hasMiddle = false;
-            bool hasShell = false;
-            for (int i = 0; i < wearer.apparel.WornApparel.Count && !(hasOnSkin && hasMiddle && hasShell); i++)
-            {
-                switch (wearer.apparel.WornApparel[i].def.apparel.LastLayer)
-                {
-                    case ApparelLayer.OnSkin:
-                        if (!hasOnSkin)
-                        {
-                            offset += 0.005f;
-                            hasOnSkin = true;
-                        }
-                        break;
-                    case ApparelLayer.Middle:
-                        if (!hasMiddle)
-                        {
-                            offset += 0.005f;
-                            hasMiddle = true;
-                        }
-                        break;
-                    case ApparelLayer.Shell:
-                        if (!hasShell)
-                        {
-                            offset += 0.005f;
-                            hasShell = true;
-                        }
-                        break;
-                }
-            }
-            return offset;
-        }
 
         public Apparel_Backpack()
         {
             postWearer = null;
             numOfSavedItems = 0;
         }
+
 
         public CompSlotsBackpack slotsComp
         {
@@ -92,18 +50,23 @@ namespace ToolsForHaul
         public override void SpawnSetup()
         {
             base.SpawnSetup();
+            MaxItem = (int)this.GetStatValue(HaulStatDefOf.MaxItem);
+            MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.MaxItem));
         }
 
         public override void ExposeData()
         {
-            base.ExposeData();
+			base.ExposeData();
             Scribe_Values.LookValue(ref numOfSavedItems, "numOfSavedItems", 0);
+            Scribe_Values.LookValue(ref MaxItem, "MaxItem");
         }
 
         public override void Draw()
         {
             base.Draw();
         }
+
+
 
         public override void Tick()
         {
@@ -128,16 +91,16 @@ namespace ToolsForHaul
 
         public override IEnumerable<Gizmo> GetWornGizmos()
         {
-         // Designator_PutInInventory designator = new Designator_PutInInventory();
-         //
-         // designator.backpack = this;
-         // designator.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconPutIn");
-         // designator.defaultLabel = DesignatorPutInInventoryDefaultLabel + "(" + wearer.inventory.container.Count + "/" + MaxItem + ")";
-         // designator.defaultDesc = DesignatorPutInInventoryDefaultDesc + wearer.inventory.container.Count + "/" + MaxItem;
-         // designator.hotKey = KeyBindingDef.Named("CommandPutInInventory");
-         // designator.activateSound = SoundDef.Named("Click");
-         //
-         // yield return designator;
+            // Designator_PutInInventory designator = new Designator_PutInInventory();
+            //
+            // designator.backpack = this;
+            // designator.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconPutIn");
+            // designator.defaultLabel = DesignatorPutInInventoryDefaultLabel + "(" + wearer.inventory.container.Count + "/" + MaxItem + ")";
+            // designator.defaultDesc = DesignatorPutInInventoryDefaultDesc + wearer.inventory.container.Count + "/" + MaxItem;
+            // designator.hotKey = KeyBindingDef.Named("CommandPutInInventory");
+            // designator.activateSound = SoundDef.Named("Click");
+            //
+            // yield return designator;
 
             Designator_PutInBackpackSlot designator2 = new Designator_PutInBackpackSlot();
             designator2.SlotsBackpackComp = slotsComp;
@@ -152,7 +115,7 @@ namespace ToolsForHaul
 
 
             Gizmo_BackpackEquipment gizmo = new Gizmo_BackpackEquipment();
-           
+
             gizmo.backpack = this;
             yield return gizmo;
         }

@@ -10,13 +10,14 @@ namespace ToolsForHaul
         public static Dictionary<Pawn, ThingWithComps> previousPawnWeapons = new Dictionary<Pawn, ThingWithComps>();
         public static List<Thing> AutoInventory = new List<Thing>();
 
+        public static Dictionary<Pawn, Thing> currentVehicle = new Dictionary<Pawn, Thing>();
 
 
         public override void ExposeData()
         {
             Scribe_Collections.LookDictionary(ref previousPawnWeapons, "previousPawnWeapons", LookMode.MapReference, LookMode.MapReference);
+            Scribe_Collections.LookDictionary(ref currentVehicle, "currentVehicle", LookMode.MapReference, LookMode.MapReference);
             Scribe_Collections.LookList(ref AutoInventory, "AutoInventory", LookMode.DefReference);
-
         }
     }
 }

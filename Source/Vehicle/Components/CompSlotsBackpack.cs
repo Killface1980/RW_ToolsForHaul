@@ -22,6 +22,13 @@ namespace ToolsForHaul.Components
             return slots;
         }
 
+        public override void CompTick()
+        {
+            base.CompTick();
+
+         
+        }
+
 #if CR            
                 public float moveSpeedFactor
         {
@@ -59,7 +66,7 @@ namespace ToolsForHaul.Components
                 float penalty = 0f;
                 if (slots.Count != 0)
                 {
-                    penalty = slots.Count/ (parent as Apparel_Backpack).MaxItem;
+                    penalty = slots.Count / (parent as Apparel_Backpack).MaxItem;
                 }
                 return penalty;
             }
@@ -76,7 +83,7 @@ namespace ToolsForHaul.Components
 
         public int MaxStack { get { return (parent as Apparel_Backpack).MaxItem * 50; } }
 
-        public int AvailableStackSpace(ThingDef td,Thing CarriedThing= null)
+        public int AvailableStackSpace(ThingDef td, Thing CarriedThing = null)
         {
             int b = Mathf.RoundToInt(owner.GetStatValue(StatDefOf.CarryingCapacity) / td.VolumePerUnit);
             int num = Mathf.Min(td.stackLimit, b);
@@ -86,7 +93,7 @@ namespace ToolsForHaul.Components
             }
             return num;
         }
-        
+
         // initialises ThingContainer owner and restricts the max slots range
         public override void PostSpawnSetup()
         {
@@ -139,7 +146,7 @@ namespace ToolsForHaul.Components
     {
         public List<ThingCategoryDef> allowedThingCategoryDefs = new List<ThingCategoryDef>();
         public List<ThingCategoryDef> forbiddenSubThingCategoryDefs = new List<ThingCategoryDef>();
- //       public int maxSlots = 3;
+        //       public int maxSlots = 3;
 
 
         public CompSlotsBackpack_Properties()

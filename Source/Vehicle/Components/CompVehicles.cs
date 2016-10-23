@@ -1,4 +1,6 @@
-﻿using Verse;
+﻿using RimWorld;
+using Verse;
+using Verse.Sound;
 
 namespace ToolsForHaul.Components
 {
@@ -36,5 +38,9 @@ namespace ToolsForHaul.Components
         {
             return compProps.fuelCatchesFireHitPointsPercent;
         }
+
+
+        
+        
     }
 }

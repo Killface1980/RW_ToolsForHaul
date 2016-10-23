@@ -31,6 +31,9 @@ namespace ToolsForHaul.Utilities
         }
         public static Apparel_Backpack TryGetBackpack(Pawn pawn)
         {
+            if (!pawn.RaceProps.Humanlike)
+                return null;
+
             foreach (Apparel apparel in pawn.apparel.WornApparel)
                 if (apparel is Apparel_Backpack)
                     return apparel as Apparel_Backpack;
@@ -39,6 +42,9 @@ namespace ToolsForHaul.Utilities
 
         public static Apparel_Toolbelt TryGetToolbelt(Pawn pawn)
         {
+            if (!pawn.RaceProps.Humanlike)
+                return null;
+
             foreach (Apparel apparel in pawn.apparel.WornApparel)
                 if (apparel is Apparel_Toolbelt)
                     return apparel as Apparel_Toolbelt;
@@ -110,15 +116,9 @@ namespace ToolsForHaul.Utilities
             return lastItem;
         }
 
-        public static List<Thing> Cart()
-        {
-            return Find.ListerThings.AllThings.FindAll(thing => thing is Vehicle_Cart);
-        }
+        public static List<Thing> Cart= new List<Thing>();
 
-        public static List<Thing> CartTurret()
-        {
-            return Find.ListerThings.AllThings.FindAll(thing => thing is Vehicle_Turret);
-        }
+        public static List<Thing> CartTurret = new List<Thing>();
 
         public static bool AvailableCart(Vehicle_Cart cart, Pawn pawn)
         {
@@ -160,7 +160,6 @@ namespace ToolsForHaul.Utilities
             Apparel_Backpack backpack = TryGetBackpack(pawn);
             if (cart == null)
             {
-
                 jobDef = HaulJobDefOf.HaulWithBackpack;
                 targetC = backpack;
                 maxItem = backpack.MaxItem;
@@ -320,7 +319,7 @@ namespace ToolsForHaul.Utilities
                             break;
                     }
 
-                    //Enqueue items in valid distance
+                    //Enqueue other items in valid distance
                     Trace.AppendLine("Start Enqueuing items in valid distance");
                     foreach (Thing item in ListerHaulables.ThingsPotentiallyNeedingHauling().Where(item
                                     => !job.targetQueueA.Contains(item) && !item.IsBurning()
@@ -467,9 +466,9 @@ namespace ToolsForHaul.Utilities
 
         public static Vehicle_Cart FindWheelChair(Pawn patient, Pawn pawn)
         {
-            foreach (Vehicle_Cart vehicle in Cart())
+            foreach (Vehicle_Cart vehicle in Cart)
             {
-                if (vehicle.compVehicles.IsMedical() && vehicle.mountableComp.Driver == null && pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Some) && vehicle.Faction == pawn.Faction)
+                if (vehicle.vehiclesComp.IsMedical() && vehicle.mountableComp.Driver == null && pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Some) && vehicle.Faction == pawn.Faction)
                 {
                     Debug.Log("Wheel chair found");
                     return vehicle;
@@ -481,10 +480,10 @@ namespace ToolsForHaul.Utilities
 
         public static bool IsDriver(Pawn pawn)
         {
-            foreach (Vehicle_Cart vehicle in Cart())
+            foreach (Vehicle_Cart vehicle in Cart)
                 if (vehicle.mountableComp.Driver == pawn)
                     return true;
-            foreach (Vehicle_Turret vehicle in CartTurret())
+            foreach (Vehicle_Turret vehicle in CartTurret)
                 if (vehicle.mountableComp.Driver == pawn)
                     return true;
             return false;
@@ -492,7 +491,7 @@ namespace ToolsForHaul.Utilities
 
         public static bool IsDriverOfThisVehicle(Pawn pawn, Vehicle_Cart vehicleReq)
         {
-            foreach (Vehicle_Cart vehicle in Cart())
+            foreach (Vehicle_Cart vehicle in Cart)
                 if (vehicle.mountableComp.Driver == pawn && vehicle == vehicleReq)
                     return true;
             return false;

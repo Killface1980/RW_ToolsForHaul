@@ -22,6 +22,14 @@ namespace ToolsForHaul.Components
             return slots;
         }
 
+
+        public override void CompTick()
+        {
+            base.CompTick();
+
+ 
+        }
+
 #if CR            
                 public float moveSpeedFactor
         {
@@ -65,7 +73,6 @@ namespace ToolsForHaul.Components
             }
         }
 #endif
-
 
 
         // IThingContainerOwner requirement

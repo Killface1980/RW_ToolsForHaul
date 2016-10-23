@@ -25,7 +25,7 @@ namespace ToolsForHaul.JobGivers
             }
 
             List<Thing> steelVehicle = new List<Thing>();
-            foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart())
+            foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart)
             {
                 if (ToolsForHaulUtility.IsDriver(pawn))
                     break;
@@ -36,7 +36,7 @@ namespace ToolsForHaul.JobGivers
                     steelVehicle.Add(vehicle_Cart);
                 }
             }
-            foreach (Vehicle_Turret vehicle_Cart in ToolsForHaulUtility.CartTurret())
+            foreach (Vehicle_Turret vehicle_Cart in ToolsForHaulUtility.CartTurret)
             {
                 if (ToolsForHaulUtility.IsDriver(pawn))
                     break;

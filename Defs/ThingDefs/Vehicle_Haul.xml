@@ -63,7 +63,6 @@
         <multiplier>0.8</multiplier>
       </li>
     </damageMultipliers>
-    <pathCost>40</pathCost>
     <fillPercent>0.4</fillPercent>
     <statBases>
       <Flammability>0.05</Flammability>

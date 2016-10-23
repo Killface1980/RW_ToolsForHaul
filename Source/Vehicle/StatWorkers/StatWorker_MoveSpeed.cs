@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.Utilities;
@@ -15,117 +16,122 @@ namespace ToolsForHaul.StatWorkers
             stringBuilder.Append(base.GetExplanation(req, numberSense));
             if (req.HasThing)
             {
+                Pawn thisPawn = req.Thing as Pawn;
 
-                foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart())
+                if (thisPawn != null)
                 {
-                    if (vehicle_Cart == null)
-                        continue;
-
-                    if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == req.Thing.ThingID)
+                    if (thisPawn.RaceProps.intelligence >= Intelligence.ToolUser)
                     {
-                        if (vehicle_Cart.IsCurrentlyMotorized())
+                        if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(thisPawn))
                         {
-                            stringBuilder.AppendLine();
-                            stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Cart.VehicleSpeed);
+                            Vehicle_Cart vehicle_Cart = MapComponent_ToolsForHaul.currentVehicle[thisPawn] as Vehicle_Cart;
+                            if (vehicle_Cart != null)
+                                if (vehicle_Cart.mountableComp.IsMounted && vehicle_Cart.mountableComp.Driver == thisPawn)
+                                {
+                                    stringBuilder.AppendLine();
+                                    stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Cart.VehicleSpeed);
+                                    return stringBuilder.ToString();
+                                }
+
+                            Vehicle_Turret vehicle_Turret = MapComponent_ToolsForHaul.currentVehicle[req.Thing as Pawn] as Vehicle_Turret;
+                            if (vehicle_Turret != null)
+                                if (vehicle_Turret.mountableComp.IsMounted && vehicle_Turret.mountableComp.Driver == thisPawn)
+                                {
+                                    stringBuilder.AppendLine();
+                                    stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Turret.VehicleSpeed);
+                                    return stringBuilder.ToString();
+                                }
                         }
 
+                        CompSlotsBackpack compSlotsBackpack = ToolsForHaulUtility.TryGetBackpack(thisPawn).TryGetComp<CompSlotsBackpack>();
+                        if (compSlotsBackpack != null)
+                        {
+
+                            stringBuilder.AppendLine();
+                            stringBuilder.AppendLine("CR_CarriedWeight".Translate() + ": x" + compSlotsBackpack.moveSpeedFactor.ToStringPercent());
+                            if (compSlotsBackpack.encumberPenalty > 0f)
+                            {
+                                stringBuilder.AppendLine("CR_Encumbered".Translate() + ": -" + compSlotsBackpack.encumberPenalty.ToStringPercent());
+                                stringBuilder.AppendLine("CR_FinalModifier".Translate() + ": x" + GetStatFactor(thisPawn).ToStringPercent());
+                            }
+                        }
                     }
                 }
-
-                CompSlotsBackpack compInventory = ToolsForHaulUtility.TryGetBackpack(req.Thing as Pawn).TryGetComp<CompSlotsBackpack>();
-                if (compInventory != null)
-                {
-                    stringBuilder.AppendLine();
-                    stringBuilder.AppendLine("CR_CarriedWeight".Translate() + ": x" + compInventory.moveSpeedFactor.ToStringPercent());
-                    if (compInventory.encumberPenalty > 0f)
-                    {
-                        stringBuilder.AppendLine("CR_Encumbered".Translate() + ": -" + compInventory.encumberPenalty.ToStringPercent());
-                        stringBuilder.AppendLine("CR_FinalModifier".Translate() + ": x" + GetStatFactor(req.Thing).ToStringPercent());
-                    }
-                }
-
-
-
             }
+
             return stringBuilder.ToString();
         }
 
         public override float GetValueUnfinalized(StatRequest req, bool applyPostProcess = true)
         {
+
             float num = base.GetValueUnfinalized(req, applyPostProcess);
-            if (req.HasThing)
+
+            if (req.HasThing && req.Thing is Pawn)
             {
-                if (GetStatFactor(req.Thing) > 1.01f)
-                {
-                    num = GetStatFactor(req.Thing);
-                }
-                else
-                {
-                    num *= GetStatFactor(req.Thing);
-                }
+                Pawn pawn = req.Thing as Pawn;
+
+                if (pawn.RaceProps.intelligence >= Intelligence.ToolUser)
+
+                    if (GetStatFactor(pawn) > 1.01f)
+                    {
+                        num = GetStatFactor(pawn);
+                    }
+                    else
+                    {
+                        num *= GetStatFactor(pawn);
+                    }
             }
             return num;
+
         }
 
-        private float GetStatFactor(Thing thing)
+        private float GetStatFactor(Pawn thisPawn)
         {
             float result = 1f;
 
-            foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart())
+            if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(thisPawn))
             {
-                if (vehicle_Cart == null)
-                    continue;
-
-                if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == thing.ThingID)
+                Vehicle_Cart vehicleCart = MapComponent_ToolsForHaul.currentVehicle[thisPawn] as Vehicle_Cart;
+                if (vehicleCart != null)
                 {
-                    if (vehicle_Cart.IsCurrentlyMotorized())
+                    if (vehicleCart.mountableComp.IsMounted && !vehicleCart.mountableComp.Driver.RaceProps.Animal && vehicleCart.mountableComp.Driver == thisPawn)
                     {
-                        result = Mathf.Clamp(vehicle_Cart.VehicleSpeed, 2f, 100f);
+                        if (vehicleCart.IsCurrentlyMotorized())
+                        {
+                            result = Mathf.Clamp(vehicleCart.VehicleSpeed, 2f, 100f);
+                        }
+                        else
+                        {
+                            result = Mathf.Clamp(vehicleCart.VehicleSpeed, 0.5f, 1f);
+                        }
+                        return result;
                     }
-                    else
-                    {
-                        int penalty = vehicle_Cart.storage.Count;
-                        int maxcount = vehicle_Cart.MaxItem;
-
-                        float buff = (float)penalty / maxcount;
-
-                        result -= Mathf.InverseLerp(0f, 0.4f, buff);
-                    }
-                    return result;
                 }
 
-            }
-
-            foreach (Vehicle_Turret vehicle_Cart in ToolsForHaulUtility.CartTurret())
-            {
-                if (vehicle_Cart == null)
-                    continue;
-
-                if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == thing.ThingID)
+                Vehicle_Turret vehicleTank = MapComponent_ToolsForHaul.currentVehicle[thisPawn] as Vehicle_Turret;
+                if (vehicleTank != null)
                 {
-                    if (vehicle_Cart.IsCurrentlyMotorized())
+                    if (vehicleTank.mountableComp.IsMounted && !vehicleTank.mountableComp.Driver.RaceProps.Animal && vehicleTank.mountableComp.Driver == thisPawn)
                     {
-                        result = Mathf.Clamp(vehicle_Cart.VehicleSpeed, 2f, 100f);
+                        if (vehicleTank.IsCurrentlyMotorized())
+                        {
+                            result = Mathf.Clamp(vehicleTank.VehicleSpeed, 2f, 100f);
+                        }
+                        else
+                        {
+                            result = Mathf.Clamp(vehicleTank.VehicleSpeed, 0.5f, 1f);
+                        }
+                        return result;
                     }
-                    else
-                    {
-                        result = Mathf.Clamp(vehicle_Cart.VehicleSpeed, 0.5f, 1f);
-                    }
-                    return result;
                 }
-
             }
 
-            //   Apparel_Backpack apparelBackpack = ToolsForHaulUtility.TryGetBackpack(thing as Pawn);
-            //   if (apparelBackpack != null)
-            //   {
-            //       CompSlotsBackpack compInventory = apparelBackpack.slotsComp;
-            //       if (compInventory != null)
-            //       {
-            //           result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
-            //       }
-            //   }
-
+            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(thisPawn);
+            if (backpack != null)
+            {
+                result = Mathf.Clamp(backpack.slotsComp.moveSpeedFactor - backpack.slotsComp.encumberPenalty, 0.1f, 1f);
+            }
 
             return result;
         }

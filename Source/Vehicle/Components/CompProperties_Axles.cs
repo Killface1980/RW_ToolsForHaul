@@ -4,7 +4,7 @@ using Verse;
 
 namespace ToolsForHaul.Components
 {
-    internal class CompProperties_Axles : CompProperties
+    public class CompProperties_Axles : CompProperties
     {
         public List<Vector2> axles = new List<Vector2>();
 

@@ -20,7 +20,7 @@ namespace ToolsForHaul.WorkGivers
         public override bool ShouldSkip(Pawn pawn)
         {
             Trace.DebugWriteHaulingPawn(pawn);
-            if (ToolsForHaulUtility.Cart().Count == 0)
+            if (ToolsForHaulUtility.Cart.Count == 0)
                 return true;
 
             if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
@@ -49,7 +49,7 @@ namespace ToolsForHaul.WorkGivers
                 return null;
             }
             List<Vehicle_Cart> cartsAvailable = new List<Vehicle_Cart>();
-            foreach (Vehicle_Cart vehicleCart in ToolsForHaulUtility.Cart())
+            foreach (Vehicle_Cart vehicleCart in ToolsForHaulUtility.Cart)
             {
                 if (ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, vehicleCart))
                 {

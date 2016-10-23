@@ -73,7 +73,7 @@ namespace ToolsForHaul.IncidentWorkers
 
                     Vehicle_Cart vehicle = thing as Vehicle_Cart;
                     SoundInfo info = SoundInfo.InWorld(vehicle);
-                    vehicle.mountableComp.sustainerAmbient = vehicle.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+                    vehicle.mountableComp.sustainerAmbient = vehicle.vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
 

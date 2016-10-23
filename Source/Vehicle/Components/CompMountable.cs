@@ -19,7 +19,6 @@ namespace ToolsForHaul.Components
         private const string txtMountOn = "MountOn";
         private const string txtDismount = "Dismount";
 
-        private Pawn driver;
         private Building_Door lastPassedDoor;
         private int tickLastDoorCheck = Find.TickManager.TicksGame;
         private const int TickCooldownDoorCheck = 96;
@@ -39,99 +38,98 @@ namespace ToolsForHaul.Components
 
         public void MountOn(Pawn pawn)
         {
-            if (driver != null)
+            if (Driver != null)
                 return;
-            driver = pawn;
+            Driver = pawn;
+
+            MapComponent_ToolsForHaul.currentVehicle.Add(pawn, parent);
 
             Vehicle_Cart vehicleCart = parent as Vehicle_Cart;
             if (vehicleCart != null)
             {
                 // Set faction of vehicle to whoever mounts it
-                if (vehicleCart.Faction != driver.Faction && vehicleCart.ClaimableBy(driver.Faction))
+                if (vehicleCart.Faction != Driver.Faction && vehicleCart.ClaimableBy(Driver.Faction))
                 {
-                    parent.SetFaction(driver.Faction);
+                    parent.SetFaction(Driver.Faction);
                 }
 
-                if (!vehicleCart.compVehicles.AnimalsCanDrive())
+                if (!vehicleCart.vehiclesComp.AnimalsCanDrive())
                 {
-                    driver.RaceProps.makesFootprints = false;
+                    Driver.RaceProps.makesFootprints = false;
                 }
                 if (vehicleCart.IsCurrentlyMotorized())
                 {
                     SoundInfo info = SoundInfo.InWorld(parent);
-                    sustainerAmbient = vehicleCart.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+                    sustainerAmbient = vehicleCart.vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
                 if (pawn.RaceProps.Humanlike)
                 {
                     driverComp = new CompDriver { vehicleCart = parent as Vehicle_Cart };
-                    driver.AllComps?.Add(driverComp);
-                    driverComp.parent = driver;
+                    Driver.AllComps?.Add(driverComp);
+                    driverComp.parent = Driver;
                 }
+                return;
             }
 
             Vehicle_Turret vehicleTurret = parent as Vehicle_Turret;
             if (vehicleTurret != null)
             {
                 // Set faction of vehicle to whoever mounts it
-                if (vehicleTurret.Faction != driver.Faction && vehicleTurret.ClaimableBy(driver.Faction))
+                if (vehicleTurret.Faction != Driver.Faction && vehicleTurret.ClaimableBy(Driver.Faction))
                 {
-                    parent.SetFaction(driver.Faction);
+                    parent.SetFaction(Driver.Faction);
                 }
 
-                if (!vehicleTurret.compVehicles.AnimalsCanDrive())
+                if (!vehicleTurret.vehiclesComp.AnimalsCanDrive())
                 {
-                    driver.RaceProps.makesFootprints = false;
+                    Driver.RaceProps.makesFootprints = false;
                 }
                 if (vehicleTurret.IsCurrentlyMotorized())
                 {
                     SoundInfo info = SoundInfo.InWorld(parent);
-                    sustainerAmbient = vehicleTurret.compVehicles.compProps.soundAmbient.TrySpawnSustainer(info);
+                    sustainerAmbient = vehicleTurret.vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
                 if (pawn.RaceProps.Humanlike)
                 {
                     driverComp = new CompDriver { vehicleTurret = parent as Vehicle_Turret };
-                    driver.AllComps?.Add(driverComp);
-                    driverComp.parent = driver;
+                    Driver.AllComps?.Add(driverComp);
+                    driverComp.parent = Driver;
                 }
+                return;
             }
 
 
         }
 
-        public bool IsMounted
-        {
-            get { return driver != null; }
-        }
+        public bool IsMounted => Driver != null;
 
-        public Pawn Driver
-        {
-            get { return driver; }
-        }
+        public Pawn Driver;
 
         public void Dismount()
         {
-            if (driver.RaceProps.Humanlike)
+            if (Driver.RaceProps.Humanlike)
             {
-                driver.AllComps?.Remove(driverComp);
+                Driver.AllComps?.Remove(driverComp);
                 driverComp.vehicleCart = null;
                 driverComp.vehicleTurret = null;
                 driverComp.parent = null;
             }
 
+            MapComponent_ToolsForHaul.currentVehicle.Remove(Driver);
 
-            driver.RaceProps.makesFootprints = true;
+            Driver.RaceProps.makesFootprints = true;
 
-            //if (Find.Reservations.IsReserved(parent, driver.Faction))
+            //if (Find.Reservations.IsReserved(parent, Driver.Faction))
             Find.Reservations.ReleaseAllForTarget(parent);
-            if (driver.Faction != Faction.OfPlayer)
+            if (Driver.Faction != Faction.OfPlayer)
             {
                 parent.SetForbidden(true);
                 parent.SetFaction(null);
             }
 
-            driver = null;
+            Driver = null;
 
             if (sustainerAmbient != null)
             {
@@ -144,7 +142,7 @@ namespace ToolsForHaul.Components
 
         public void DismountAt(IntVec3 dismountPos)
         {
-            //if (driver.Position.IsAdjacentTo8WayOrInside(dismountPos, driver.Rotation, new IntVec2(1,1)))
+            //if (Driver.Position.IsAdjacentTo8WayOrInside(dismountPos, Driver.Rotation, new IntVec2(1,1)))
             if (dismountPos != IntVec3.Invalid)
             {
                 Dismount();
@@ -156,7 +154,7 @@ namespace ToolsForHaul.Components
 
         public Vector3 InteractionOffset
         {
-            get { return parent.def.interactionCellOffset.ToVector3().RotatedBy(driver.Rotation.AsAngle); }
+            get { return parent.def.interactionCellOffset.ToVector3().RotatedBy(Driver.Rotation.AsAngle); }
         }
 
         public Vector3 Position
@@ -164,29 +162,24 @@ namespace ToolsForHaul.Components
             get
             {
                 Vector3 position;
-                if (IsTank())
-                    position = driver.DrawPos + InteractionOffset * 1.3f;
-                else
-                    position = driver.DrawPos - InteractionOffset * 1.3f;
 
-                //No driver
-                if (driver == null)
+                position = Driver.DrawPos - InteractionOffset * 1.3f;
+
+                //No Driver
+                if (Driver == null)
                     return parent.DrawPos;
                 //Out of bound or Preventing cart from stucking door
                 if (!position.InBounds())
-                    return driver.DrawPos;
+                    return Driver.DrawPos;
 
-                if (IsTank())
-                    return driver.DrawPos + InteractionOffset * 1.3f;
-                else
-                    return driver.DrawPos - InteractionOffset * 1.3f;
+                return position;
             }
         }
 
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_References.LookReference(ref driver, "driver");
+            Scribe_References.LookReference(ref Driver, "Driver");
             Scribe_References.LookReference(ref lastPassedDoor, "lastPassedDoor");
         }
 
@@ -195,105 +188,97 @@ namespace ToolsForHaul.Components
             base.CompTick();
             if (IsMounted)
             {
-
-                if (!driver.Spawned)
+                if (!Driver.Spawned)
                 {
                     parent.DeSpawn();
                     return;
                 }
 
+                if (Driver.Dead || Driver.Downed || Driver.health.InPainShock || Driver.MentalStateDef == MentalStateDefOf.WanderPsychotic || (parent.IsForbidden(Faction.OfPlayer) && Driver.Faction == Faction.OfPlayer))
+                {
+                    if (!Driver.Position.InBounds())
+                    {
+                        DismountAt(Driver.Position);
+                        return;
+                    }
+
+                    DismountAt(Driver.Position - parent.def.interactionCellOffset.RotatedBy(Driver.Rotation));
+                    Driver.Position = Driver.Position.RandomAdjacentCell8Way();
+                    return;
+                }
+
+
+
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
                 {
-                    if (driver.Faction == Faction.OfPlayer && driver.CurJob != null)
+                    if (Driver.Faction == Faction.OfPlayer && Driver.CurJob != null)
                     {
-                        if (driver.CurJob.def.playerInterruptible && (driver.CurJob.def == JobDefOf.DoBill ||
-                                                                      driver.CurJob.def == JobDefOf.EnterCryptosleepCasket ||
-                                                                      driver.CurJob.def == JobDefOf.LayDown ||
-                                                                      driver.CurJob.def == JobDefOf.Lovin ||
-                                                                      driver.CurJob.def == JobDefOf.MarryAdjacentPawn ||
-                                                                      driver.CurJob.def == JobDefOf.Mate ||
-                                                                      driver.CurJob.def == JobDefOf.PrisonerAttemptRecruit ||
-                                                                      driver.CurJob.def == JobDefOf.Research ||
-                                                                      driver.CurJob.def == JobDefOf.SocialRelax ||
-                                                                      driver.CurJob.def == JobDefOf.SpectateCeremony ||
-                                                                      driver.CurJob.def == JobDefOf.StandAndBeSociallyActive ||
-                                                                      driver.CurJob.def == JobDefOf.TakeToBedToOperate ||
-                                                                      driver.CurJob.def == JobDefOf.TendPatient ||
-                                                                      driver.CurJob.def == JobDefOf.UseCommsConsole ||
-                                                                      driver.CurJob.def == JobDefOf.UseNeurotrainer ||
-                                                                      driver.CurJob.def == JobDefOf.VisitSickPawn ||
-                                                                      driver.CurJob.def == JobDefOf.Shear ||
+                        if (Driver.CurJob.def.playerInterruptible && (Driver.CurJob.def == JobDefOf.DoBill ||
+                                                                      Driver.CurJob.def == JobDefOf.EnterCryptosleepCasket ||
+                                                                      Driver.CurJob.def == JobDefOf.LayDown ||
+                                                                      Driver.CurJob.def == JobDefOf.Lovin ||
+                                                                      Driver.CurJob.def == JobDefOf.MarryAdjacentPawn ||
+                                                                      Driver.CurJob.def == JobDefOf.Mate ||
+                                                                      Driver.CurJob.def == JobDefOf.PrisonerAttemptRecruit ||
+                                                                      Driver.CurJob.def == JobDefOf.Research ||
+                                                                      Driver.CurJob.def == JobDefOf.SocialRelax ||
+                                                                      Driver.CurJob.def == JobDefOf.SpectateCeremony ||
+                                                                      Driver.CurJob.def == JobDefOf.StandAndBeSociallyActive ||
+                                                                      Driver.CurJob.def == JobDefOf.TakeToBedToOperate ||
+                                                                      Driver.CurJob.def == JobDefOf.TendPatient ||
+                                                                      Driver.CurJob.def == JobDefOf.UseCommsConsole ||
+                                                                      Driver.CurJob.def == JobDefOf.UseNeurotrainer ||
+                                                                      Driver.CurJob.def == JobDefOf.VisitSickPawn ||
+                                                                      Driver.CurJob.def == JobDefOf.Shear ||
 
-                                                                      driver.CurJob.def == JobDefOf.FeedPatient ||
-                                                                      driver.CurJob.def == JobDefOf.PrisonerExecution ||
-                                                                      driver.CurJob.def == JobDefOf.ManTurret ||
-                                                                      driver.CurJob.def == JobDefOf.Train ||
-                                                                      driver.health.NeedsMedicalRest ||
-                                                                      driver.health.PrefersMedicalRest
+                                                                      Driver.CurJob.def == JobDefOf.FeedPatient ||
+                                                                      Driver.CurJob.def == JobDefOf.PrisonerExecution ||
+                                                                      Driver.CurJob.def == JobDefOf.ManTurret ||
+                                                                      Driver.CurJob.def == JobDefOf.Train ||
+                                                                      Driver.health.NeedsMedicalRest ||
+                                                                      Driver.health.PrefersMedicalRest
 
-                            ) && driver.Position.Roofed())
+                            ) && Driver.Position.Roofed())
                         {
                             parent.Position = Position.ToIntVec3();
-                            parent.Rotation = driver.Rotation;
-                            if (!driver.Position.InBounds())
+                            parent.Rotation = Driver.Rotation;
+                            if (!Driver.Position.InBounds())
                             {
-                                DismountAt(driver.Position);
+                                DismountAt(Driver.Position);
                                 return;
                             }
-                            DismountAt(driver.Position - InteractionOffset.ToIntVec3());
-                            driver.Position = driver.Position.RandomAdjacentCell8Way();
+                            DismountAt(Driver.Position - InteractionOffset.ToIntVec3());
+                            Driver.Position = Driver.Position.RandomAdjacentCell8Way();
                             return;
                         }
                     }
                     tickCheck = Find.TickManager.TicksGame;
                     tickCooldown = Rand.RangeInclusive(60, 180);
                 }
-                if (Find.TickManager.TicksGame - tickLastDoorCheck >= 96 && (driver.Position.GetEdifice() is Building_Door || parent.Position.GetEdifice() is Building_Door))
+                if (Find.TickManager.TicksGame - tickLastDoorCheck >= 96 && (Driver.Position.GetEdifice() is Building_Door || parent.Position.GetEdifice() is Building_Door))
                 {
-                    lastPassedDoor = (driver.Position.GetEdifice() is Building_Door ? driver.Position.GetEdifice() : parent.Position.GetEdifice()) as Building_Door;
-                    lastPassedDoor.StartManualOpenBy(driver);
+                    lastPassedDoor = (Driver.Position.GetEdifice() is Building_Door ? Driver.Position.GetEdifice() : parent.Position.GetEdifice()) as Building_Door;
+                    lastPassedDoor.StartManualOpenBy(Driver);
                     tickLastDoorCheck = Find.TickManager.TicksGame;
                 }
                 else if (Find.TickManager.TicksGame - tickLastDoorCheck >= 96 && lastPassedDoor != null)
                 {
-                    lastPassedDoor.StartManualCloseBy(driver);
+                    lastPassedDoor.StartManualCloseBy(Driver);
                     lastPassedDoor = null;
                 }
-                parent.Position = Position.ToIntVec3();
 
-                if (driver.pather.Moving)
-                {
-                    if (driver.Position.AdjacentTo8WayOrInside(driver.pather.Destination))
-                    {
-                        // Make the breaks sound once and throw some dust if driver comes to his destination
-                        if (!soundPlayed)
-                        {
-                            SoundDef.Named("VehicleATV_Ambience_Break").PlayOneShot(driver.Position);
-                            MoteMaker.ThrowDustPuff(driver.Position, 0.8f);
-                            soundPlayed = true;
-                        }
-                    }
-                    else
-                    {
-                        parent.Rotation = driver.Rotation;
 
-                    }
-                }
-                else
-                {
-                    soundPlayed = false;
-                }
+
 
             }
         }
 
-        private bool soundPlayed;
 
         private bool targetIsMoving
         {
             get
             {
-                return driver != null && driver.pather != null && driver.pather.Moving;
+                return Driver != null && Driver.pather != null && Driver.pather.Moving;
             }
         }
 
@@ -302,7 +287,7 @@ namespace ToolsForHaul.Components
             get
             {
                 Vehicle_Cart cart = parent as Vehicle_Cart;
-                if (driver.Position.AdjacentTo8WayOrInside(driver.pather.Destination)) return true;
+                if (Driver.Position.AdjacentTo8WayOrInside(Driver.pather.Destination)) return true;
                 return false;
             }
         }
@@ -361,7 +346,7 @@ namespace ToolsForHaul.Components
                     verb = txtMountOn;
                     yield return new FloatMenuOption(verb.Translate(parent.LabelShort), action_Order);
                 }
-                else if (IsMounted && myPawn == driver)// && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
+                else if (IsMounted && myPawn == Driver)// && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
                 {
                     action_Order = () =>
                     {

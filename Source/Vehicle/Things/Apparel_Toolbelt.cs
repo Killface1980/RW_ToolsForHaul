@@ -3,6 +3,8 @@ using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.Designators;
 using ToolsForHaul.Gizmos;
+using ToolsForHaul.StatDefs;
+using UnityEngine;
 using Verse;
 
 namespace ToolsForHaul
@@ -23,13 +25,11 @@ namespace ToolsForHaul
 
         private static string DesignatorPutInInventoryDefaultLabel = "DesignatorPutInDefaultLabel".Translate();
         private static string DesignatorPutInInventoryDefaultDesc = "DesignatorPutInDefaultDesc".Translate();
-        private static readonly StatDef toolbeltMaxItem = DefDatabase<StatDef>.GetNamed("TFHMaxItem");
 
-        public int maxItem; //obsoleted
         public Pawn postWearer;
 
-        public int MaxItem { get { return (int)this.GetStatValue(toolbeltMaxItem); } }
-        public int MaxStack { get { return maxItem * 20; } }
+        public int MaxItem;
+        public int MaxStack { get { return MaxItem * 20; } }
 
 
         public Apparel_Toolbelt()
@@ -49,15 +49,14 @@ namespace ToolsForHaul
         public override void SpawnSetup()
         {
             base.SpawnSetup();
-            maxItem = (int)this.GetStatValue(toolbeltMaxItem);
-
+            MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.MaxItem));
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.LookValue(ref maxItem, "maxItem");
-            //     Scribe_Values.LookValue(ref numOfSavedItems, "numOfSavedItems", 0);
+            //       Scribe_Values.LookValue(ref MaxItem, "maxItem");
+            Scribe_Values.LookValue(ref MaxItem, "MaxItem");
         }
 
         public override void Draw()
@@ -80,7 +79,6 @@ namespace ToolsForHaul
                 slotsComp.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
                 postWearer = null;
             }
-
         }
 
         public override IEnumerable<Gizmo> GetWornGizmos()

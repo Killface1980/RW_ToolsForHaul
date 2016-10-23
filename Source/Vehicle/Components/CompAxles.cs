@@ -4,7 +4,7 @@ using Verse;
 
 namespace ToolsForHaul.Components
 {
-    internal class CompAxles : ThingComp
+    public class CompAxles : ThingComp
     {
         public CompProperties_Axles Props
         {
