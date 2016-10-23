@@ -296,13 +296,12 @@
         <explosiveRadius>2.4</explosiveRadius>
         <explosiveDamageType>Bomb</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
-        <startWickHitPointsPercent>0.1</startWickHitPointsPercent>
-        <chanceNeverExplodeFromDamage>0.9</chanceNeverExplodeFromDamage>
-        <!-- 				<startWickHitPointsPercent>0.10</startWickHitPointsPercent>
+        <startWickHitPointsPercent>0.2</startWickHitPointsPercent>
+        <chanceNeverExplodeFromDamage>0.8</chanceNeverExplodeFromDamage>
 				<wickTicks>
 					<min>300</min>
 					<max>600</max>
-				</wickTicks> -->
+				</wickTicks> 
       </li>
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->

@@ -58,6 +58,11 @@
   <ItemGroup>
     <Compile Include="Defs\HaulStatDefOf.cs" />
     <Compile Include="Components\CompDriver.cs" />
+    <None Include="_micktu_Injection\AsmHelper.cs" />
+    <None Include="_micktu_Injection\Class1.cs" />
+    <None Include="_micktu_Injection\HookInjector.cs" />
+    <None Include="_micktu_Injection\Platform.cs" />
+    <None Include="_micktu_Injection\Globals.cs" />
     <None Include="_testing\ProjectileTFH.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
@@ -66,7 +71,7 @@
     <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="Defs\HaulJobDefOf.cs" />
-    <Compile Include="Detours\Class1.cs" />
+    <Compile Include="Detours\_Pawn_ApparelTracker.cs" />
     <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
     <Compile Include="Components\CompSlotsToolbelt.cs" />
     <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
@@ -83,6 +88,7 @@
     <Compile Include="Things\Tank\Vehicle_TurretGun.cs" />
     <Compile Include="Things\Tank\VehicleTurretTop.cs" />
     <Compile Include="Things\Tank\Command_VerbTarget.cs" />
+    <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
     <Compile Include="_inactive\_TESTING\HeadLights.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy_Sanity.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_VisitorGroupTFH.cs" />
@@ -115,7 +121,7 @@
     <Compile Include="JobGivers\JobGiver_ExitMapRandom.cs" />
     <Compile Include="JobGivers\JobGiver_Kidnap.cs" />
     <Compile Include="JobGivers\JobGiver_ExitMapPanic.cs" />
-    <Compile Include="RightTools\_ThinkNode_JobGiver.cs" />
+    <Compile Include="Detours\_ThinkNode_JobGiver.cs" />
     <Compile Include="RightTools\RightTools.cs" />
     <Compile Include="Components\MapComponent_ToolsForHaul.cs" />
     <Compile Include="RightTools\MapComponentInjector.cs" />

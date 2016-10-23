@@ -21,17 +21,7 @@ namespace ToolsForHaul
     [StaticConstructorOnStartup]
     public class Vehicle_Cart : Building, IThingContainerOwner, IAttackTarget
     {
-        protected StunHandler stunner;
-        public override void PreApplyDamage(DamageInfo dinfo, out bool absorbed)
-        {
-            base.PreApplyDamage(dinfo, out absorbed);
-            if (absorbed)
-            {
-                return;
-            }
-            stunner.Notify_DamageApplied(dinfo, true);
-            absorbed = false;
-        }
+
 
         #region Variables
         // ==================================
@@ -90,7 +80,6 @@ namespace ToolsForHaul
 
 
         //mount and storage data
-        public CompMountable mountableComp;
 
         public ThingContainer storage;
         public ThingContainer GetContainer() { return storage; }
@@ -109,15 +98,17 @@ namespace ToolsForHaul
         }
         public int MaxStack { get { return MaxItem * 100; } }
 
-        public CompRefuelable refuelableComp;
+        public CompMountable mountableComp => GetComp<CompMountable>();
 
-        public CompExplosive explosiveComp;
+        public CompRefuelable refuelableComp => GetComp<CompRefuelable>();
 
-        public CompBreakdownable breakdownableComp;
+        public CompExplosive explosiveComp => GetComp<CompExplosive>();
 
-        public CompAxles axlesComp;
+        public CompBreakdownable breakdownableComp => GetComp<CompBreakdownable>();
 
-        public CompVehicles vehiclesComp;
+        public CompAxles axlesComp => GetComp<CompAxles>();
+
+        public CompVehicles vehiclesComp => GetComp<CompVehicles>();
 
         #endregion
 
@@ -133,7 +124,6 @@ namespace ToolsForHaul
             allowances = new ThingFilter();
             allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
             allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
-            stunner = new StunHandler(this);
         }
 
         static Vehicle_Cart()
@@ -149,12 +139,7 @@ namespace ToolsForHaul
         public override void SpawnSetup()
         {
             base.SpawnSetup();
-            mountableComp = GetComp<CompMountable>();
-            refuelableComp = GetComp<CompRefuelable>();
-            explosiveComp = GetComp<CompExplosive>();
-            breakdownableComp = GetComp<CompBreakdownable>();
-            axlesComp = GetComp<CompAxles>();
-            vehiclesComp = GetComp<CompVehicles>();
+
             ToolsForHaulUtility.Cart.Add(this);
 
 
@@ -190,28 +175,17 @@ namespace ToolsForHaul
 
         public override void DeSpawn()
         {
-            //bool hasChair = false;
-            //foreach (Pawn pawn in Find.MapPawns.AllPawnsSpawned)
-            //{
-            //    if (pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")) &&
-            //        !ToolsForHaulUtility.IsDriver(pawn) && base.Position.AdjacentTo8WayOrInside(pawn.Position))
-            //    {
-            //        mountableComp.MountOn(pawn);
-            //        hasChair = true;
-            //        break;
-            //    }
-            //}
-            //if (!hasChair)
-            //{
-            base.DeSpawn();
-            ToolsForHaulUtility.Cart.Remove(this);
+            if (ToolsForHaulUtility.Cart.Contains(this))
+                ToolsForHaulUtility.Cart.Remove(this);
 
             if (mountableComp.sustainerAmbient != null)
                 mountableComp.sustainerAmbient.End();
 
-            if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(mountableComp.Driver))
-                MapComponent_ToolsForHaul.currentVehicle.Remove(mountableComp.Driver);
+            if (mountableComp.IsMounted)
+                if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(mountableComp.Driver))
+                    MapComponent_ToolsForHaul.currentVehicle.Remove(mountableComp.Driver);
 
+            base.DeSpawn();
 
             // not working
             //if (explosiveComp != null && explosiveComp.wickStarted)
@@ -263,10 +237,7 @@ namespace ToolsForHaul
             Scribe_Values.LookValue(ref _tankHitPos, "tankHitPos");
             Scribe_Values.LookValue(ref despawnAtEdge, "despawnAtEdge");
 
-            Scribe_Deep.LookDeep(ref stunner, "stunner", new object[]
-            {
-                this
-     });
+
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -288,19 +259,6 @@ namespace ToolsForHaul
                 if (explosiveComp.wickStarted)
                 {
                     command_Action.Disable();
-                    if (Rand.Value <= 0.8f)
-                    {
-                        if (!mountableComp.Driver.Position.InBounds())
-                        {
-                            mountableComp.DismountAt(mountableComp.Driver.Position);
-                        }
-                        else
-                        {
-                            mountableComp.DismountAt(mountableComp.Driver.Position - def.interactionCellOffset.RotatedBy(mountableComp.Driver.Rotation));
-                            mountableComp.Driver.Position = mountableComp.Driver.Position.RandomAdjacentCell8Way();
-                        }
-
-                    }
                 }
                 command_Action.defaultLabel = "CommandDetonateLabel".Translate();
                 yield return command_Action;
@@ -320,7 +278,7 @@ namespace ToolsForHaul
 
         private void Command_Detonate()
         {
-            GetComp<CompExplosive>().StartWick();
+            explosiveComp.StartWick();
         }
 
 
@@ -420,7 +378,6 @@ namespace ToolsForHaul
             else if (explosiveComp != null && explosiveComp.wickStarted)
             {
                 storage.ClearAndDestroyContents();
-
             }
 
             storage.TryDropAll(Position, ThingPlaceMode.Near);
@@ -689,7 +646,7 @@ namespace ToolsForHaul
                 }
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
                 {
-                   if (mountableComp.Driver.pather.Moving)
+                    if (mountableComp.Driver.pather.Moving)
                     {
                         if (!mountableComp.Driver.stances.FullBodyBusy)
                         {

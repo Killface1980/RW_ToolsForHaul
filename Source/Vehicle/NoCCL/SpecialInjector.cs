@@ -40,20 +40,36 @@ namespace ToolsForHaul
             MethodInfo method = typeof(ThinkNode_JobGiver).GetMethod("TryIssueJobPackage", BindingFlags.Instance | BindingFlags.Public);
             MethodInfo method2 = typeof(_ThinkNode_JobGiver).GetMethod("TryIssueJobPackage", BindingFlags.Instance | BindingFlags.Public);
 
-
-            MethodInfo method3 = typeof(Pawn_ApparelTracker).GetMethod("TryDrop",  BindingFlags.Instance | BindingFlags.Public);
-            MethodInfo method4 = typeof(_Pawn_ApparelTracker).GetMethod("_TryDrop", BindingFlags.Instance | BindingFlags.Public);
-
             if (!Detours.TryDetourFromTo(method, method2))
             {
                 Log.Message("Failed detour RightTools JobPackage");
             }
-
-            if (!Detours.TryDetourFromTo(method3, method4))
+            else
             {
-                Log.Message("Failed detour Pawn_ApparelTracker TryDrop");
-            }
+                Log.Message("TFH detoured RightTools JobPackage");
 
+            }
+            // Pawn_ApparelTracker
+
+            MethodInfo tryDrop3Source = typeof(Pawn_ApparelTracker).GetMethod("TryDrop",
+                BindingFlags.Instance | BindingFlags.Public,
+                null,
+                new Type[] { typeof(Apparel), typeof(Apparel).MakeByRefType(), typeof(IntVec3), typeof(bool) },
+                null);
+
+            MethodInfo tryDrop3Dest = typeof(_Pawn_ApparelTracker).GetMethod("TryDrop",
+                BindingFlags.Static | BindingFlags.NonPublic,
+                null,
+                new Type[] { typeof(Pawn_ApparelTracker), typeof(Apparel), typeof(Apparel).MakeByRefType(), typeof(IntVec3), typeof(bool) },
+                null);
+
+            if (!Detours.TryDetourFromTo(tryDrop3Source, tryDrop3Dest))
+                Log.Message("Failed detour Pawn_ApparelTracker TryDrop");
+            else
+            {
+                Log.Message("TFH detoured Pawn_ApparelTracker TryDrop");
+
+            }
 
 
             // CCL code for backpack injection on races

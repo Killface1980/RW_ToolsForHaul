@@ -133,13 +133,6 @@ namespace ToolsForHaul
 
 
         //mount and storage data
-        public CompMountable mountableComp
-        {
-            get
-            {
-                return GetComp<CompMountable>();
-            }
-        }
         public ThingContainer storage;
         public ThingContainer GetContainer() { return storage; }
         public IntVec3 GetPosition() { return Position; }
@@ -157,15 +150,17 @@ namespace ToolsForHaul
         }
         public int MaxStack { get { return MaxItem * 100; } }
 
-        public CompRefuelable refuelableComp;
+        public CompMountable mountableComp => GetComp<CompMountable>();
 
-        public CompExplosive explosiveComp;
+        public CompRefuelable refuelableComp => GetComp<CompRefuelable>();
 
-        private CompBreakdownable breakdownableComp;
+        public CompExplosive explosiveComp => GetComp<CompExplosive>();
 
-        private CompAxles axlesComp;
+        public CompBreakdownable breakdownableComp => GetComp<CompBreakdownable>();
 
-        public CompVehicles vehiclesComp;
+        public CompAxles axlesComp => GetComp<CompAxles>();
+
+        public CompVehicles vehiclesComp => GetComp<CompVehicles>();
 
         #endregion
 
@@ -198,11 +193,6 @@ namespace ToolsForHaul
         {
             base.SpawnSetup();
 
-            refuelableComp = GetComp<CompRefuelable>();
-            explosiveComp = GetComp<CompExplosive>();
-            breakdownableComp = GetComp<CompBreakdownable>();
-            axlesComp = GetComp<CompAxles>();
-            vehiclesComp = GetComp<CompVehicles>();
             ToolsForHaulUtility.CartTurret.Add(this);
 
             if (mountableComp.Driver != null && IsCurrentlyMotorized())
@@ -249,14 +239,16 @@ namespace ToolsForHaul
             //}
             //if (!hasChair)
             //{
-            base.DeSpawn();
-            ToolsForHaulUtility.CartTurret.Remove(this);
+            if (ToolsForHaulUtility.CartTurret.Contains(this))
+                ToolsForHaulUtility.CartTurret.Remove(this);
 
-            if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(mountableComp.Driver))
-                MapComponent_ToolsForHaul.currentVehicle.Remove(mountableComp.Driver);
+            if (mountableComp.IsMounted)
+                if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(mountableComp.Driver))
+                    MapComponent_ToolsForHaul.currentVehicle.Remove(mountableComp.Driver);
 
             if (mountableComp.sustainerAmbient != null)
                 mountableComp.sustainerAmbient.End();
+            base.DeSpawn();
 
             // not working
             //if (explosiveComp != null && explosiveComp.wickStarted)
@@ -325,7 +317,6 @@ namespace ToolsForHaul
 
             if (explosiveComp != null)
             {
-
                 Command_Action command_Action = new Command_Action();
                 command_Action.icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate");
                 command_Action.defaultDesc = "CommandDetonateDesc".Translate();
@@ -333,19 +324,6 @@ namespace ToolsForHaul
                 if (explosiveComp.wickStarted)
                 {
                     command_Action.Disable();
-                    if (Rand.Value <= 0.8f)
-                    {
-                        if (!mountableComp.Driver.Position.InBounds())
-                        {
-                            mountableComp.DismountAt(mountableComp.Driver.Position);
-                        }
-                        else
-                        {
-                            mountableComp.DismountAt(mountableComp.Driver.Position - def.interactionCellOffset.RotatedBy(mountableComp.Driver.Rotation));
-                            mountableComp.Driver.Position = mountableComp.Driver.Position.RandomAdjacentCell8Way();
-                        }
-
-                    }
                 }
                 command_Action.defaultLabel = "CommandDetonateLabel".Translate();
                 yield return command_Action;
@@ -365,7 +343,7 @@ namespace ToolsForHaul
 
         private void Command_Detonate()
         {
-            GetComp<CompExplosive>().StartWick();
+            explosiveComp.StartWick();
         }
 
 

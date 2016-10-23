@@ -48,7 +48,7 @@ namespace ToolsForHaul.JobDrivers
             yield return Toils_Reserve.Reserve(MountableInd);
 
             //Mount on Target
-            yield return Toils_Goto.GotoThing(MountableInd, PathEndMode.ClosestTouch);
+            yield return Toils_Goto.GotoThing(MountableInd, PathEndMode.InteractionCell);
 
             Toil toilMountOn = new Toil();
             toilMountOn.initAction = () =>

@@ -38,9 +38,6 @@
     <thingCategories>
       <li>WeaponsRanged</li>
     </thingCategories>
-    <inspectorTabs>
-      <li>ITab_Art</li>
-    </inspectorTabs>
     <comps>
       <li Class="CompProperties_Forbiddable"/>
       <li>
@@ -95,6 +92,17 @@
       <Beauty>-60</Beauty>
     </statBases>
     <comps>
+            <li Class="CompProperties_Explosive">
+        <explosiveRadius>2.4</explosiveRadius>
+        <explosiveDamageType>Bomb</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+        <startWickHitPointsPercent>0.1</startWickHitPointsPercent>
+        <chanceNeverExplodeFromDamage>0.8</chanceNeverExplodeFromDamage>
+				<wickTicks>
+					<min>300</min>
+					<max>600</max>
+				</wickTicks>
+      </li>
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
         <fuelConsumptionRate>2000</fuelConsumptionRate>

@@ -65,7 +65,7 @@ namespace ToolsForHaul.IncidentWorkers
 
                         if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.fleshType != FleshType.Mechanoid)
                         {
-                            if (value >= 0.9f)
+                            if (value >= 0.75f)
                             {
                                 CellFinder.RandomClosewalkCellNear(current.Position, 5);
                                 Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
