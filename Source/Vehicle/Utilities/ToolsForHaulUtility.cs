@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.Components;
 using ToolsForHaul.JobDefs;
 using UnityEngine;
 using Verse;
@@ -13,13 +14,16 @@ namespace ToolsForHaul.Utilities
 {
     public static class ToolsForHaulUtility
     {
+        private const double ValidDistance = 30;
         public static string TooLittleHaulable;
         public static string NoEmptyPlaceForCart;
         public static string NoEmptyPlaceLowerTrans;
         public static string NoAvailableCart;
         public static string BurningLowerTrans;
 
-        private const double ValidDistance = 30;
+        public static List<Thing> Cart = new List<Thing>();
+
+        public static List<Thing> CartTurret = new List<Thing>();
 
         static ToolsForHaulUtility()
         {
@@ -29,6 +33,7 @@ namespace ToolsForHaul.Utilities
             NoAvailableCart = "NoAvailableCart".Translate();
             BurningLowerTrans = "BurningLower".Translate();
         }
+
         public static Apparel_Backpack TryGetBackpack(Pawn pawn)
         {
             if (!pawn.RaceProps.Humanlike)
@@ -50,14 +55,15 @@ namespace ToolsForHaul.Utilities
                     return apparel as Apparel_Toolbelt;
             return null;
         }
+
         /// <summary>
-        /// Calculates the actual current movement speed of a pawn
+        ///     Calculates the actual current movement speed of a pawn
         /// </summary>
         /// <param name="pawn">Pawn to calculate speed of</param>
         /// <returns>Move speed in cells per second</returns>
         public static float GetMoveSpeed(Pawn pawn)
         {
-            float movePerTick = 60 / pawn.GetStatValue(StatDefOf.MoveSpeed, false);    //Movement per tick
+            float movePerTick = 60 / pawn.GetStatValue(StatDefOf.MoveSpeed, false); //Movement per tick
             movePerTick += PathGrid.CalculatedCostAt(pawn.Position, false, pawn.Position);
             Building edifice = pawn.Position.GetEdifice();
             if (edifice != null)
@@ -106,7 +112,9 @@ namespace ToolsForHaul.Utilities
             {
                 if (backpack.numOfSavedItems > 0)
                 {
-                    lastItemInd = (backpack.numOfSavedItems >= backpack.MaxItem ? backpack.slotsComp.slots.Count : backpack.numOfSavedItems) - 1;
+                    lastItemInd = (backpack.numOfSavedItems >= backpack.MaxItem
+                        ? backpack.slotsComp.slots.Count
+                        : backpack.numOfSavedItems) - 1;
                     lastItem = backpack.slotsComp.slots[lastItemInd];
                 }
                 if (foodInInventory != null && backpack.numOfSavedItems < backpack.slotsComp.slots.Count
@@ -116,13 +124,8 @@ namespace ToolsForHaul.Utilities
             return lastItem;
         }
 
-        public static List<Thing> Cart = new List<Thing>();
-
-        public static List<Thing> CartTurret = new List<Thing>();
-
         public static bool AvailableCart(Vehicle_Cart cart, Pawn pawn)
         {
-
             if (cart.Faction != Faction.OfPlayer) return false;
             if (!cart.mountableComp.IsMounted) return true;
             if (cart.mountableComp.Driver == pawn) return true;
@@ -137,11 +140,10 @@ namespace ToolsForHaul.Utilities
                 return false;
 
             return Driver.RaceProps.Animal && Driver.CasualInterruptibleNow()
-                && Driver.needs.food.CurCategory < HungerCategory.Starving
-                && Driver.needs.rest.CurCategory < RestCategory.VeryTired
-                && !Driver.health.ShouldBeTendedNow;
+                   && Driver.needs.food.CurCategory < HungerCategory.Starving
+                   && Driver.needs.rest.CurCategory < RestCategory.VeryTired
+                   && !Driver.health.ShouldBeTendedNow;
         }
-
 
 
         public static Job HaulWithTools(Pawn pawn, Vehicle_Cart cart = null, Thing haulThing = null)
@@ -182,10 +184,13 @@ namespace ToolsForHaul.Utilities
                     cart.mountableComp.Driver.RaceProps.Animal) jobDef = HaulJobDefOf.HaulWithAnimalCart;
                 else jobDef = HaulJobDefOf.HaulWithCart;
                 targetC = cart;
-                maxItem = cart.MaxItem;
-                thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
-                reservedMaxItem = cart.storage.Count;
-                remainingItems = cart.storage;
+
+                    maxItem = cart.MaxItem;
+                    thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
+                    reservedMaxItem = cart.storage.Count;
+                    remainingItems = cart.storage;
+                
+
                 ShouldDrop = reservedMaxItem > 0 ? true : false;
             }
             Job job = new Job(jobDef)
@@ -197,7 +202,7 @@ namespace ToolsForHaul.Utilities
             };
 
             Trace.AppendLine(pawn.LabelCap + " In HaulWithTools: " + jobDef.defName + "\n"
-                + "MaxItem: " + maxItem + " reservedMaxItem: " + reservedMaxItem);
+                             + "MaxItem: " + maxItem + " reservedMaxItem: " + reservedMaxItem);
 
             //Drop remaining item
             if (ShouldDrop)
@@ -221,7 +226,8 @@ namespace ToolsForHaul.Utilities
                     Trace.LogMessage();
                     return job;
                 }
-                if (cart != null && job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())// && !pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
+                if (cart != null && job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())
+                // && !pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
                 {
                     Trace.AppendLine("In DismountInBase");
                     return DismountInBase(pawn, cart);
@@ -241,14 +247,15 @@ namespace ToolsForHaul.Utilities
             else searchPos = pawn.Position;
             foreach (SlotGroup slotGroup in Find.SlotGroupManager.AllGroupsListInPriorityOrder)
             {
-
                 Trace.AppendLine("Start searching slotGroup");
                 if (slotGroup.CellsList.Count - slotGroup.HeldThings.Count() < maxItem)
                     continue;
 
                 //Counting valid items
                 Trace.AppendLine("Start Counting valid items");
-                int thingsCount = ListerHaulables.ThingsPotentiallyNeedingHauling().Count(item => slotGroup.Settings.AllowedToAccept(item));
+                int thingsCount =
+                    ListerHaulables.ThingsPotentiallyNeedingHauling()
+                        .Count(item => slotGroup.Settings.AllowedToAccept(item));
 
                 //Finding valid items
                 Trace.AppendLine("Start Finding valid items");
@@ -257,18 +264,26 @@ namespace ToolsForHaul.Utilities
                     Thing thing;
                     if (haulThing == null)
                     {
-
                         //ClosestThing_Global_Reachable Configuration
                         Predicate<Thing> predicate = item
-                        => !job.targetQueueA.Contains(item) && !item.IsBurning()
-                        && !item.IsInAnyStorage()
-                        && ((cart != null && cart.allowances.Allows(item))
-                        || (backpack != null
-                            && item.def.thingCategories.Exists(category => backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))
-                            && !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)))))
-                         && !item.IsForbidden(pawn.Faction)
-                         && slotGroup.Settings.AllowedToAccept(item)
-                         && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger());
+                            => !job.targetQueueA.Contains(item) && !item.IsBurning()
+                               && !item.IsInAnyStorage()
+                               && ((cart as Vehicle_Cart != null && (cart as Vehicle_Cart).allowances.Allows(item))
+                                   
+                                   || (backpack != null
+                                       &&
+                                       item.def.thingCategories.Exists(
+                                           category =>
+                                               backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
+                                                   subCategory =>
+                                                       subCategory.ThisAndChildCategoryDefs.Contains(category))
+                                               &&
+                                               !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(
+                                                   subCategory =>
+                                                       subCategory.ThisAndChildCategoryDefs.Contains(category)))))
+                               && !item.IsForbidden(pawn.Faction)
+                               && slotGroup.Settings.AllowedToAccept(item)
+                               && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger());
                         //&& !(item is UnfinishedThing && ((UnfinishedThing)item).BoundBill != null)
                         //&& (item.def.IsNutritionSource && !SocialProperness.IsSociallyProper(item, pawn, false, false));
                         thing = GenClosest.ClosestThing_Global_Reachable(searchPos,
@@ -279,7 +294,6 @@ namespace ToolsForHaul.Utilities
                             predicate);
                         if (thing == null)
                             continue;
-
                     }
                     else
                         thing = haulThing;
@@ -299,15 +313,24 @@ namespace ToolsForHaul.Utilities
                     //Enqueue SAME items in valid distance
                     Trace.AppendLine("Start Enqueuing SAME items in valid distance");
                     foreach (Thing item in ListerHaulables.ThingsPotentiallyNeedingHauling().Where(item
-                                    => !job.targetQueueA.Contains(item) && !item.IsBurning()
-                        && !item.IsInAnyStorage()
-                        && ((cart != null && cart.allowances.Allows(item))
-                        || (backpack != null
-                            && item.def.thingCategories.Exists(category => backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))
-                            && !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)))))
-                         && !item.IsForbidden(pawn.Faction)
-                         && slotGroup.Settings.AllowedToAccept(item)
-                         && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger()) && center.DistanceToSquared(item.Position) <= ValidDistance))
+                        => !job.targetQueueA.Contains(item) && !item.IsBurning()
+                           && !item.IsInAnyStorage()
+                           && ((cart as Vehicle_Cart != null && (cart as Vehicle_Cart).allowances.Allows(item))
+                               || (backpack != null
+                                   &&
+                                   item.def.thingCategories.Exists(
+                                       category =>
+                                           backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
+                                               subCategory =>
+                                                   subCategory.ThisAndChildCategoryDefs.Contains(category))
+                                           &&
+                                           !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(
+                                               subCategory =>
+                                                   subCategory.ThisAndChildCategoryDefs.Contains(category)))))
+                           && !item.IsForbidden(pawn.Faction)
+                           && slotGroup.Settings.AllowedToAccept(item)
+                           && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger()) &&
+                           center.DistanceToSquared(item.Position) <= ValidDistance))
                     {
                         job.targetQueueA.Add(item);
                         job.numToBringList.Add(item.def.stackLimit);
@@ -325,16 +348,24 @@ namespace ToolsForHaul.Utilities
                         Trace.AppendLine("Start Enqueuing items in valid distance");
 
                         foreach (Thing item in ListerHaulables.ThingsPotentiallyNeedingHauling().Where(item
-                                    => !job.targetQueueA.Contains(item) && !item.IsBurning()
-                        && !item.IsInAnyStorage()
-                        && ((cart != null && cart.allowances.Allows(item))
-                        || (backpack != null
-                            && item.def.thingCategories.Exists(category => backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))
-                            && !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)))))
-                         && !item.IsForbidden(pawn.Faction)
-                         && slotGroup.Settings.AllowedToAccept(item)
-                         && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger())
-                         && center.DistanceToSquared(item.Position) <= ValidDistance))
+                            => !job.targetQueueA.Contains(item) && !item.IsBurning()
+                               && !item.IsInAnyStorage()
+                               && ((cart as Vehicle_Cart != null && (cart as Vehicle_Cart).allowances.Allows(item))
+                                   || (backpack != null
+                                       &&
+                                       item.def.thingCategories.Exists(
+                                           category =>
+                                               backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
+                                                   subCategory =>
+                                                       subCategory.ThisAndChildCategoryDefs.Contains(category))
+                                               &&
+                                               !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(
+                                                   subCategory =>
+                                                       subCategory.ThisAndChildCategoryDefs.Contains(category)))))
+                               && !item.IsForbidden(pawn.Faction)
+                               && slotGroup.Settings.AllowedToAccept(item)
+                               && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger())
+                               && center.DistanceToSquared(item.Position) <= ValidDistance))
                         {
                             job.targetQueueA.Add(item);
                             job.numToBringList.Add(item.def.stackLimit);
@@ -350,16 +381,23 @@ namespace ToolsForHaul.Utilities
                     {
                         Trace.AppendLine("Start Enqueuing items in valid distance & not in best storage cell");
                         foreach (Thing item in ListerHaulables.ThingsPotentiallyNeedingHauling().Where(item
-                                        => !job.targetQueueA.Contains(item) && !item.IsBurning()
-                            && !item.IsInValidBestStorage()
-                        && ((cart != null && cart.allowances.Allows(item))
-                        || (backpack != null
-                            && item.def.thingCategories.Exists(category => backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))
-                            && !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)))))
-                         && !item.IsForbidden(pawn.Faction)
-                         && slotGroup.Settings.AllowedToAccept(item)
-                         && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger())
-                                            && center.DistanceToSquared(item.Position) <= ValidDistance))
+                            => !job.targetQueueA.Contains(item) && !item.IsBurning()
+                               && !item.IsInValidBestStorage()
+                               && ((cart as Vehicle_Cart != null && (cart as Vehicle_Cart).allowances.Allows(item))
+                                   || (backpack != null
+                                       &&
+                                       item.def.thingCategories.Exists(
+                                           category =>
+                                               backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
+                                                   subCategory =>
+                                                       subCategory.ThisAndChildCategoryDefs.Contains(category))
+                                               &&
+                                               !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(
+                                                   subCategory =>
+                                                       subCategory.ThisAndChildCategoryDefs.Contains(category))))) && !item.IsForbidden(pawn.Faction)
+                               && slotGroup.Settings.AllowedToAccept(item)
+                               && pawn.CanReserveAndReach(item, PathEndMode.Touch, pawn.NormalMaxDanger())
+                               && center.DistanceToSquared(item.Position) <= ValidDistance))
                         {
                             job.targetQueueA.Add(item);
                             job.numToBringList.Add(item.def.stackLimit);
@@ -374,11 +412,18 @@ namespace ToolsForHaul.Utilities
                     Trace.AppendLine("Start Finding storage cell");
                     if (reservedMaxItem + job.targetQueueA.Count > thresholdItem)
                     {
-                        foreach (IntVec3 cell in slotGroup.CellsList.Where(cell => pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Some) && cell.Standable() && cell.GetStorable() == null))
+                        foreach (
+                            IntVec3 cell in
+                                slotGroup.CellsList.Where(
+                                    cell =>
+                                        pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Some) &&
+                                        cell.Standable() && cell.GetStorable() == null))
                         {
                             StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(thing.Position, thing);
                             IntVec3 storeCell = cell;
-                            if (!StoreUtility.TryFindBestBetterStoreCellFor(thing, pawn, currentPriority, pawn.Faction, out storeCell))
+                            if (
+                                !StoreUtility.TryFindBestBetterStoreCellFor(thing, pawn, currentPriority, pawn.Faction,
+                                    out storeCell))
                             {
                                 if (cell.InAllowedArea(pawn))
                                     job.targetQueueB.Add(cell);
@@ -392,7 +437,6 @@ namespace ToolsForHaul.Utilities
                                 if (job.targetQueueB.Count >= job.targetQueueA.Count)
                                     break;
                             }
-
                         }
                         break;
                     }
@@ -410,7 +454,8 @@ namespace ToolsForHaul.Utilities
                 Trace.LogMessage();
                 return job;
             }
-            if (cart != null && job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())//&&!pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
+            if (cart != null && job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())
+            //&&!pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
             {
                 Trace.AppendLine("In DismountInBase: ");
                 return DismountInBase(pawn, cart);
@@ -450,7 +495,8 @@ namespace ToolsForHaul.Utilities
             if (!targetQueue.NullOrEmpty())
                 foreach (TargetInfo target in targetQueue)
                     foreach (IntVec3 adjCell in GenAdjFast.AdjacentCells8Way(target))
-                        if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(haulable) && pawn.CanReserveAndReach(adjCell, PathEndMode.ClosestTouch, Danger.Some))
+                        if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(haulable) &&
+                            pawn.CanReserveAndReach(adjCell, PathEndMode.ClosestTouch, Danger.Some))
                             return adjCell;
             /*
             StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(closestHaulable.Position, closestHaulable);
@@ -479,7 +525,9 @@ namespace ToolsForHaul.Utilities
         {
             foreach (Vehicle_Cart vehicle in Cart)
             {
-                if (vehicle.vehiclesComp.IsMedical() && vehicle.mountableComp.Driver == null && pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Some) && vehicle.Faction == pawn.Faction)
+                if (vehicle.vehiclesComp.IsMedical() && vehicle.mountableComp.Driver == null &&
+                    pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Some) &&
+                    vehicle.Faction == pawn.Faction)
                 {
                     Debug.Log("Wheel chair found");
                     return vehicle;
@@ -491,19 +539,43 @@ namespace ToolsForHaul.Utilities
 
         public static bool IsDriver(Pawn pawn)
         {
-            foreach (Vehicle_Cart vehicle in Cart)
-                if (vehicle.mountableComp.Driver == pawn)
-                    return true;
+         // foreach (Vehicle_Cart vehicle in Cart)
+         //     if (vehicle.mountableComp.Driver == pawn)
+         //         return true;
             foreach (Vehicle_Turret vehicle in CartTurret)
                 if (vehicle.mountableComp.Driver == pawn)
                     return true;
             return false;
         }
 
-        public static bool IsDriverOfThisVehicle(Pawn pawn, Vehicle_Cart vehicleReq)
+        public static Vehicle_Cart GetCartDriver(Pawn pawn, ref bool isTurret)
+        {
+          foreach (Vehicle_Cart vehicle in Cart)
+              if (vehicle.mountableComp.Driver == pawn)
+              {
+                  return vehicle;
+              }
+            return null;
+        }
+
+        public static Vehicle_Turret GetTurretDriver(Pawn pawn, ref bool isTurret)
+        {
+            foreach (Vehicle_Turret vehicleTurret in CartTurret)
+                if (vehicleTurret.mountableComp.Driver == pawn)
+                {
+                    isTurret = true;
+                    return vehicleTurret;
+                }
+            return null;
+        }
+
+        public static bool IsDriverOfThisVehicle(Pawn pawn, Thing vehicleReq)
         {
             foreach (Vehicle_Cart vehicle in Cart)
                 if (vehicle.mountableComp.Driver == pawn && vehicle == vehicleReq)
+                    return true;
+            foreach (Vehicle_Turret vehicleTurret in CartTurret)
+                if (vehicleTurret.mountableComp.Driver == pawn && vehicleTurret == vehicleReq)
                     return true;
             return false;
         }

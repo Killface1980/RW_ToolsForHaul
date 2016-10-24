@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using RimWorld;
+using ToolsForHaul.Components;
 using UnityEngine;
 using Verse;
 
@@ -48,6 +49,7 @@ namespace ToolsForHaul.ITabs
                 allowances = ((Vehicle_Cart)Find.Selector.SelectedObjects.First()).allowances;
             else
                 allowances = ((Vehicle_Turret)Find.Selector.SelectedObjects.First()).allowances;
+
 
             Rect position = new Rect(0.0f, 0.0f, WinSize.x, WinSize.y).ContractedBy(10f);
             GUI.BeginGroup(position);

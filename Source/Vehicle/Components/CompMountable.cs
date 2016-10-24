@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using RimWorld;
 using ToolsForHaul.Designators;
 using ToolsForHaul.JobDefs;
+using ToolsForHaul.StatDefs;
+using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -28,6 +30,9 @@ namespace ToolsForHaul.Components
         public Sustainer sustainerAmbient;
         public CompDriver driverComp;
 
+        public int DefaultMaxItem { get { return (int)parent.GetStatValue(HaulStatDefOf.VehicleMaxItem); } }
+        public int MaxItemPerBodySize { get { return (int)parent.GetStatValue(HaulStatDefOf.VehicleMaxItem); } }
+
         private bool IsTank()
         {
             Vehicle_Turret vehicleCart = parent as Vehicle_Turret;
@@ -40,6 +45,10 @@ namespace ToolsForHaul.Components
         {
             if (Driver != null)
                 return;
+
+            if (ToolsForHaulUtility.IsDriver(pawn))
+                return;
+
             Driver = pawn;
 
             MapComponent_ToolsForHaul.currentVehicle.Add(pawn, parent);

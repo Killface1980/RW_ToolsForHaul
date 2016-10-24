@@ -35,7 +35,7 @@
     </building>
     <damageMultipliers>
       <li>
-        <damageDef>Flame</damageDef>
+        <damageDef>Bomb</damageDef>
         <multiplier>2.5</multiplier>
       </li>
       <li>

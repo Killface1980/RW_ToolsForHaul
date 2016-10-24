@@ -405,7 +405,7 @@ namespace ToolsForHaul
         [DebuggerHidden]
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            foreach (var gizmo in base.GetGizmos())
+            foreach (Gizmo gizmo in base.GetGizmos())
             {
                 yield return gizmo;
             }

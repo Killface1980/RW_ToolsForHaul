@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.Components;
 using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
@@ -48,29 +49,44 @@ namespace ToolsForHaul.WorkGivers
             {
                 return null;
             }
-            List<Vehicle_Cart> cartsAvailable = new List<Vehicle_Cart>();
-            foreach (Vehicle_Cart vehicleCart in ToolsForHaulUtility.Cart)
+
+            // Vehicle selection
+            bool isTurret = false;
+
+            if (ToolsForHaulUtility.IsDriver(pawn))
             {
-                if (ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, vehicleCart))
-                {
-                    cart = vehicleCart;
-                    break;
-                }
-                else if (ToolsForHaulUtility.AvailableAnimalCart(vehicleCart) || ToolsForHaulUtility.AvailableCart(vehicleCart, pawn))
-                {
-                    if (!vehicleCart.tankLeaking || (!vehicleCart.vehiclesComp.MotorizedWithoutFuel() && vehicleCart.refuelableComp.HasFuel))
-                        cartsAvailable.Add(vehicleCart);
-                }
+                cart = ToolsForHaulUtility.GetCartDriver(pawn, ref isTurret);
             }
 
-            if (cart == null && cartsAvailable.Any())
+            if (isTurret)
             {
-                cartsAvailable.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenBy(x => x.DefaultMaxItem);
-                cart = cartsAvailable.First();
+                JobFailReason.Is("Can't haul with military vehicle");
+                return null;
             }
 
             if (cart == null)
-                return null;
+            {
+
+                List<Vehicle_Cart> cartsAvailable = new List<Vehicle_Cart>();
+                foreach (Vehicle_Cart vehicleCart in ToolsForHaulUtility.Cart)
+                {
+                    if (ToolsForHaulUtility.AvailableAnimalCart(vehicleCart) || ToolsForHaulUtility.AvailableCart(vehicleCart, pawn))
+                    {
+                        if (!vehicleCart.tankLeaking || (!vehicleCart.vehiclesComp.MotorizedWithoutFuel() && vehicleCart.refuelableComp.HasFuel))
+                            cartsAvailable.Add(vehicleCart);
+                    }
+                }
+
+                if (cart == null && cartsAvailable.Any())
+                {
+                    cartsAvailable.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenBy(x => x.mountableComp.DefaultMaxItem);
+                    cart = cartsAvailable.First();
+                }
+
+                if (cart == null)
+                    return null;
+            }
+
             if (cart.IsForbidden(pawn.Faction) || !pawn.CanReserveAndReach(cart, PathEndMode.ClosestTouch, pawn.NormalMaxDanger()))
                 return null;
             if (cart.IsBurning())
@@ -82,14 +98,14 @@ namespace ToolsForHaul.WorkGivers
             if (!cart.allowances.Allows(t))
             {
                 JobFailReason.Is("Cart does not allow that thing");
-                return null;
-            }
-
-            if (ListerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.storage.Count == 0)
-            {
-                JobFailReason.Is("NoHaulable".Translate());
-                return null;
-            }
+                    return null;
+                }
+                if (ListerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.storage.Count == 0)
+                {
+                    JobFailReason.Is("NoHaulable".Translate());
+                    return null;
+                }
+            
             if (Find.SlotGroupManager.AllGroupsListInPriorityOrder.Count == 0)
             {
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);

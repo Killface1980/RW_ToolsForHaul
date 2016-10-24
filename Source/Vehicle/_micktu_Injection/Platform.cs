@@ -34,7 +34,7 @@ namespace BuildProductive.Injection
                 _pageSize = (uint)getpagesize();
 
                 posix_memalign(out addr, _pageSize, _pageSize);
-                var result = mprotect(addr, _pageSize, 0x7);
+                int result = mprotect(addr, _pageSize, 0x7);
 
                 if (result != 0)
                 {
@@ -67,14 +67,14 @@ namespace BuildProductive.Injection
 
         public static int GetJitMethodSize(IntPtr ptr)
         {
-            var infoPtr = mono_jit_info_table_find(mono_domain_get(), ptr);
+            IntPtr infoPtr = mono_jit_info_table_find(mono_domain_get(), ptr);
             if (infoPtr == IntPtr.Zero)
             {
                 Log.Error("Failed to obtain MonoJitInfo.");
                 return 0;
             }
 
-            var info = (MonoJitInfo)Marshal.PtrToStructure(infoPtr, typeof(MonoJitInfo));
+            MonoJitInfo info = (MonoJitInfo)Marshal.PtrToStructure(infoPtr, typeof(MonoJitInfo));
             if (info.code_start != ptr)
             {
                 Log.Error("Invalid MonoJitInfo.");

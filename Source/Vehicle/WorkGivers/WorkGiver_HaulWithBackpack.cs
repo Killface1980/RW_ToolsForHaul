@@ -14,9 +14,9 @@ namespace ToolsForHaul.WorkGivers
     {
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            var list = new List<Thing>();
-            var backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
-            foreach (var thing in ListerHaulables.ThingsPotentiallyNeedingHauling())
+            List<Thing> list = new List<Thing>();
+            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            foreach (Thing thing in ListerHaulables.ThingsPotentiallyNeedingHauling())
             {
                 if (thing.def.thingCategories.Exists(category => backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)) && !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))))
                     list.Add(thing);

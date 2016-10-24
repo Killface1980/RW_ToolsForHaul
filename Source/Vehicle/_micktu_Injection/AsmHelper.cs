@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace BuildProductive.Injection
@@ -14,9 +15,9 @@ namespace BuildProductive.Injection
 
         static AsmHelper()
         {
-            var methods = typeof(AsmHelper).GetMethods();
+            MethodInfo[] methods = typeof(AsmHelper).GetMethods();
 
-            foreach (var m in methods)
+            foreach (MethodInfo m in methods)
             {
                 m.MethodHandle.GetFunctionPointer();
             }
@@ -32,9 +33,9 @@ namespace BuildProductive.Injection
 
         public unsafe byte[] PeekStackAlloc()
         {
-            var p = (byte*)_value;
+            byte* p = (byte*)_value;
 
-            var i = 0;
+            int i = 0;
             // look for sub esp, $ or subq $, %rsp
             while (true)
             {
@@ -52,7 +53,7 @@ namespace BuildProductive.Injection
                 i++;
             }
 
-            var bytes = new byte[i + 1];
+            byte[] bytes = new byte[i + 1];
             Marshal.Copy(new IntPtr(_value), bytes, 0, i + 1);
 
             return bytes;
@@ -60,18 +61,18 @@ namespace BuildProductive.Injection
 
         public unsafe long PeekJmp()
         {
-            var p = (byte*)_value;
+            byte* p = (byte*)_value;
 
             // Look for jmp $
             if (p[0] == 0xE9)
             {
-                var dp = (int*)(_value + 1);
+                int* dp = (int*)(_value + 1);
                 return (*dp + _value + 5);
             }
             // Look for movq $, %rax; jmp %rax
             else if (p[0] == 0x48 && p[1] == 0xB8 && p[10] == 0xFF && p[11] == 0xE0)
             {
-                var lp = (long*)(_value + 2);
+                long* lp = (long*)(_value + 2);
                 return *lp;
             }
 
@@ -105,7 +106,7 @@ namespace BuildProductive.Injection
         // call $rel32
         public void WriteCallRel32(long address)
         {
-            var offset = Convert.ToInt32(address - _value - 5);
+            int offset = Convert.ToInt32(address - _value - 5);
             WriteByte(0xE8); // CALL $
             WriteInt(offset);
         }
@@ -113,7 +114,7 @@ namespace BuildProductive.Injection
         // jmp $rel32
         public void WriteJmpRel32(IntPtr ptr)
         {
-            var offset = Convert.ToInt32(ptr.ToInt64() - _value - 5);
+            int offset = Convert.ToInt32(ptr.ToInt64() - _value - 5);
             WriteByte(0xE9); // JMP $
             WriteInt(offset);
         }
@@ -128,7 +129,7 @@ namespace BuildProductive.Injection
         // jmp $rel8
         public void WriteJmp8(IntPtr ptr)
         {
-            var offset = Convert.ToSByte(ptr.ToInt64() - _value - 2);
+            sbyte offset = Convert.ToSByte(ptr.ToInt64() - _value - 2);
             WriteByte(0xEB);
             WriteByte((byte)offset);
         }
@@ -136,7 +137,7 @@ namespace BuildProductive.Injection
         // jl $rel8
         public void WriteJl8(IntPtr ptr)
         {
-            var offset = Convert.ToSByte(ptr.ToInt64() - _value - 2);
+            sbyte offset = Convert.ToSByte(ptr.ToInt64() - _value - 2);
             WriteByte(0x7C);
             WriteByte((byte)offset);
         }
@@ -144,7 +145,7 @@ namespace BuildProductive.Injection
         // jg $rel8
         public void WriteJg8(IntPtr ptr)
         {
-            var offset = Convert.ToSByte(ptr.ToInt64() - _value - 2);
+            sbyte offset = Convert.ToSByte(ptr.ToInt64() - _value - 2);
             WriteByte(0x7F);
             WriteByte((byte)offset);
         }
@@ -158,7 +159,7 @@ namespace BuildProductive.Injection
         // nop
         public void WriteNop(int count = 1)
         {
-            for (var i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 WriteByte(0x90);
             }
@@ -168,7 +169,7 @@ namespace BuildProductive.Injection
         {
             byte* p = (byte*)_value;
 
-            foreach (var b in bytes)
+            foreach (byte b in bytes)
             {
                 *p = b;
                 p++;

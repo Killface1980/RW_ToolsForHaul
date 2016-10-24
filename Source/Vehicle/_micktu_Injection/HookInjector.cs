@@ -112,23 +112,23 @@ namespace BuildProductive.Injection
 
         private bool Patch(PatchInfo pi)
         {
-            var hookPtr = new IntPtr(_memPtr.ToInt64() + _offset);
+            IntPtr hookPtr = new IntPtr(_memPtr.ToInt64() + _offset);
 
           //_logger.Debug("Patching via hook @ {0:X}:", hookPtr.ToInt64());
           //_logger.Debug("    Source: {0}.{1} @ {2:X}", pi.SourceType.Name, pi.SourceMethod.Name, pi.SourcePtr.ToInt64());
           //_logger.Debug("    Target: {0}.{1} @ {2:X}", pi.TargetType.Name, pi.TargetMethod.Name, pi.TargetPtr.ToInt64());
 
-            var s = new AsmHelper(hookPtr);
+            AsmHelper s = new AsmHelper(hookPtr);
 
             // Main proc
             s.WriteJmp(pi.TargetPtr);
-            var mainPtr = s.ToIntPtr();
+            IntPtr mainPtr = s.ToIntPtr();
 
-            var src = new AsmHelper(pi.SourcePtr);
+            AsmHelper src = new AsmHelper(pi.SourcePtr);
 
             // Check if already patched
-            var isAlreadyPatched = false;
-            var jmpLoc = src.PeekJmp();
+            bool isAlreadyPatched = false;
+            long jmpLoc = src.PeekJmp();
             if (jmpLoc != 0)
             {
             //    _logger.Debug("    Method already patched, rerouting.");
@@ -156,14 +156,14 @@ namespace BuildProductive.Injection
             else
             {
                 // Copy source proc stack alloc instructions
-                var stackAlloc = src.PeekStackAlloc();
+                byte[] stackAlloc = src.PeekStackAlloc();
 
                 if (stackAlloc.Length < 5)
                 {
                  //   _logger.Debug("    Stack alloc too small to be patched, attempting full copy.");
 
-                    var size = (Platform.GetJitMethodSize(pi.SourcePtr));
-                    var bytes = new byte[size];
+                    int size = (Platform.GetJitMethodSize(pi.SourcePtr));
+                    byte[] bytes = new byte[size];
                     Marshal.Copy(pi.SourcePtr, bytes, 0, size);
                     s.Write(bytes);
 
@@ -179,7 +179,7 @@ namespace BuildProductive.Injection
                     if (stackAlloc.Length < 12) src.WriteJmpRel32(mainPtr);
                     else src.WriteJmp(mainPtr);
 
-                    var srcOffset = (int)(src.ToInt64() - pi.SourcePtr.ToInt64());
+                    int srcOffset = (int)(src.ToInt64() - pi.SourcePtr.ToInt64());
                     src.WriteNop(stackAlloc.Length - srcOffset);
                 }
             }

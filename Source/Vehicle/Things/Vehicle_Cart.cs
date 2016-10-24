@@ -357,7 +357,7 @@ namespace ToolsForHaul
                 foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret)
                     if (cart.mountableComp.Driver == myPawn)
                         alreadyMounted = true;
-                
+
                 if (myPawn.Faction == Faction.OfPlayer && (myPawn.RaceProps.IsMechanoid || myPawn.RaceProps.Humanlike) && !alreadyMounted && !this.IsForbidden(myPawn.Faction))
                 {
                     yield return new FloatMenuOption("Mount".Translate(LabelShort), action_Mount);
@@ -390,6 +390,7 @@ namespace ToolsForHaul
 
         public bool tankLeaking = false;
         private int tankHitCount;
+
 
 
         public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
@@ -523,7 +524,7 @@ namespace ToolsForHaul
         {
             if (!instantiated)
             {
-                foreach (var thing in GetContainer())
+                foreach (Thing thing in GetContainer())
                 {
                     thing.holder.owner = this;
                 }
@@ -778,18 +779,24 @@ namespace ToolsForHaul
 
                 wheelLoc.z = wheelLoc.z + wheel_shake;
 
-                Vector3 mountThingLoc = drawLoc; mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
+                Vector3 mountThingLoc = drawLoc;
+                mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.06f;
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
 
-                if (!storage.Any())
-                    foreach (Thing mountThing in storage)
-                    {
-                        Pawn p = (Pawn)mountThing;
-                        p.ExposeData();
-                        p.Rotation = Rotation;
-                        p.DrawAt(mountThingLoc + mountThingOffset);
-                        p.DrawGUIOverlay();
-                    }
+                if (false)
+                    if (!storage.Any())
+                        foreach (Thing mountThing in storage)
+                        {
+                            mountThing.Rotation = Rotation;
+                        mountThing.DrawAt(mountThingLoc + mountThingOffset);
+
+                          //Pawn p = (Pawn)mountThing;
+                          //p.ExposeData();
+                          //p.Rotation = Rotation;
+                          //p.DrawAt(mountThingLoc + mountThingOffset);
+                          //p.DrawGUIOverlay();
+                        }
+
                 if (Rotation.AsInt % 2 == 0) //Vertical
                     wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
 

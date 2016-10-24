@@ -37,16 +37,6 @@ namespace ToolsForHaul
             get;
         }
 
-        public override void PreApplyDamage(DamageInfo dinfo, out bool absorbed)
-        {
-            base.PreApplyDamage(dinfo, out absorbed);
-            if (absorbed)
-            {
-                return;
-            }
-            stunner.Notify_DamageApplied(dinfo, true);
-            absorbed = false;
-        }
         #endregion
 
 
@@ -145,7 +135,7 @@ namespace ToolsForHaul
             get
             {
                 return mountableComp.IsMounted && mountableComp.Driver.RaceProps.Animal ?
-                    Mathf.CeilToInt(mountableComp.Driver.BodySize * MaxItemPerBodySize) : DefaultMaxItem;
+                    Mathf.CeilToInt(mountableComp.Driver.BodySize * mountableComp.MaxItemPerBodySize) : mountableComp.DefaultMaxItem;
             }
         }
         public int MaxStack { get { return MaxItem * 100; } }
@@ -451,6 +441,22 @@ namespace ToolsForHaul
         public bool tankLeaking = false;
         private int tankHitCount;
 
+        /// <summary>
+        /// PreApplyDamage from Building_Turret - not sure what the stunner does
+        /// </summary>
+        /// <param name="dinfo"></param>
+        /// <param name="absorbed"></param>
+        public override void PreApplyDamage(DamageInfo dinfo, out bool absorbed)
+        {
+            base.PreApplyDamage(dinfo, out absorbed);
+            if (absorbed)
+            {
+                return;
+            }
+            stunner.Notify_DamageApplied(dinfo, true);
+            absorbed = false;
+        }
+
 
         public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
@@ -572,7 +578,6 @@ namespace ToolsForHaul
         #endregion
 
 
-
         #region Ticker
         // ==================================
 
@@ -583,7 +588,7 @@ namespace ToolsForHaul
         {
             if (!instantiated)
             {
-                foreach (var thing in GetContainer())
+                foreach (Thing thing in GetContainer())
                 {
                     thing.holder.owner = this;
                 }
@@ -838,18 +843,18 @@ namespace ToolsForHaul
 
                 wheelLoc.z = wheelLoc.z + wheel_shake;
 
-                Vector3 mountThingLoc = drawLoc; mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
+                Vector3 mountThingLoc = drawLoc;
+                mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.06f;
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
 
-                if (!storage.Any())
+                if (false)
+                if (storage?.Count > 0)
                     foreach (Thing mountThing in storage)
                     {
-                        Pawn p = (Pawn)mountThing;
-                        p.ExposeData();
-                        p.Rotation = Rotation;
-                        p.DrawAt(mountThingLoc + mountThingOffset);
-                        p.DrawGUIOverlay();
+                        mountThing.Rotation = Rotation;
+                        mountThing.DrawAt(mountThingLoc + mountThingOffset);
                     }
+
                 if (Rotation.AsInt % 2 == 0) //Vertical
                     wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
 
@@ -881,7 +886,7 @@ namespace ToolsForHaul
             stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
             if (tankLeaking)
                 stringBuilder.AppendLine("TankLeaking".Translate());
-            var text = storage.ContentsString;
+            string text = storage.ContentsString;
             stringBuilder.AppendLine(string.Concat(new object[]
             {
             "InStorage".Translate(),

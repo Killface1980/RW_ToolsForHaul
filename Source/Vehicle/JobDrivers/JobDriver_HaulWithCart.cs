@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.Components;
 using ToolsForHaul.Toils;
 using Verse;
 using Verse.AI;
@@ -63,6 +64,8 @@ namespace ToolsForHaul.JobDrivers
 
             Toil findStoreCellForCart = Toils_Cart.FindStoreCellForCart(CartInd);
             Toil checkCartEmpty = Toils_Jump.JumpIf(findStoreCellForCart, () => cart.storage.Count <= 0);
+
+
             Toil checkStoreCellEmpty = Toils_Jump.JumpIf(findStoreCellForCart, () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
             Toil checkHaulableEmpty = Toils_Jump.JumpIf(checkStoreCellEmpty, () => CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
 
