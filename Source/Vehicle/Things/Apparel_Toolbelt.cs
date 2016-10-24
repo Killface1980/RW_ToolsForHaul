@@ -64,22 +64,22 @@ namespace ToolsForHaul
             base.Draw();
         }
 
-        public override void Tick()
-        {
-            base.Tick();
-            //Put on backpack
-            if (postWearer == null && wearer != null)
-            {
-                postWearer = wearer;
-            }
-
-            //Put off backpack. Should drop all from postWearer
-            else if (postWearer != null && wearer == null)
-            {
-                slotsComp.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
-                postWearer = null;
-            }
-        }
+      //public override void Tick()
+      //{
+      //    base.Tick();
+      //    //Put on backpack
+      //    if (postWearer == null && wearer != null)
+      //    {
+      //        postWearer = wearer;
+      //    }
+      //
+      //    //Put off backpack. Should drop all from postWearer
+      //    else if (postWearer != null && wearer == null)
+      //    {
+      //        slotsComp.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
+      //        postWearer = null;
+      //    }
+      //}
 
         public override IEnumerable<Gizmo> GetWornGizmos()
         {

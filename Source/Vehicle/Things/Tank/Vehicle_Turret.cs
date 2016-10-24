@@ -418,7 +418,7 @@ namespace ToolsForHaul
                     if (cart.mountableComp.Driver == myPawn)
                         alreadyMounted = true;
 
-                if (myPawn.Faction == Faction.OfPlayer && (myPawn.RaceProps.IsMechanoid || myPawn.RaceProps.Humanlike) && !alreadyMounted)
+                if (myPawn.Faction == Faction.OfPlayer && (myPawn.RaceProps.IsMechanoid || myPawn.RaceProps.Humanlike) && !alreadyMounted && !this.IsForbidden(myPawn.Faction))
                 {
                     yield return new FloatMenuOption("Mount".Translate(LabelShort), action_Mount);
                 }
@@ -757,7 +757,7 @@ namespace ToolsForHaul
         private static readonly Vector3 DustOffset = new Vector3(-0.3f, 0f, -0.3f);
 
         private Vector3 _lastFootprintPlacePos;
-        private const float FootprintIntervalDist = 0.8f;
+        private const float FootprintIntervalDist = 0.7f;
 
         private float _tankHitPos = 1f;
         int damagetick = -5000;

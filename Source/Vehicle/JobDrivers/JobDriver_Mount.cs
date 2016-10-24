@@ -13,6 +13,7 @@ namespace ToolsForHaul.JobDrivers
 
         public override string GetReport()
         {
+
             string repString;
             repString = "ReportMounting".Translate(TargetThingA.LabelCap);
 
@@ -28,7 +29,7 @@ namespace ToolsForHaul.JobDrivers
             this.FailOnDestroyedOrNull(MountableInd);
             //Note we only fail on forbidden if the target doesn't start that way
             //This helps haul-aside jobs on forbidden items
-            if (!TargetThingA.IsForbidden(pawn.Faction))
+            if (TargetThingA.IsForbidden(pawn.Faction))
                 this.FailOnForbidden(MountableInd);
 
 

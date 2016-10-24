@@ -27,14 +27,15 @@ namespace ToolsForHaul.ITabs
             WinSize = new Vector2(300f, 480f);
         }
 
-		public override bool IsVisible
-		{
-			get 
+        public override bool IsVisible
+        {
+            get
             {
                 Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
-                return cart != null;
+                Vehicle_Turret vehicleTurret = Find.Selector.SelectedObjects.First() as Vehicle_Turret;
+                return cart != null || vehicleTurret != null;
             }
-		}
+        }
 
         protected override void FillTab()
         {
@@ -42,7 +43,12 @@ namespace ToolsForHaul.ITabs
             PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.StorageTab, KnowledgeAmount.FrameDisplayed);
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.StorageTab, OpportunityType.Critical);
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.Stockpiles, OpportunityType.Critical);
-            allowances = ((Vehicle_Cart)Find.Selector.SelectedObjects.First()).allowances;
+            var cart = (Vehicle_Cart)Find.Selector.SelectedObjects.First();
+            if (cart != null)
+                allowances = ((Vehicle_Cart)Find.Selector.SelectedObjects.First()).allowances;
+            else
+                allowances = ((Vehicle_Turret)Find.Selector.SelectedObjects.First()).allowances;
+
             Rect position = new Rect(0.0f, 0.0f, WinSize.x, WinSize.y).ContractedBy(10f);
             GUI.BeginGroup(position);
 

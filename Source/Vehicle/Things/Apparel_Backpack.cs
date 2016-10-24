@@ -68,26 +68,26 @@ namespace ToolsForHaul
 
 
 
-        public override void Tick()
-        {
-            base.Tick();
-            //Put on backpack
-            if (postWearer == null && wearer != null)
-            {
-                postWearer = wearer;
-            }
-
-            //Put off backpack. Should drop all from postWearer
-            else if (postWearer != null && wearer == null)
-            {
-
-                slotsComp.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
-                postWearer = null;
-                numOfSavedItems = 0;
-            }
-            if (wearer != null && numOfSavedItems > slotsComp.slots.Count)
-                numOfSavedItems = slotsComp.slots.Count;
-        }
+      //public override void Tick()
+      //{
+      //    base.Tick();
+      //    //Put on backpack
+      //    if (postWearer == null && wearer != null)
+      //    {
+      //        postWearer = wearer;
+      //    }
+      //
+      //    //Put off backpack. Should drop all from postWearer
+      //    else if (postWearer != null && wearer == null)
+      //    {
+      //
+      //        slotsComp.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
+      //        postWearer = null;
+      //        numOfSavedItems = 0;
+      //    }
+      //    if (wearer != null && numOfSavedItems > slotsComp.slots.Count)
+      //        numOfSavedItems = slotsComp.slots.Count;
+      //}
 
         public override IEnumerable<Gizmo> GetWornGizmos()
         {

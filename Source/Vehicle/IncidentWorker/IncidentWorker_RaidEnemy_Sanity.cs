@@ -63,9 +63,9 @@ namespace ToolsForHaul.IncidentWorkers
 
                         letterLookTarget = current;
 
-                        if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.fleshType != FleshType.Mechanoid)
+                        if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.fleshType != FleshType.Mechanoid&& current.RaceProps.ToolUser)
                         {
-                            if (value >= 0.75f)
+                            if (value >= 0.85f)
                             {
                                 CellFinder.RandomClosewalkCellNear(current.Position, 5);
                                 Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
@@ -74,7 +74,7 @@ namespace ToolsForHaul.IncidentWorkers
                                 Job job = new Job(HaulJobDefOf.Mount);
                                 Find.Reservations.ReleaseAllForTarget(thing);
                                 job.targetA = thing;
-                                current.jobs.StartJob(job, JobCondition.InterruptForced);
+                                current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
                                 Vehicle_Turret vehicle = thing as Vehicle_Turret;
 

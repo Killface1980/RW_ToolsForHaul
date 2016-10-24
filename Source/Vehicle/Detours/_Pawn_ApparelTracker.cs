@@ -19,17 +19,31 @@ namespace ToolsForHaul.Detoured
                 return false;
             }
 
-            var toolbelt = ap as Apparel_Toolbelt;
-            var backpack = ap as Apparel_Backpack;
+            Apparel_Toolbelt toolbelt = ap as Apparel_Toolbelt;
+            Apparel_Backpack backpack = ap as Apparel_Backpack;
+
+            Thing thing = null;
 
             if (toolbelt != null)
-                toolbelt.slotsComp.slots.TryDropAll(ap.wearer.Position, ThingPlaceMode.Near);
-            if (backpack != null)
-                backpack.slotsComp.slots.TryDropAll(ap.wearer.Position, ThingPlaceMode.Near);
+            {
+                if (toolbelt?.slotsComp?.slots?.Count >= 1)
+                {
+                    foreach (Thing slot in toolbelt.slotsComp.slots)
+                    {
+                        GenThing.TryDropAndSetForbidden(slot, pos, ThingPlaceMode.Near, out thing, forbid);
+                    }
+                }
+            }
+            if (backpack?.slotsComp?.slots?.Count >= 1)
+            {
+                foreach (Thing slot in backpack.slotsComp.slots)
+                {
+                    GenThing.TryDropAndSetForbidden(slot, pos, ThingPlaceMode.Near, out thing, forbid);
+                }
+            }
 
             _this.WornApparel.Remove(ap);
             ap.wearer = null;
-            Thing thing = null;
             bool flag = GenThing.TryDropAndSetForbidden(ap, pos, ThingPlaceMode.Near, out thing, forbid);
             resultingAp = (thing as Apparel);
             _this.pawn.Drawer.renderer.graphics.ResolveApparelGraphics();

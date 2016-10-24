@@ -35,11 +35,7 @@
     </building>
     <damageMultipliers>
       <li>
-        <damageDef>Repair</damageDef>
-        <multiplier>0.5</multiplier>
-      </li>
-      <li>
-        <damageDef>Bomb</damageDef>
+        <damageDef>Flame</damageDef>
         <multiplier>2.5</multiplier>
       </li>
       <li>
@@ -234,7 +230,7 @@
     <comps>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>2.9</explosiveRadius>
-        <explosiveDamageType>Bomb</explosiveDamageType>
+        <explosiveDamageType>Flame</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <!-- 				<startWickHitPointsPercent>0.10</startWickHitPointsPercent>
 				<wickTicks>
@@ -294,7 +290,7 @@
     <comps>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>2.4</explosiveRadius>
-        <explosiveDamageType>Bomb</explosiveDamageType>
+        <explosiveDamageType>Flame</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.2</startWickHitPointsPercent>
         <chanceNeverExplodeFromDamage>0.8</chanceNeverExplodeFromDamage>
@@ -586,7 +582,7 @@
     <comps>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>2.9</explosiveRadius>
-        <explosiveDamageType>Bomb</explosiveDamageType>
+        <explosiveDamageType>Flame</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.10</startWickHitPointsPercent>
         <wickTicks>

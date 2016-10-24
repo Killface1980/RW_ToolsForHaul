@@ -334,7 +334,7 @@ namespace ToolsForHaul.Components
             string verb;
             if (parent.Faction == Faction.OfPlayer)
             {
-                if (!IsMounted)
+                if (!IsMounted && !parent.IsForbidden(Faction.OfPlayer))
                 {
                     action_Order = () =>
                     {

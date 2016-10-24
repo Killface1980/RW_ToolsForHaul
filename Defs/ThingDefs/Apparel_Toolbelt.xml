@@ -56,7 +56,7 @@
   <ThingDef Name="ToolsForHaulToolbeltBase" ParentName="ToolsForHaulApparelMakeableBase" Abstract="True">
     <thingClass>ToolsForHaul.Apparel_Toolbelt</thingClass>
     <thingCategories>
-      <li>Apparel</li>
+      <li>Toolbelts</li>
     </thingCategories>
   </ThingDef>
 
@@ -78,7 +78,6 @@
       <TFHMaxItem>2</TFHMaxItem>
       <MarketValue>150</MarketValue>
     </statBases>  
-    <tickerType>Normal</tickerType>
     <costStuffCount>50</costStuffCount>
     <stuffCategories>
       <li>Leathery</li>

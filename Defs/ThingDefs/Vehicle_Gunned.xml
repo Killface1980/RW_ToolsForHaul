@@ -94,7 +94,7 @@
     <comps>
             <li Class="CompProperties_Explosive">
         <explosiveRadius>2.4</explosiveRadius>
-        <explosiveDamageType>Bomb</explosiveDamageType>
+        <explosiveDamageType>Flame</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.1</startWickHitPointsPercent>
         <chanceNeverExplodeFromDamage>0.8</chanceNeverExplodeFromDamage>

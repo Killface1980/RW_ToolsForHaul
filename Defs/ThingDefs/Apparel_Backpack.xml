@@ -4,9 +4,8 @@
   <ThingDef Name="ToolsForHaulBackpackBase" ParentName="ToolsForHaulApparelMakeableBase" Abstract="True">
     <thingClass>ToolsForHaul.Apparel_Backpack</thingClass>
     <thingCategories>
-      <li>Apparel</li>
+      <li>Backpacks</li>
     </thingCategories>
-    <tickerType>Normal</tickerType>
     <label>backpack</label>
     <description>A backpack is a bag with straps that go over your shoulders, so that you can carry things on your back when you are walking or climbing.</description>
     <graphicData>
