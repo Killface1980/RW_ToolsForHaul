@@ -124,22 +124,15 @@ namespace ToolsForHaul.Utilities
             return lastItem;
         }
 
-        public static bool AvailableCart(Vehicle_Cart cart, Pawn pawn)
+        public static bool AvailableVehicle(ThingWithComps cart, Pawn pawn)
         {
             if (cart.Faction != Faction.OfPlayer) return false;
-            if (!cart.mountableComp.IsMounted) return true;
-            if (cart.mountableComp.Driver == pawn) return true;
-            if (!cart.IsForbidden(pawn.Faction)) return true;
+            if (cart.IsForbidden(pawn.Faction)) return false;
+            if (!cart.TryGetComp<CompMountable>().IsMounted) return true;
+            if (cart.TryGetComp<CompMountable>().Driver == pawn) return true;
             return false;
         }
-        public static bool AvailableTurretCart(Vehicle_Turret cart, Pawn pawn)
-        {
-            if (cart.Faction != Faction.OfPlayer) return false;
-            if (!cart.mountableComp.IsMounted) return true;
-            if (cart.mountableComp.Driver == pawn) return true;
-            if (!cart.IsForbidden(pawn.Faction)) return true;
-            return false;
-        }
+
         public static bool AvailableAnimalCart(Vehicle_Cart cart)
         {
             Pawn Driver = cart.mountableComp.IsMounted ? cart.mountableComp.Driver : null;
@@ -192,11 +185,11 @@ namespace ToolsForHaul.Utilities
                 else jobDef = HaulJobDefOf.HaulWithCart;
                 targetC = cart;
 
-                    maxItem = cart.MaxItem;
-                    thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
-                    reservedMaxItem = cart.storage.Count;
-                    remainingItems = cart.storage;
-                
+                maxItem = cart.MaxItem;
+                thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
+                reservedMaxItem = cart.storage.Count;
+                remainingItems = cart.storage;
+
 
                 ShouldDrop = reservedMaxItem > 0 ? true : false;
             }
@@ -276,7 +269,7 @@ namespace ToolsForHaul.Utilities
                             => !job.targetQueueA.Contains(item) && !item.IsBurning()
                                && !item.IsInAnyStorage()
                                && ((cart as Vehicle_Cart != null && (cart as Vehicle_Cart).allowances.Allows(item))
-                                   
+
                                    || (backpack != null
                                        &&
                                        item.def.thingCategories.Exists(
@@ -546,9 +539,9 @@ namespace ToolsForHaul.Utilities
 
         public static bool IsDriver(Pawn pawn)
         {
-         // foreach (Vehicle_Cart vehicle in Cart)
-         //     if (vehicle.mountableComp.Driver == pawn)
-         //         return true;
+            foreach (Vehicle_Cart vehicle in Cart)
+                if (vehicle.mountableComp.Driver == pawn)
+                    return true;
             foreach (Vehicle_Turret vehicle in CartTurret)
                 if (vehicle.mountableComp.Driver == pawn)
                     return true;
@@ -557,11 +550,11 @@ namespace ToolsForHaul.Utilities
 
         public static Vehicle_Cart GetCartDriver(Pawn pawn, ref bool isTurret)
         {
-          foreach (Vehicle_Cart vehicle in Cart)
-              if (vehicle.mountableComp.Driver == pawn)
-              {
-                  return vehicle;
-              }
+            foreach (Vehicle_Cart vehicle in Cart)
+                if (vehicle.mountableComp.Driver == pawn)
+                {
+                    return vehicle;
+                }
             return null;
         }
 

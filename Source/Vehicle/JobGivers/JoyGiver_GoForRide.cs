@@ -7,7 +7,7 @@ using Verse.AI;
 
 namespace ToolsForHaul.JoyGivers
 {
-    public class JoyGiver_GoForARide : JoyGiver_InteractBuilding
+    public class JoyGiver_GoForRide : JoyGiver_InteractBuilding
     {
         protected override bool CanDoDuringParty
         {
@@ -58,7 +58,7 @@ namespace ToolsForHaul.JoyGivers
                 job.targetQueueA.Add(list[i]);
             }
 
-            job.locomotionUrgency = LocomotionUrgency.Jog;
+            job.locomotionUrgency = LocomotionUrgency.Sprint;
             return job;
         }
     }

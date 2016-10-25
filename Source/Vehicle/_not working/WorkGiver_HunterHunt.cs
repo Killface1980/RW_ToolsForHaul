@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.JobDefs;
 using ToolsForHaul.Toils;
 using ToolsForHaul.Utilities;
 using Verse;
@@ -10,7 +11,7 @@ using Verse.AI;
 
 namespace ToolsForHaul.WorkGivers
 {
-    public class WorkGiver_HunterHunt : WorkGiver_Scanner
+    public class WorkGiver_HunterHuntWithVehicle : WorkGiver_Scanner
     {
         public override PathEndMode PathEndMode
         {
@@ -43,38 +44,45 @@ namespace ToolsForHaul.WorkGivers
 
         public override Job JobOnThing(Pawn pawn, Thing t)
         {
-            Job Hunting = new Job(JobDefOf.Hunt, t);
-            Thing cart = null;
+            Job Hunting = new Job(HaulJobDefOf.HuntWithVehicle, t);
 
-            List<Thing> things = ToolsForHaulUtility.Cart;
-            things.AddRange(ToolsForHaulUtility.CartTurret);
-            if (things != null)
+            if (!ToolsForHaulUtility.IsDriver(pawn))
             {
-                bool skip = false;
-                things.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
-                foreach (Vehicle_Turret vehicleTurret in things)
+
+                Thing cart = null;
+
+                List<Thing> things = new List<Thing>();
+                things.AddRange(ToolsForHaulUtility.Cart);
+                things.AddRange(ToolsForHaulUtility.CartTurret);
+                if (things.Count>0)
                 {
-                    if (vehicleTurret != null && (vehicleTurret.Faction == Faction.OfPlayer && !vehicleTurret.IsForbidden(Faction.OfPlayer) && ToolsForHaulUtility.AvailableTurretCart(vehicleTurret, pawn) && vehicleTurret.IsCurrentlyMotorized() && !vehicleTurret.tankLeaking && vehicleTurret.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed)))
+                    bool skip = false;
+                    things.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
+                    foreach (Vehicle_Turret vehicleTurret in things)
                     {
-                        cart = vehicleTurret;
-                        skip = true;
-                        break;
-                    }
-                }
-                if (!skip)
-                {
-                    foreach (Vehicle_Cart vehicleCart in things)
-                    {
-                        if (vehicleCart != null && (vehicleCart.Faction == Faction.OfPlayer && !vehicleCart.IsForbidden(Faction.OfPlayer) && ToolsForHaulUtility.AvailableCart(vehicleCart, pawn) && vehicleCart.IsCurrentlyMotorized() && !vehicleCart.tankLeaking && vehicleCart.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed)))
+                        if (vehicleTurret != null && (vehicleTurret.Faction == Faction.OfPlayer && !vehicleTurret.IsForbidden(Faction.OfPlayer) && ToolsForHaulUtility.AvailableTurretCart(vehicleTurret, pawn) && vehicleTurret.IsCurrentlyMotorized() && !vehicleTurret.tankLeaking && vehicleTurret.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed)))
                         {
-                            cart = vehicleCart;
+                            cart = vehicleTurret;
+                            skip = true;
                             break;
                         }
                     }
-                }
+                    if (!skip)
+                    {
+                        foreach (Vehicle_Cart vehicleCart in things)
+                        {
+                            if (vehicleCart != null && (vehicleCart.Faction == Faction.OfPlayer && !vehicleCart.IsForbidden(Faction.OfPlayer) && ToolsForHaulUtility.AvailableCart(vehicleCart, pawn) && vehicleCart.IsCurrentlyMotorized() && !vehicleCart.tankLeaking && vehicleCart.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed)))
+                            {
+                                cart = vehicleCart;
+                                break;
+                            }
+                        }
+                    }
 
-                Hunting.targetC = cart;
+                    Hunting.targetC = cart;
+                }
             }
+
             return Hunting;
         }
 

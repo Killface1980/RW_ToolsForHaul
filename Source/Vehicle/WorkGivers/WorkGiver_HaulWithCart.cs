@@ -71,7 +71,7 @@ namespace ToolsForHaul.WorkGivers
                 List<Vehicle_Cart> cartsAvailable = new List<Vehicle_Cart>();
                 foreach (Vehicle_Cart vehicleCart in ToolsForHaulUtility.Cart)
                 {
-                    if (ToolsForHaulUtility.AvailableAnimalCart(vehicleCart) || ToolsForHaulUtility.AvailableCart(vehicleCart, pawn))
+                    if (ToolsForHaulUtility.AvailableAnimalCart(vehicleCart) || ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn))
                     {
                         if (!vehicleCart.tankLeaking || (!vehicleCart.vehiclesComp.MotorizedWithoutFuel() && vehicleCart.refuelableComp.HasFuel))
                             cartsAvailable.Add(vehicleCart);
@@ -112,7 +112,7 @@ namespace ToolsForHaul.WorkGivers
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
                 return null;
             }
-            if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableCart(cart, pawn))
+            if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableVehicle(cart, pawn))
                 return ToolsForHaulUtility.HaulWithTools(pawn, cart, t);
             JobFailReason.Is(ToolsForHaulUtility.NoAvailableCart);
             return null;

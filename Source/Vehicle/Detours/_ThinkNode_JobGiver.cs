@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using ToolsForHaul.JobDefs;
 using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
@@ -46,6 +47,24 @@ namespace ToolsForHaul
                     if (job.def == JobDefOf.Hunt)
                     {
                         RightTools.EquipRigthTool(pawn, StatDefOf.AccuracyLong);
+                        if (!ToolsForHaulUtility.IsDriver(pawn))
+                        {
+                            if (ToolsForHaulUtility.Cart.Count > 0 || ToolsForHaulUtility.CartTurret.Count > 0)
+                            {
+                                Thing vehicle = RightTools.GetRightVehicle(pawn, WorkTags.Violent);
+                                if (vehicle != null)
+                                {
+                                    job = new Job(HaulJobDefOf.Mount)
+                                    {
+                                        targetA = vehicle,
+                                        
+                                    };
+                                    
+                                }
+                            }
+                        }
+
+
                     }
 
                     if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)

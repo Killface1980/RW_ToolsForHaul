@@ -10,9 +10,10 @@
   -->
 
   <!--
+  
   <JobDef>
-    <defName>Hunt</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_Hunt</driverClass>
+    <defName>HuntWithVehicle</defName>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_HuntWithVehicle</driverClass>
     <reportString>hunting TargetA.</reportString>
   -->
     <!-- for when attacked by berserk -->
@@ -23,15 +24,14 @@
   </JobDef>
   -->
 
+
   <JobDef>
-    <defName>GoForARide</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_GoForARide</driverClass>
+    <defName>GoForRide</defName>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_GoForRide</driverClass>
     <reportString>going for a ride.</reportString>
-    <joyDuration>4000</joyDuration>
-    <joyMaxParticipants>3</joyMaxParticipants>
-    <joyGainRate>1</joyGainRate>
-    <joySkill>Shooting</joySkill>
-    <joyXpPerTick>0.003</joyXpPerTick>
+    <joyDuration>6000</joyDuration>
+    <joyMaxParticipants>1</joyMaxParticipants>
+    <joyGainRate>1.3</joyGainRate>
     <joyKind>Meditative</joyKind>
   </JobDef>
   

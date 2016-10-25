@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.Components;
 using ToolsForHaul.Toils;
 using ToolsForHaul.Utilities;
 using Verse;
@@ -10,7 +11,7 @@ using Verse.AI;
 
 namespace ToolsForHaul.JobDrivers
 {
-    public class JobDriver_Hunt : JobDriver
+    public class JobDriver_HuntWithVehicle : JobDriver
     {
         private const TargetIndex VictimInd = TargetIndex.A;
 
@@ -61,6 +62,20 @@ namespace ToolsForHaul.JobDrivers
         {
             this.FailOn(delegate
             {
+                if (!CurJob.ignoreDesignations)
+                {
+                    Pawn victim = Victim;
+                    if (victim != null && !victim.Dead && Find.DesignationManager.DesignationOn(victim, DesignationDefOf.Hunt) == null)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+
+            this.FailOn(delegate
+            {
                 if (!pawn.equipment.Primary.def.IsRangedWeapon)
                 {
                     if (MapComponent_ToolsForHaul.previousPawnWeapons.ContainsKey(pawn))
@@ -84,30 +99,31 @@ namespace ToolsForHaul.JobDrivers
                 }
                 return true;
             });
+            Toil toilReserve = Toils_Reserve.Reserve(VictimInd, 1);
 
-            if (CurJob.GetTarget(VehicleInd).Thing is Vehicle_Cart || CurJob.GetTarget(VehicleInd).Thing is Vehicle_Turret)
+            if (!ToolsForHaulUtility.IsDriver(pawn))
             {
+                if (CurJob.GetTarget(VehicleInd).Thing is Vehicle_Cart || CurJob.GetTarget(VehicleInd).Thing is Vehicle_Turret)
+                {
 
-                yield return Toils_Reserve.Reserve(VehicleInd);
-                //Mount on Target
-                yield return Toils_Goto.GotoThing(VehicleInd, PathEndMode.ClosestTouch)
-                                            .FailOnDestroyedOrNull(VehicleInd);
-                yield return Toils_Cart.MountOn(VehicleInd);
+                    ThingWithComps cart = CurJob.GetTarget(VehicleInd).Thing as ThingWithComps;
+
+                    //JumpIf already mounted
+                    yield return Toils_Jump.JumpIf(toilReserve, () =>
+                    {
+                        if (cart.TryGetComp<CompMountable>().Driver == pawn) return true;
+                        return false;
+                    });
+
+                    yield return Toils_Reserve.Reserve(VehicleInd);
+                    //Mount on Target
+                    yield return Toils_Goto.GotoThing(VehicleInd, PathEndMode.ClosestTouch)
+                                                .FailOnDestroyedOrNull(VehicleInd);
+                    yield return Toils_Cart.MountOn(VehicleInd);
+                }
             }
 
-            this.FailOn(delegate
-            {
-                if (!CurJob.ignoreDesignations)
-                {
-                    Pawn victim = Victim;
-                    if (victim != null && !victim.Dead && Find.DesignationManager.DesignationOn(victim, DesignationDefOf.Hunt) == null)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            });
-            yield return Toils_Reserve.Reserve(VictimInd, 1);
+            yield return toilReserve;
             yield return new Toil
             {
                 initAction = delegate

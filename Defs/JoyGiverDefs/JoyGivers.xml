@@ -4,8 +4,8 @@
   <!-- Meditative -->
 
   <JoyGiverDef>
-    <defName>GoForARide</defName>
-    <giverClass>ToolsForHaul.JoyGivers.JoyGiver_GoForARide</giverClass>
+    <defName>GoForRide</defName>
+    <giverClass>ToolsForHaul.JoyGivers.JoyGiver_GoForRide</giverClass>
     <baseChance>2.3</baseChance>
     <thingDefs>
       <li>VehicleATV</li>
@@ -13,11 +13,10 @@
       <li>VehicleSmackWay</li>
       <li>VehicleSpeeder</li>
     </thingDefs>
-    <jobDef>GoForARide</jobDef>
+    <jobDef>GoForRide</jobDef>
     <desireSit>false</desireSit>
     <joyKind>Meditative</joyKind>
     <requiredCapacities>
-      <li>Sight</li>
       <li>Manipulation</li>
     </requiredCapacities>
   </JoyGiverDef>

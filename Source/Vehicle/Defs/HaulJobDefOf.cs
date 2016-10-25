@@ -4,6 +4,7 @@ namespace ToolsForHaul.JobDefs
 {
     public class HaulJobDefOf
     {
+    //    public static readonly JobDef HuntWithVehicle = DefDatabase<JobDef>.GetNamed("HuntWithVehicle");
         public static readonly JobDef HaulWithAnimalCart = DefDatabase<JobDef>.GetNamed("HaulWithAnimalCart");
         public static readonly JobDef HaulWithCart = DefDatabase<JobDef>.GetNamed("HaulWithCart");
         public static readonly JobDef HaulWithBackpack = DefDatabase<JobDef>.GetNamed("HaulWithBackpack");

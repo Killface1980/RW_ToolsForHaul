@@ -10,7 +10,7 @@ using Verse.Sound;
 
 namespace ToolsForHaul.JobDrivers
 {
-    public class JobDriver_GoForARide : JobDriver
+    public class JobDriver_GoForRide : JobDriver
     {
         private const TargetIndex DrivePathInd = TargetIndex.A;
         private const TargetIndex MountableInd = TargetIndex.B;

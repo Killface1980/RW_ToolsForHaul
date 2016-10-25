@@ -29,7 +29,8 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -58,13 +59,8 @@
   <ItemGroup>
     <Compile Include="Defs\HaulStatDefOf.cs" />
     <Compile Include="Components\CompDriver.cs" />
-    <Compile Include="_testing\JoyGiver_GoForARide.cs" />
-    <Compile Include="_testing\JobDriver_GoForARide.cs" />
-    <None Include="_micktu_Injection\AsmHelper.cs" />
-    <None Include="_micktu_Injection\Class1.cs" />
-    <None Include="_micktu_Injection\HookInjector.cs" />
-    <None Include="_micktu_Injection\Platform.cs" />
-    <None Include="_micktu_Injection\Globals.cs" />
+    <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
+    <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
     <None Include="_testing\ProjectileTFH.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
@@ -80,8 +76,8 @@
     <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
     <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="JobGivers\JobGiver_Steal.cs" />
-    <None Include="not working\JobDriver_Hunt.cs" />
-    <None Include="not working\WorkGiver_HunterHunt.cs" />
+    <None Include="_not working\JobDriver_Hunt.cs" />
+    <None Include="_not working\WorkGiver_HunterHunt.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="Things\Tank\Vehicle_Turret.cs" />
@@ -171,6 +167,9 @@
     </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
       <Link>Defs\JobDefs\Jobs_Misc.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\JoyGiverDefs\JoyGivers.xml">
+      <Link>Defs\JoyGivers\JoyGivers.xml</Link>
     </Content>
     <Content Include="..\..\Defs\KeyBindingDefs\KeyBindings.xml">
       <Link>Defs\KeyBindingDefs\KeyBindings.xml</Link>
