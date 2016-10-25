@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.Components;
 using ToolsForHaul.Toils;
 using Verse;
 using Verse.AI;
@@ -14,7 +15,7 @@ namespace ToolsForHaul.JobDrivers
 
         public override string GetReport()
         {
-            Vehicle_Cart cart = TargetThingA as Vehicle_Cart;
+            ThingWithComps cart = TargetThingA as ThingWithComps;
 
             IntVec3 destLoc = new IntVec3(-1000, -1000, -1000);
             string destName = null;
@@ -50,9 +51,9 @@ namespace ToolsForHaul.JobDrivers
             if (!TargetThingA.IsForbidden(pawn.Faction))
                 this.FailOnForbidden(CartInd);
 
-            Vehicle_Cart cart = TargetThingA as Vehicle_Cart;
+            ThingWithComps cart = TargetThingA as ThingWithComps;
 
-            if (cart.mountableComp.Driver!=null)
+            if (cart.TryGetComp<CompMountable>().Driver!=null)
             {
                 this.FailOnSomeonePhysicallyInteracting(CartInd);
             }
@@ -75,7 +76,7 @@ namespace ToolsForHaul.JobDrivers
             //JumpIf already mounted
             yield return Toils_Jump.JumpIf(toilGoToCell, () =>
             {
-                return cart.mountableComp.Driver == pawn ? true : false;
+                return cart.TryGetComp<CompMountable>().Driver == pawn ? true : false;
             });
 
             //Mount on Target

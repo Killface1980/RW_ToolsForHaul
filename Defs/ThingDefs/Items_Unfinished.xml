@@ -41,7 +41,7 @@
     <defName>UnfinishedWheelChair</defName>
     <label>Unfinished wheel chair</label>
     <graphicData>
-      <texPath>Things/Pawn/VehicleWheelChair/WheelChair</texPath>
+      <texPath>Things/Pawn/VehicleSmackWay/SmackWay</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(2,2)</drawSize>
     </graphicData>

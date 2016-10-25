@@ -27,6 +27,8 @@ namespace ToolsForHaul.WorkGivers
             if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                 return true;
 
+            if (ToolsForHaulUtility.GetTurretDriver(pawn) != null)
+                return true;
 
             //int countForbidden = 0;
             //foreach (var actualCart in cart)
@@ -66,7 +68,6 @@ namespace ToolsForHaul.WorkGivers
 
             if (cart == null)
             {
-
                 List<Vehicle_Cart> cartsAvailable = new List<Vehicle_Cart>();
                 foreach (Vehicle_Cart vehicleCart in ToolsForHaulUtility.Cart)
                 {

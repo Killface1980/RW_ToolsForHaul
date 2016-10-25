@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using RimWorld;
+using ToolsForHaul.Components;
 using ToolsForHaul.JobDefs;
 using Verse;
 using Verse.AI;
@@ -16,13 +17,13 @@ namespace ToolsForHaul.Toils
             toil.initAction = () =>
             {
                 Pawn actor = toil.GetActor();
-                Vehicle_Cart cart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as Vehicle_Cart;
+                ThingWithComps cart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as ThingWithComps;
                 if (cart == null)
                 {
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
-                cart.mountableComp.MountOn(actor);
+                cart.TryGetComp<CompMountable>().MountOn(actor);
             };
             return toil;
         }
@@ -52,13 +53,13 @@ namespace ToolsForHaul.Toils
             toil.initAction = () =>
             {
                 Pawn actor = toil.GetActor();
-                Vehicle_Cart cart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as Vehicle_Cart;
+                ThingWithComps cart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as ThingWithComps;
                 if (cart == null)
                 {
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
-                cart.mountableComp.DismountAt(toil.actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
+                cart.TryGetComp<CompMountable>().DismountAt(toil.actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
             };
             return toil;
         }
@@ -76,7 +77,7 @@ namespace ToolsForHaul.Toils
             {
                 IntVec3 storeCell = IntVec3.Invalid;
                 Pawn actor = toil.GetActor();
-                Vehicle_Cart vehicleCart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as Vehicle_Cart;
+                ThingWithComps vehicleCart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as ThingWithComps;
                 if (vehicleCart == null)
                 {
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");

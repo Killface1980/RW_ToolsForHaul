@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.Toils;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.JobDrivers
 {
     public class JobDriver_Hunt : JobDriver
     {
@@ -66,45 +68,32 @@ namespace ToolsForHaul
                         Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
                         if (toolbelt != null)
                         {
-                            bool equipped = false;
                             foreach (Thing slot in toolbelt.slotsComp.slots)
                             {
                                 if (slot == MapComponent_ToolsForHaul.previousPawnWeapons[pawn])
                                 {
                                     toolbelt.slotsComp.SwapEquipment(slot as ThingWithComps);
                                     MapComponent_ToolsForHaul.previousPawnWeapons.Remove(pawn);
-                                    equipped = true;
                                     break;
                                 }
                             }
-                            return !equipped;
                         }
                         MapComponent_ToolsForHaul.previousPawnWeapons.Remove(pawn);
-
+                        return false;
                     }
                 }
                 return true;
             });
-          //List<Thing> things = ToolsForHaulUtility.Cart();
-          //if (things != null)
-          //{
-          //    things.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
-          //    foreach (Vehicle_Cart cart in things)
-          //    {
-          //        if (cart.Faction == Faction.OfPlayer && !cart.IsForbidden(Faction.OfPlayer) && ToolsForHaulUtility.AvailableCart(cart, pawn) && cart.IsCurrentlyMotorized() && !cart.tankLeaking)
-          //        {
-          //
-          //            pawn.CurJob.SetTarget(TargetIndex.C, cart);
-          //            //Mount on Target
-          //            yield return Toils_Goto.GotoThing(VehicleInd, PathEndMode.ClosestTouch)
-          //                                        .FailOnDestroyedOrNull(VehicleInd);
-          //            yield return Toils_Cart.MountOn(VehicleInd);
-          //            break;
-          //        }
-          //    }
-          //}
 
+            if (CurJob.GetTarget(VehicleInd).Thing is Vehicle_Cart || CurJob.GetTarget(VehicleInd).Thing is Vehicle_Turret)
+            {
 
+                yield return Toils_Reserve.Reserve(VehicleInd);
+                //Mount on Target
+                yield return Toils_Goto.GotoThing(VehicleInd, PathEndMode.ClosestTouch)
+                                            .FailOnDestroyedOrNull(VehicleInd);
+                yield return Toils_Cart.MountOn(VehicleInd);
+            }
 
             this.FailOn(delegate
             {

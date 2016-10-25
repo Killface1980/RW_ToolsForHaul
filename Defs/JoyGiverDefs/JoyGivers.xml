@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- Meditative -->
+
+  <JoyGiverDef>
+    <defName>GoForARide</defName>
+    <giverClass>ToolsForHaul.JoyGivers.JoyGiver_GoForARide</giverClass>
+    <baseChance>2.3</baseChance>
+    <thingDefs>
+      <li>VehicleATV</li>
+      <li>VehicleCombatATV</li>
+      <li>VehicleSmackWay</li>
+      <li>VehicleSpeeder</li>
+    </thingDefs>
+    <jobDef>GoForARide</jobDef>
+    <desireSit>false</desireSit>
+    <joyKind>Meditative</joyKind>
+    <requiredCapacities>
+      <li>Sight</li>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </JoyGiverDef>
+  
+  
+</Defs>

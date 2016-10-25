@@ -33,8 +33,8 @@ namespace ToolsForHaul.ITabs
             get
             {
                 Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
-                Vehicle_Turret vehicleTurret = Find.Selector.SelectedObjects.First() as Vehicle_Turret;
-                return cart != null || vehicleTurret != null;
+                //   Vehicle_Turret vehicleTurret = Find.Selector.SelectedObjects.First() as Vehicle_Turret;
+                return cart != null; //|| vehicleTurret != null;
             }
         }
 
@@ -44,11 +44,9 @@ namespace ToolsForHaul.ITabs
             PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.StorageTab, KnowledgeAmount.FrameDisplayed);
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.StorageTab, OpportunityType.Critical);
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.Stockpiles, OpportunityType.Critical);
-            var cart = (Vehicle_Cart)Find.Selector.SelectedObjects.First();
-            if (cart != null)
-                allowances = ((Vehicle_Cart)Find.Selector.SelectedObjects.First()).allowances;
-            else
-                allowances = ((Vehicle_Turret)Find.Selector.SelectedObjects.First()).allowances;
+            Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
+            allowances = ((Vehicle_Cart)Find.Selector.SelectedObjects.First()).allowances;
+
 
 
             Rect position = new Rect(0.0f, 0.0f, WinSize.x, WinSize.y).ContractedBy(10f);

@@ -45,11 +45,11 @@
   </WorkGiverDef>
   -->
   <!-- ============= Hunting ============= -->
-  <!--
+ <!--
   <WorkGiverDef>
     <defName>HunterHunt</defName>
     <label>hunt</label>
-    <giverClass>ToolsForHaul.WorkGiver_HunterHunt</giverClass>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HunterHunt</giverClass>
     <workType>Hunting</workType>
     <verb>hunt</verb>
     <gerund>hunting</gerund>
@@ -57,8 +57,8 @@
       <li>Manipulation</li>
     </requiredCapacities>
   </WorkGiverDef>
-  -->
-
+-->
+  
   <!-- ============= Hauling ============= -->
 
   <WorkGiverDef>

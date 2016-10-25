@@ -132,7 +132,14 @@ namespace ToolsForHaul.Utilities
             if (!cart.IsForbidden(pawn.Faction)) return true;
             return false;
         }
-
+        public static bool AvailableTurretCart(Vehicle_Turret cart, Pawn pawn)
+        {
+            if (cart.Faction != Faction.OfPlayer) return false;
+            if (!cart.mountableComp.IsMounted) return true;
+            if (cart.mountableComp.Driver == pawn) return true;
+            if (!cart.IsForbidden(pawn.Faction)) return true;
+            return false;
+        }
         public static bool AvailableAnimalCart(Vehicle_Cart cart)
         {
             Pawn Driver = cart.mountableComp.IsMounted ? cart.mountableComp.Driver : null;
@@ -558,12 +565,11 @@ namespace ToolsForHaul.Utilities
             return null;
         }
 
-        public static Vehicle_Turret GetTurretDriver(Pawn pawn, ref bool isTurret)
+        public static Vehicle_Turret GetTurretDriver(Pawn pawn)
         {
             foreach (Vehicle_Turret vehicleTurret in CartTurret)
                 if (vehicleTurret.mountableComp.Driver == pawn)
                 {
-                    isTurret = true;
                     return vehicleTurret;
                 }
             return null;

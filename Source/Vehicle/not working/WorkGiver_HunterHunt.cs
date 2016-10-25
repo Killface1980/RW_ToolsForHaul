@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using RimWorld;
+using ToolsForHaul.Toils;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.WorkGivers
 {
     public class WorkGiver_HunterHunt : WorkGiver_Scanner
     {
@@ -21,11 +23,9 @@ namespace ToolsForHaul
         [DebuggerHidden]
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            IEnumerator<Designation> enumerator = Find.DesignationManager.DesignationsOfDef(DesignationDefOf.Hunt).GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach (var animal in Find.DesignationManager.DesignationsOfDef(DesignationDefOf.Hunt))
             {
-                Designation current = enumerator.Current;
-                yield return current.target.Thing;
+                yield return animal.target.Thing;
             }
             yield break;
         }
@@ -43,7 +43,39 @@ namespace ToolsForHaul
 
         public override Job JobOnThing(Pawn pawn, Thing t)
         {
-            return new Job(JobDefOf.Hunt, t);
+            Job Hunting = new Job(JobDefOf.Hunt, t);
+            Thing cart = null;
+
+            List<Thing> things = ToolsForHaulUtility.Cart;
+            things.AddRange(ToolsForHaulUtility.CartTurret);
+            if (things != null)
+            {
+                bool skip = false;
+                things.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
+                foreach (Vehicle_Turret vehicleTurret in things)
+                {
+                    if (vehicleTurret != null && (vehicleTurret.Faction == Faction.OfPlayer && !vehicleTurret.IsForbidden(Faction.OfPlayer) && ToolsForHaulUtility.AvailableTurretCart(vehicleTurret, pawn) && vehicleTurret.IsCurrentlyMotorized() && !vehicleTurret.tankLeaking && vehicleTurret.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed)))
+                    {
+                        cart = vehicleTurret;
+                        skip = true;
+                        break;
+                    }
+                }
+                if (!skip)
+                {
+                    foreach (Vehicle_Cart vehicleCart in things)
+                    {
+                        if (vehicleCart != null && (vehicleCart.Faction == Faction.OfPlayer && !vehicleCart.IsForbidden(Faction.OfPlayer) && ToolsForHaulUtility.AvailableCart(vehicleCart, pawn) && vehicleCart.IsCurrentlyMotorized() && !vehicleCart.tankLeaking && vehicleCart.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed)))
+                        {
+                            cart = vehicleCart;
+                            break;
+                        }
+                    }
+                }
+
+                Hunting.targetC = cart;
+            }
+            return Hunting;
         }
 
         public static bool HasHuntingWeapon(Pawn p)

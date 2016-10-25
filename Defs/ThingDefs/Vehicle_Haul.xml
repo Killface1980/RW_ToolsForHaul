@@ -230,7 +230,7 @@
     <comps>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>2.9</explosiveRadius>
-        <explosiveDamageType>Flame</explosiveDamageType>
+        <explosiveDamageType>Extinguish</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <!-- 				<startWickHitPointsPercent>0.10</startWickHitPointsPercent>
 				<wickTicks>
@@ -289,8 +289,8 @@
     </statBases>
     <comps>
       <li Class="CompProperties_Explosive">
-        <explosiveRadius>2.4</explosiveRadius>
-        <explosiveDamageType>Flame</explosiveDamageType>
+        <explosiveRadius>3.6</explosiveRadius>
+        <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.2</startWickHitPointsPercent>
         <chanceNeverExplodeFromDamage>0.8</chanceNeverExplodeFromDamage>
@@ -511,8 +511,8 @@
 
 
   <ThingDef ParentName="VehicleBase">
-    <defName>VehicleWheelChair</defName>
-    <label>wheel chair</label>
+    <defName>VehicleSmackWay</defName>
+    <label>SmackWay</label>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
@@ -526,7 +526,7 @@
       <li>Vehicles</li>
     </thingCategories>
     <graphicData>
-      <texPath>Things/Pawn/VehicleWheelChair/WheelChair</texPath>
+      <texPath>Things/Pawn/VehicleSmackWay/SmackWay</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
       <damageData>
@@ -582,7 +582,7 @@
     <comps>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>2.9</explosiveRadius>
-        <explosiveDamageType>Flame</explosiveDamageType>
+        <explosiveDamageType>Extinguish</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.10</startWickHitPointsPercent>
         <wickTicks>

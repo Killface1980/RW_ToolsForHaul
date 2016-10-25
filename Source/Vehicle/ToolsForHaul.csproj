@@ -58,6 +58,8 @@
   <ItemGroup>
     <Compile Include="Defs\HaulStatDefOf.cs" />
     <Compile Include="Components\CompDriver.cs" />
+    <Compile Include="_testing\JoyGiver_GoForARide.cs" />
+    <Compile Include="_testing\JobDriver_GoForARide.cs" />
     <None Include="_micktu_Injection\AsmHelper.cs" />
     <None Include="_micktu_Injection\Class1.cs" />
     <None Include="_micktu_Injection\HookInjector.cs" />
