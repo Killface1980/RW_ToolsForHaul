@@ -29,8 +29,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -58,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Defs\HaulStatDefOf.cs" />
-    <Compile Include="Components\CompDriver.cs" />
+    <Compile Include="Components\Vehicles\CompDriver.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
     <None Include="_testing\ProjectileTFH.cs" />
@@ -71,13 +70,11 @@
     <Compile Include="Defs\HaulJobDefOf.cs" />
     <Compile Include="Detours\_Pawn_ApparelTracker.cs" />
     <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
-    <Compile Include="Components\CompSlotsToolbelt.cs" />
+    <Compile Include="Components\Equipment\CompSlotsToolbelt.cs" />
     <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
     <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="JobGivers\JobGiver_Steal.cs" />
-    <None Include="_not working\JobDriver_Hunt.cs" />
-    <None Include="_not working\WorkGiver_HunterHunt.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="Things\Tank\Vehicle_Turret.cs" />
@@ -95,14 +92,13 @@
     <Compile Include="Alerts\Alert_TankIsLeaking.cs" />
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
     <None Include="_inactive\Class1.cs" />
-    <Compile Include="Components\CompAxles.cs" />
-    <Compile Include="Components\CompProperties_Axles.cs" />
-    <Compile Include="Components\CompProperties_Vehicles.cs" />
-    <Compile Include="Components\CompVehicles.cs" />
+    <Compile Include="Components\Vehicles\CompAxles.cs" />
+    <Compile Include="Components\Vehicles\CompProperties_Axles.cs" />
+    <Compile Include="Components\Vehicles\CompProperties_Vehicles.cs" />
+    <Compile Include="Components\Vehicles\CompVehicles.cs" />
     <Compile Include="Things\Apparel_Backpack.cs" />
     <Compile Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
-    <None Include="_inactive\Designator_Claim.cs" />
     <None Include="_inactive\ModHelperDef.cs" />
     <Compile Include="CCL\CompInjectionSet.cs" />
     <Compile Include="CCL\DefInjectionQualifier.cs" />
@@ -111,9 +107,9 @@
     <None Include="_inactive\RA_PawnRenderer.cs" />
     <None Include="_inactive\CompTool.cs" />
     <Compile Include="JobDrivers\JobDriver_PutInBackpackSlot.cs" />
-    <Compile Include="Components\CompEquipmentGizmoUser.cs" />
-    <Compile Include="Components\CompSlotsBackpack.cs" />
-    <Compile Include="Components\CompEquipmentGizmoProvider.cs" />
+    <Compile Include="Components\Equipment\CompEquipmentGizmoUser.cs" />
+    <Compile Include="Components\Equipment\CompSlotsBackpack.cs" />
+    <Compile Include="Components\Equipment\CompEquipmentGizmoProvider.cs" />
     <Compile Include="Designators\Designator_PutInBackpackSlot.cs" />
     <Compile Include="JobGivers\JobGiver_ExitMapBest.cs" />
     <Compile Include="JobGivers\JobGiver_ExitMapRandom.cs" />
@@ -134,7 +130,7 @@
     <None Include="WorkGivers\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
-    <Compile Include="Components\CompMountable.cs" />
+    <Compile Include="Components\Vehicles\CompMountable.cs" />
     <Compile Include="Designators\Designator_ApplyMedicine.cs" />
     <Compile Include="Designators\Designator_Mount.cs" />
     <None Include="Designators\Designator_PutInInventory.cs" />
@@ -162,9 +158,6 @@
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Defs\DesignationDefs\Designations.xml">
-      <Link>Defs\DesignatorDef\Designations.xml</Link>
-    </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
       <Link>Defs\JobDefs\Jobs_Misc.xml</Link>
     </Content>

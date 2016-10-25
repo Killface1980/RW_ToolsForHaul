@@ -47,29 +47,13 @@ namespace ToolsForHaul
                     if (job.def == JobDefOf.Hunt)
                     {
                         RightTools.EquipRigthTool(pawn, StatDefOf.AccuracyLong);
-                        if (!ToolsForHaulUtility.IsDriver(pawn))
-                        {
-                            if (ToolsForHaulUtility.Cart.Count > 0 || ToolsForHaulUtility.CartTurret.Count > 0)
-                            {
-                                Thing vehicle = RightTools.GetRightVehicle(pawn, WorkTags.Violent);
-                                if (vehicle != null)
-                                {
-                                    job = new Job(HaulJobDefOf.Mount)
-                                    {
-                                        targetA = vehicle,
-                                        
-                                    };
-                                    
-                                }
-                            }
-                        }
-
-
+                        job = GetVehicle(pawn, job, WorkTypeDefOf.Hunting);
                     }
 
                     if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
                     {
                         RightTools.EquipRigthTool(pawn, StatDefOf.ConstructionSpeed);
+                        job = GetVehicle(pawn, job, WorkTypeDefOf.Construction);
                     }
 
                     if (job.def == JobDefOf.CutPlant || job.def == JobDefOf.Harvest)
@@ -93,6 +77,25 @@ namespace ToolsForHaul
             }
 
             return result;
+        }
+
+        private static Job GetVehicle(Pawn pawn, Job job, WorkTypeDef worktag)
+        {
+            if (!ToolsForHaulUtility.IsDriver(pawn))
+            {
+                if (ToolsForHaulUtility.Cart.Count > 0 || ToolsForHaulUtility.CartTurret.Count > 0)
+                {
+                    Thing vehicle = RightTools.GetRightVehicle(pawn, worktag);
+                    if (vehicle != null)
+                    {
+                        job = new Job(HaulJobDefOf.Mount)
+                        {
+                            targetA = vehicle,
+                        };
+                    }
+                }
+            }
+            return job;
         }
     }
 }

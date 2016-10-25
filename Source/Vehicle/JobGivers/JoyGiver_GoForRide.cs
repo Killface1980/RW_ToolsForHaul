@@ -58,7 +58,7 @@ namespace ToolsForHaul.JoyGivers
                 job.targetQueueA.Add(list[i]);
             }
 
-            job.locomotionUrgency = LocomotionUrgency.Sprint;
+            job.locomotionUrgency = LocomotionUrgency.Jog;
             return job;
         }
     }

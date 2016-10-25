@@ -41,7 +41,11 @@ namespace ToolsForHaul
             return result;
         }
 
-
+        /// <summary>
+        /// Equips tools
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="def"></param>
         public static void EquipRigthTool(Pawn pawn, StatDef def)
         {
             Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
@@ -110,12 +114,17 @@ namespace ToolsForHaul
             }
         }
 
-        public static Thing GetRightVehicle(Pawn pawn, WorkTags worktag)
+        /// <summary>
+        /// Selects the appropriate vehicle by worktype
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="worktype"></param>
+        /// <returns></returns>
+        public static Thing GetRightVehicle(Pawn pawn, WorkTypeDef worktype)
         {
             Thing cart = null;
-            if (worktag.Equals(WorkTags.Violent))
+            if (worktype.Equals(WorkTypeDefOf.Hunting))
             {
-
                 bool skip = false;
                 IOrderedEnumerable<Thing> orderedEnumerable =
                     ToolsForHaulUtility.CartTurret.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
@@ -145,6 +154,38 @@ namespace ToolsForHaul
                         cart = vehicleCart;
                         break;
                     }
+                }
+            }
+            if (worktype.Equals(WorkTypeDefOf.Hauling))
+            {
+                    IOrderedEnumerable<Thing> orderedEnumerable2 =
+                          ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).MaxItem);
+                    foreach (Thing thing in orderedEnumerable2)
+                    {
+                        Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                        if (vehicleCart == null)
+                            continue;
+                        if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
+                        if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                        if (vehicleCart.tankLeaking) continue;
+                        cart = vehicleCart;
+                        break;
+                    }
+            }
+            if (worktype.Equals(WorkTypeDefOf.Construction))
+            {
+                IOrderedEnumerable<Thing> orderedEnumerable2 =
+                      ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).VehicleSpeed);
+                foreach (Thing thing in orderedEnumerable2)
+                {
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart == null)
+                        continue;
+                    if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
+                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                    if (vehicleCart.tankLeaking) continue;
+                    cart = vehicleCart;
+                    break;
                 }
             }
             return cart;

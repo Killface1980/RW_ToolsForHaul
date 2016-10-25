@@ -47,7 +47,7 @@ namespace ToolsForHaul.WorkGivers
         {
             Vehicle_Cart cart = null;
 
-            if (!HaulAIUtility.PawnCanAutomaticallyHaul(pawn, t))
+            if (!HaulAIUtility.PawnCanAutomaticallyHaulFast(pawn, t))
             {
                 return null;
             }
@@ -57,10 +57,10 @@ namespace ToolsForHaul.WorkGivers
 
             if (ToolsForHaulUtility.IsDriver(pawn))
             {
-                cart = ToolsForHaulUtility.GetCartDriver(pawn, ref isTurret);
+                cart = ToolsForHaulUtility.GetCartDriver(pawn);
             }
 
-            if (isTurret)
+            if (ToolsForHaulUtility.GetTurretDriver(pawn)!=null)
             {
                 JobFailReason.Is("Can't haul with military vehicle");
                 return null;
@@ -68,21 +68,7 @@ namespace ToolsForHaul.WorkGivers
 
             if (cart == null)
             {
-                List<Vehicle_Cart> cartsAvailable = new List<Vehicle_Cart>();
-                foreach (Vehicle_Cart vehicleCart in ToolsForHaulUtility.Cart)
-                {
-                    if (ToolsForHaulUtility.AvailableAnimalCart(vehicleCart) || ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn))
-                    {
-                        if (!vehicleCart.tankLeaking || (!vehicleCart.vehiclesComp.MotorizedWithoutFuel() && vehicleCart.refuelableComp.HasFuel))
-                            cartsAvailable.Add(vehicleCart);
-                    }
-                }
-
-                if (cart == null && cartsAvailable.Any())
-                {
-                    cartsAvailable.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenBy(x => x.mountableComp.DefaultMaxItem);
-                    cart = cartsAvailable.First();
-                }
+                cart = RightTools.GetRightVehicle(pawn, WorkTypeDefOf.Hauling) as Vehicle_Cart;
 
                 if (cart == null)
                     return null;

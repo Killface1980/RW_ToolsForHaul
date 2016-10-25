@@ -198,7 +198,7 @@ namespace ToolsForHaul
 
                 if (mountableComp.Driver.RaceProps.Humanlike)
                 {
-                    mountableComp.driverComp = new CompDriver { vehicleTurret = this };
+                    mountableComp.driverComp = new CompDriver { vehicle = this };
                     mountableComp.Driver.AllComps?.Add(mountableComp.driverComp);
                     mountableComp.driverComp.parent = mountableComp.Driver;
                 }
@@ -461,38 +461,8 @@ namespace ToolsForHaul
         public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             base.PostApplyDamage(dinfo, totalDamageDealt);
-
-            // Drivers raction to damage
-
-            if (explosiveComp != null && explosiveComp.wickStarted && mountableComp.IsMounted && Rand.Value >= 0.1f)
-            {
-                mountableComp.DismountAt((mountableComp.Driver.Position - mountableComp.InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
-            }
-
-            float hitpointsPercent = (float)HitPoints / MaxHitPoints;
-            if (tankLeaking)
-            {
-                if (hitpointsPercent < 0.2f * Rand.Range(0.5f, 1f))
-                {
-                    if (!mountableComp.Driver.Position.InBounds())
-                    {
-                        mountableComp.DismountAt(mountableComp.Driver.Position);
-                        FireUtility.TryStartFireIn(Position, 0.1f);
-                        return;
-                    }
-                    mountableComp.DismountAt(mountableComp.Driver.Position - mountableComp.InteractionOffset.ToIntVec3());
-                    mountableComp.Driver.Position = mountableComp.Driver.Position.RandomAdjacentCell8Way();
-                    FireUtility.TryStartFireIn(Position, 0.1f);
-
-                    return;
-                }
-            }
-
-            if (hitpointsPercent <= 0.35f)
-            {
-                if (IsCurrentlyMotorized())
-                    MoteMaker.ThrowMicroSparks(base.DrawPos);
-            }
+            if (!Spawned)
+                return;
 
             if (dinfo.Def == DamageDefOf.Repair && tankLeaking)
             {
@@ -503,7 +473,19 @@ namespace ToolsForHaul
                 return;
             }
 
-            if (dinfo.Def == DamageDefOf.Flame || dinfo.Def == DamageDefOf.Repair)
+            // Drivers raction to damage
+            float hitpointsPercent = (float)HitPoints / MaxHitPoints;
+           
+
+            if (hitpointsPercent <= 0.35f)
+            {
+                if (IsCurrentlyMotorized())
+                    MoteMaker.ThrowMicroSparks(base.DrawPos);
+            }
+
+
+
+            if (dinfo.Def == DamageDefOf.Flame || dinfo.Def == DamageDefOf.Repair || dinfo.Def == DamageDefOf.Bomb)
             {
                 return;
             }
@@ -531,24 +513,27 @@ namespace ToolsForHaul
                     return;
                 }
 
-                if (hitpointsPercent < vehiclesComp.FuelCatchesFireHitPointsPercent() && refuelableComp != null && refuelableComp.HasFuel)
+                if (refuelableComp != null && refuelableComp.HasFuel)
                 {
-                    if (!fuelSpilled)
+                    if (hitpointsPercent < vehiclesComp.FuelCatchesFireHitPointsPercent())
                     {
-                        refuelableComp.ConsumeFuel(1f);
+                        if (!fuelSpilled)
+                        {
+                            refuelableComp.ConsumeFuel(1f);
 
-                        FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 6);
+                            FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 6);
 
-                        if (Random.value >= 0.5f)
+                            if (Random.value >= 0.5f)
+                            {
+                                FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
+                            }
+                            fuelSpilled = true;
+                            makeHole = true;
+                        }
+                        if (Random.value >= 0.5f && !makeHole)
                         {
                             FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
                         }
-                        fuelSpilled = true;
-                        makeHole = true;
-                    }
-                    if (Random.value >= 0.5f && !makeHole)
-                    {
-                        FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
                     }
                 }
 
@@ -848,12 +833,12 @@ namespace ToolsForHaul
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
 
                 if (false)
-                if (storage?.Count > 0)
-                    foreach (Thing mountThing in storage)
-                    {
-                        mountThing.Rotation = Rotation;
-                        mountThing.DrawAt(mountThingLoc + mountThingOffset);
-                    }
+                    if (storage?.Count > 0)
+                        foreach (Thing mountThing in storage)
+                        {
+                            mountThing.Rotation = Rotation;
+                            mountThing.DrawAt(mountThingLoc + mountThingOffset);
+                        }
 
                 if (Rotation.AsInt % 2 == 0) //Vertical
                     wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
@@ -886,13 +871,13 @@ namespace ToolsForHaul
             stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
             if (tankLeaking)
                 stringBuilder.AppendLine("TankLeaking".Translate());
-            string text = storage.ContentsString;
-            stringBuilder.AppendLine(string.Concat(new object[]
-            {
-            "InStorage".Translate(),
-            ": ",
-            text
-            }));
+            //string text = storage.ContentsString;
+            //stringBuilder.AppendLine(string.Concat(new object[]
+            //{
+            //"InStorage".Translate(),
+            //": ",
+            //text
+            //}));
             return stringBuilder.ToString();
         }
         #endregion

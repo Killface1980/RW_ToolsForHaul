@@ -80,7 +80,6 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <size>(1,1)</size>
-    <passability>PassThroughOnly</passability>
     <pathCost>50</pathCost>
     <altitudeLayer>Building</altitudeLayer>
     <statBases>
@@ -89,7 +88,7 @@
       <Flammability>1.0</Flammability>
       <VehicleMaxItem>2</VehicleMaxItem>
       <WorkToMake>2500</WorkToMake>
-      <Beauty>-60</Beauty>
+      <Beauty>10</Beauty>
     </statBases>
     <comps>
             <li Class="CompProperties_Explosive">
@@ -105,8 +104,8 @@
       </li>
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
-        <fuelConsumptionRate>2000</fuelConsumptionRate>
-        <fuelCapacity>50.0</fuelCapacity>
+        <fuelConsumptionRate>3000</fuelConsumptionRate>
+        <fuelCapacity>100.0</fuelCapacity>
         <fuelFilter>
           <thingDefs>
             <li>Biodiesel</li>
@@ -138,7 +137,6 @@
     </thingCategories>
 
     <inspectorTabs>
-      <li>ToolsForHaul.ITabs.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITabs.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     <CostList>
@@ -199,7 +197,7 @@
     <building>
       <ai_combatDangerous>true</ai_combatDangerous>
       <turretGunDef>Gun_VehicleTurretImprovised</turretGunDef>
-      <turretBurstCooldownTicks>310</turretBurstCooldownTicks>
+      <turretBurstCooldownTicks>120</turretBurstCooldownTicks>
       <turretTopgraphicPath>Things/Building/Security/TurretImprovised_Top</turretTopgraphicPath>
       <isEdifice>false</isEdifice>
       <repairable>true</repairable>
@@ -225,7 +223,7 @@
     </graphicData>
     <projectile>
       <damageDef>Bullet</damageDef>
-      <damageAmountBase>11</damageAmountBase>
+      <damageAmountBase>5</damageAmountBase>
       <speed>70</speed>
     </projectile>
   </ThingDef>
@@ -249,7 +247,7 @@
       <AccuracyShort>0.64</AccuracyShort>
       <AccuracyMedium>0.41</AccuracyMedium>
       <AccuracyLong>0.22</AccuracyLong>
-      <RangedWeapon_Cooldown>0.66</RangedWeapon_Cooldown>
+      <RangedWeapon_Cooldown>0.33</RangedWeapon_Cooldown>
     </statBases>
     <weaponTags>
       <li>TurretGun</li>
@@ -262,7 +260,7 @@
         <warmupTicks>90</warmupTicks>
         <range>25.9</range>
         <ticksBetweenBurstShots>8</ticksBetweenBurstShots>
-        <burstShotCount>3</burstShotCount>
+        <burstShotCount>8</burstShotCount>
         <soundCast>GunShotA</soundCast>
         <soundCastTail>GunTail_Light</soundCastTail>
         <muzzleFlashScale>9</muzzleFlashScale>
