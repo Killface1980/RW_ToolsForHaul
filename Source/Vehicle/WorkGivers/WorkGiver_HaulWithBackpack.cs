@@ -48,7 +48,7 @@ namespace ToolsForHaul.WorkGivers
                 return null;
             }
 
-            if (!HaulAIUtility.PawnCanAutomaticallyHaul(pawn, t))
+            if (!HaulAIUtility.PawnCanAutomaticallyHaulFast(pawn, t))
             {
                 return null;
             }

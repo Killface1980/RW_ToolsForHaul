@@ -185,24 +185,24 @@ namespace ToolsForHaul.Toils
                 //Check haulThing is human_corpse. If other race has apparel, It need to change
 
                 Find.DesignationManager.RemoveAllDesignationsOn(haulThing);
-                if (haulThing.ThingID.IndexOf("Human_Corpse") <= -1 ? false : true)
-                {
-                    Corpse corpse = (Corpse)haulThing;
-                    List<Apparel> wornApparel = corpse.innerPawn.apparel.WornApparel;
-
-                    //Drop wornApparel. wornApparel cannot Add to container directly because it will be duplicated.
-                    corpse.innerPawn.apparel.DropAll(corpse.innerPawn.Position, false);
-
-                    //Transfer in container
-                    foreach (Thing apparel in wornApparel)
-                    {
-                        if (carrier.storage.TryAdd(apparel))
-                        {
-                            apparel.holder = carrier.GetContainer();
-                            apparel.holder.owner = carrier;
-                        }
-                    }
-                }
+              //if (haulThing.ThingID.IndexOf("Human_Corpse") <= -1 ? false : true)
+              //{
+              //    Corpse corpse = (Corpse)haulThing;
+              //    List<Apparel> wornApparel = corpse.innerPawn.apparel.WornApparel;
+              //
+              //    //Drop wornApparel. wornApparel cannot Add to container directly because it will be duplicated.
+              //    corpse.innerPawn.apparel.DropAll(corpse.innerPawn.Position, false);
+              //
+              //    //Transfer in container
+              //    foreach (Thing apparel in wornApparel)
+              //    {
+              //        if (carrier.storage.TryAdd(apparel))
+              //        {
+              //            apparel.holder = carrier.GetContainer();
+              //            apparel.holder.owner = carrier;
+              //        }
+              //    }
+              //}
                 //Collecting TargetIndex ind
                 if (carrier.storage.TryAdd(haulThing))
                 {

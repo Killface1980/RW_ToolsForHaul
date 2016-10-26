@@ -2,6 +2,7 @@
 using RimWorld;
 using ToolsForHaul.Utilities;
 using Verse;
+using Verse.AI;
 
 namespace ToolsForHaul
 {
@@ -132,17 +133,17 @@ namespace ToolsForHaul
                 {
                     Vehicle_Turret vehicleTurret = (Vehicle_Turret)thing;
                     if (vehicleTurret == null) continue;
-                    if ( !ToolsForHaulUtility.AvailableVehicle(vehicleTurret, pawn)) continue;
-                    if ( !vehicleTurret.IsCurrentlyMotorized()) continue;
-                    if ( vehicleTurret.tankLeaking) continue;
+                    if (!ToolsForHaulUtility.AvailableVehicle(vehicleTurret, pawn)) continue;
+                    if (!vehicleTurret.IsCurrentlyMotorized()) continue;
+                    if (vehicleTurret.tankLeaking) continue;
                     cart = vehicleTurret;
                     skip = true;
                     break;
                 }
                 if (!skip)
                 {
-                IOrderedEnumerable<Thing> orderedEnumerable2 =
-                      ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
+                    IOrderedEnumerable<Thing> orderedEnumerable2 =
+                          ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
                     foreach (Thing thing in orderedEnumerable2)
                     {
                         Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
@@ -158,19 +159,19 @@ namespace ToolsForHaul
             }
             if (worktype.Equals(WorkTypeDefOf.Hauling))
             {
-                    IOrderedEnumerable<Thing> orderedEnumerable2 =
-                          ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).MaxItem);
-                    foreach (Thing thing in orderedEnumerable2)
-                    {
-                        Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
-                        if (vehicleCart == null)
-                            continue;
-                        if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
-                        if (!vehicleCart.IsCurrentlyMotorized()) continue;
-                        if (vehicleCart.tankLeaking) continue;
-                        cart = vehicleCart;
-                        break;
-                    }
+                IOrderedEnumerable<Thing> orderedEnumerable2 =
+                      ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).MaxItem);
+                foreach (Thing thing in orderedEnumerable2)
+                {
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart == null)
+                        continue;
+                    if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
+                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                    if (vehicleCart.tankLeaking) continue;
+                    cart = vehicleCart;
+                    break;
+                }
             }
             if (worktype.Equals(WorkTypeDefOf.Construction))
             {

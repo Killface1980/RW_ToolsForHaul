@@ -768,7 +768,6 @@ namespace ToolsForHaul
                 mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.06f;
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
 
-                if (false)
                     if (!storage.Any())
                         foreach (Thing mountThing in storage)
                         {
