@@ -136,6 +136,7 @@ namespace ToolsForHaul
                     if (!ToolsForHaulUtility.AvailableVehicle(vehicleTurret, pawn)) continue;
                     if (!vehicleTurret.IsCurrentlyMotorized()) continue;
                     if (vehicleTurret.tankLeaking) continue;
+                    if (vehicleTurret.IsBurning()) continue;
                     cart = vehicleTurret;
                     skip = true;
                     break;
@@ -152,6 +153,7 @@ namespace ToolsForHaul
                         if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
                         if (!vehicleCart.IsCurrentlyMotorized()) continue;
                         if (vehicleCart.tankLeaking) continue;
+                    if (vehicleCart.IsBurning()) continue;
                         cart = vehicleCart;
                         break;
                     }
@@ -169,6 +171,7 @@ namespace ToolsForHaul
                     if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
                     if (!vehicleCart.IsCurrentlyMotorized()) continue;
                     if (vehicleCart.tankLeaking) continue;
+                    if (vehicleCart.IsBurning()) continue;
                     cart = vehicleCart;
                     break;
                 }
@@ -185,6 +188,7 @@ namespace ToolsForHaul
                     if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
                     if (!vehicleCart.IsCurrentlyMotorized()) continue;
                     if (vehicleCart.tankLeaking) continue;
+                    if (vehicleCart.IsBurning()) continue;
                     cart = vehicleCart;
                     break;
                 }

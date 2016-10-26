@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using ToolsForHaul.JobDefs;
+using ToolsForHaul.JobDrivers;
 using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
@@ -17,18 +18,25 @@ namespace ToolsForHaul
             bool jobNull = job == null;
             ThinkResult result;
 
-            if (previousPawnWeapons.ContainsKey(pawn) && pawn.mindState.IsIdle)
+            if (pawn.mindState.IsIdle)
             {
-                Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
-                Pawn wearer = toolbelt.wearer;
-                if (wearer.equipment.Primary != null)
-                    toolbelt.slotsComp.SwapEquipment(previousPawnWeapons[pawn]);
-                else
+                if (previousPawnWeapons.ContainsKey(pawn))
                 {
-                    wearer.equipment.AddEquipment(previousPawnWeapons[pawn]);
-                    toolbelt.slotsComp.slots.Remove(previousPawnWeapons[pawn]);
+                    Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+                    Pawn wearer = toolbelt.wearer;
+                    if (wearer.equipment.Primary != null)
+                        toolbelt.slotsComp.SwapEquipment(previousPawnWeapons[pawn]);
+                    else
+                    {
+                        wearer.equipment.AddEquipment(previousPawnWeapons[pawn]);
+                        toolbelt.slotsComp.slots.Remove(previousPawnWeapons[pawn]);
+                    }
+                    previousPawnWeapons.Remove(pawn);
                 }
-                previousPawnWeapons.Remove(pawn);
+                if (ToolsForHaulUtility.IsDriver(pawn))
+                {
+                    job = ToolsForHaulUtility.DismountInBase(pawn, MapComponent_ToolsForHaul.currentVehicle[pawn]);
+                }
             }
 
 
@@ -71,6 +79,7 @@ namespace ToolsForHaul
                         RightTools.EquipRigthTool(pawn, StatDefOf.BaseHealingQuality);
                     }
 
+
                 }
 
                 result = new ThinkResult(job, this);
@@ -93,6 +102,13 @@ namespace ToolsForHaul
                             targetA = vehicle,
                         };
                     }
+                }
+            }
+            else
+            {
+                if (!ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, RightTools.GetRightVehicle(pawn, worktag)))
+                {
+                    job = ToolsForHaulUtility.DismountInBase(pawn, MapComponent_ToolsForHaul.currentVehicle[pawn]);
                 }
             }
             return job;

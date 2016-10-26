@@ -39,8 +39,15 @@ namespace ToolsForHaul.Components
             if (Driver != null)
                 return;
 
+            // Check to make pawns not mount two vehicles at once
             if (ToolsForHaulUtility.IsDriver(pawn))
-                return;
+            {
+                if (ToolsForHaulUtility.GetCartByDriver(pawn) != null)
+                    ToolsForHaulUtility.GetCartByDriver(pawn).mountableComp.Dismount();
+
+                if (ToolsForHaulUtility.GetTurretByDriver(pawn) != null)
+                    ToolsForHaulUtility.GetTurretByDriver(pawn).mountableComp.Dismount();
+            }
 
             Driver = pawn;
 
@@ -149,7 +156,10 @@ namespace ToolsForHaul.Components
 
         public Vector3 InteractionOffset
         {
-            get { return parent.def.interactionCellOffset.ToVector3().RotatedBy(Driver.Rotation.AsAngle); }
+            get
+            {
+                return parent.def.interactionCellOffset.ToVector3().RotatedBy(Driver.Rotation.AsAngle);
+            }
         }
 
         public Vector3 Position
@@ -163,11 +173,26 @@ namespace ToolsForHaul.Components
                 //No Driver
                 if (Driver == null)
                     return parent.DrawPos;
+
                 //Out of bound or Preventing cart from stucking door
                 if (!position.InBounds())
                     return Driver.DrawPos;
 
+                if (!position.ToIntVec3().Walkable())
+                    return Driver.DrawPos;
+
                 return position;
+            }
+        }
+
+        public Rot4 Rotation
+        {
+            get
+            {
+                Rot4 rotation;
+
+                rotation = Rot4.FromIntVec3(Driver.DrawPos.ToIntVec3() - Position.ToIntVec3());
+                return rotation;
             }
         }
 

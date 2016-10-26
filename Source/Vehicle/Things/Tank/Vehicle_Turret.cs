@@ -342,6 +342,7 @@ namespace ToolsForHaul
         {
             Action action_Dismount;
             Action action_Mount;
+            Action action_DismountInBase;
             Action action_MakeMount;
             Action action_Deconstruct;
 
@@ -359,7 +360,12 @@ namespace ToolsForHaul
                 jobNew.targetA = this;
                 myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
             };
+            action_DismountInBase = () =>
+            {
+                Job jobNew = ToolsForHaulUtility.DismountInBase(mountableComp.Driver, this);
 
+                myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+            };
             action_Dismount = () =>
             {
                 if (!myPawn.Position.InBounds())
@@ -417,7 +423,10 @@ namespace ToolsForHaul
 
             }
             else if (myPawn == mountableComp.Driver)
+            {
                 yield return new FloatMenuOption("Dismount".Translate(LabelShort), action_Dismount);
+            }
+                yield return new FloatMenuOption("DismountInBase".Translate(LabelShort), action_DismountInBase);
 
 
         }

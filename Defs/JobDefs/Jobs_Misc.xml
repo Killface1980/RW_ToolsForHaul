@@ -29,7 +29,7 @@
     <defName>GoForRide</defName>
     <driverClass>ToolsForHaul.JobDrivers.JobDriver_GoForRide</driverClass>
     <reportString>going for a ride.</reportString>
-    <joyDuration>6000</joyDuration>
+    <joyDuration>8000</joyDuration>
     <joyMaxParticipants>1</joyMaxParticipants>
     <joyGainRate>1.3</joyGainRate>
     <joyKind>Meditative</joyKind>
@@ -110,19 +110,19 @@
   <JobDef>
     <defName>HaulWithBackpack</defName>
     <driverClass>ToolsForHaul.JobDrivers.JobDriver_HaulWithBackpack</driverClass>
-    <reportString>Collecting TargetA.</reportString>
+    <reportString>Collecting TargetA with targetC.</reportString>
   </JobDef>
 
   <JobDef>
     <defName>HaulWithAnimalCart</defName>
     <driverClass>ToolsForHaul.JobDrivers.JobDriver_HaulWithAnimalCart</driverClass>
-    <reportString>Collecting TargetA.</reportString>
+    <reportString>Collecting TargetA with targetC.</reportString>
   </JobDef>
   
   <JobDef>
     <defName>HaulWithCart</defName>
     <driverClass>ToolsForHaul.JobDrivers.JobDriver_HaulWithCart</driverClass>
-    <reportString>Collecting TargetA.</reportString>
+    <reportString>Collecting TargetA with targetC.</reportString>
   </JobDef>
   
   <JobDef>

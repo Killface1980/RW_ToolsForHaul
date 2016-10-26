@@ -2,6 +2,7 @@
 using System.Linq;
 using RimWorld;
 using ToolsForHaul.Components;
+using ToolsForHaul.JobDefs;
 using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
@@ -27,9 +28,6 @@ namespace ToolsForHaul.WorkGivers
             if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                 return true;
 
-            if (ToolsForHaulUtility.GetTurretDriver(pawn) != null)
-                return true;
-
             return false;
         }
 
@@ -44,16 +42,16 @@ namespace ToolsForHaul.WorkGivers
 
             // Vehicle selection
 
-            if (ToolsForHaulUtility.IsDriver(pawn))
-            {
-                cart = ToolsForHaulUtility.GetCartDriver(pawn);
-
-                if (cart ==null)
-                {
-                    JobFailReason.Is("Can't haul with military vehicle");
-                    return null;
+          if (ToolsForHaulUtility.IsDriver(pawn))
+          {
+              cart = ToolsForHaulUtility.GetCartByDriver(pawn);
+          
+              if (cart ==null)
+              {
+                    //  JobFailReason.Is("Can't haul with military vehicle");
+                   return ToolsForHaulUtility.DismountInBase(pawn, MapComponent_ToolsForHaul.currentVehicle[pawn]);
                 }
-            }
+          }
 
 
             if (cart == null)
@@ -87,6 +85,7 @@ namespace ToolsForHaul.WorkGivers
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
                 return null;
             }
+
             if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableVehicle(cart, pawn))
                 return ToolsForHaulUtility.HaulWithTools(pawn, cart, t);
             JobFailReason.Is(ToolsForHaulUtility.NoAvailableCart);

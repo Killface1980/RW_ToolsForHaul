@@ -15,11 +15,11 @@ namespace ToolsForHaul.Utilities
     public static class ToolsForHaulUtility
     {
         private const double ValidDistance = 30;
-        public static string TooLittleHaulable;
-        public static string NoEmptyPlaceForCart;
-        public static string NoEmptyPlaceLowerTrans;
-        public static string NoAvailableCart;
-        public static string BurningLowerTrans;
+        public static readonly string TooLittleHaulable;
+        public static readonly string NoEmptyPlaceForCart;
+        public static readonly string NoEmptyPlaceLowerTrans;
+        public static readonly string NoAvailableCart;
+        public static readonly string BurningLowerTrans;
 
         public static List<Thing> Cart = new List<Thing>();
 
@@ -63,7 +63,7 @@ namespace ToolsForHaul.Utilities
         /// <returns>Move speed in cells per second</returns>
         public static float GetMoveSpeed(Pawn pawn)
         {
-            var movePerTick = 60 / pawn.GetStatValue(StatDefOf.MoveSpeed, false); //Movement per tick
+            float movePerTick = 60 / pawn.GetStatValue(StatDefOf.MoveSpeed, false); //Movement per tick
             movePerTick += PathGrid.CalculatedCostAt(pawn.Position, false, pawn.Position);
             Building edifice = pawn.Position.GetEdifice();
             if (edifice != null)
@@ -106,7 +106,7 @@ namespace ToolsForHaul.Utilities
             if (backpack == null)
                 return null;
             Thing lastItem = null;
-            var lastItemInd = -1;
+            int lastItemInd = -1;
             Thing foodInInventory = FoodUtility.BestFoodInInventory(pawn);
             if (backpack.slotsComp.slots.Count > 0)
             {
@@ -129,6 +129,7 @@ namespace ToolsForHaul.Utilities
             if (cart.Faction != Faction.OfPlayer) return false;
             if (cart.IsForbidden(pawn.Faction)) return false;
             if (cart.Position.IsForbidden(pawn)) return false;
+            if (cart.IsBurning()) return false;
 
             if (!cart.TryGetComp<CompMountable>().IsMounted) return true;
             if (cart.TryGetComp<CompMountable>().Driver == pawn) return true;
@@ -153,7 +154,7 @@ namespace ToolsForHaul.Utilities
             Trace.stopWatchStart();
 
             //Job Setting
-            var UseBackpack = false;
+            bool UseBackpack = false;
             JobDef jobDef = null;
             TargetInfo targetC;
             int maxItem;
@@ -175,7 +176,7 @@ namespace ToolsForHaul.Utilities
                 ShouldDrop = false;
                 UseBackpack = true;
                 if (lastItem != null)
-                    for (var i = 0; i < backpack.slotsComp.slots.Count; i++)
+                    for (int i = 0; i < backpack.slotsComp.slots.Count; i++)
                         if (backpack.slotsComp.slots[i] == lastItem && reservedMaxItem - (i + 1) <= 0)
                         {
                             ShouldDrop = false;
@@ -196,7 +197,7 @@ namespace ToolsForHaul.Utilities
                 targetC = cart;
 
                 maxItem = cart.MaxItem;
-                thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
+                thresholdItem = (int)Math.Ceiling(maxItem * 0.25);
                 reservedMaxItem = cart.storage.Count;
                 remainingItems = cart.storage;
 
@@ -220,8 +221,8 @@ namespace ToolsForHaul.Utilities
             if (ShouldDrop)
             {
                 Trace.AppendLine("Start Drop remaining item");
-                var startDrop = false;
-                for (var i = 0; i < remainingItems.Count(); i++)
+                bool startDrop = false;
+                for (int i = 0; i < remainingItems.Count(); i++)
                 {
                     if (UseBackpack && startDrop == false)
                         if (remainingItems.ElementAt(i) == lastItem)
@@ -264,7 +265,7 @@ namespace ToolsForHaul.Utilities
 
                 //Counting valid items
                 Trace.AppendLine("Start Counting valid items");
-                var thingsCount =
+                int thingsCount =
                     ListerHaulables.ThingsPotentiallyNeedingHauling()
                         .Count(item => slotGroup.Settings.AllowedToAccept(item));
 
@@ -484,7 +485,7 @@ namespace ToolsForHaul.Utilities
             return null;
         }
 
-        public static Job DismountInBase(Pawn pawn, Vehicle_Cart cart)
+        public static Job DismountInBase(Pawn pawn, Thing cart)
         {
             Job job = new Job(HaulJobDefOf.DismountInBase);
             job.targetA = cart;
@@ -560,7 +561,7 @@ namespace ToolsForHaul.Utilities
             return false;
         }
 
-        public static Vehicle_Cart GetCartDriver(Pawn pawn)
+        public static Vehicle_Cart GetCartByDriver(Pawn pawn)
         {
             foreach (Vehicle_Cart vehicle in Cart)
                 if (vehicle.mountableComp.Driver == pawn)
@@ -570,7 +571,7 @@ namespace ToolsForHaul.Utilities
             return null;
         }
 
-        public static Vehicle_Turret GetTurretDriver(Pawn pawn)
+        public static Vehicle_Turret GetTurretByDriver(Pawn pawn)
         {
             foreach (Vehicle_Turret vehicleTurret in CartTurret)
                 if (vehicleTurret.mountableComp.Driver == pawn)

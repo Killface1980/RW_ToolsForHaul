@@ -287,6 +287,7 @@ namespace ToolsForHaul
         {
             Action action_Dismount;
             Action action_Mount;
+            Action action_DismountInBase;
             Action action_MakeMount;
             Action action_Repair;
             Action action_Refuel;
@@ -304,6 +305,13 @@ namespace ToolsForHaul
                 Job jobNew = new Job(HaulJobDefOf.Mount);
                 Find.Reservations.ReleaseAllForTarget(this);
                 jobNew.targetA = this;
+                myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+            };
+
+            action_DismountInBase = () =>
+            {
+                Job jobNew = ToolsForHaulUtility.DismountInBase(mountableComp.Driver, this);
+
                 myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
             };
 
@@ -367,7 +375,10 @@ namespace ToolsForHaul
 
             }
             else if (myPawn == mountableComp.Driver)
+            {
                 yield return new FloatMenuOption("Dismount".Translate(LabelShort), action_Dismount);
+            }
+                yield return new FloatMenuOption("DismountInBase".Translate(LabelShort), action_DismountInBase);
 
 
         }
@@ -596,7 +607,8 @@ namespace ToolsForHaul
                     else
                     {
                         Position = mountableComp.Position.ToIntVec3();
-                        Rotation = mountableComp.Driver.Rotation;
+                        Rotation =  mountableComp.Rotation;
+                   //     Rotation =  mountableComp.Driver.Rotation;
                         soundPlayed = false;
                     }
 

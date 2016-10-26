@@ -59,15 +59,16 @@ namespace ToolsForHaul.Gizmos
 
             }
         }
+
         private float curWidth
         {
             get
             {
-                if (toolbelt.MaxItem <= 4)
+                if (toolbelt.slotsComp.slots.Count <= 4)
                     return Height;
                 else
                 {
-                    int count = Mathf.FloorToInt(toolbelt.MaxItem - 4) / 2;
+                    int count = Mathf.FloorToInt(toolbelt.slotsComp.slots.Count - 4) / 2;
 
                     return Height + count * Height * 0.5f;
                 }
