@@ -380,7 +380,7 @@ namespace ToolsForHaul.Utilities
                                && center.DistanceToSquared(item.Position) <= ValidDistance))
                         {
                             job.targetQueueA.Add(item);
-                        if (UseBackpack)
+                            if (UseBackpack)
                                 job.numToBringList.Add(item.def.stackLimit);
                             reservedMaxItem++;
 
@@ -413,7 +413,7 @@ namespace ToolsForHaul.Utilities
                                && center.DistanceToSquared(item.Position) <= ValidDistance))
                         {
                             job.targetQueueA.Add(item);
-                        if (UseBackpack)
+                            if (UseBackpack)
                                 job.numToBringList.Add(item.def.stackLimit);
                             reservedMaxItem++;
 
@@ -490,6 +490,7 @@ namespace ToolsForHaul.Utilities
             Job job = new Job(HaulJobDefOf.DismountInBase);
             job.targetA = cart;
             job.targetB = FindStorageCell(pawn, cart);
+
             if (job.targetB != IntVec3.Invalid)
             {
                 Trace.AppendLine("DismountInBase Job is issued");

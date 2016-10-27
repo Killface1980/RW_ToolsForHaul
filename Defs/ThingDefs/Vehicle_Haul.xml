@@ -159,6 +159,7 @@
         <animalsCanDrive>true</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
+        <soundAmbient>VehicleATV_Ambience</soundAmbient>
       </li>
     </comps>
   </ThingDef>
@@ -258,6 +259,7 @@
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
+        <soundAmbient>VehicleATV_Ambience</soundAmbient>
       </li>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
@@ -473,6 +475,7 @@
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
+        <soundAmbient>VehicleATV_Ambience</soundAmbient>
       </li>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
@@ -595,6 +598,7 @@
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
+        <soundAmbient>VehicleATV_Ambience</soundAmbient>
         <isMedical>true</isMedical>
       </li>
     </comps>

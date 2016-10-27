@@ -20,19 +20,19 @@ namespace ToolsForHaul
 
             if (pawn.mindState.IsIdle)
             {
-                if (previousPawnWeapons.ContainsKey(pawn))
-                {
-                    Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
-                    Pawn wearer = toolbelt.wearer;
-                    if (wearer.equipment.Primary != null)
-                        toolbelt.slotsComp.SwapEquipment(previousPawnWeapons[pawn]);
-                    else
-                    {
-                        wearer.equipment.AddEquipment(previousPawnWeapons[pawn]);
-                        toolbelt.slotsComp.slots.Remove(previousPawnWeapons[pawn]);
-                    }
-                    previousPawnWeapons.Remove(pawn);
-                }
+              //if (previousPawnWeapons.ContainsKey(pawn))
+              //{
+              //    Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+              //    Pawn wearer = toolbelt.wearer;
+              //    if (wearer.equipment.Primary != null)
+              //        toolbelt.slotsComp.SwapEquipment(previousPawnWeapons[pawn]);
+              //    else
+              //    {
+              //        wearer.equipment.AddEquipment(previousPawnWeapons[pawn]);
+              //        toolbelt.slotsComp.slots.Remove(previousPawnWeapons[pawn]);
+              //    }
+              //    previousPawnWeapons.Remove(pawn);
+              //}
                 if (ToolsForHaulUtility.IsDriver(pawn))
                 {
                     job = ToolsForHaulUtility.DismountInBase(pawn, MapComponent_ToolsForHaul.currentVehicle[pawn]);

@@ -169,7 +169,6 @@ namespace ToolsForHaul
                     if (vehicleCart == null)
                         continue;
                     if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
-                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
                     if (vehicleCart.tankLeaking) continue;
                     if (vehicleCart.IsBurning()) continue;
                     cart = vehicleCart;

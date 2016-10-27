@@ -2,6 +2,7 @@
 using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.Toils;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
@@ -20,6 +21,7 @@ namespace ToolsForHaul.JobDrivers
             IntVec3 destLoc = new IntVec3(-1000, -1000, -1000);
             string destName = null;
             SlotGroup destGroup = null;
+
 
             if (pawn.jobs.curJob.targetB != null)
             {
@@ -51,9 +53,16 @@ namespace ToolsForHaul.JobDrivers
             if (!TargetThingA.IsForbidden(pawn.Faction))
                 this.FailOnForbidden(CartInd);
 
+
             ThingWithComps cart = TargetThingA as ThingWithComps;
 
-            if (cart.TryGetComp<CompMountable>().Driver!=null)
+            if (ToolsForHaulUtility.FindStorageCell(pawn, cart) == IntVec3.Invalid)
+            {
+                JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceForCart);
+            }
+
+
+            if (cart.TryGetComp<CompMountable>().Driver != null)
             {
                 this.FailOnSomeonePhysicallyInteracting(CartInd);
             }

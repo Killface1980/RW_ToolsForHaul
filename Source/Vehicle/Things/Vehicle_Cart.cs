@@ -594,7 +594,7 @@ namespace ToolsForHaul
                         tick_time += 0.01f * currentDriverSpeed / 5f;
                     }
 
-                    if (mountableComp.Driver.Position.InHorDistOf(mountableComp.Driver.pather.Destination.Cell, 1f))
+                    if (mountableComp.Driver.Position.InHorDistOf(mountableComp.Driver.pather.Destination.Cell, 0.8f))
                     {
                         // Make the breaks sound once and throw some dust if Driver comes to his destination
                         if (!soundPlayed)

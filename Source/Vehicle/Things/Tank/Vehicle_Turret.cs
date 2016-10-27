@@ -426,7 +426,7 @@ namespace ToolsForHaul
             {
                 yield return new FloatMenuOption("Dismount".Translate(LabelShort), action_Dismount);
             }
-                yield return new FloatMenuOption("DismountInBase".Translate(LabelShort), action_DismountInBase);
+            yield return new FloatMenuOption("DismountInBase".Translate(LabelShort), action_DismountInBase);
 
 
         }
@@ -484,7 +484,7 @@ namespace ToolsForHaul
 
             // Drivers raction to damage
             float hitpointsPercent = (float)HitPoints / MaxHitPoints;
-           
+
 
             if (hitpointsPercent <= 0.35f)
             {
