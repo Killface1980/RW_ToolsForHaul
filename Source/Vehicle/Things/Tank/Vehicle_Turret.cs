@@ -669,7 +669,7 @@ namespace ToolsForHaul
                     else
                     {
                         Position = mountableComp.Position.ToIntVec3();
-                        Rotation = mountableComp.Driver.Rotation;
+                        Rotation = mountableComp.Rotation;
                         soundPlayed = false;
                     }
 

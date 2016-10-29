@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using Combat_Realism;
 using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.Utilities;
@@ -41,6 +42,18 @@ namespace ToolsForHaul.StatWorkers
                                     stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Turret.VehicleSpeed);
                                     return stringBuilder.ToString();
                                 }
+                        }
+
+                        CompInventory compInventory = ThingCompUtility.TryGetComp<CompInventory>(req.Thing);
+                        if (compInventory != null)
+                        {
+                            stringBuilder.AppendLine();
+                            stringBuilder.AppendLine(Translator.Translate("CR_CarriedWeight") + ": x" + GenText.ToStringPercent(compInventory.moveSpeedFactor));
+                            if (compInventory.encumberPenalty > 0f)
+                            {
+                                stringBuilder.AppendLine(Translator.Translate("CR_Encumbered") + ": -" + GenText.ToStringPercent(compInventory.encumberPenalty));
+                                stringBuilder.AppendLine(Translator.Translate("CR_FinalModifier") + ": x" + GenText.ToStringPercent(this.GetStatFactor(thisPawn)));
+                            }
                         }
 
                         CompSlotsBackpack compSlotsBackpack = ToolsForHaulUtility.TryGetBackpack(thisPawn).TryGetComp<CompSlotsBackpack>();
@@ -131,6 +144,13 @@ namespace ToolsForHaul.StatWorkers
             if (backpack != null)
             {
                 result = Mathf.Clamp(backpack.slotsComp.moveSpeedFactor - backpack.slotsComp.encumberPenalty, 0.1f, 1f);
+            }
+
+            CompInventory compInventory = ThingCompUtility.TryGetComp<CompInventory>(thisPawn);
+            if (compInventory != null)
+            {
+                result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
+                return result;
             }
 
             return result;

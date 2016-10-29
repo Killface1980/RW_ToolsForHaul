@@ -178,8 +178,8 @@ namespace ToolsForHaul.Components
                 if (!position.InBounds())
                     return Driver.DrawPos;
 
-              if (!position.ToIntVec3().Walkable())
-                  return Driver.DrawPos;
+                if (!position.ToIntVec3().Walkable())
+                    return Driver.DrawPos;
 
                 return position;
             }
@@ -193,6 +193,7 @@ namespace ToolsForHaul.Components
             {
                 if (Driver.DrawPos.ToIntVec3().AdjacentTo8Way(Position.ToIntVec3()))
                     _rotation = Rot4.FromIntVec3(Driver.DrawPos.ToIntVec3() - Position.ToIntVec3());
+                else _rotation = Driver.Rotation;
                 return _rotation;
             }
         }

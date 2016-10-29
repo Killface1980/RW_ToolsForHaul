@@ -12,46 +12,55 @@ namespace ToolsForHaul.Detoured
     {
         internal static bool TryDrop(this Pawn_ApparelTracker _this, Apparel ap, out Apparel resultingAp, IntVec3 pos, bool forbid = true)
         {
+           // drop all toolbelt & backpack stuff so that it won't disappear
+            Apparel_Toolbelt toolbelt = ap as Apparel_Toolbelt;
+            Apparel_Backpack backpack = ap as Apparel_Backpack;
+
+            Thing dropThing = null;
+
+                if (toolbelt?.slotsComp?.slots?.Count >= 1)
+                {
+                    foreach (Thing slot in toolbelt.slotsComp.slots)
+                    {
+                        GenThing.TryDropAndSetForbidden(slot, pos, ThingPlaceMode.Near, out dropThing, forbid);
+                    }
+                }
+            
+            if (backpack?.slotsComp?.slots?.Count >= 1)
+            {
+                foreach (Thing slot in backpack.slotsComp.slots)
+                {
+                    GenThing.TryDropAndSetForbidden(slot, pos, ThingPlaceMode.Near, out dropThing, forbid);
+                }
+            }
+
             if (!_this.WornApparel.Contains(ap))
             {
                 Log.Warning(_this.pawn.LabelCap + " tried to drop apparel he didn't have: " + ap.LabelCap);
                 resultingAp = null;
                 return false;
             }
-
-            Apparel_Toolbelt toolbelt = ap as Apparel_Toolbelt;
-            Apparel_Backpack backpack = ap as Apparel_Backpack;
-
-            Thing thing = null;
-
-            if (toolbelt != null)
-            {
-                if (toolbelt?.slotsComp?.slots?.Count >= 1)
-                {
-                    foreach (Thing slot in toolbelt.slotsComp.slots)
-                    {
-                        GenThing.TryDropAndSetForbidden(slot, pos, ThingPlaceMode.Near, out thing, forbid);
-                    }
-                }
-            }
-            if (backpack?.slotsComp?.slots?.Count >= 1)
-            {
-                foreach (Thing slot in backpack.slotsComp.slots)
-                {
-                    GenThing.TryDropAndSetForbidden(slot, pos, ThingPlaceMode.Near, out thing, forbid);
-                }
-            }
-
             _this.WornApparel.Remove(ap);
             ap.wearer = null;
+            Thing thing = null;
             bool flag = GenThing.TryDropAndSetForbidden(ap, pos, ThingPlaceMode.Near, out thing, forbid);
             resultingAp = (thing as Apparel);
-            _this.pawn.Drawer.renderer.graphics.ResolveApparelGraphics();
+            _this.ApparelChanged();
             if (flag && _this.pawn.outfits != null)
             {
                 _this.pawn.outfits.forcedHandler.SetForced(ap, false);
             }
+            Combat_Realism.CR_Utility.TryUpdateInventory(_this.pawn);     // Apparel was dropped, update inventory
             return flag;
+        }
+
+        private static void ApparelChanged(this Pawn_ApparelTracker _this)
+        {
+            LongEventHandler.ExecuteWhenFinished(delegate
+            {
+                _this.pawn.Drawer.renderer.graphics.ResolveApparelGraphics();
+                PortraitsCache.SetDirty(_this.pawn);
+            });
         }
     }
 }

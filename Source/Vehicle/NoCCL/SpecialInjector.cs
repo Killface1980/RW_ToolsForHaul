@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using CommunityCoreLibrary;
 using RimWorld;
-using RW_FacialStuff;
 using ToolsForHaul.Components;
 using ToolsForHaul.Detoured;
 using UnityEngine;

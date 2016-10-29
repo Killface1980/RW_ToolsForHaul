@@ -15,6 +15,7 @@ namespace ToolsForHaul.WorkGivers
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
+
             //return ToolsForHaulUtility.Cart();
             return ListerHaulables.ThingsPotentiallyNeedingHauling();
         }
@@ -56,24 +57,26 @@ namespace ToolsForHaul.WorkGivers
 
             if (cart == null)
             {
-                cart = RightTools.GetRightVehicle(pawn, WorkTypeDefOf.Hauling) as Vehicle_Cart;
+                cart = RightTools.GetRightVehicle(pawn, WorkTypeDefOf.Hauling, t) as Vehicle_Cart;
 
                 if (cart == null)
                     return null;
             }
 
+           
 
-            if (cart.IsBurning())
-            {
-                JobFailReason.Is(ToolsForHaulUtility.BurningLowerTrans);
-                return null;
-            }
+          //if (cart.IsBurning())
+          //{
+          //    JobFailReason.Is(ToolsForHaulUtility.BurningLowerTrans);
+          //    return null;
+          //}
 
-            if (!cart.allowances.Allows(t))
-            {
-                JobFailReason.Is("Cart does not allow that thing");
-                return null;
-            }
+          //if (!cart.allowances.Allows(t))
+          //{
+          //    JobFailReason.Is("Cart does not allow that thing");
+          //    return null;
+          //}
+
             if (ListerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.storage.Count == 0)
             {
                 JobFailReason.Is("NoHaulable".Translate());

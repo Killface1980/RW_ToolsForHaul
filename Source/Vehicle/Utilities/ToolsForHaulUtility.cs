@@ -130,15 +130,17 @@ namespace ToolsForHaul.Utilities
             if (cart.IsForbidden(pawn.Faction)) return false;
             if (cart.Position.IsForbidden(pawn)) return false;
             if (cart.IsBurning()) return false;
+            if (!pawn.CanReserveAndReach(cart, PathEndMode.ClosestTouch, Danger.Some)) return false;
 
             if (!cart.TryGetComp<CompMountable>().IsMounted) return true;
             if (cart.TryGetComp<CompMountable>().Driver == pawn) return true;
+            if (cart.TryGetComp<CompMountable>().IsMounted && cart.TryGetComp<CompMountable>().Driver.RaceProps.Animal) return true;
             return false;
         }
 
-        public static bool AvailableAnimalCart(Vehicle_Cart cart)
+        public static bool AvailableAnimalCart(ThingWithComps cart)
         {
-            Pawn Driver = cart.mountableComp.IsMounted ? cart.mountableComp.Driver : null;
+            Pawn Driver = cart.GetComp<CompMountable>().IsMounted ? cart.GetComp<CompMountable>().Driver : null;
             if (Driver == null)
                 return false;
 

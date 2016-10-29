@@ -17,8 +17,8 @@ namespace ToolsForHaul.WorkGivers
             foreach (Thing thing in Find.ListerThings.AllThings)
             {
                 float statfloat = 0;
-                if (!thing.def.IsMeleeWeapon || !pawn.CanReserveAndReach(thing, PathEndMode.ClosestTouch, Danger.Some))
-                    continue;
+                if (!thing.def.IsWeapon) continue;
+                if (!pawn.CanReserveAndReach(thing, PathEndMode.ClosestTouch, Danger.Some)) continue;
                 foreach (KeyValuePair<StatDef, float> stat in pawn.GetWeightedWorkStats())
                 {
                     statfloat += RightTools.GetMaxStat(thing as ThingWithComps, stat.Key);

@@ -44,6 +44,10 @@
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="CombatRealism">
+      <HintPath>..\..\..\CombatRealism-master\Assemblies\CombatRealism.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -60,6 +64,10 @@
     <Compile Include="Components\Vehicles\CompDriver.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
+    <None Include="_JT\AreaFinder.cs" />
+    <None Include="_JT\GenClosest_JT.cs" />
+    <None Include="_JT\JobGiver_Work_JT.cs" />
+    <None Include="_JT\JobGiver_Haul_JT.cs" />
     <None Include="_testing\ProjectileTFH.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
@@ -75,7 +83,7 @@
     <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
     <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="JobGivers\JobGiver_Steal.cs" />
-    <Compile Include="NoCCL\DetourAttribute.cs" />
+    <None Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="Things\Tank\Vehicle_Turret.cs" />
     <None Include="Things\Tank\nn\_Targeter.cs" />

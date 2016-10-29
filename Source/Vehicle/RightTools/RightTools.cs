@@ -60,8 +60,8 @@ namespace ToolsForHaul
                 foreach (ThingWithComps slot in toolbelt.slotsComp.slots)
                 {
                     ThingWithComps thingWithComps2 = slot;
-                    bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
-                    if (!flag2)
+                    bool flag2 = thingWithComps2.def.IsWeapon;
+                    if (flag2)
                     {
                         float maxStat = GetMaxStat(thingWithComps2, def);
                         bool flag3 = stat < maxStat;
@@ -121,7 +121,7 @@ namespace ToolsForHaul
         /// <param name="pawn"></param>
         /// <param name="worktype"></param>
         /// <returns></returns>
-        public static Thing GetRightVehicle(Pawn pawn, WorkTypeDef worktype)
+        public static Thing GetRightVehicle(Pawn pawn, WorkTypeDef worktype, Thing t = null)
         {
             Thing cart = null;
             if (worktype.Equals(WorkTypeDefOf.Hunting))
@@ -136,7 +136,6 @@ namespace ToolsForHaul
                     if (!ToolsForHaulUtility.AvailableVehicle(vehicleTurret, pawn)) continue;
                     if (!vehicleTurret.IsCurrentlyMotorized()) continue;
                     if (vehicleTurret.tankLeaking) continue;
-                    if (vehicleTurret.IsBurning()) continue;
                     cart = vehicleTurret;
                     skip = true;
                     break;
@@ -153,7 +152,6 @@ namespace ToolsForHaul
                         if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
                         if (!vehicleCart.IsCurrentlyMotorized()) continue;
                         if (vehicleCart.tankLeaking) continue;
-                    if (vehicleCart.IsBurning()) continue;
                         cart = vehicleCart;
                         break;
                     }
@@ -170,7 +168,7 @@ namespace ToolsForHaul
                         continue;
                     if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
                     if (vehicleCart.tankLeaking) continue;
-                    if (vehicleCart.IsBurning()) continue;
+                    if (!vehicleCart.allowances.Allows(t)) continue;
                     cart = vehicleCart;
                     break;
                 }
@@ -187,7 +185,6 @@ namespace ToolsForHaul
                     if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
                     if (!vehicleCart.IsCurrentlyMotorized()) continue;
                     if (vehicleCart.tankLeaking) continue;
-                    if (vehicleCart.IsBurning()) continue;
                     cart = vehicleCart;
                     break;
                 }
