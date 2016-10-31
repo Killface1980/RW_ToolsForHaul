@@ -85,12 +85,14 @@
     <reportString>Putting TargetA in TargetB.</reportString>
   </JobDef>
 
+  <!--
   <JobDef>
     <defName>PutInToolbeltSlot</defName>
     <driverClass>ToolsForHaul.JobDrivers.JobDriver_PutInToolbeltSlot</driverClass>
     <reportString>Putting TargetA in TargetB.</reportString>
   </JobDef>
-  
+-->
+
   <!--
   <JobDef>
     <defName>PutInInventory</defName>
@@ -106,13 +108,12 @@
   </JobDef>
   
   <!--============= Item hauling ===============-->
-
   <JobDef>
     <defName>HaulWithBackpack</defName>
     <driverClass>ToolsForHaul.JobDrivers.JobDriver_HaulWithBackpack</driverClass>
     <reportString>Collecting TargetA with targetC.</reportString>
   </JobDef>
-
+  
   <JobDef>
     <defName>HaulWithAnimalCart</defName>
     <driverClass>ToolsForHaul.JobDrivers.JobDriver_HaulWithAnimalCart</driverClass>

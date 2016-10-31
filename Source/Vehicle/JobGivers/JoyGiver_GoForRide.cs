@@ -24,6 +24,16 @@ namespace ToolsForHaul.JoyGivers
                 return null;
             }
 
+            if (!(t as ThingWithComps).TryGetComp<CompRefuelable>().HasFuel)
+            {
+                return null;
+            }
+
+            if (t.IsForbidden(Faction.OfPlayer))
+            {
+                return null;
+            }
+
             if (!JoyUtility.EnjoyableOutsideNow(pawn, null))
             {
                 return null;

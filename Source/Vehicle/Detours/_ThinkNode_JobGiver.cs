@@ -1,10 +1,8 @@
 ﻿using RimWorld;
 using ToolsForHaul.JobDefs;
-using ToolsForHaul.JobDrivers;
 using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
-using static ToolsForHaul.MapComponent_ToolsForHaul;
 
 namespace ToolsForHaul
 {

@@ -45,16 +45,16 @@ namespace ToolsForHaul.Utilities
             return null;
         }
 
-        public static Apparel_Toolbelt TryGetToolbelt(Pawn pawn)
-        {
-            if (!pawn.RaceProps.Humanlike)
-                return null;
-
-            foreach (Apparel apparel in pawn.apparel.WornApparel)
-                if (apparel is Apparel_Toolbelt)
-                    return apparel as Apparel_Toolbelt;
-            return null;
-        }
+      //public static Apparel_Toolbelt TryGetToolbelt(Pawn pawn)
+      //{
+      //    if (!pawn.RaceProps.Humanlike)
+      //        return null;
+      //
+      //    foreach (Apparel apparel in pawn.apparel.WornApparel)
+      //        if (apparel is Apparel_Toolbelt)
+      //            return apparel as Apparel_Toolbelt;
+      //    return null;
+      //}
 
         /// <summary>
         ///     Calculates the actual current movement speed of a pawn
@@ -124,7 +124,7 @@ namespace ToolsForHaul.Utilities
             return lastItem;
         }
 
-        public static bool AvailableVehicle(ThingWithComps cart, Pawn pawn)
+        public static bool AvailableVehicle(Pawn pawn, ThingWithComps cart)
         {
             if (cart.Faction != Faction.OfPlayer) return false;
             if (cart.IsForbidden(pawn.Faction)) return false;
@@ -166,28 +166,28 @@ namespace ToolsForHaul.Utilities
             bool ShouldDrop;
             Thing lastItem = TryGetBackpackLastItem(pawn);
             Apparel_Backpack backpack = TryGetBackpack(pawn);
-            if (cart == null)
-            {
-                jobDef = HaulJobDefOf.HaulWithBackpack;
-                targetC = backpack;
-                maxItem = backpack.MaxItem;
-                // thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
-                thresholdItem = 2;
-                reservedMaxItem = backpack.slotsComp.slots.Count;
-                remainingItems = backpack.slotsComp.slots;
-                ShouldDrop = false;
-                UseBackpack = true;
-                if (lastItem != null)
-                    for (int i = 0; i < backpack.slotsComp.slots.Count; i++)
-                        if (backpack.slotsComp.slots[i] == lastItem && reservedMaxItem - (i + 1) <= 0)
-                        {
-                            ShouldDrop = false;
-                            break;
-                        }
-            }
-            else
-            {
-                if (cart.mountableComp.IsMounted)
+                if (cart == null)
+                {
+                    jobDef = HaulJobDefOf.HaulWithBackpack;
+                    targetC = backpack;
+                    maxItem = backpack.MaxItem;
+                    // thresholdItem = (int)Math.Ceiling(maxItem * 0.5);
+                    thresholdItem = 2;
+                    reservedMaxItem = backpack.slotsComp.slots.Count;
+                    remainingItems = backpack.slotsComp.slots;
+                    ShouldDrop = false;
+                    UseBackpack = true;
+                    if (lastItem != null)
+                        for (int i = 0; i < backpack.slotsComp.slots.Count; i++)
+                            if (backpack.slotsComp.slots[i] == lastItem && reservedMaxItem - (i + 1) <= 0)
+                            {
+                                ShouldDrop = false;
+                                break;
+                            }
+                }
+                else
+                {
+                    if (cart.mountableComp.IsMounted)
                 {
                     jobDef = cart.mountableComp.Driver.RaceProps.Animal
                         ? HaulJobDefOf.HaulWithAnimalCart
@@ -226,11 +226,11 @@ namespace ToolsForHaul.Utilities
                 bool startDrop = false;
                 for (int i = 0; i < remainingItems.Count(); i++)
                 {
-                    if (UseBackpack && startDrop == false)
-                        if (remainingItems.ElementAt(i) == lastItem)
-                            startDrop = true;
-                        else
-                            continue;
+                  if (UseBackpack && startDrop == false)
+                      if (remainingItems.ElementAt(i) == lastItem)
+                          startDrop = true;
+                      else
+                          continue;
                     IntVec3 storageCell = FindStorageCell(pawn, remainingItems.ElementAt(i), job.targetQueueB);
                     if (storageCell == IntVec3.Invalid) break;
                     job.targetQueueB.Add(storageCell);
@@ -382,8 +382,8 @@ namespace ToolsForHaul.Utilities
                                && center.DistanceToSquared(item.Position) <= ValidDistance))
                         {
                             job.targetQueueA.Add(item);
-                            if (UseBackpack)
-                                job.numToBringList.Add(item.def.stackLimit);
+                          if (UseBackpack)
+                              job.numToBringList.Add(item.def.stackLimit);
                             reservedMaxItem++;
 
                             if (reservedMaxItem + job.targetQueueA.Count >= maxItem)
@@ -415,8 +415,8 @@ namespace ToolsForHaul.Utilities
                                && center.DistanceToSquared(item.Position) <= ValidDistance))
                         {
                             job.targetQueueA.Add(item);
-                            if (UseBackpack)
-                                job.numToBringList.Add(item.def.stackLimit);
+                          if (UseBackpack)
+                              job.numToBringList.Add(item.def.stackLimit);
                             reservedMaxItem++;
 
                             if (reservedMaxItem + job.targetQueueA.Count >= maxItem)

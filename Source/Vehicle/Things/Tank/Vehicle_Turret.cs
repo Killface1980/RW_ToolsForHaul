@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Combat_Realism;
 #if Headlights
 using ppumkin.LEDTechnology.Managers;
 #endif
@@ -19,31 +20,12 @@ using Random = UnityEngine.Random;
 namespace ToolsForHaul
 {
     [StaticConstructorOnStartup]
-    public class Vehicle_Turret : Building_Turret, IThingContainerOwner, IAttackTarget
+    public class Vehicle_Turret : Building_Reloadable, IAttackTarget
     {
-        #region Tank
-
-
-        protected StunHandler stunner;
-
-        protected TargetInfo forcedTarget = TargetInfo.Invalid;
-
-        public override TargetInfo CurrentTarget
-        {
-            get;
-        }
-        public override Verb AttackVerb
-        {
-            get;
-        }
-
-        #endregion
-
 
         #region Variables
         // ==================================
-        public int DefaultMaxItem { get { return (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem); } }
-        public int MaxItemPerBodySize { get { return (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem); } }
+
         public bool instantiated;
 
         // RimWorld.Building_TurretGun
@@ -53,6 +35,9 @@ namespace ToolsForHaul
 
         public bool ThreatDisabled()
         {
+            if (GetComp<CompExplosive>().wickStarted)
+                return true;
+
             CompPowerTrader comp = GetComp<CompPowerTrader>();
             if (comp == null || !comp.PowerOn)
             {
@@ -123,12 +108,12 @@ namespace ToolsForHaul
 
 
         //mount and storage data
-        public ThingContainer storage;
-        public ThingContainer GetContainer() { return storage; }
+     // public ThingContainer storage;
+     // public ThingContainer GetContainer() { return storage; }
         public IntVec3 GetPosition() { return Position; }
 
         //slotGroupParent Interface
-        public ThingFilter allowances;
+    //    public ThingFilter allowances;
 
         public int MaxItem
         {
@@ -162,10 +147,10 @@ namespace ToolsForHaul
             // current spin degree
             wheelRotation = 0;
             //Inventory Initialize. It should be moved in constructor
-            storage = new ThingContainer(this);
-            allowances = new ThingFilter();
-            allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
-            allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
+          //storage = new ThingContainer(this);
+          //allowances = new ThingFilter();
+          //allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
+          //allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
             stunner = new StunHandler(this);
         }
 
@@ -204,12 +189,12 @@ namespace ToolsForHaul
                 }
             }
 
-            if (allowances == null)
-            {
-                allowances = new ThingFilter();
-                allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
-                allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
-            }
+          //if (allowances == null)
+          //{
+          //    allowances = new ThingFilter();
+          //    allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
+          //    allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
+          //}
 
             LongEventHandler.ExecuteWhenFinished(UpdateGraphics);
         }
@@ -284,8 +269,8 @@ namespace ToolsForHaul
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.LookDeep(ref storage, "storage");
-            Scribe_Deep.LookDeep(ref allowances, "allowances");
+     //       Scribe_Deep.LookDeep(ref storage, "storage");
+      //      Scribe_Deep.LookDeep(ref allowances, "allowances");
             Scribe_Values.LookValue(ref tankLeaking, "tankLeaking");
             Scribe_Values.LookValue(ref _tankHitPos, "tankHitPos");
             Scribe_Values.LookValue(ref despawnAtEdge, "despawnAtEdge");
@@ -435,13 +420,13 @@ namespace ToolsForHaul
         {
             if (mode == DestroyMode.Deconstruct)
                 mode = DestroyMode.Kill;
-            else if (explosiveComp != null && explosiveComp.wickStarted)
-            {
-                storage.ClearAndDestroyContents();
+          //else if (explosiveComp != null && explosiveComp.wickStarted)
+          //{
+          //    storage.ClearAndDestroyContents();
+          //
+          //}
 
-            }
-
-            storage.TryDropAll(Position, ThingPlaceMode.Near);
+       //     storage.TryDropAll(Position, ThingPlaceMode.Near);
 
             base.Destroy(mode);
         }
@@ -515,7 +500,7 @@ namespace ToolsForHaul
 
                         FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, splash);
                     }
-                    if (hitpointsPercent < 0.15f)
+                    if (hitpointsPercent < 0.05f && Rand.Value > 0.5f)
                     {
                         FireUtility.TryStartFireIn(Position, 0.1f);
                     }
@@ -524,25 +509,15 @@ namespace ToolsForHaul
 
                 if (refuelableComp != null && refuelableComp.HasFuel)
                 {
-                    if (hitpointsPercent < vehiclesComp.FuelCatchesFireHitPointsPercent())
+                    if (hitpointsPercent < vehiclesComp.FuelCatchesFireHitPointsPercent() && Rand.Value > 0.5f)
                     {
-                        if (!fuelSpilled)
+                        if (!tankLeaking)
                         {
                             refuelableComp.ConsumeFuel(1f);
-
                             FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 6);
-
-                            if (Random.value >= 0.5f)
-                            {
-                                FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
-                            }
-                            fuelSpilled = true;
                             makeHole = true;
                         }
-                        if (Random.value >= 0.5f && !makeHole)
-                        {
-                            FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
-                        }
+                        FireUtility.TryStartFireIn(Position, 0.1f);
                     }
                 }
 
@@ -556,12 +531,6 @@ namespace ToolsForHaul
 
                     FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, splash);
                 }
-
-                if (Random.value <= 0.3f && tankLeaking && hitpointsPercent < 0.5f)
-                {
-                    FireUtility.TryStartFireIn(Position, 0.1f);
-                }
-
             }
         }
 
@@ -582,10 +551,10 @@ namespace ToolsForHaul
         {
             if (!instantiated)
             {
-                foreach (Thing thing in GetContainer())
-                {
-                    thing.holder.owner = this;
-                }
+              //foreach (Thing thing in GetContainer())
+              //{
+              //    thing.holder.owner = this;
+              //}
 
                 currentDriverSpeed = VehicleSpeed;
                 instantiated = true;
@@ -780,15 +749,15 @@ namespace ToolsForHaul
                 {
                     UpdateGraphics();
                 }
-                if (graphic_FullStorage == null)
-                {
+              //if (graphic_FullStorage == null)
+              //{
                     return base.Graphic;
-                }
-                if (storage.Count <= 0)
-                {
-                    return base.Graphic;
-                }
-                return graphic_FullStorage;
+              //  }
+              //if (storage.Count <= 0)
+              //{
+              //    return base.Graphic;
+              //}
+              //return graphic_FullStorage;
             }
         }
         float wheel_shake;
@@ -840,14 +809,6 @@ namespace ToolsForHaul
                 Vector3 mountThingLoc = drawLoc;
                 mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.06f;
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
-
-                if (false)
-                    if (storage?.Count > 0)
-                        foreach (Thing mountThing in storage)
-                        {
-                            mountThing.Rotation = Rotation;
-                            mountThing.DrawAt(mountThingLoc + mountThingOffset);
-                        }
 
                 if (Rotation.AsInt % 2 == 0) //Vertical
                     wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;

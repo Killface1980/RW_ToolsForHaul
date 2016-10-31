@@ -52,7 +52,7 @@ namespace ToolsForHaul
                     state = string.Concat(state, "Forbidden ");
                 if (pawn.CanReserveAndReach(cart, PathEndMode.Touch, Danger.Some))
                     state = string.Concat(state, "CanReserveAndReach ");
-                if (ToolsForHaulUtility.AvailableVehicle(cart, pawn))
+                if (ToolsForHaulUtility.AvailableVehicle(pawn, cart))
                     state = string.Concat(state, "AvailableCart ");
                 if (ToolsForHaulUtility.AvailableAnimalCart(cart))
                     state = string.Concat(state, "AvailableAnimalCart ");

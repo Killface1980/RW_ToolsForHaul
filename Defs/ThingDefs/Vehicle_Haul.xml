@@ -14,22 +14,20 @@
     <selectable>true</selectable>
     <tickerType>Normal</tickerType>
     <passability>PassThroughOnly</passability>
-    <stealable>true</stealable>
     <altitudeLayer>Building</altitudeLayer>
     <useHitPoints>True</useHitPoints>
     <hasTooltip>true</hasTooltip>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
-    <staticSunShadowHeight>1.0</staticSunShadowHeight>
     <blockLight>true</blockLight>
     <building>
       <ai_combatDangerous>true</ai_combatDangerous>
-      <isEdifice>false</isEdifice>
+      <isEdifice>true</isEdifice>
       <repairable>true</repairable>
       <isSittable>true</isSittable>
       <expandHomeArea>false</expandHomeArea>
       <allowWireConnection>false</allowWireConnection>
       <bed_humanlike>false</bed_humanlike>
-      <isInert>false</isInert>
+      <isInert>true</isInert>
       <deconstructible>false</deconstructible>
       <isJoySource>true</isJoySource>
     </building>
@@ -294,11 +292,16 @@
         <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.2</startWickHitPointsPercent>
-        <chanceNeverExplodeFromDamage>0.8</chanceNeverExplodeFromDamage>
+        <chanceNeverExplodeFromDamage>0.5</chanceNeverExplodeFromDamage>
 				<wickTicks>
 					<min>300</min>
 					<max>600</max>
-				</wickTicks> 
+				</wickTicks>
+        <postExplosionSpawnThingDef>Puddle_BioDiesel_Fuel</postExplosionSpawnThingDef>
+        <postExplosionSpawnChance>1</postExplosionSpawnChance>
+        <postExplosionSpawnThingCount>3</postExplosionSpawnThingCount>
+        <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
+        <explosionEffect>VehicleExplosion</explosionEffect>
       </li>
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
@@ -327,7 +330,6 @@
       <li Class="CompProperties_Breakdownable"/>
     </comps>
     <pathCost>50</pathCost>
-    <castEdgeShadows>true</castEdgeShadows>
     <description>An ATV is what you drive when you want a concussion.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>

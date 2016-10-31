@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
-using ToolsForHaul.Components;
 using ToolsForHaul.Toils;
 using Verse;
 using Verse.AI;

@@ -6,25 +6,25 @@ using Verse;
 namespace CommunityCoreLibrary
 {
 
-    public abstract class DefInjectionQualifier
+    public abstract class DefInjectionQualifierTemp
     {
         public abstract bool Test(Def def);
 
-        public static List<ThingDef> FilteredThingDefs(Type qualifier, ref DefInjectionQualifier qualifierInt, List<string> targetDefs)
+        public static List<ThingDef> FilteredThingDefs(Type qualifier, ref DefInjectionQualifierTemp QualifierTempInt, List<string> targetDefs)
         {
             if (!targetDefs.NullOrEmpty())
             {
                 return DefDatabase<ThingDef>.AllDefs.Where(def => targetDefs.Contains(def.defName)).ToList();
             }
-            if (qualifierInt == null)
+            if (QualifierTempInt == null)
             {
-                qualifierInt = (DefInjectionQualifier)Activator.CreateInstance(qualifier);
-                if (qualifierInt == null)
+                QualifierTempInt = (DefInjectionQualifierTemp)Activator.CreateInstance(qualifier);
+                if (QualifierTempInt == null)
                 {
                     return null;
                 }
             }
-            return DefDatabase<ThingDef>.AllDefs.Where(qualifierInt.Test).ToList();
+            return DefDatabase<ThingDef>.AllDefs.Where(QualifierTempInt.Test).ToList();
         }
 
     }

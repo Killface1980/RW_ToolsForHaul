@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using RimWorld;
-using UnityEngine;
+﻿using RimWorld;
 using Verse;
 
 namespace ToolsForHaul.Detoured
@@ -13,18 +8,9 @@ namespace ToolsForHaul.Detoured
         internal static bool TryDrop(this Pawn_ApparelTracker _this, Apparel ap, out Apparel resultingAp, IntVec3 pos, bool forbid = true)
         {
            // drop all toolbelt & backpack stuff so that it won't disappear
-            Apparel_Toolbelt toolbelt = ap as Apparel_Toolbelt;
             Apparel_Backpack backpack = ap as Apparel_Backpack;
 
             Thing dropThing = null;
-
-                if (toolbelt?.slotsComp?.slots?.Count >= 1)
-                {
-                    foreach (Thing slot in toolbelt.slotsComp.slots)
-                    {
-                        GenThing.TryDropAndSetForbidden(slot, pos, ThingPlaceMode.Near, out dropThing, forbid);
-                    }
-                }
             
             if (backpack?.slotsComp?.slots?.Count >= 1)
             {

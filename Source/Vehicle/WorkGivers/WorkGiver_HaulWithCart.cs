@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using RimWorld;
-using ToolsForHaul.Components;
-using ToolsForHaul.JobDefs;
 using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
@@ -65,17 +62,17 @@ namespace ToolsForHaul.WorkGivers
 
            
 
-          //if (cart.IsBurning())
-          //{
-          //    JobFailReason.Is(ToolsForHaulUtility.BurningLowerTrans);
-          //    return null;
-          //}
-
-          //if (!cart.allowances.Allows(t))
-          //{
-          //    JobFailReason.Is("Cart does not allow that thing");
-          //    return null;
-          //}
+            if (cart.IsBurning())
+            {
+                JobFailReason.Is(ToolsForHaulUtility.BurningLowerTrans);
+                return null;
+            }
+            
+            if (!cart.allowances.Allows(t))
+            {
+                JobFailReason.Is("Cart does not allow that thing");
+                return null;
+            }
 
             if (ListerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.storage.Count == 0)
             {
@@ -89,7 +86,7 @@ namespace ToolsForHaul.WorkGivers
                 return null;
             }
 
-            if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableVehicle(cart, pawn))
+            if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableVehicle(pawn, cart))
                 return ToolsForHaulUtility.HaulWithTools(pawn, cart, t);
             JobFailReason.Is(ToolsForHaulUtility.NoAvailableCart);
             return null;

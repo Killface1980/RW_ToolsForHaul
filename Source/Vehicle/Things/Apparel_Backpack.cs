@@ -50,8 +50,7 @@ namespace ToolsForHaul
         public override void SpawnSetup()
         {
             base.SpawnSetup();
-            MaxItem = (int)this.GetStatValue(HaulStatDefOf.MaxItem);
-            MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.MaxItem));
+            MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.BackpackMaxItem));
         }
 
         public override void ExposeData()

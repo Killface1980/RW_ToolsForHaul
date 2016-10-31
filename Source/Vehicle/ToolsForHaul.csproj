@@ -29,7 +29,8 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -46,6 +47,10 @@
     </Reference>
     <Reference Include="CombatRealism">
       <HintPath>..\..\..\CombatRealism-master\Assemblies\CombatRealism.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Community Core Library">
+      <HintPath>..\..\..\Community Core Library\Assemblies\Community Core Library.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -77,14 +82,14 @@
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="Defs\HaulJobDefOf.cs" />
     <Compile Include="Detours\_Pawn_ApparelTracker.cs" />
-    <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
-    <Compile Include="Components\Equipment\CompSlotsToolbelt.cs" />
-    <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
+    <None Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
+    <None Include="Components\Equipment\CompSlotsToolbelt.cs" />
+    <None Include="Designators\Designator_PutInToolbeltSlot.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
-    <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
+    <None Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="JobGivers\JobGiver_Steal.cs" />
     <None Include="NoCCL\DetourAttribute.cs" />
-    <Compile Include="Things\Apparel_Toolbelt.cs" />
+    <None Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="Things\Tank\Vehicle_Turret.cs" />
     <None Include="Things\Tank\nn\_Targeter.cs" />
     <None Include="Things\Tank\nn\_AttackTargetFinder.cs" />
@@ -109,7 +114,7 @@
     <None Include="Designators\Vehicle\Designator_Board.cs" />
     <None Include="_inactive\ModHelperDef.cs" />
     <Compile Include="CCL\CompInjectionSet.cs" />
-    <Compile Include="CCL\DefInjectionQualifier.cs" />
+    <Compile Include="CCL\DefInjectionQualifierTemp.cs" />
     <Compile Include="Things\IncendiaryFuel.cs" />
     <None Include="_inactive\CompWeaponExtensions.cs" />
     <None Include="_inactive\RA_PawnRenderer.cs" />
@@ -136,7 +141,7 @@
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="Toils\Toils_Cart.cs" />
     <None Include="WorkGivers\Class1.cs" />
-    <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
+    <None Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
     <Compile Include="Components\Vehicles\CompMountable.cs" />
     <Compile Include="Designators\Designator_ApplyMedicine.cs" />
@@ -161,11 +166,14 @@
     <Compile Include="Toils\Toils_Collect.cs" />
     <Compile Include="Things\Vehicle_Cart.cs" />
     <None Include="Designators\Designator_Board.cs" />
-    <Compile Include="Designators\Designator_Move.cs" />
+    <None Include="Designators\Designator_Move.cs" />
     <None Include="Things\Vehicle_Saddle.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\Defs\EffecterDefs\Effecter_Misc.xml">
+      <Link>Defs\EffecterDefs\Effecter_Misc.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
       <Link>Defs\JobDefs\Jobs_Misc.xml</Link>
     </Content>
@@ -189,9 +197,6 @@
       <Link>Defs\ThingDefs\Apparel_Backpack.xml</Link>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="..\..\Defs\ThingDefs\Apparel_Toolbelt.xml">
-      <Link>Defs\ThingDefs\Apparel_Toolbelt.xml</Link>
-    </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
       <Link>Defs\ThingDefs\Items_IRResources.xml</Link>
       <SubType>Designer</SubType>
@@ -204,6 +209,7 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Gunned.xml">
       <Link>Defs\ThingDefs\Vehicle_Gunned.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Haul.xml">
       <Link>Defs\ThingDefs\Vehicle_Haul.xml</Link>

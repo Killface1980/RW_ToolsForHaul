@@ -1,5 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+  <ThingDef Name="ToolsForHaulApparelBase" Abstract="True">
+    <thingClass>Apparel</thingClass>
+    <category>Item</category>
+    <selectable>True</selectable>
+    <pathCost>10</pathCost>
+    <useHitPoints>True</useHitPoints>
+    <graphicData>
+      <onGroundRandomRotateAngle>35</onGroundRandomRotateAngle>
+    </graphicData>
+    <drawGUIOverlay>true</drawGUIOverlay>
+    <statBases>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+      <DeteriorationRate>1</DeteriorationRate>
+      <SellPriceFactor>0.5</SellPriceFactor>
+    </statBases>
+    <altitudeLayer>Item</altitudeLayer>
+    <alwaysHaulable>True</alwaysHaulable>
+    <tickerType>Never</tickerType>
+    <comps>
+      <li Class="CompProperties_Forbiddable"/>
+      <li>
+        <compClass>CompColorable</compClass>
+      </li>
+      <li>
+        <compClass>CompQuality</compClass>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <ThingDef Name="ToolsForHaulApparelMakeableBase" ParentName="ToolsForHaulApparelBase" Abstract="True">
+    <recipeMaker>
+      <workSpeedStat>TailoringSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Tailor</effectWorking>
+      <soundWorking>Recipe_Tailor</soundWorking>
+      <recipeUsers>
+        <li>ElectricTailoringBench</li>
+        <li>HandTailoringBench</li>
+      </recipeUsers>
+      <unfinishedThingDef>UnfinishedApparel</unfinishedThingDef>
+    </recipeMaker>
+  </ThingDef>
 
   <ThingDef Name="ToolsForHaulBackpackBase" ParentName="ToolsForHaulApparelMakeableBase" Abstract="True">
     <thingClass>ToolsForHaul.Apparel_Backpack</thingClass>
@@ -9,7 +52,7 @@
     <label>backpack</label>
     <description>A backpack is a bag with straps that go over your shoulders, so that you can carry things on your back when you are walking or climbing.</description>
     <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/Backpack/Backpack</texPath>
+      <texPath>Things/Apparel/Backpack/Backpack</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <costStuffCount>50</costStuffCount>
@@ -17,10 +60,6 @@
       <li>Fabric</li>
       <li>Leathery</li>
     </stuffCategories>
-
-    <equippedStatOffsets>
-      <MoveSpeed>-0.05</MoveSpeed>
-    </equippedStatOffsets>
     <apparel>
       <bodyPartGroups>
         <li>Shoulders</li>
@@ -68,27 +107,33 @@
     <defName>BackpackLeather</defName>
     <label>leather backpack</label>
     <statBases>
-      <WorkToMake>17000</WorkToMake>
+      <WorkToMake>4000</WorkToMake>
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <TFHMaxItem>4</TFHMaxItem>
+      <BackpackMaxItem>4</BackpackMaxItem>
+      <Weight>1</Weight>
+      <Bulk>3</Bulk>
+      <WornWeight>0</WornWeight>
     </statBases>
+    <equippedStatOffsets>
+      <CarryBulk>30</CarryBulk>
+    </equippedStatOffsets>
     <stuffCategories>
       <li>Leathery</li>
     </stuffCategories>
     <comps>
-    <li Class="ToolsForHaul.Components.CompSlotsBackpack_Properties">
-      <allowedThingCategoryDefs>
-        <li>Foods</li>
-        <li>Manufactured</li>
-        <li>ResourcesRaw</li>
-        <li>PlantMatter</li>
-        <li>BodyParts</li>
-        <li>Weapons</li>
-        <li>Apparel</li>
-      </allowedThingCategoryDefs>
-    </li>
+      <li Class="ToolsForHaul.Components.CompSlotsBackpack_Properties">
+        <allowedThingCategoryDefs>
+          <li>Foods</li>
+          <li>Manufactured</li>
+          <li>ResourcesRaw</li>
+          <li>PlantMatter</li>
+          <li>BodyParts</li>
+          <li>Weapons</li>
+          <li>Apparel</li>
+        </allowedThingCategoryDefs>
+      </li>
     </comps>
   </ThingDef>
 
@@ -96,12 +141,18 @@
     <defName>BackpackCloth</defName>
     <label>cloth backpack</label>
     <statBases>
-      <WorkToMake>17000</WorkToMake>
+      <WorkToMake>6000</WorkToMake>
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <TFHMaxItem>6</TFHMaxItem>
+      <BackpackMaxItem>6</BackpackMaxItem>
+      <Weight>1</Weight>
+      <Bulk>3</Bulk>
+      <WornWeight>0</WornWeight>
     </statBases>
+    <equippedStatOffsets>
+      <CarryBulk>30</CarryBulk>
+    </equippedStatOffsets>
     <stuffCategories>
       <li>Fabric</li>
     </stuffCategories>
@@ -122,14 +173,25 @@
 
   <ThingDef ParentName="ToolsForHaulBackpackBase">
     <defName>Apparel_Backpack</defName>
-    <label>cloth backpack OLD</label>
+    <label>backpack</label>
+    <description>A comfortable and spacious backpack for storing all kinds of items.</description>
+    <graphicData>
+      <texPath>Things/Apparel/Backpack_Mil/Milpack</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
     <statBases>
-      <WorkToMake>17000</WorkToMake>
+      <WorkToMake>8000</WorkToMake>
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <TFHMaxItem>8</TFHMaxItem>
+      <BackpackMaxItem>8</BackpackMaxItem>
+      <Weight>1</Weight>
+      <Bulk>3</Bulk>
+      <WornWeight>0</WornWeight>
     </statBases>
+    <equippedStatOffsets>
+      <CarryBulk>30</CarryBulk>
+    </equippedStatOffsets>
     <stuffCategories>
       <li>Fabric</li>
     </stuffCategories>

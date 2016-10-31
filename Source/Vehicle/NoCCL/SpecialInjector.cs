@@ -84,7 +84,7 @@ namespace ToolsForHaul
             injectionSet.targetDefs.Add("Orassans");
 
             injectionSet.compProps.compClass = typeof(CompEquipmentGizmoUser);
-            List<ThingDef> thingDefs = DefInjectionQualifier.FilteredThingDefs(injectionSet.qualifier, ref injectionSet.qualifierInt, injectionSet.targetDefs);
+            List<ThingDef> thingDefs = DefInjectionQualifierTemp.FilteredThingDefs(injectionSet.qualifier, ref injectionSet.QualifierTempInt, injectionSet.targetDefs);
 
 
             if (!thingDefs.NullOrEmpty())

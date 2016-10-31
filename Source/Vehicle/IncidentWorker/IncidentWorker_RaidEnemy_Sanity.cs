@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Combat_Realism;
 using RimWorld;
+using ToolsForHaul.Components;
 using ToolsForHaul.JobDefs;
 using UnityEngine;
 using Verse;
@@ -63,12 +65,32 @@ namespace ToolsForHaul.IncidentWorkers
 
                         letterLookTarget = current;
 
-                        if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.fleshType != FleshType.Mechanoid&& current.RaceProps.ToolUser)
+                        // Vehicles for raiders
+                        // lowered probability for shield users as they are overpowered
+
+                        bool isShieldUser = false;
+
+                        if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.fleshType != FleshType.Mechanoid && current.RaceProps.ToolUser)
                         {
-                            if (value >= 0.85f)
+                            List<Apparel> wornApparel = current.apparel.WornApparel;
+                            for (int i = 0; i < wornApparel.Count; i++)
+                            {
+                                if (wornApparel[i] is PersonalShield)
+                                {
+                                    isShieldUser = true;
+                                    break;
+                                }
+                            }
+                            if (value >= 0.66f && !isShieldUser || isShieldUser && value > 0.9f)
                             {
                                 CellFinder.RandomClosewalkCellNear(current.Position, 5);
-                                Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
+                                Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
+
+                                if (value >= 0.9f && !isShieldUser)
+                                {
+                                    thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
+                                }
+
                                 GenSpawn.Spawn(thing, current.Position);
 
                                 Job job = new Job(HaulJobDefOf.Mount);
@@ -76,32 +98,11 @@ namespace ToolsForHaul.IncidentWorkers
                                 job.targetA = thing;
                                 current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
-                                Vehicle_Turret vehicle = thing as Vehicle_Turret;
+                                int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
+                                thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null));
 
-                                int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * vehicle.MaxHitPoints);
-                                vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null));
-
-                                SoundInfo info = SoundInfo.InWorld(vehicle);
-                                vehicle.mountableComp.sustainerAmbient = vehicle.vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
-                            }
-                            else if (value >= 0.5f)
-                            {
-                                CellFinder.RandomClosewalkCellNear(current.Position, 5);
-                                Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
-                                GenSpawn.Spawn(thing, current.Position);
-
-                                Job job = new Job(HaulJobDefOf.Mount);
-                                Find.Reservations.ReleaseAllForTarget(thing);
-                                job.targetA = thing;
-                                current.jobs.StartJob(job, JobCondition.InterruptForced);
-
-                                Vehicle_Cart vehicle = thing as Vehicle_Cart;
-
-                                int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * vehicle.MaxHitPoints);
-                                vehicle.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null));
-
-                                SoundInfo info = SoundInfo.InWorld(vehicle);
-                                vehicle.mountableComp.sustainerAmbient = vehicle.vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
+                                SoundInfo info = SoundInfo.InWorld(thing);
+                                thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicles>().compProps.soundAmbient.TrySpawnSustainer(info);
                             }
                         }
 

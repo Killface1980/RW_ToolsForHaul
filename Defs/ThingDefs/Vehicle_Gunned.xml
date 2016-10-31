@@ -60,13 +60,13 @@
       <li>Gun</li>
     </weaponTags>
   </ThingDef>
-  
+
   <!--=============== Improvised turret ===============-->
 
   <ThingDef ParentName="VehicleBase">
-    <thingClass>ToolsForHaul.Vehicle_TurretGun</thingClass>
     <defName>VehicleCombatATV</defName>
     <label>CombatATV</label>
+    <thingClass>ToolsForHaul.Vehicle_TurretGun</thingClass>
     <graphicData>
       <texPath>Things/Pawn/VehicleCombatATV/CombatATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
@@ -78,29 +78,32 @@
     </graphicData>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
-    <interactionCellOffset>(0,0,0)</interactionCellOffset>
-    <size>(1,1)</size>
-    <pathCost>50</pathCost>
     <altitudeLayer>Building</altitudeLayer>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <statBases>
       <MaxHitPoints>250</MaxHitPoints>
-      <VehicleSpeed>12</VehicleSpeed>
       <Flammability>1.0</Flammability>
-      <VehicleMaxItem>2</VehicleMaxItem>
-      <WorkToMake>2500</WorkToMake>
       <Beauty>10</Beauty>
+      <ComfyTemperatureMin>-10</ComfyTemperatureMin>
+      <ComfyTemperatureMax>25</ComfyTemperatureMax>
+      <VehicleSpeed>12</VehicleSpeed>
     </statBases>
     <comps>
-            <li Class="CompProperties_Explosive">
+      <li Class="CompProperties_Explosive">
         <explosiveRadius>2.4</explosiveRadius>
         <explosiveDamageType>Flame</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.1</startWickHitPointsPercent>
-        <chanceNeverExplodeFromDamage>0.8</chanceNeverExplodeFromDamage>
-				<wickTicks>
-					<min>300</min>
-					<max>600</max>
-				</wickTicks>
+        <chanceNeverExplodeFromDamage>0.5</chanceNeverExplodeFromDamage>
+        <wickTicks>
+          <min>300</min>
+          <max>600</max>
+        </wickTicks>
+        <postExplosionSpawnThingDef>Puddle_BioDiesel_Fuel</postExplosionSpawnThingDef>
+        <postExplosionSpawnChance>1</postExplosionSpawnChance>
+        <postExplosionSpawnThingCount>3</postExplosionSpawnThingCount>
+        <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
+        <explosionEffect>VehicleExplosion</explosionEffect>
       </li>
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
@@ -122,20 +125,19 @@
       <li Class="ToolsForHaul.Components.CompProperties_Vehicles">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
-        <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
+        <fuelCatchesFireHitPointsPercent>0.2</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
       </li>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
-
-    <castEdgeShadows>true</castEdgeShadows>
+    <pathCost>50</pathCost>
     <description>An improvised vehicle turret that automatically fires at nearby enemies. Explodes when damaged. Its hacked-together AI brain isn't very smart, and can't be directly controlled, so beware of friendly fire.</description>
     <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
-
+    <size>(1,1)</size>
     <inspectorTabs>
       <li>ToolsForHaul.ITabs.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
@@ -192,20 +194,17 @@
         </li>
       </options>
     </colorGenerator>
-    
     <specialDisplayRadius>25.9</specialDisplayRadius>
     <building>
       <ai_combatDangerous>true</ai_combatDangerous>
       <turretGunDef>Gun_VehicleTurretImprovised</turretGunDef>
       <turretBurstCooldownTicks>120</turretBurstCooldownTicks>
       <turretTopgraphicPath>Things/Building/Security/TurretImprovised_Top</turretTopgraphicPath>
-      <isEdifice>false</isEdifice>
       <repairable>true</repairable>
       <isSittable>true</isSittable>
       <expandHomeArea>false</expandHomeArea>
       <allowWireConnection>false</allowWireConnection>
       <bed_humanlike>false</bed_humanlike>
-      <isInert>false</isInert>
       <deconstructible>false</deconstructible>
       <isJoySource>true</isJoySource>
     </building>
@@ -213,7 +212,7 @@
       <li>GunTurrets</li>
     </researchPrerequisites>
   </ThingDef>
-
+<!--
   <ThingDef ParentName="BaseBullet">
     <defName>Bullet_VehicleTurretImprovised</defName>
     <label>improvised vehicle turret bullet</label>
@@ -227,7 +226,7 @@
       <speed>70</speed>
     </projectile>
   </ThingDef>
-
+-->
   <ThingDef ParentName="BaseHumanGun">
     <defName>Gun_VehicleTurretImprovised</defName>
     <label>improvised vehicle turret gun</label>
@@ -243,16 +242,38 @@
     <destroyOnDrop>true</destroyOnDrop>
     <canMakeOnMapGen>false</canMakeOnMapGen>
     <statBases>
+      <AimEfficiency>0.35</AimEfficiency>
+      <ShotSpread>0.08</ShotSpread>
+      <SwayFactor>1.20</SwayFactor>
+      <Bulk>7.00</Bulk>
+      <Weight>3.00</Weight>
+      <RangedWeapon_Cooldown>0.4</RangedWeapon_Cooldown>   <!--
       <AccuracyTouch>0.80</AccuracyTouch>
       <AccuracyShort>0.64</AccuracyShort>
       <AccuracyMedium>0.41</AccuracyMedium>
       <AccuracyLong>0.22</AccuracyLong>
       <RangedWeapon_Cooldown>0.33</RangedWeapon_Cooldown>
+    -->
     </statBases>
     <weaponTags>
       <li>TurretGun</li>
     </weaponTags>
     <verbs>
+      <li Class="Combat_Realism.VerbPropertiesCR">
+        <recoilPattern>Mounted</recoilPattern>
+        <recoilAmount>0.72</recoilAmount>
+        <verbClass>Combat_Realism.Verb_ShootCR</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <projectileDef>Bullet_556x45mmNATO_FMJ</projectileDef>
+        <warmupTicks>90</warmupTicks>
+        <range>27</range>
+        <ticksBetweenBurstShots>5</ticksBetweenBurstShots>
+        <burstShotCount>10</burstShotCount>
+        <soundCast>GunShotA</soundCast>
+        <soundCastTail>GunTail_Light</soundCastTail>
+        <muzzleFlashScale>9</muzzleFlashScale>
+      </li>
+      <!--
       <li>
         <verbClass>Verb_Shoot</verbClass>
         <hasStandardCommand>true</hasStandardCommand>
@@ -265,7 +286,21 @@
         <soundCastTail>GunTail_Light</soundCastTail>
         <muzzleFlashScale>9</muzzleFlashScale>
       </li>
+      -->  
     </verbs>
+    <comps>
+      <li Class="Combat_Realism.CompProperties_AmmoUser">
+        <magazineSize>300</magazineSize>
+        <reloadTicks>300</reloadTicks>
+        <ammoSet>AmmoSet_556x45mmNATO</ammoSet>
+      </li>
+      <li Class="Combat_Realism.CompProperties_FireModes">
+        <aiUseBurstMode>TRUE</aiUseBurstMode>
+        <aiUseAimMode>TRUE</aiUseAimMode>
+        <noSnapshot>true</noSnapshot>
+        <noSingleShot>true</noSingleShot>
+      </li>
+    </comps>
   </ThingDef>
-  
+
 </ThingDefs>

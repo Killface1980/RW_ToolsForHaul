@@ -14,7 +14,7 @@ namespace CommunityCoreLibrary
 
         public Type qualifier;
 
-        public DefInjectionQualifier qualifierInt;
+        public DefInjectionQualifierTemp QualifierTempInt;
 
     }
 

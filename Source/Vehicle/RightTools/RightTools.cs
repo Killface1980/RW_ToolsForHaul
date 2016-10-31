@@ -1,8 +1,8 @@
 ﻿using System.Linq;
+using Combat_Realism;
 using RimWorld;
 using ToolsForHaul.Utilities;
 using Verse;
-using Verse.AI;
 
 namespace ToolsForHaul
 {
@@ -49,15 +49,14 @@ namespace ToolsForHaul
         /// <param name="def"></param>
         public static void EquipRigthTool(Pawn pawn, StatDef def)
         {
-            Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
-
-            bool flag = toolbelt != null;
+            CompInventory compInventory = ThingCompUtility.TryGetComp<CompInventory>(pawn);
+            bool flag = compInventory != null;
             if (flag)
             {
                 ThingWithComps thingWithComps = pawn.equipment.Primary;
                 float stat = GetMaxStat(pawn.equipment.Primary, def);
 
-                foreach (ThingWithComps slot in toolbelt.slotsComp.slots)
+                foreach (ThingWithComps slot in compInventory.container)
                 {
                     ThingWithComps thingWithComps2 = slot;
                     bool flag2 = thingWithComps2.def.IsWeapon;
@@ -73,45 +72,20 @@ namespace ToolsForHaul
                     }
                 }
 
-                //using (IEnumerator<Thing> enumerator = pawn.inventory.container.GetEnumerator())
-                //{
-                //    while (enumerator.MoveNext())
-                //    {
-                //        ThingWithComps thingWithComps2 = (ThingWithComps)enumerator.Current;
-                //        bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
-                //        if (!flag2)
-                //        {
-                //            float maxStat = GetMaxStat(thingWithComps2, def);
-                //            bool flag3 = stat < maxStat;
-                //            if (flag3)
-                //            {
-                //                stat = maxStat;
-                //                thingWithComps = thingWithComps2;
-                //            }
-                //        }
-                //    }
-                //}
                 bool unEquipped = thingWithComps != pawn.equipment.Primary;
                 if (unEquipped)
                 {
-                    if (!MapComponent_ToolsForHaul.previousPawnWeapons.ContainsKey(pawn))
-                        MapComponent_ToolsForHaul.previousPawnWeapons.Add(pawn, pawn.equipment.Primary);
-
-                    toolbelt.slotsComp.SwapEquipment(thingWithComps);
-
-
-                    //pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container, out dummy);
-                    //pawn.equipment.AddEquipment(thingWithComps);
-                    //pawn.inventory.container.Remove(thingWithComps);
+                    compInventory.TrySwitchToWeapon(thingWithComps);
                 }
-                //else
-                //{
-                //    bool flag5 = stat == 0f && def != StatDefOf.WorkSpeedGlobal;
-                //    if (flag5)
-                //    {
-                //        EquipRigthTool(pawn, StatDefOf.WorkSpeedGlobal);
-                //    }
-                //}
+                else
+                {
+                    bool flag5 = stat == 0f && def != StatDefOf.WorkSpeedGlobal;
+                    if (flag5)
+                    {
+                        RightTools.EquipRigthTool(pawn, StatDefOf.WorkSpeedGlobal);
+                    }
+                }
+
             }
         }
 
@@ -133,7 +107,7 @@ namespace ToolsForHaul
                 {
                     Vehicle_Turret vehicleTurret = (Vehicle_Turret)thing;
                     if (vehicleTurret == null) continue;
-                    if (!ToolsForHaulUtility.AvailableVehicle(vehicleTurret, pawn)) continue;
+                    if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleTurret)) continue;
                     if (!vehicleTurret.IsCurrentlyMotorized()) continue;
                     if (vehicleTurret.tankLeaking) continue;
                     cart = vehicleTurret;
@@ -149,7 +123,7 @@ namespace ToolsForHaul
                         Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
                         if (vehicleCart == null)
                             continue;
-                        if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
+                        if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
                         if (!vehicleCart.IsCurrentlyMotorized()) continue;
                         if (vehicleCart.tankLeaking) continue;
                         cart = vehicleCart;
@@ -166,9 +140,8 @@ namespace ToolsForHaul
                     Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
                     if (vehicleCart == null)
                         continue;
-                    if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
+                    if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
                     if (vehicleCart.tankLeaking) continue;
-                    if (!vehicleCart.allowances.Allows(t)) continue;
                     cart = vehicleCart;
                     break;
                 }
@@ -182,7 +155,7 @@ namespace ToolsForHaul
                     Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
                     if (vehicleCart == null)
                         continue;
-                    if (!ToolsForHaulUtility.AvailableVehicle(vehicleCart, pawn)) continue;
+                    if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
                     if (!vehicleCart.IsCurrentlyMotorized()) continue;
                     if (vehicleCart.tankLeaking) continue;
                     cart = vehicleCart;

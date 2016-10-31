@@ -24,7 +24,7 @@
   <ThingDef ParentName="BaseFilth">
     <defName>Puddle_BioDiesel_Fuel</defName>
     <label>biodiesel fuel puddle</label>
-    <description>Burns on the ground.</description>
+    <description>Not environmentally friendly.</description>
     <thingClass>ToolsForHaul.IncendiaryFuel</thingClass>
     <useHitPoints>true</useHitPoints>
     <tickerType>Normal</tickerType>
@@ -32,7 +32,7 @@
       <Beauty>-10</Beauty>
       <Cleanliness>-15</Cleanliness>
       <MaxHitPoints>150</MaxHitPoints>
-      <Flammability>5.0</Flammability>   
+      <Flammability>3.0</Flammability>   
     </statBases>
     <graphicData>
       <texPath>Things/Filth/LiquidFuel</texPath>
@@ -42,7 +42,7 @@
       <rainWashes>true</rainWashes>
       <cleaningWorkToReduceThickness>100</cleaningWorkToReduceThickness>
       <canFilthAttach>true</canFilthAttach>
-      <maxThickness>5</maxThickness>
+      <maxThickness>2</maxThickness>
     </filth>
   </ThingDef>
   

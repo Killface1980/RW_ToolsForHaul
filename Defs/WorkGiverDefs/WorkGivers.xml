@@ -90,7 +90,7 @@
     </requiredCapacities>
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
-  
+  <!--
   <WorkGiverDef>
     <defName>EquipTools</defName>
     <giverClass>ToolsForHaul.WorkGivers.WorkGiver_EquipTools</giverClass>
@@ -102,6 +102,7 @@
       <li>Manipulation</li>
     </requiredCapacities>
   </WorkGiverDef>
+  -->
   
   <WorkGiverDef>
     <defName>HaulWithBackpack</defName>
@@ -115,7 +116,8 @@
       <li>Manipulation</li>
     </requiredCapacities>
   </WorkGiverDef>
-  
+
+
   <!-- ============= Driver ============= -->
  
   <WorkGiverDef>

@@ -2,11 +2,9 @@
 using System.Diagnostics;
 using RimWorld;
 using ToolsForHaul.Components;
-using ToolsForHaul.JobDefs;
 using ToolsForHaul.Toils;
 using Verse;
 using Verse.AI;
-using Verse.Sound;
 
 namespace ToolsForHaul.JobDrivers
 {

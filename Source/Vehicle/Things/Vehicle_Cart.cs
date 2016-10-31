@@ -28,9 +28,12 @@ namespace ToolsForHaul
         public int DefaultMaxItem { get { return (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem); } }
         public int MaxItemPerBodySize { get { return (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem); } }
         public bool instantiated;
+        public int GetMaxStackCount { get { return MaxItem * 100; } }
 
         public bool ThreatDisabled()
         {
+            if (GetComp<CompExplosive>().wickStarted)
+                return true;
             return !mountableComp.IsMounted;
         }
 
@@ -141,8 +144,6 @@ namespace ToolsForHaul
             base.SpawnSetup();
 
             ToolsForHaulUtility.Cart.Add(this);
-
-
 
             if (mountableComp.Driver != null && IsCurrentlyMotorized())
                 LongEventHandler.ExecuteWhenFinished(delegate
@@ -378,7 +379,7 @@ namespace ToolsForHaul
             {
                 yield return new FloatMenuOption("Dismount".Translate(LabelShort), action_Dismount);
             }
-                yield return new FloatMenuOption("DismountInBase".Translate(LabelShort), action_DismountInBase);
+            yield return new FloatMenuOption("DismountInBase".Translate(LabelShort), action_DismountInBase);
 
 
         }
@@ -429,8 +430,6 @@ namespace ToolsForHaul
                     MoteMaker.ThrowMicroSparks(base.DrawPos);
             }
 
-
-
             if (dinfo.Def == DamageDefOf.Flame || dinfo.Def == DamageDefOf.Repair || dinfo.Def == DamageDefOf.Bomb)
             {
                 return;
@@ -452,34 +451,25 @@ namespace ToolsForHaul
 
                         FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, splash);
                     }
-                    if (hitpointsPercent < 0.15f)
+                    if (hitpointsPercent < 0.05f && Rand.Value > 0.5f)
                     {
                         FireUtility.TryStartFireIn(Position, 0.1f);
                     }
                     return;
+
                 }
 
                 if (refuelableComp != null && refuelableComp.HasFuel)
                 {
-                    if (hitpointsPercent < vehiclesComp.FuelCatchesFireHitPointsPercent())
+                    if (hitpointsPercent < vehiclesComp.FuelCatchesFireHitPointsPercent() && Rand.Value > 0.5f)
                     {
-                        if (!fuelSpilled)
+                        if (!tankLeaking)
                         {
                             refuelableComp.ConsumeFuel(1f);
-
                             FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 6);
-
-                            if (Random.value >= 0.5f)
-                            {
-                                FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
-                            }
-                            fuelSpilled = true;
                             makeHole = true;
                         }
-                        if (Random.value >= 0.5f && !makeHole)
-                        {
-                            FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
-                        }
+                        FireUtility.TryStartFireIn(Position, 0.1f);
                     }
                 }
 
@@ -493,12 +483,6 @@ namespace ToolsForHaul
 
                     FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, splash);
                 }
-
-                if (Random.value <= 0.3f && tankLeaking && hitpointsPercent < 0.5f)
-                {
-                    FireUtility.TryStartFireIn(Position, 0.1f);
-                }
-
             }
         }
 
@@ -607,8 +591,8 @@ namespace ToolsForHaul
                     else
                     {
                         Position = mountableComp.Position.ToIntVec3();
-                        Rotation =  mountableComp.Rotation;
-                   //     Rotation =  mountableComp.Driver.Rotation;
+                        Rotation = mountableComp.Rotation;
+                        //     Rotation =  mountableComp.Driver.Rotation;
                         soundPlayed = false;
                     }
 
@@ -780,18 +764,18 @@ namespace ToolsForHaul
                 mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.06f;
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
 
-                    if (!storage.Any())
-                        foreach (Thing mountThing in storage)
-                        {
-                            mountThing.Rotation = Rotation;
-                            mountThing.DrawAt(mountThingLoc + mountThingOffset);
+                if (!storage.Any())
+                    foreach (Thing mountThing in storage)
+                    {
+                        mountThing.Rotation = Rotation;
+                        mountThing.DrawAt(mountThingLoc + mountThingOffset);
 
-                            //Pawn p = (Pawn)mountThing;
-                            //p.ExposeData();
-                            //p.Rotation = Rotation;
-                            //p.DrawAt(mountThingLoc + mountThingOffset);
-                            //p.DrawGUIOverlay();
-                        }
+                        //Pawn p = (Pawn)mountThing;
+                        //p.ExposeData();
+                        //p.Rotation = Rotation;
+                        //p.DrawAt(mountThingLoc + mountThingOffset);
+                        //p.DrawGUIOverlay();
+                    }
 
                 if (Rotation.AsInt % 2 == 0) //Vertical
                     wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;

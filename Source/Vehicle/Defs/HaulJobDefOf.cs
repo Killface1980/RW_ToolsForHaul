@@ -1,8 +1,10 @@
-﻿using Verse;
+﻿using RimWorld;
+using Verse;
 
 namespace ToolsForHaul.JobDefs
 {
-    public class HaulJobDefOf
+    [DefOf]
+    public static class HaulJobDefOf
     {
     //    public static readonly JobDef HuntWithVehicle = DefDatabase<JobDef>.GetNamed("HuntWithVehicle");
         public static readonly JobDef HaulWithAnimalCart = DefDatabase<JobDef>.GetNamed("HaulWithAnimalCart");
@@ -15,8 +17,8 @@ namespace ToolsForHaul.JobDefs
    //     public static readonly JobDef Board = DefDatabase<JobDef>.GetNamed("Board");
         public static readonly JobDef MakeMount = DefDatabase<JobDef>.GetNamed("MakeMount");
 
-        public static readonly JobDef PutInBackpackSlot = DefDatabase<JobDef>.GetNamed("PutInBackpackSlot");
-        public static readonly JobDef PutInToolbeltSlot = DefDatabase<JobDef>.GetNamed("PutInToolbeltSlot");
+      public static readonly JobDef PutInBackpackSlot = DefDatabase<JobDef>.GetNamed("PutInBackpackSlot");
+      //public static readonly JobDef PutInToolbeltSlot = DefDatabase<JobDef>.GetNamed("PutInToolbeltSlot");
 
     }
 }

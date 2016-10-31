@@ -6,7 +6,7 @@ namespace ToolsForHaul
 {
     public class IncendiaryFuel : Filth
     {
-        private const float maxFireSize = 1.75f;
+        private const float maxFireSize = 1.25f;
 
         public override void SpawnSetup()
         {
