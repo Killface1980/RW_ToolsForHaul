@@ -1,43 +1,136 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <WorkGivers>
-  
-  <WorkGiverDef>
-    <defName>EquipTools</defName>
-    <giverClass>ToolsForHaul.WorkGiver_EquipTools</giverClass>
-    <workType>Flicker</workType>
-    <priorityInType>350</priorityInType>
-    <verb>equip with </verb>
-    <gerund>equipping with </gerund>
+
+    <!-- ============= Repair ============= -->
+ <!--
+    <WorkGiverDef>
+      <defName>FixBrokenDownVehicle</defName>
+      <label>fix broken-down things</label>
+      <giverClass>ToolsForHaul.WorkGiver_FixBrokenDownVehicle</giverClass>
+      <workType>Repair</workType>
+      <priorityInType>15</priorityInType>
+      <verb>replace broken components in</verb>
+      <gerund>replacing broken components in</gerund>
+      <requiredCapacities>
+        <li>Manipulation</li>
+      </requiredCapacities>
+      <prioritizeSustains>true</prioritizeSustains>
+    </WorkGiverDef>
+
+    <defName>RepairVehicles</defName>
+    <label>repair damaged things</label>
+    <giverClass>ToolsForHaul.WorkGiver_RepairVehicles</giverClass>
+    <workType>Repair</workType>
+    <priorityInType>5</priorityInType>
+    <verb>repair</verb>
+    <gerund>repairing</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <canBeDoneByNonColonists>true</canBeDoneByNonColonists>
+  </WorkGiverDef>
+-->
+  <!--
+    <WorkGiverDef>
+    <defName>TakeToWheelChair</defName>
+    <label>take an immovable pawn to a wheel chair</label>
+    <giverClass>ToolsForHaul.WorkGiver_TakeToWheelChair</giverClass>
+    <workType>Doctor</workType>
+    <verb>take</verb>
+    <gerund>taking</gerund>
+    <priorityInType>60</priorityInType>
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
   </WorkGiverDef>
-  
+  -->
+  <!-- ============= Hunting ============= -->
+
+  <!--
   <WorkGiverDef>
-    <defName>HaulWithBackpack</defName>
-    <giverClass>ToolsForHaul.WorkGiver_HaulWithBackpack</giverClass>
-    <workType>Hauling</workType>
-    <priorityInType>7</priorityInType>
-    <verb>haul with </verb>
-    <gerund>hauling with </gerund>
-    <requiredCapacities>
-      <li>Manipulation</li>
-    </requiredCapacities>
-  </WorkGiverDef>
-  
-  <!-- ============= Driver ============= -->
- 
-  <WorkGiverDef>
-    <defName>HaulWithCart</defName>
-    <giverClass>ToolsForHaul.WorkGiver_HaulWithCart</giverClass>
-    <workType>Hauling</workType>
-    <priorityInType>9</priorityInType>
-    <scanThings>true</scanThings>
-    <verb>haul with </verb>
-    <gerund>hauling with </gerund>
+    <defName>HunterHuntWithVehicle</defName>
+    <label>hunt</label>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HunterHuntWithVehicle</giverClass>
+    <workType>Hunting</workType>
+    <priorityInType>500</priorityInType>  
+    <verb>hunt</verb>
+    <gerund>hunting</gerund>
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
   </WorkGiverDef>
 
+  <WorkGiverDef>
+    <defName>HunterHunt</defName>
+    <label>hunt</label>
+    <giverClass>WorkGiver_HunterHunt</giverClass>
+    <workType>Hunting</workType>
+    <priorityInType>350</priorityInType>
+    <verb>hunt</verb>
+    <gerund>hunting</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  -->
+
+
+  <!-- ============= Hauling ============= -->
+
+  <WorkGiverDef>
+    <defName>Refuel</defName>
+    <label>refuel fuelable buildings</label>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_Refuel</giverClass>
+    <workType>Hauling</workType>
+    <verb>refuel</verb>
+    <gerund>refueling</gerund>
+    <priorityInType>400</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+  <!--
+  <WorkGiverDef>
+    <defName>EquipTools</defName>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_EquipTools</giverClass>
+    <workType>Flicker</workType>
+    <priorityInType>350</priorityInType>
+    <verb>equip with</verb>
+    <gerund>equipping with</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  -->
+  
+  <WorkGiverDef>
+    <defName>HaulWithBackpack</defName>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HaulWithBackpack</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>7</priorityInType>
+    <scanThings>true</scanThings>
+    <verb>haul with backpack</verb>
+    <gerund>hauling with backpack</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+
+  <!-- ============= Driver ============= -->
+ 
+  <WorkGiverDef>
+    <defName>HaulWithCart</defName>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HaulWithCart</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>9</priorityInType>
+    <scanThings>true</scanThings>
+    <verb>haul with cart</verb>
+    <gerund>hauling with cart</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  
 </WorkGivers>

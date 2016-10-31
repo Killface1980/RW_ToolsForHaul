@@ -7,5 +7,22 @@
     <parent>Root</parent>
   </ThingCategoryDef>
 
+  <ThingCategoryDef>
+    <defName>ToolsForHaulSets</defName>
+    <label>Tools For Haul</label>
+    <parent>Apparel</parent>
+  </ThingCategoryDef>
+
+  <ThingCategoryDef>
+    <defName>Backpacks</defName>
+    <label>backpacks</label>
+    <parent>ToolsForHaulSets</parent>
+  </ThingCategoryDef>
+
+  <ThingCategoryDef>
+    <defName>Toolbelts</defName>
+    <label>toolbelts</label>
+    <parent>ToolsForHaulSets</parent>
+  </ThingCategoryDef>
   
 </ThingCategoryDefs>

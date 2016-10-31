@@ -1,10 +1,8 @@
-﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Linq;
+using Combat_Realism;
+using RimWorld;
+using ToolsForHaul.Utilities;
 using Verse;
-using Verse.AI;
-using Verse.Sound;
 
 namespace ToolsForHaul
 {
@@ -18,7 +16,6 @@ namespace ToolsForHaul
 
         private static void PreLoad()
         {
-
         }
 
         public static float GetMaxStat(ThingWithComps thing, StatDef def)
@@ -45,53 +42,127 @@ namespace ToolsForHaul
             return result;
         }
 
+        /// <summary>
+        /// Equips tools
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="def"></param>
         public static void EquipRigthTool(Pawn pawn, StatDef def)
         {
-            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
-            bool flag = backpack != null;
+            CompInventory compInventory = ThingCompUtility.TryGetComp<CompInventory>(pawn);
+            bool flag = compInventory != null;
             if (flag)
             {
                 ThingWithComps thingWithComps = pawn.equipment.Primary;
                 float stat = GetMaxStat(pawn.equipment.Primary, def);
-                using (IEnumerator<Thing> enumerator = pawn.inventory.container.GetEnumerator())
+
+                foreach (ThingWithComps slot in compInventory.container)
                 {
-                    while (enumerator.MoveNext())
+                    ThingWithComps thingWithComps2 = slot;
+                    bool flag2 = thingWithComps2.def.IsWeapon;
+                    if (flag2)
                     {
-                        ThingWithComps thingWithComps2 = (ThingWithComps)enumerator.Current;
-                        bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
-                        if (!flag2)
+                        float maxStat = GetMaxStat(thingWithComps2, def);
+                        bool flag3 = stat < maxStat;
+                        if (flag3)
                         {
-                            float maxStat = GetMaxStat(thingWithComps2, def);
-                            bool flag3 = stat < maxStat;
-                            if (flag3)
-                            {
-                                stat = maxStat;
-                                thingWithComps = thingWithComps2;
-                            }
+                            stat = maxStat;
+                            thingWithComps = thingWithComps2;
                         }
                     }
                 }
+
                 bool unEquipped = thingWithComps != pawn.equipment.Primary;
                 if (unEquipped)
                 {
-                    ThingWithComps dummy;
-
-                    if (!MapComponent_ToolsForHaul.wasAutoEquipped.ContainsKey(pawn))
-                        MapComponent_ToolsForHaul.wasAutoEquipped.Add(pawn, pawn.equipment.Primary);
-
-                    pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container, out dummy);
-                    pawn.equipment.AddEquipment(thingWithComps);
-                    pawn.inventory.container.Remove(thingWithComps);
+                    compInventory.TrySwitchToWeapon(thingWithComps);
                 }
                 else
                 {
                     bool flag5 = stat == 0f && def != StatDefOf.WorkSpeedGlobal;
                     if (flag5)
                     {
-                        EquipRigthTool(pawn, StatDefOf.WorkSpeedGlobal);
+                        RightTools.EquipRigthTool(pawn, StatDefOf.WorkSpeedGlobal);
+                    }
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Selects the appropriate vehicle by worktype
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="worktype"></param>
+        /// <returns></returns>
+        public static Thing GetRightVehicle(Pawn pawn, WorkTypeDef worktype, Thing t = null)
+        {
+            Thing cart = null;
+            if (worktype.Equals(WorkTypeDefOf.Hunting))
+            {
+                bool skip = false;
+                IOrderedEnumerable<Thing> orderedEnumerable =
+                    ToolsForHaulUtility.CartTurret.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
+                foreach (Thing thing in orderedEnumerable)
+                {
+                    Vehicle_Turret vehicleTurret = (Vehicle_Turret)thing;
+                    if (vehicleTurret == null) continue;
+                    if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleTurret)) continue;
+                    if (!vehicleTurret.IsCurrentlyMotorized()) continue;
+                    if (vehicleTurret.tankLeaking) continue;
+                    cart = vehicleTurret;
+                    skip = true;
+                    break;
+                }
+                if (!skip)
+                {
+                    IOrderedEnumerable<Thing> orderedEnumerable2 =
+                          ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
+                    foreach (Thing thing in orderedEnumerable2)
+                    {
+                        Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                        if (vehicleCart == null)
+                            continue;
+                        if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
+                        if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                        if (vehicleCart.tankLeaking) continue;
+                        cart = vehicleCart;
+                        break;
                     }
                 }
             }
+            if (worktype.Equals(WorkTypeDefOf.Hauling))
+            {
+                IOrderedEnumerable<Thing> orderedEnumerable2 =
+                      ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).MaxItem);
+                foreach (Thing thing in orderedEnumerable2)
+                {
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart == null)
+                        continue;
+                    if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
+                    if (vehicleCart.tankLeaking) continue;
+                    cart = vehicleCart;
+                    break;
+                }
+            }
+            if (worktype.Equals(WorkTypeDefOf.Construction))
+            {
+                IOrderedEnumerable<Thing> orderedEnumerable2 =
+                      ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).VehicleSpeed);
+                foreach (Thing thing in orderedEnumerable2)
+                {
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart == null)
+                        continue;
+                    if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
+                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                    if (vehicleCart.tankLeaking) continue;
+                    cart = vehicleCart;
+                    break;
+                }
+            }
+            return cart;
         }
     }
 }

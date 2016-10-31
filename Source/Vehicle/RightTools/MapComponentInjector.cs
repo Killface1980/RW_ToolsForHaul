@@ -1,11 +1,9 @@
 ﻿
 using System;
-using ToolsForHaul;
 using UnityEngine;
 using Verse;
-using Object = UnityEngine.Object;
 
-namespace RW_FacialStuff       // Replace with yours.
+namespace ToolsForHaul       // Replace with yours.
 {       // This code is mostly borrowed from Pawn State Icons mod by Dan Sadler, which has open source and no license I could find, so...
     public class MapComponentInjector : MonoBehaviour
     {

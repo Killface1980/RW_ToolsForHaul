@@ -1,23 +1,17 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
-
+﻿using System.Collections.Generic;
+using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.JobDefs;
 using Verse;
 using Verse.AI;
-using RimWorld;
 
-
-namespace ToolsForHaul
+namespace ToolsForHaul.JobDrivers
 {
     public class JobDriver_MakeMount : JobDriver
     {
         //Constants
         private const TargetIndex MountableInd = TargetIndex.A;
         private const TargetIndex DriverInd = TargetIndex.B;
-
-        public JobDriver_MakeMount() : base() { }
 
         public override string GetReport()
         {
@@ -50,7 +44,7 @@ namespace ToolsForHaul
             toilMakeStandby.initAction = () =>
             {
                 Pawn driver = CurJob.GetTarget(DriverInd).Thing as Pawn;
-                driver.jobs.StartJob(new Job(DefDatabase<JobDef>.GetNamed("Standby"), driver.Position, 2400 + (int)((pawn.Position - driver.Position).LengthHorizontal * 120)), JobCondition.InterruptForced);
+                driver.jobs.StartJob(new Job(HaulJobDefOf.StandBy, driver.Position, 2400 + (int)((pawn.Position - driver.Position).LengthHorizontal * 120)), JobCondition.InterruptForced);
             };
 
             Toil toilGoto = null;
@@ -80,7 +74,9 @@ namespace ToolsForHaul
             {
                 Pawn driver = TargetB.Thing as Pawn;
                 if (driver != null && TargetThingA.TryGetComp<CompMountable>() != null)
+                {
                     TargetThingA.TryGetComp<CompMountable>().MountOn(driver);
+                }
                 else
                 {
                     Log.Error(GetActor().LabelCap + ": Try make mount without target B Driver");
@@ -93,14 +89,14 @@ namespace ToolsForHaul
             {
                 Vehicle_Cart cart = CurJob.GetTarget(MountableInd).Thing as Vehicle_Cart;
 
-                Vehicle_Saddle saddle = CurJob.GetTarget(MountableInd).Thing as Vehicle_Saddle;
-                if (cart == null && saddle == null)
+                //Vehicle_Saddle saddle = CurJob.GetTarget(MountableInd).Thing as Vehicle_Saddle;
+                if (cart == null)// && saddle == null)
                 {
                     Log.Error(GetActor().LabelCap + ": MakeMount get TargetA not cart or saddle.");
                     EndJobWith(JobCondition.Errored);
                     return;
                 }
-                if (cart != null && (cart.mountableComp.IsMounted && cart.mountableComp.Driver.CurJob.def == DefDatabase<JobDef>.GetNamed("Standby")))
+                if (cart != null && cart.mountableComp.IsMounted && cart.mountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy)
                     cart.mountableComp.Driver.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
                 EndJobWith(JobCondition.Succeeded);
             };

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <StatDef>
+    <defName>VehicleSpeed</defName>
+    <label>Vehicle speed</label>
+    <description>The speed of the vehicle.</description>
+    <category>BasicsNonPawn</category>
+    <toStringStyle>FloatTwo</toStringStyle>
+    <showIfUndefined>false</showIfUndefined>
+    <parts>
+      <li Class="StatPart_Quality">
+        <factorAwful>.7</factorAwful>
+        <factorShoddy>.8</factorShoddy>
+        <factorPoor>.9</factorPoor>
+        <factorNormal>1</factorNormal>
+        <factorGood>1.1</factorGood>
+        <factorSuperior>1.2</factorSuperior>
+        <factorExcellent>1.3</factorExcellent>
+        <factorMasterwork>1.4</factorMasterwork>
+        <factorLegendary>1.5</factorLegendary>
+      </li>
+      <li Class="StatPart_Health">
+        <curve>
+          <points>
+            <li>
+              <loc>(0,0)</loc>
+            </li>
+            <li>
+              <loc>(1,1)</loc>
+            </li>
+          </points>
+        </curve>
+      </li>
+    </parts>
+  </StatDef>
+  
+  <StatDef>
+    <defName>VehicleMaxItem</defName>
+    <label>Vehicle max items</label>
+    <description>The maximum amount of items the vehicle can haul.</description>
+    <category>BasicsNonPawn</category>
+    <toStringStyle>Integer</toStringStyle>
+    <showIfUndefined>false</showIfUndefined>
+  </StatDef>
+
+
+</Defs>

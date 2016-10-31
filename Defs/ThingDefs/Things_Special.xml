@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ThingDefinitions>
+
+  <!--=============== Bases ==============-->
+ 
+  <ThingDef Name="BaseFilth" Abstract="True">
+    <thingClass>Filth</thingClass>
+    <category>Filth</category>
+    <altitudeLayer>Filth</altitudeLayer>
+    <useHitPoints>false</useHitPoints>
+    <drawerType>MapMeshOnly</drawerType>
+    <graphicData>
+      <shaderType>Transparent</shaderType>
+      <graphicClass>Graphic_Cluster</graphicClass>
+    </graphicData>
+    <statBases>
+      <Beauty>-15</Beauty>
+      <Cleanliness>-5</Cleanliness>
+    </statBases>
+  </ThingDef>
+
+  <!--=============== Fuel puddle ==============-->
+ 
+  <ThingDef ParentName="BaseFilth">
+    <defName>Puddle_BioDiesel_Fuel</defName>
+    <label>biodiesel fuel puddle</label>
+    <description>Not environmentally friendly.</description>
+    <thingClass>ToolsForHaul.IncendiaryFuel</thingClass>
+    <useHitPoints>true</useHitPoints>
+    <tickerType>Normal</tickerType>
+    <statBases>
+      <Beauty>-10</Beauty>
+      <Cleanliness>-15</Cleanliness>
+      <MaxHitPoints>150</MaxHitPoints>
+      <Flammability>3.0</Flammability>   
+    </statBases>
+    <graphicData>
+      <texPath>Things/Filth/LiquidFuel</texPath>
+      <color>(180,180,20,255)</color>
+    </graphicData>
+    <filth>
+      <rainWashes>true</rainWashes>
+      <cleaningWorkToReduceThickness>100</cleaningWorkToReduceThickness>
+      <canFilthAttach>true</canFilthAttach>
+      <maxThickness>2</maxThickness>
+    </filth>
+  </ThingDef>
+  
+  <!--
+  <ThingDef>
+    <defName>BioDiesel_Fuel</defName>
+    <label>fuel puddle</label>
+    <thingClass>Combat_Realism.IncendiaryFuel</thingClass>
+    <category>Item</category>
+	<selectable>True</selectable>
+    <graphicData>
+      <texPath>Things/Items/Filth/LiquidFuel</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <shaderType>Transparent</shaderType>
+    </graphicData>
+    <altitudeLayer>LowPlant</altitudeLayer>
+    <useHitPoints>true</useHitPoints>
+    <statBases>
+      <MaxHitPoints>75</MaxHitPoints>
+      <Flammability>5.0</Flammability>
+	  <DeteriorationRate>300</DeteriorationRate>
+    </statBases>
+    <tickerType>Normal</tickerType>
+    <description>Burns on the ground.</description>
+  </ThingDef>
+-->
+
+</ThingDefinitions>

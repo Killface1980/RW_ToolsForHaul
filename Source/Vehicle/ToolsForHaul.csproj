@@ -17,23 +17,25 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -41,6 +43,14 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CombatRealism">
+      <HintPath>..\..\..\CombatRealism-master\Assemblies\CombatRealism.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Community Core Library">
+      <HintPath>..\..\..\Community Core Library\Assemblies\Community Core Library.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -55,32 +65,88 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backpack\Apparel_Backpack.cs" />
-    <Compile Include="RA\Class1.cs" />
-    <Compile Include="RA\CompEquipmentGizmoUser.cs" />
-    <Compile Include="RA\CompSlots.cs" />
-    <Compile Include="RA\CompEquipmentGizmoProvider.cs" />
-    <Compile Include="RA\Designator_PutInSlot.cs" />
-    <Compile Include="RightTools\_ThinkNode_JobGiver.cs" />
+    <Compile Include="Defs\HaulStatDefOf.cs" />
+    <Compile Include="Components\Vehicles\CompDriver.cs" />
+    <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
+    <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
+    <None Include="_JT\AreaFinder.cs" />
+    <None Include="_JT\GenClosest_JT.cs" />
+    <None Include="_JT\JobGiver_Work_JT.cs" />
+    <None Include="_JT\JobGiver_Haul_JT.cs" />
+    <None Include="_testing\ProjectileTFH.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
+    <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
+    <None Include="NoCCL\Class1.cs" />
+    <Compile Include="Defs\HaulJobDefOf.cs" />
+    <Compile Include="Detours\_Pawn_ApparelTracker.cs" />
+    <None Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
+    <None Include="Components\Equipment\CompSlotsToolbelt.cs" />
+    <None Include="Designators\Designator_PutInToolbeltSlot.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
+    <None Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
+    <Compile Include="JobGivers\JobGiver_Steal.cs" />
+    <None Include="NoCCL\DetourAttribute.cs" />
+    <None Include="Things\Apparel_Toolbelt.cs" />
+    <Compile Include="Things\Tank\Vehicle_Turret.cs" />
+    <None Include="Things\Tank\nn\_Targeter.cs" />
+    <None Include="Things\Tank\nn\_AttackTargetFinder.cs" />
+    <Compile Include="Things\Tank\Vehicle_TurretGun.cs" />
+    <Compile Include="Things\Tank\VehicleTurretTop.cs" />
+    <Compile Include="Things\Tank\Command_VerbTarget.cs" />
+    <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
+    <Compile Include="_inactive\_TESTING\HeadLights.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy_Sanity.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_VisitorGroupTFH.cs" />
+    <None Include="IncidentWorker\IncidentWorker_VisitorGroup_Sanity.cs" />
+    <None Include="_inactive\JobGiver_ExitMapRandom2.cs" />
+    <Compile Include="Alerts\Alert_TankIsLeaking.cs" />
+    <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
+    <None Include="_inactive\Class1.cs" />
+    <Compile Include="Components\Vehicles\CompAxles.cs" />
+    <Compile Include="Components\Vehicles\CompProperties_Axles.cs" />
+    <Compile Include="Components\Vehicles\CompProperties_Vehicles.cs" />
+    <Compile Include="Components\Vehicles\CompVehicles.cs" />
+    <Compile Include="Things\Apparel_Backpack.cs" />
+    <Compile Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
+    <None Include="Designators\Vehicle\Designator_Board.cs" />
+    <None Include="_inactive\ModHelperDef.cs" />
+    <Compile Include="CCL\CompInjectionSet.cs" />
+    <Compile Include="CCL\DefInjectionQualifierTemp.cs" />
+    <Compile Include="Things\IncendiaryFuel.cs" />
+    <None Include="_inactive\CompWeaponExtensions.cs" />
+    <None Include="_inactive\RA_PawnRenderer.cs" />
+    <None Include="_inactive\CompTool.cs" />
+    <Compile Include="JobDrivers\JobDriver_PutInBackpackSlot.cs" />
+    <Compile Include="Components\Equipment\CompEquipmentGizmoUser.cs" />
+    <Compile Include="Components\Equipment\CompSlotsBackpack.cs" />
+    <Compile Include="Components\Equipment\CompEquipmentGizmoProvider.cs" />
+    <Compile Include="Designators\Designator_PutInBackpackSlot.cs" />
+    <Compile Include="JobGivers\JobGiver_ExitMapBest.cs" />
+    <Compile Include="JobGivers\JobGiver_ExitMapRandom.cs" />
+    <Compile Include="JobGivers\JobGiver_Kidnap.cs" />
+    <Compile Include="JobGivers\JobGiver_ExitMapPanic.cs" />
+    <Compile Include="Detours\_ThinkNode_JobGiver.cs" />
     <Compile Include="RightTools\RightTools.cs" />
-    <Compile Include="Comps\MapComponent_ToolsForHaul.cs" />
+    <Compile Include="Components\MapComponent_ToolsForHaul.cs" />
     <Compile Include="RightTools\MapComponentInjector.cs" />
     <Compile Include="NoCCL\SpecialInjector.cs" />
     <Compile Include="NoCCL\Detours.cs" />
     <Compile Include="StatsHelper.cs" />
-    <None Include="Utilities\Class1.cs" />
-    <None Include="Utilities\Pawn_BackpackTracker.cs" />
     <Compile Include="Utilities\ToolsForHaulUtility.cs" />
     <Compile Include="Trace.cs" />
-    <Compile Include="JobDrivers\JobDriver_Standby.cs" />
+    <Compile Include="JobDrivers\JobDriver_StandBy.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="Toils\Toils_Cart.cs" />
-    <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
+    <None Include="WorkGivers\Class1.cs" />
+    <None Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
-    <Compile Include="Comps\CompMountable.cs" />
+    <Compile Include="Components\Vehicles\CompMountable.cs" />
     <Compile Include="Designators\Designator_ApplyMedicine.cs" />
     <Compile Include="Designators\Designator_Mount.cs" />
-    <Compile Include="Designators\Designator_PutInInventory.cs" />
+    <None Include="Designators\Designator_PutInInventory.cs" />
     <Compile Include="Gizmos\Gizmo_BackpackEquipment.cs" />
     <Compile Include="ITabs\ITab_Pawn_VehicleGear.cs">
       <SubType>Code</SubType>
@@ -90,47 +156,64 @@
     <Compile Include="JobDrivers\JobDriver_HaulWithCart.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="JobDrivers\JobDriver_Board.cs" />
+    <None Include="JobDrivers\JobDriver_Board.cs" />
     <Compile Include="JobDrivers\JobDriver_DismountInBase.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithBackpack.cs" />
     <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
     <Compile Include="JobDrivers\JobDriver_Mount.cs" />
-    <Compile Include="JobDrivers\JobDriver_PutInInventory.cs" />
+    <None Include="JobDrivers\JobDriver_PutInInventory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Toils\Toils_Collect.cs" />
-    <Compile Include="Vehicles\Vehicle_Cart.cs" />
-    <Compile Include="Designators\Designator_Board.cs" />
-    <Compile Include="Designators\Designator_Move.cs" />
-    <Compile Include="Vehicles\Vehicle_Saddle.cs" />
+    <Compile Include="Things\Vehicle_Cart.cs" />
+    <None Include="Designators\Designator_Board.cs" />
+    <None Include="Designators\Designator_Move.cs" />
+    <None Include="Things\Vehicle_Saddle.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\Defs\EffecterDefs\Effecter_Misc.xml">
+      <Link>Defs\EffecterDefs\Effecter_Misc.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
-      <Link>Defs\Jobs_Misc.xml</Link>
+      <Link>Defs\JobDefs\Jobs_Misc.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\JoyGiverDefs\JoyGivers.xml">
+      <Link>Defs\JoyGivers\JoyGivers.xml</Link>
     </Content>
     <Content Include="..\..\Defs\KeyBindingDefs\KeyBindings.xml">
       <Link>Defs\KeyBindingDefs\KeyBindings.xml</Link>
     </Content>
     <Content Include="..\..\Defs\StatDefs\Stats_Apparel.xml">
       <Link>Defs\StatDefs\Stats_Apparel.xml</Link>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\StatDefs\Stats_Vehicle.xml">
+      <Link>Defs\StatDefs\Stats_Vehicle.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingCategoryDefs\ThingCategories.xml">
       <Link>Defs\ThingCategories.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Apparel_Backpack.xml">
       <Link>Defs\ThingDefs\Apparel_Backpack.xml</Link>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
+      <Link>Defs\ThingDefs\Items_IRResources.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
     </Content>
-    <Content Include="..\..\Defs\ThingDefs\Pawns\RA_Races_Humanlike.xml">
-      <Link>Defs\RA_Races_Humanlike.xml</Link>
+    <Content Include="..\..\Defs\ThingDefs\Things_Special.xml">
+      <Link>Defs\ThingDefs\Things_Special.xml</Link>
     </Content>
-    <Content Include="..\..\Defs\ThingDefs\Vehicles_unused.xml">
-      <Link>Defs\ThingDefs\Vehicles_unused.xml</Link>
+    <Content Include="..\..\Defs\ThingDefs\Vehicle_Gunned.xml">
+      <Link>Defs\ThingDefs\Vehicle_Gunned.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Haul.xml">
       <Link>Defs\ThingDefs\Vehicle_Haul.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers.xml">
       <Link>Defs\WorkGivers.xml</Link>
@@ -151,7 +234,9 @@
       <Link>Languages\English\Misc_Gameplay.xml</Link>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="_inactive\_TESTING\TFHGlowFlood\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

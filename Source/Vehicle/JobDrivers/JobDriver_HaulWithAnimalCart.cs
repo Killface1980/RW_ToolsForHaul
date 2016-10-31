@@ -1,14 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
+﻿using System.Collections.Generic;
+using RimWorld;
+using ToolsForHaul.Toils;
 using Verse;
 using Verse.AI;
-using RimWorld;
 
-
-namespace ToolsForHaul
+namespace ToolsForHaul.JobDrivers
 {
     public class JobDriver_HaulWithAnimalCart : JobDriver
     {
@@ -16,8 +12,6 @@ namespace ToolsForHaul
         private const TargetIndex HaulableInd = TargetIndex.A;
         private const TargetIndex StoreCellInd = TargetIndex.B;
         private const TargetIndex CartInd = TargetIndex.C;
-
-        public JobDriver_HaulWithAnimalCart() : base() { }
 
         public override string GetReport()
         {
@@ -32,7 +26,7 @@ namespace ToolsForHaul
             if (pawn.jobs.curJob.targetB != null)
             {
                 destLoc = pawn.jobs.curJob.targetB.Cell;
-                destGroup = StoreUtility.GetSlotGroup(destLoc);
+                destGroup = destLoc.GetSlotGroup();
             }
 
             if (destGroup != null)
@@ -50,7 +44,7 @@ namespace ToolsForHaul
         {
             get
             {
-                return (Pawn)base.CurJob.GetTarget(TargetIndex.A).Thing;
+                return (Pawn)CurJob.GetTarget(TargetIndex.A).Thing;
             }
         }
 
@@ -88,7 +82,7 @@ namespace ToolsForHaul
             yield return Toils_Reserve.ReserveQueue(StoreCellInd);
 
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.Touch)
-                                        .FailOn(() => cart.Destroyed || !cart.TryGetComp<CompMountable>().IsMounted);
+                                        .FailOn(() => cart.Destroyed || !cart.mountableComp.IsMounted);
 
             //JumpIf toilCheckStoreCellEmpty
             yield return checkHaulableEmpty;
@@ -103,6 +97,9 @@ namespace ToolsForHaul
 
                 yield return Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch)
                                               .FailOnDestroyedOrNull(HaulableInd);
+
+                yield return Toils_Cart.CallAnimalCart(CartInd, HaulableInd, pawn)
+                            .FailOnDestroyedOrNull(HaulableInd);
 
                 yield return Toils_Cart.WaitForAnimalCart(CartInd, HaulableInd);
 
@@ -125,6 +122,8 @@ namespace ToolsForHaul
 
                 yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch)
                                             .FailOnBurningImmobile(StoreCellInd);
+
+                yield return Toils_Cart.CallAnimalCart(CartInd, HaulableInd, pawn);
 
                 yield return Toils_Cart.WaitForAnimalCart(CartInd, HaulableInd);
 

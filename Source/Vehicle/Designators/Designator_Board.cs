@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.JobDefs;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Designators
 {
     class Designator_Board : Designator
     {
@@ -26,7 +27,7 @@ namespace ToolsForHaul
             foreach (Thing thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
-                if (pawn != null && (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike)))
+                if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike))
                     return true;
             }
             return new AcceptanceReport(txtCannotBoard.Translate());
@@ -38,15 +39,15 @@ namespace ToolsForHaul
             foreach (Thing thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
-                if (pawn == null ||
-                    (pawn.Faction != Faction.OfPlayer || (!pawn.RaceProps.IsMechanoid && !pawn.RaceProps.Humanlike)))
-                    continue;
-                Pawn crew = pawn;
-                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Board"));
-                Find.Reservations.ReleaseAllForTarget(vehicle);
-                jobNew.targetA = vehicle;
-                crew.drafter.TakeOrderedJob(jobNew);
-                break;
+                if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike))
+                {
+                    Pawn crew = pawn;
+                    Job jobNew = new Job(HaulJobDefOf.Board);
+                    Find.Reservations.ReleaseAllForTarget(vehicle);
+                    jobNew.targetA = vehicle;
+                    crew.drafter.TakeOrderedJob(jobNew);
+                    break;
+                }
             }
             DesignatorManager.Deselect();
         }

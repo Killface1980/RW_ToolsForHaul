@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.Components;
 using UnityEngine;
 using Verse;
+
 // Always needed
 //using VerseBase;         // Material/Graphics handling functions are found here
 // RimWorld universal objects are here (like 'Building')
@@ -13,29 +15,28 @@ using Verse;
 //using RimWorld.Planet;   // RimWorld specific functions for world creation
 //using RimWorld.SquadAI;  // RimWorld specific functions for squad brains 
 
-namespace ToolsForHaul
+namespace ToolsForHaul.ITabs
 {
     class Itab_Pawn_VehicleGear : ITab_Pawn_Gear
-	{
+    {
         private const string txtTabVehicleGear = "TabVehicleGear";
         private const string txtDriver = "Driver";
         private const string txtStorage = "Storage";
         private const string txtDropIt = "DropIt";
 
-        public Itab_Pawn_VehicleGear() 
+        public Itab_Pawn_VehicleGear()
         {
             labelKey = txtTabVehicleGear;
             size = new Vector2(300f, 450f);
         }
-		public override bool IsVisible
-		{
-			get {return true;}
-		}
+        public override bool IsVisible
+        {
+            get { return true; }
+        }
         protected override void FillTab()
         {
             float fieldHeight = 30.0f;
 
-            Vehicle_Cart cart = SelThing as Vehicle_Cart;
 
             PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.PrisonerTab, KnowledgeAmount.FrameDisplayed);
             Text.Font = GameFont.Small;
@@ -48,18 +49,20 @@ namespace ToolsForHaul
             Rect thingIconRect = new Rect(mountedRect.x, mountedRect.y, 30f, fieldHeight);
             Rect thingLabelRect = new Rect(mountedRect.x + 35f, mountedRect.y + 5.0f, innerRect1.width - 35f, fieldHeight);
             Rect thingButtonRect = new Rect(mountedRect.x, mountedRect.y, innerRect1.width, fieldHeight);
-            
-            if(cart.mountableComp.IsMounted)
+
+            CompMountable compMountable = SelThing.TryGetComp<CompMountable>();
+
+            if (compMountable.IsMounted)
             {
-                Pawn driver = cart.mountableComp.Driver;
+                Pawn driver = compMountable.Driver;
                 Widgets.ThingIcon(thingIconRect, driver);
                 Widgets.Label(thingLabelRect, driver.Label);
-                if(Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
+                if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
                 {
                     List<FloatMenuOption> options = new List<FloatMenuOption>();
                     FloatMenuOption dismount = new FloatMenuOption("Dismount".Translate(driver.LabelShort), () =>
                     {
-                        cart.mountableComp.Dismount();
+                        compMountable.Dismount();
                     });
                     options.Add(dismount);
 
@@ -75,45 +78,55 @@ namespace ToolsForHaul
             thingIconRect.y = storageRect.y;
             thingLabelRect.y = storageRect.y;
             thingButtonRect.y = storageRect.y;
-            foreach (Thing thing in cart.storage)
-            {
-                if ((thing.ThingID.IndexOf("Human_Corpse") <= -1) ? false : true)
-                    Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconHuman_Corpse"), 1.0f);
-                else if ((thing.ThingID.IndexOf("Corpse") <= -1) ? false : true)
-                {
-                    Corpse corpse = thing as Corpse;
-                    Widgets.ThingIcon(thingIconRect, corpse.innerPawn.def);
-                }
-                else
-                    Widgets.ThingIcon(thingIconRect, thing);
-                Widgets.Label(thingLabelRect, thing.LabelCap);
-                if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
-                {
-                    List<FloatMenuOption> options = new List<FloatMenuOption>();
-                    options.Add(new FloatMenuOption("ThingInfo".Translate(), () =>
-                    {
-                        Find.WindowStack.Add(new Dialog_InfoCard(thing));
-                    }));
-                    options.Add(new FloatMenuOption("DropThing".Translate(), () =>
-                    {
-                        Thing dummy;
-                        cart.storage.TryDrop(thing, cart.Position, ThingPlaceMode.Near, out dummy);
-                    }));
 
-                    Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap, false));
-                }
-                if (Mouse.IsOver(thingButtonRect))
-                {
-                    GUI.DrawTexture(thingButtonRect, TexUI.HighlightTex);
-                }
-                TooltipHandler.TipRegion(thingIconRect, thing.def.LabelCap);
-                thingIconRect.y += fieldHeight;
-                thingLabelRect.y += fieldHeight;
-            }
-            if (Widgets.ButtonText(new Rect(180f, 400f, 100f, 30f), "Drop All"))
-                cart.storage.TryDropAll(cart.Position, ThingPlaceMode.Near);
+          #region Cart
+          var cart = SelThing as Vehicle_Cart;
+          if (cart != null)
+          {
+              foreach (Thing thing in cart.storage)
+              {
+                  if (thing.ThingID.IndexOf("Human_Corpse") > -1)
+                      Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconHuman_Corpse"), 1.0f);
+                  else if (thing.ThingID.IndexOf("Corpse") > -1)
+                  {
+                      Corpse corpse = thing as Corpse;
+                      Widgets.ThingIcon(thingIconRect, corpse.innerPawn.def);
+                  }
+                  else
+                      Widgets.ThingIcon(thingIconRect, thing);
+                  Widgets.Label(thingLabelRect, thing.LabelCap);
+                  if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
+                  {
+                      List<FloatMenuOption> options = new List<FloatMenuOption>();
+                      options.Add(new FloatMenuOption("ThingInfo".Translate(), () =>
+                      {
+                          Find.WindowStack.Add(new Dialog_InfoCard(thing));
+                      }));
+                      options.Add(new FloatMenuOption("DropThing".Translate(), () =>
+                      {
+                          Thing dummy;
+                          cart.storage.TryDrop(thing, SelThing.Position, ThingPlaceMode.Near, out dummy);
+                      }));
+          
+                      Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap));
+                  }
+                  if (Mouse.IsOver(thingButtonRect))
+                  {
+                      GUI.DrawTexture(thingButtonRect, TexUI.HighlightTex);
+                  }
+                  TooltipHandler.TipRegion(thingIconRect, thing.def.LabelCap);
+                  thingIconRect.y += fieldHeight;
+                  thingLabelRect.y += fieldHeight;
+              }
+              if (Widgets.ButtonText(new Rect(180f, 400f, 100f, 30f), "Drop All"))
+                  cart.storage.TryDropAll(SelThing.Position, ThingPlaceMode.Near);
+          }
+          #endregion
+
+
+
 
             GUI.EndGroup();
         }
-	}
+    }
 }

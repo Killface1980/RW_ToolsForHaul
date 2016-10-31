@@ -1,15 +1,12 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
-
+﻿using System.Collections.Generic;
+using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.Toils;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
-using RimWorld;
 
-
-namespace ToolsForHaul
+namespace ToolsForHaul.JobDrivers
 {
     public class JobDriver_DismountInBase : JobDriver
     {
@@ -17,20 +14,19 @@ namespace ToolsForHaul
         private const TargetIndex CartInd = TargetIndex.A;
         private const TargetIndex StoreCellInd = TargetIndex.B;
 
-        public JobDriver_DismountInBase() : base() { }
-
         public override string GetReport()
         {
-            Vehicle_Cart cart = TargetThingA as Vehicle_Cart;
+            ThingWithComps cart = TargetThingA as ThingWithComps;
 
             IntVec3 destLoc = new IntVec3(-1000, -1000, -1000);
             string destName = null;
             SlotGroup destGroup = null;
 
+
             if (pawn.jobs.curJob.targetB != null)
             {
                 destLoc = pawn.jobs.curJob.targetB.Cell;
-                destGroup = StoreUtility.GetSlotGroup(destLoc);
+                destGroup = destLoc.GetSlotGroup();
             }
 
             if (destGroup != null)
@@ -57,8 +53,19 @@ namespace ToolsForHaul
             if (!TargetThingA.IsForbidden(pawn.Faction))
                 this.FailOnForbidden(CartInd);
 
-            Vehicle_Cart cart = TargetThingA as Vehicle_Cart;
 
+            ThingWithComps cart = TargetThingA as ThingWithComps;
+
+            if (ToolsForHaulUtility.FindStorageCell(pawn, cart) == IntVec3.Invalid)
+            {
+                JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceForCart);
+            }
+
+
+            if (cart.TryGetComp<CompMountable>().Driver != null)
+            {
+                this.FailOnSomeonePhysicallyInteracting(CartInd);
+            }
 
             ///
             //Define Toil
@@ -76,7 +83,10 @@ namespace ToolsForHaul
             yield return Toils_Reserve.Reserve(StoreCellInd);
 
             //JumpIf already mounted
-            yield return Toils_Jump.JumpIf(toilGoToCell, () => { return (cart.GetComp<CompMountable>().Driver == pawn) ? true : false; });
+            yield return Toils_Jump.JumpIf(toilGoToCell, () =>
+            {
+                return cart.TryGetComp<CompMountable>().Driver == pawn ? true : false;
+            });
 
             //Mount on Target
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch)

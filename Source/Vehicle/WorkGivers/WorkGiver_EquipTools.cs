@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using RimWorld;
+using ToolsForHaul.JobDefs;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.WorkGivers
 {
     public class WorkGiver_EquipTools : WorkGiver_Scanner
     {
@@ -15,8 +17,8 @@ namespace ToolsForHaul
             foreach (Thing thing in Find.ListerThings.AllThings)
             {
                 float statfloat = 0;
-                if (!thing.def.IsMeleeWeapon || !pawn.CanReserveAndReach(thing, PathEndMode.ClosestTouch, Danger.Deadly))
-                    continue;
+                if (!thing.def.IsWeapon) continue;
+                if (!pawn.CanReserveAndReach(thing, PathEndMode.ClosestTouch, Danger.Some)) continue;
                 foreach (KeyValuePair<StatDef, float> stat in pawn.GetWeightedWorkStats())
                 {
                     statfloat += RightTools.GetMaxStat(thing as ThingWithComps, stat.Key);
@@ -35,12 +37,14 @@ namespace ToolsForHaul
 
         public override bool ShouldSkip(Pawn pawn)
         {
-            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
-            //Should skip pawn that don't have backpack.
-            if (backpack == null)
+            Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+            //Should skip pawn that don't have a toolbelt.
+            if (toolbelt == null)
                 return true;
 
-            if (backpack.MaxItem / 2 < backpack.numOfSavedItems)
+            // Skip it toolbelt full
+
+            if (toolbelt.MaxItem <= toolbelt.slotsComp.slots.Count)
             {
                 return true;
             }
@@ -50,30 +54,43 @@ namespace ToolsForHaul
 
         public override bool HasJobOnThing(Pawn pawn, Thing t)
         {
-            if (!pawn.inventory.container.Contains(t.def) || pawn.equipment.Primary.def.Equals(t.def))
-                return true;
-            return false;
+            Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+            if (toolbelt == null)
+                return false;
+
+            if (!pawn.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Some))
+                return false;
+
+            if (toolbelt.slotsComp.slots.Contains(t.def))
+                return false;
+
+            if (pawn.equipment.Primary != null && pawn.equipment.Primary.def.Equals(t.def))
+                return false;
+
+
+            return true;
 
         }
 
-        public override Job JobOnThing(Pawn pawn, Thing t)
+        public override Job JobOnThing(Pawn pawn, Thing thing)
         {
-            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
 
-            if (backpack != null)
+            if (toolbelt != null)
             {
-                Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInInventory"));
-                jobNew.maxNumToCarry = 1;
-                jobNew.targetA = backpack;
-                jobNew.targetQueueB = new List<TargetInfo>();
-                jobNew.targetQueueB.Add(t);
-                pawn.Reserve(t);
+                Job jobNew = new Job(HaulJobDefOf.PutInToolbeltSlot);
+                jobNew.targetQueueA = new List<TargetInfo>();
+                jobNew.numToBringList = new List<int>();
+                jobNew.targetB = toolbelt;
+                jobNew.targetQueueA.Add(thing);
+                jobNew.numToBringList.Add(thing.def.stackLimit);
+                pawn.Reserve(thing);
 
                 return jobNew;
 
             }
 
-            JobFailReason.Is("NoBackpack".Translate());
+            JobFailReason.Is("NoToolbelt".Translate());
             return null;
         }
     }

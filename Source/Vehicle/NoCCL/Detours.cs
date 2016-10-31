@@ -35,8 +35,8 @@ namespace ToolsForHaul
             }
 
             // keep track of detours and spit out some messaging
-            string sourceString = source.DeclaringType?.FullName + "." + source.Name + " @ 0x" + source.MethodHandle.GetFunctionPointer().ToString("X" + (IntPtr.Size * 2));
-            string destinationString = destination.DeclaringType?.FullName + "." + destination.Name + " @ 0x" + destination.MethodHandle.GetFunctionPointer().ToString("X" + (IntPtr.Size * 2));
+            string sourceString = source.DeclaringType?.FullName + "." + source.Name + " @ 0x" + source.MethodHandle.GetFunctionPointer().ToString("X" + IntPtr.Size * 2);
+            string destinationString = destination.DeclaringType?.FullName + "." + destination.Name + " @ 0x" + destination.MethodHandle.GetFunctionPointer().ToString("X" + IntPtr.Size * 2);
 
 #if DEBUG && CCL
             if (detoured.Contains(sourceString))
@@ -96,7 +96,7 @@ namespace ToolsForHaul
                 int* Pointer_Raw_Address = (int*)(Pointer_Raw_Source + 1);
 
                 // Jump offset (less instruction size)
-                int offset = (Destination_Base - Source_Base) - 5;
+                int offset = Destination_Base - Source_Base - 5;
 
                 // Insert 32-bit relative jump into native code
                 *Pointer_Raw_Source = 0xE9;

@@ -1,7 +1,42 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <JobDefs>
 
+<!--
+  <JobDef>
+    <defName>TakeToWheelChair</defName>
+    <driverClass>ToolsForHaul.JobDriver_TakeToWheelChair</driverClass>
+    <reportString>Taking TargetA to TargetB.</reportString>
+  </JobDef>
+  -->
 
+  <!--
+  
+  <JobDef>
+    <defName>HuntWithVehicle</defName>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_HuntWithVehicle</driverClass>
+    <reportString>hunting TargetA.</reportString>
+  -->
+    <!-- for when attacked by berserk -->
+  <!--
+    <canCheckOverrideOnDamage>true</canCheckOverrideOnDamage>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <suspendable>false</suspendable>
+  </JobDef>
+  -->
+
+
+  <JobDef>
+    <defName>GoForRide</defName>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_GoForRide</driverClass>
+    <reportString>going for a ride.</reportString>
+    <joyDuration>8000</joyDuration>
+    <joyMaxParticipants>1</joyMaxParticipants>
+    <joyGainRate>1.3</joyGainRate>
+    <joyKind>Meditative</joyKind>
+  </JobDef>
+  
+  
+  
   <!--=================== Work with tools =====================-->
   <!-- redefined, to set alwaysShowWeapon as true -->
 
@@ -42,71 +77,85 @@
   
   <!--============= Backpack ===============-->
 
+
+  
   <JobDef>
-    <defName>PutInSlot</defName>
-    <driverClass>RA.JobDriver_PutInSlot</driverClass>
+    <defName>PutInBackpackSlot</defName>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_PutInBackpackSlot</driverClass>
     <reportString>Putting TargetA in TargetB.</reportString>
   </JobDef>
-  
+
+  <!--
+  <JobDef>
+    <defName>PutInToolbeltSlot</defName>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_PutInToolbeltSlot</driverClass>
+    <reportString>Putting TargetA in TargetB.</reportString>
+  </JobDef>
+-->
+
+  <!--
   <JobDef>
     <defName>PutInInventory</defName>
     <driverClass>ToolsForHaul.JobDriver_PutInInventory</driverClass>
-    <reportString>Put TargetB in TargetA.</reportString>
+    <reportString>Put TargetA in TargetB.</reportString>
   </JobDef>
-
+-->
+  
   <JobDef>
     <defName>ApplyMedicine</defName>
-    <driverClass>ToolsForHaul.JobDriver_ApplyMedicine</driverClass>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_ApplyMedicine</driverClass>
     <reportString>Treating TargetA.</reportString>
   </JobDef>
   
   <!--============= Item hauling ===============-->
-
   <JobDef>
     <defName>HaulWithBackpack</defName>
-    <driverClass>ToolsForHaul.JobDriver_HaulWithBackpack</driverClass>
-    <reportString>Collecting TargetA.</reportString>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_HaulWithBackpack</driverClass>
+    <reportString>Collecting TargetA with targetC.</reportString>
   </JobDef>
-
+  
   <JobDef>
     <defName>HaulWithAnimalCart</defName>
-    <driverClass>ToolsForHaul.JobDriver_HaulWithAnimalCart</driverClass>
-    <reportString>Collecting TargetA.</reportString>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_HaulWithAnimalCart</driverClass>
+    <reportString>Collecting TargetA with targetC.</reportString>
   </JobDef>
   
   <JobDef>
     <defName>HaulWithCart</defName>
-    <driverClass>ToolsForHaul.JobDriver_HaulWithCart</driverClass>
-    <reportString>Collecting TargetA.</reportString>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_HaulWithCart</driverClass>
+    <reportString>Collecting TargetA with targetC.</reportString>
   </JobDef>
   
   <JobDef>
     <defName>DismountInBase</defName>
-    <driverClass>ToolsForHaul.JobDriver_DismountInBase</driverClass>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_DismountInBase</driverClass>
     <reportString>Dismount TargetA.</reportString>
   </JobDef>
   
   <JobDef>
     <defName>Mount</defName>
-    <driverClass>ToolsForHaul.JobDriver_Mount</driverClass>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_Mount</driverClass>
     <reportString>Mount on TargetA.</reportString>
   </JobDef>
   
+  
   <JobDef>
     <defName>MakeMount</defName>
-    <driverClass>ToolsForHaul.JobDriver_MakeMount</driverClass>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_MakeMount</driverClass>
     <reportString>Mount on TargetB.</reportString>
   </JobDef>
   
+  <!--
   <JobDef>
     <defName>Board</defName>
     <driverClass>ToolsForHaul.JobDriver_Board</driverClass>
     <reportString>Board on TargetA.</reportString>
   </JobDef>
+  -->
   
   <JobDef>
-    <defName>Standby</defName>
-    <driverClass>ToolsForHaul.JobDriver_Standby</driverClass>
+    <defName>StandBy</defName>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_StandBy</driverClass>
     <reportString>Standing by</reportString>
   </JobDef>
  

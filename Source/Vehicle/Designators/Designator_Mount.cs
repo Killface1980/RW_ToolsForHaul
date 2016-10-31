@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using UnityEngine;
+﻿using System.Collections.Generic;
+using RimWorld;
+using ToolsForHaul.JobDefs;
+using ToolsForHaul.Utilities;
 using Verse;
 using Verse.AI;
-using Verse.Sound;
-using RimWorld;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Designators
 {
     public class Designator_Mount : Designator
     {
         public Thing vehicle;
 
-        public Designator_Mount(): base()
+        public Designator_Mount()
         {
             useMouseIcon = true;
             soundSucceeded = SoundDefOf.Click;
@@ -30,8 +26,10 @@ namespace ToolsForHaul
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotPawn".Translate());
             if (pawn.Faction != Faction.OfPlayer)
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotColonyFaction".Translate());
+#if Saddle
             if (!pawn.RaceProps.Animal && vehicle is Vehicle_Saddle)
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotHumanlikeOrMechanoid".Translate());
+#endif
             if (pawn.RaceProps.Animal && !pawn.training.IsCompleted(TrainableDefOf.Obedience))
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotTrainedAnimal".Translate());
             if (pawn.RaceProps.Animal && !(pawn.RaceProps.baseBodySize >= 1.0))
@@ -45,18 +43,26 @@ namespace ToolsForHaul
             foreach (Thing thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
-                if (pawn != null && (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike)))
+
+                bool alreadyMounted = false;
+                foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart)
+                    if (cart.mountableComp.Driver == pawn)
+                        alreadyMounted = true;
+                foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret)
+                    if (cart.mountableComp.Driver == pawn)
+                        alreadyMounted = true;
+                if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !alreadyMounted)
                 {
-                    Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Mount"));
+                    Job jobNew = new Job(HaulJobDefOf.Mount);
                     Find.Reservations.ReleaseAllForTarget(vehicle);
                     jobNew.targetA = vehicle;
                     pawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                     break;
                 }
-                if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0))
+                if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal) && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !alreadyMounted)
                 {
                     Pawn worker = null;
-                    Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("MakeMount"));
+                    Job jobNew = new Job(HaulJobDefOf.MakeMount);
                     Find.Reservations.ReleaseAllForTarget(vehicle);
                     jobNew.maxNumToCarry = 1;
                     jobNew.targetA = vehicle;

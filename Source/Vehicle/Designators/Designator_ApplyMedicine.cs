@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using UnityEngine;
+﻿using System.Collections.Generic;
+using RimWorld;
+using ToolsForHaul.Components;
 using Verse;
 using Verse.AI;
-using Verse.Sound;
-using RimWorld;
+using ToolsForHaul.JobDefs;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Designators
 {
     public class Designator_ApplyMedicine : Designator
     {
@@ -17,10 +13,12 @@ namespace ToolsForHaul
 
         public Thing medicine;
         public Pawn doctor;
+        public CompSlotsBackpack SlotsBackpackComp;
+
+
         public Designation designation;
 
         public Designator_ApplyMedicine()
-            : base()
         {
             useMouseIcon = true;
             soundSucceeded = SoundDefOf.Click;
@@ -49,9 +47,14 @@ namespace ToolsForHaul
                 Pawn pawn = thing as Pawn;
                 if (pawn != null && pawn.health.ShouldBeTendedNow)
                 {
-                    Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("ApplyMedicine"));
+                    Job jobNew = new Job(HaulJobDefOf.ApplyMedicine);
                     jobNew.targetA = pawn;
-                    jobNew.targetB = medicine;
+
+                    Thing dummy;
+                    SlotsBackpackComp.slots.TryDrop(medicine, doctor.Position, ThingPlaceMode.Direct, Medicine.GetMedicineCountToFullyHeal(jobNew.targetA.Thing as Pawn), out dummy);
+
+                    jobNew.targetB = dummy;
+
                     jobNew.maxNumToCarry = Medicine.GetMedicineCountToFullyHeal(jobNew.targetA.Thing as Pawn);
                     doctor.drafter.TakeOrderedJob(jobNew);
                     break;

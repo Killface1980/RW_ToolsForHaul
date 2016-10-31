@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using UnityEngine;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using Verse.Sound;
-using RimWorld;
 
 namespace ToolsForHaul
 {
@@ -18,7 +13,7 @@ namespace ToolsForHaul
 
         private int numOfContents;
 
-        public Designator_PutInInventory() : base()
+        public Designator_PutInInventory()
         {
             useMouseIcon = true;
             designations = new List<Designation>();
@@ -34,15 +29,15 @@ namespace ToolsForHaul
         {
             List<Thing> thingList = loc.GetThingList();
 
-            numOfContents = backpack.wearer.inventory.container.Count;
+                numOfContents = backpack.wearer.inventory.container.Count;
 
             int designationsTotalStackCount = 0;
             foreach (Designation designation in designations)
                 designationsTotalStackCount += designation.target.Thing.stackCount;
 
             //No Item space or no stack space
-            if ((designations.Count + numOfContents) >= backpack.MaxItem 
-                || (designationsTotalStackCount + backpack.wearer.inventory.container.TotalStackCount) >= backpack.MaxStack)
+            if (designations.Count + numOfContents >= backpack.MaxItem
+                || designationsTotalStackCount + backpack.wearer.inventory.container.TotalStackCount >= backpack.MaxStack)
                 return new AcceptanceReport("BackpackIsFull".Translate());
 
 
@@ -66,19 +61,19 @@ namespace ToolsForHaul
         {
             Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInInventory"));
             jobNew.maxNumToCarry = 1;
-            jobNew.targetA = backpack;
-            jobNew.targetQueueB = new List<TargetInfo>();
+            jobNew.targetB = backpack;
+            jobNew.targetQueueA = new List<TargetInfo>();
 
             while (!designations.NullOrEmpty())
             {
-                jobNew.targetQueueB.Add(designations.First().target.Thing);
+                jobNew.targetQueueA.Add(designations.First().target.Thing);
                 designations.RemoveAt(0);
             }
-            if (!jobNew.targetQueueB.NullOrEmpty())
+            if (!jobNew.targetQueueA.NullOrEmpty())
                 //if (backpack.wearer.drafter.CanTakePlayerJob())
-                    backpack.wearer.drafter.TakeOrderedJob(jobNew);
-                //else
-                //    backpack.wearer.drafter.QueueJob(jobNew);
+                backpack.wearer.drafter.TakeOrderedJob(jobNew);
+            //else
+            //    backpack.wearer.drafter.QueueJob(jobNew);
             DesignatorManager.Deselect();
         }
 

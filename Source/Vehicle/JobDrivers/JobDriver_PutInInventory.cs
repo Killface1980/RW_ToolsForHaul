@@ -1,26 +1,20 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using Verse;
 using Verse.AI;
-using RimWorld;
-
 
 namespace ToolsForHaul
 {
     public class JobDriver_PutInInventory : JobDriver
     {
         //Constants
-        private const TargetIndex BackpackInd = TargetIndex.A;
-        private const TargetIndex HaulableInd = TargetIndex.B;
-
-        public JobDriver_PutInInventory() : base() { }
+        private const TargetIndex HaulableInd = TargetIndex.A;
+        private const TargetIndex BackpackInd = TargetIndex.B;
 
         public override string GetReport()
         {
-            Thing hauledThing = TargetThingB;
+            Thing hauledThing = TargetThingA;
 
             string repString;
             if (hauledThing != null)
@@ -41,20 +35,20 @@ namespace ToolsForHaul
 
 
             //Backpack is full.
-            this.FailOn(() =>{ return (pawn.inventory.container.Count < backpack.MaxItem) ? false : true; });
+            this.FailOn(() =>{ return pawn.inventory.container.Count < backpack.MaxItem ? false : true; });
 
-            this.FailOn(() => { return (pawn == backpack.wearer) ? false : true; });
+            this.FailOn(() => { return pawn == backpack.wearer ? false : true; });
             ///
             //Define Toil
             ///
 
-            Toil extractB = new Toil();
-            extractB.initAction = () =>
+            Toil extractA = new Toil();
+            extractA.initAction = () =>
             {
-                if (!CurJob.targetQueueB.NullOrEmpty())
+                if (!CurJob.targetQueueA.NullOrEmpty())
                 {
-                    CurJob.targetB = CurJob.targetQueueB.First();
-                    CurJob.targetQueueB.RemoveAt(0);
+                    CurJob.targetA = CurJob.targetQueueA.First();
+                    CurJob.targetQueueA.RemoveAt(0);
                     this.FailOnDestroyedOrNull(HaulableInd);
                 }
                 else
@@ -74,29 +68,29 @@ namespace ToolsForHaul
             yield return Toils_Reserve.ReserveQueue(HaulableInd);
 
 
-            yield return Toils_Jump.JumpIf(toilGoToThing, () => { return (CurJob.targetB.HasThing) ? true : false;  });
+            yield return Toils_Jump.JumpIf(toilGoToThing, () => { return CurJob.targetA.HasThing ? true : false;  });
 
             //Collect TargetQueue
             {
 
                 //Extract an haulable into TargetA
-                yield return extractB;
+                yield return extractA;
 
                 yield return toilGoToThing;
 
                 //CollectIntoCarrier
                 Toil toilPutInInventory = new Toil();
-                toilPutInInventory.initAction = () => 
+                toilPutInInventory.initAction = () =>
                 {
                     if (pawn.inventory.container.Count < backpack.MaxItem
                         && backpack.wearer.inventory.container.TotalStackCount < backpack.MaxStack)
                     {
-                        if (CurJob.targetB.Thing.TryGetComp<CompForbiddable>() != null && CurJob.targetB.Thing.TryGetComp<CompForbiddable>().Forbidden == true)
-                            CurJob.targetB.Thing.TryGetComp<CompForbiddable>().Forbidden = false;
-                        if (pawn.inventory.container.TryAdd(CurJob.targetB.Thing, CurJob.maxNumToCarry))
+                        if (CurJob.targetA.Thing.TryGetComp<CompForbiddable>() != null && CurJob.targetA.Thing.TryGetComp<CompForbiddable>().Forbidden)
+                            CurJob.targetA.Thing.TryGetComp<CompForbiddable>().Forbidden = false;
+                        if (pawn.inventory.container.TryAdd(CurJob.targetA.Thing, CurJob.maxNumToCarry))
                         {
-                            CurJob.targetB.Thing.holder = pawn.inventory.GetContainer();
-                            CurJob.targetB.Thing.holder.owner = pawn.inventory;
+                            CurJob.targetA.Thing.holder = pawn.inventory.GetContainer();
+                            CurJob.targetA.Thing.holder.owner = pawn.inventory;
                             backpack.numOfSavedItems++;
                         }
                     }
@@ -104,7 +98,7 @@ namespace ToolsForHaul
                         EndJobWith(JobCondition.Incompletable);
                 };
                 yield return toilPutInInventory;
-                yield return Toils_Jump.JumpIfHaveTargetInQueue(HaulableInd, extractB);
+                yield return Toils_Jump.JumpIfHaveTargetInQueue(HaulableInd, extractA);
             }
         }
 

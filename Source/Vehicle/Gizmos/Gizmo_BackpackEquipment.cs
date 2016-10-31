@@ -1,13 +1,14 @@
 ﻿
 using System.Collections.Generic;
-using System.Linq;
 using RimWorld;
+using ToolsForHaul.Components;
+using ToolsForHaul.Designators;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
 
-namespace ToolsForHaul
+namespace ToolsForHaul.Gizmos
 {
     [StaticConstructorOnStartup]
     public class Gizmo_BackpackEquipment : Gizmo
@@ -15,6 +16,10 @@ namespace ToolsForHaul
         private static string txtNoItem;
         private static string txtThingInfo;
         private static string txtDropThing;
+
+        public static readonly Texture2D texPutInArrow = ContentFinder<Texture2D>.Get("UI/Gizmoes/PutIn");
+        private static readonly Texture2D texOccupiedSlotBG = SolidColorMaterials.NewSolidColorTexture(1f, 1f, 1f, 0.1f);
+
 
         //Links
         public Apparel_Backpack backpack;
@@ -39,9 +44,39 @@ namespace ToolsForHaul
 
         //EquipmentSlot Properties
         private const int numOfRow = 2;
-        private const int numOfMaxItemsPerRow = 4;
-        private const float widthPerItem = 140.0f / 4.0f;
-        private const float curWidth = widthPerItem * numOfMaxItemsPerRow;
+
+        private int iconsPerRow
+        {
+            get
+            {
+                if (backpack.slotsComp.slots.Count <= 4)
+                    return 2;
+                else
+                {
+                    int count = Mathf.FloorToInt(backpack.slotsComp.slots.Count - 4) / 2;
+
+                    return 2 + count;
+                }
+
+            }
+        }
+
+        private float curWidth
+        {
+            get
+            {
+                if (backpack.slotsComp.slots.Count <= 4)
+                    return Height;
+                else
+                {
+                    int count = Mathf.FloorToInt(backpack.slotsComp.slots.Count - 4) / 2;
+
+                    return Height + count * Height * 0.5f;
+                }
+
+            }
+        }
+
         public override float Width { get { return curWidth; } }
 
         //IconClickSound
@@ -61,181 +96,185 @@ namespace ToolsForHaul
 
             //Equipment slot
             Pawn wearer = backpack.wearer;
-            ThingWithComps dummy;
 
-            Rect thingIconRect = new Rect(topLeft.x, topLeft.y, widthPerItem, Height / 2);
-            int numOfCurItem = 0;
-
-            List<Thing> things = wearer.inventory.container.ToList();
-
-            //Draw Gizmo
-            for (int i = 0; i < numOfMaxItemsPerRow * numOfRow; i++)
+            // Slots CompSlots
             {
-                if (i >= backpack.MaxItem)
-                {
-                    thingIconRect.x = topLeft.x + widthPerItem * (i % numOfMaxItemsPerRow);
-                    thingIconRect.y = topLeft.y + (Height / 2) * (i / numOfMaxItemsPerRow);
-                    Widgets.DrawTextureFitted(thingIconRect, NoAvailableTex, 1.0f);
-                    continue;
-                }
+                Rect inventoryRect = new Rect(topLeft.x, topLeft.y, Width, Height);
 
-                if (i >= things.Count)
-                {
-                    thingIconRect.x = topLeft.x + widthPerItem * (i % numOfMaxItemsPerRow);
-                    thingIconRect.y = topLeft.y + (Height / 2) * (i / numOfMaxItemsPerRow);
-                    Widgets.DrawTextureFitted(thingIconRect, EmptyTex, 1.0f);
-
-
-                    continue;
-                }
-
-                Thing item = things[i];
-
-                if (item == null)
-                    continue;
-
-                if (item.def.IsMeleeWeapon)
-                {
-                    Widgets.DrawTextureFitted(thingIconRect, MeleeWeaponTex, 1.0f);
-                }
-                if (item.def.IsRangedWeapon)
-                {
-                    Widgets.DrawTextureFitted(thingIconRect, RangedWeaponTex, 1.0f);
-                }
-                Widgets.DrawBox(thingIconRect);
-                Widgets.ThingIcon(thingIconRect, item);
-                if (thingIconRect.Contains(Event.current.mousePosition))
-                {
-                    Widgets.DrawTextureFitted(thingIconRect, FilledTex, 1.0f);
-                }
-                //Interaction with item
-                if (Widgets.ButtonInvisible(thingIconRect))
-                {
-                    thingIconSound = SoundDefOf.Click;
-                    if (Event.current.button == 0)
-                    {
-                        //Weapon
-                        if (item != null && item.def.equipmentType == EquipmentType.Primary && item.def.IsRangedWeapon)
-                            {
-                                if (wearer.equipment.Primary != null)
-                                    wearer.equipment.TryTransferEquipmentToContainer(wearer.equipment.Primary, wearer.inventory.container, out dummy);
-                                else
-                                    backpack.numOfSavedItems--;
-                                wearer.equipment.AddEquipment(item as ThingWithComps);
-                                wearer.inventory.container.Remove(item as ThingWithComps);
-                                if (wearer.jobs.curJob != null)
-                                    wearer.jobs.EndCurrentJob(JobCondition.InterruptForced);
-                            }
-                    }
-                    if (Event.current.button == 1)
-                    {
-                        List<FloatMenuOption> options = new List<FloatMenuOption>();
-
-                        options.Add(new FloatMenuOption(txtThingInfo, () =>
-                        {
-                            Find.WindowStack.Add(new Dialog_InfoCard(item));
-                        }));
-
-                        options.Add(new FloatMenuOption(txtDropThing, () =>
-                        {
-                            Thing dummy1;
-                            wearer.inventory.container.TryDrop(item, wearer.Position, ThingPlaceMode.Near, out dummy1);
-                        }));
-
-                        //Weapon
-                        if (item != null && item.def.equipmentType == EquipmentType.Primary)
-                            options.Add(new FloatMenuOption("Equip".Translate(item.LabelCap), () =>
-                            {
-                                if (wearer.equipment.Primary != null)
-                                    wearer.equipment.TryTransferEquipmentToContainer(wearer.equipment.Primary, wearer.inventory.container, out dummy);
-                                else
-                                    backpack.numOfSavedItems--;
-                                wearer.equipment.AddEquipment(item as ThingWithComps);
-                                wearer.inventory.container.Remove(item as ThingWithComps);
-                                if (wearer.jobs.curJob != null)
-                                    wearer.jobs.EndCurrentJob(JobCondition.InterruptForced);
-                            }));
-
-
-                        //Medicine
-                        if (item.def.thingCategories.Contains(medicine))
-                        {
-                            if (wearer.workSettings != null && wearer.workSettings.WorkIsActive(WorkTypeDefOf.Doctor))
-                                options.Add(new FloatMenuOption("TreatPatientWithMedicine".Translate(), () =>
-                                {
-                                    Designator_ApplyMedicine designator = new Designator_ApplyMedicine();
-                                    designator.medicine = item;
-                                    designator.doctor = wearer;
-                                    designator.icon = item.def.uiIcon;
-                                    designator.activateSound = SoundDef.Named("Click");
-                        
-                                    DesignatorManager.Select(designator);
-                                }));
-                        }
-                        //Food
-                        if (item.def.thingCategories.Contains(foodMeals))
-                        {
-                            //  if (wearer.needs.food.CurCategory != HungerCategory.Fed)
-                            options.Add(new FloatMenuOption("ConsumeThing".Translate(item.def.LabelCap), () =>
-                            {
-                                Job jobNew = new Job(JobDefOf.Ingest, item);
-                                jobNew.maxNumToCarry = item.def.ingestible.maxNumToIngestAtOnce;
-                                jobNew.ignoreForbidden = true;
-                                wearer.drafter.TakeOrderedJob(jobNew);
-                            }));
-                        }
-                        // Drugs
-                        if (item.def.ingestible?.drugCategory >= DrugCategory.Any)
-                            options.Add(new FloatMenuOption("ConsumeThing".Translate(), () =>
-                            {
-                                Job jobNew = new Job(JobDefOf.Ingest, item);
-                                jobNew.maxNumToCarry = item.def.ingestible.maxNumToIngestAtOnce;
-                                jobNew.ignoreForbidden = true;
-                                wearer.drafter.TakeOrderedJob(jobNew);
-                            }));
-                        //Apparel
-                        if (item is Apparel)
-                            options.Add(new FloatMenuOption("Wear".Translate(item.def.LabelCap), () =>
-                            {
-                                //if (!wearer.apparel.CanWearWithoutDroppingAnything(item.def))
-                                //    wearer.apparel.WornApparel.Find(apparel => apparel.def.apparel.layers.Any);
-                                for (int index = wearer.apparel.WornApparel.Count - 1; index >= 0; --index)
-                                {
-                                    Apparel ap = wearer.apparel.WornApparel[index];
-                                    if (ApparelUtility.CanWearTogether(item.def, ap.def)) continue;
-                                    Apparel resultingAp;
-                                    wearer.apparel.TryDrop(ap, out resultingAp, wearer.Position, false);
-                                    wearer.inventory.container.TryAdd(resultingAp);
-                                    backpack.numOfSavedItems++;
-                                }
-                                wearer.apparel.Wear(item as Apparel);
-                                wearer.inventory.container.Remove(item as ThingWithComps);
-                                backpack.numOfSavedItems--;
-                            }));
-
-                        Find.WindowStack.Add(new FloatMenu(options, item.LabelCap));
-                    }
-
-                    thingIconSound.PlayOneShotOnCamera();
-                }
-                if (Mouse.IsOver(thingIconRect))
-                {
-                    GUI.DrawTexture(thingIconRect, TexUI.HighlightTex);
-                }
-                TooltipHandler.TipRegion(thingIconRect, item.def.LabelCap);
-
-                numOfCurItem++;
-                thingIconRect.x = topLeft.x + widthPerItem * (numOfCurItem % numOfMaxItemsPerRow);
-                thingIconRect.y = topLeft.y + (Height / 2) * (numOfCurItem / numOfMaxItemsPerRow);
+                Widgets.DrawWindowBackground(inventoryRect);
+                DrawSlots(wearer, backpack.slotsComp, inventoryRect);
             }
 
-            if (numOfCurItem == 0)
-            {
-                Rect textRect = new Rect(topLeft.x + Width / 2 - textWidth / 2, topLeft.y + Height / 2 - textHeight / 2, textWidth, textHeight);
-                Widgets.Label(textRect, txtNoItem.Translate());
-            }
             return new GizmoResult(GizmoState.Clear);
         }
+
+        public void DrawSlots(Pawn wearer, CompSlotsBackpack SlotsBackpackComp, Rect inventoryRect)
+        {
+            // draw text message if no contents inside
+            if (SlotsBackpackComp.slots.Count == 0)
+            {
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(inventoryRect, "No Items");
+                Text.Anchor = TextAnchor.UpperLeft;
+                Text.Font = GameFont.Tiny;
+            }
+            // draw slots
+            else
+            {
+                Rect slotRect = new Rect(inventoryRect.x, inventoryRect.y, Width / iconsPerRow-1f, Height / 2-1f);
+                for (int currentSlotInd = 0; currentSlotInd < iconsPerRow * numOfRow; currentSlotInd++)
+                {
+                    if (currentSlotInd >= backpack.MaxItem)
+                    {
+                        slotRect.x = inventoryRect.x + inventoryRect.width / iconsPerRow * (currentSlotInd % iconsPerRow);
+                        slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / iconsPerRow);
+                        Widgets.DrawTextureFitted(slotRect, NoAvailableTex, 1.0f);
+                    }
+
+                    if (currentSlotInd >= SlotsBackpackComp.slots.Count)
+                    {
+                        slotRect.x = inventoryRect.x + inventoryRect.width / iconsPerRow * (currentSlotInd % iconsPerRow);
+                        slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / iconsPerRow);
+                        Widgets.DrawTextureFitted(slotRect, EmptyTex, 1.0f);
+                    }
+
+                    // draw occupied slots
+                    if (currentSlotInd < SlotsBackpackComp.slots.Count)
+                    {
+                        slotRect.x = inventoryRect.x + inventoryRect.width / iconsPerRow * (currentSlotInd % iconsPerRow);
+                        slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / iconsPerRow);
+
+                        Thing currentThing = SlotsBackpackComp.slots[currentSlotInd];
+
+                        // draws greyish slot background
+                        Widgets.DrawTextureFitted(slotRect.ContractedBy(3f), texOccupiedSlotBG, 1f);
+
+                        if (currentThing.def.IsMeleeWeapon)
+                        {
+                            Widgets.DrawTextureFitted(slotRect, MeleeWeaponTex, 1.0f);
+                        }
+                        if (currentThing.def.IsRangedWeapon)
+                        {
+                            Widgets.DrawTextureFitted(slotRect, RangedWeaponTex, 1.0f);
+                        }
+                        Widgets.DrawBox(slotRect);
+
+                        // highlights slot if mouse over
+                        Widgets.DrawHighlightIfMouseover(slotRect.ContractedBy(3f));
+
+                        // tooltip if mouse over
+                        TooltipHandler.TipRegion(slotRect, currentThing.def.LabelCap);
+
+                        // draw thing texture
+                        Widgets.ThingIcon(slotRect, currentThing);
+
+                        // interaction with slots
+                        if (Widgets.ButtonInvisible(slotRect))
+                        {
+                            // mouse button pressed
+                            if (Event.current.button == 0)
+                            {
+                                //Weapon
+                                if (currentThing != null && currentThing.def.equipmentType == EquipmentType.Primary && (currentThing.def.IsRangedWeapon || currentThing.def.IsMeleeWeapon))
+                                {
+                                    SlotsBackpackComp.SwapEquipment(currentThing as ThingWithComps);
+                                }
+
+                                //// equip weapon in slot
+                                //if (currentThing.def.equipmentType == EquipmentType.Primary)
+                                //{
+                                //    slotsComp.SwapEquipment(currentThing as ThingWithComps);
+                                //}
+                            }
+                            // mouse button released
+                            else if (Event.current.button == 1)
+                            {
+                                List<FloatMenuOption> options = new List<FloatMenuOption>
+                                {
+                                    new FloatMenuOption("Info",
+                                        () => { Find.WindowStack.Add(new Dialog_InfoCard(currentThing)); }),
+                                    new FloatMenuOption("Drop", () =>
+                                    {
+                                        Thing resultThing;
+                                        SlotsBackpackComp.slots.TryDrop(currentThing, wearer.Position,
+                                            ThingPlaceMode.Near, out resultThing);
+                                    })
+                                };
+                                // get thing info card
+                                // drop thing
+
+                                // Else
+
+                                //Weapon
+                                if (currentThing != null && currentThing.def.equipmentType == EquipmentType.Primary)
+                                    options.Add(new FloatMenuOption("Equip".Translate(currentThing.LabelCap), () =>
+                                    {
+                                        SlotsBackpackComp.SwapEquipment(currentThing as ThingWithComps);
+
+                                    }));
+
+
+                                //Medicine
+                                if (currentThing.def.IsMedicine)
+                                {
+                                    if (wearer.workSettings != null && wearer.workSettings.WorkIsActive(WorkTypeDefOf.Doctor))
+                                        options.Add(new FloatMenuOption("TreatPatientWithMedicine".Translate(), () =>
+                                        {
+                                            Designator_ApplyMedicine designator = new Designator_ApplyMedicine();
+                                            designator.SlotsBackpackComp = SlotsBackpackComp;
+                                            designator.medicine = currentThing;
+                                            designator.doctor = wearer;
+                                            designator.icon = currentThing.def.uiIcon;
+                                            designator.activateSound = SoundDef.Named("Click");
+
+                                            DesignatorManager.Select(designator);
+                                        }));
+                                }
+                                //Food
+                                if (currentThing.def.thingCategories.Contains(DefDatabase<ThingCategoryDef>.GetNamed("FoodMeals")))
+                                {
+                                    //  if (compSlots.owner.needs.food.CurCategory != HungerCategory.Fed)
+                                    options.Add(new FloatMenuOption("ConsumeThing".Translate(currentThing.LabelCap), () =>
+                                    {
+                                        Thing dummy;
+                                        SlotsBackpackComp.slots.TryDrop(currentThing, wearer.Position, ThingPlaceMode.Direct, currentThing.def.ingestible.maxNumToIngestAtOnce, out dummy);
+
+                                        Job jobNew = new Job(JobDefOf.Ingest, dummy);
+                                        jobNew.maxNumToCarry = currentThing.def.ingestible.maxNumToIngestAtOnce;
+                                        jobNew.ignoreForbidden = true;
+                                        wearer.drafter.TakeOrderedJob(jobNew);
+                                    }));
+                                }
+                                // Drugs
+                                if (currentThing.def.ingestible?.drugCategory >= DrugCategory.Any)
+                                    options.Add(new FloatMenuOption("ConsumeThing".Translate(currentThing.LabelCap), () =>
+                                    {
+                                        Thing dummy;
+                                        SlotsBackpackComp.slots.TryDrop(currentThing, wearer.Position, ThingPlaceMode.Direct, currentThing.def.ingestible.maxNumToIngestAtOnce, out dummy);
+
+                                        Job jobNew = new Job(JobDefOf.Ingest, dummy);
+                                        jobNew.maxNumToCarry = dummy.def.ingestible.maxNumToIngestAtOnce;
+                                        jobNew.ignoreForbidden = true;
+                                        wearer.drafter.TakeOrderedJob(jobNew);
+                                    }));
+
+
+
+                                Find.WindowStack.Add(new FloatMenu(options, currentThing.LabelCap));
+                            }
+
+                            // plays click sound on each click
+                            SoundDefOf.Click.PlayOneShotOnCamera();
+                        }
+                    }
+                    slotRect.x = inventoryRect.x + Height / 2 * (currentSlotInd % iconsPerRow);
+                    slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / iconsPerRow);
+                    //      slotRect.x += Height;
+                }
+            }
+        }
+
 
 
     }

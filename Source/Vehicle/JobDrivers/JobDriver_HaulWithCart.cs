@@ -1,14 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Linq;
+﻿using System.Collections.Generic;
+using RimWorld;
+using ToolsForHaul.Toils;
 using Verse;
 using Verse.AI;
-using RimWorld;
 
-
-namespace ToolsForHaul
+namespace ToolsForHaul.JobDrivers
 {
     public class JobDriver_HaulWithCart : JobDriver
     {
@@ -19,11 +15,10 @@ namespace ToolsForHaul
 
         public override string GetReport()
         {
-            Thing hauledThing = null;
-            hauledThing = TargetThingA;
+            Thing hauledThing = TargetThingA;
             if (TargetThingA == null)  //Haul Cart
                 hauledThing = CurJob.targetC.Thing;
-            this.FailOn(() => !pawn.CanReach(hauledThing, PathEndMode.ClosestTouch, Danger.Deadly));
+            this.FailOn(() => !pawn.CanReach(hauledThing, PathEndMode.ClosestTouch, Danger.Some));
             IntVec3 destLoc = IntVec3.Invalid;
             string destName = null;
             SlotGroup destGroup = null;
@@ -60,6 +55,7 @@ namespace ToolsForHaul
             if (!TargetThingA.IsForbidden(pawn.Faction))
                 this.FailOnForbidden(CartInd);
 
+            this.FailOn(() => !pawn.RaceProps.IsFlesh || !pawn.RaceProps.Humanlike);
 
             ///
             //Define Toil
@@ -67,6 +63,8 @@ namespace ToolsForHaul
 
             Toil findStoreCellForCart = Toils_Cart.FindStoreCellForCart(CartInd);
             Toil checkCartEmpty = Toils_Jump.JumpIf(findStoreCellForCart, () => cart.storage.Count <= 0);
+
+
             Toil checkStoreCellEmpty = Toils_Jump.JumpIf(findStoreCellForCart, () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
             Toil checkHaulableEmpty = Toils_Jump.JumpIf(checkStoreCellEmpty, () => CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
 
@@ -82,10 +80,10 @@ namespace ToolsForHaul
             //JumpIf already mounted
             yield return Toils_Jump.JumpIf(checkHaulableEmpty, () =>
             {
-                if (cart.GetComp<CompMountable>().Driver == pawn) return true;
+                if (cart.mountableComp.Driver == pawn) return true;
                 return false;
             });
-            
+
             //Mount on Target
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch)
                                         .FailOnDestroyedOrNull(CartInd);
