@@ -90,6 +90,7 @@
     <Compile Include="JobGivers\JobGiver_Steal.cs" />
     <None Include="NoCCL\DetourAttribute.cs" />
     <None Include="Things\Apparel_Toolbelt.cs" />
+    <Compile Include="Things\Textures.cs" />
     <Compile Include="Things\Tank\Vehicle_Turret.cs" />
     <None Include="Things\Tank\nn\_Targeter.cs" />
     <None Include="Things\Tank\nn\_AttackTargetFinder.cs" />
@@ -113,8 +114,6 @@
     <Compile Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
     <None Include="_inactive\ModHelperDef.cs" />
-    <Compile Include="CCL\CompInjectionSet.cs" />
-    <Compile Include="CCL\DefInjectionQualifierTemp.cs" />
     <Compile Include="Things\IncendiaryFuel.cs" />
     <None Include="_inactive\CompWeaponExtensions.cs" />
     <None Include="_inactive\RA_PawnRenderer.cs" />
@@ -133,7 +132,7 @@
     <Compile Include="Components\MapComponent_ToolsForHaul.cs" />
     <Compile Include="RightTools\MapComponentInjector.cs" />
     <Compile Include="NoCCL\SpecialInjector.cs" />
-    <Compile Include="NoCCL\Detours.cs" />
+    <None Include="NoCCL\Detours.cs" />
     <Compile Include="StatsHelper.cs" />
     <Compile Include="Utilities\ToolsForHaulUtility.cs" />
     <Compile Include="Trace.cs" />
@@ -183,6 +182,9 @@
     <Content Include="..\..\Defs\KeyBindingDefs\KeyBindings.xml">
       <Link>Defs\KeyBindingDefs\KeyBindings.xml</Link>
     </Content>
+    <Content Include="..\..\Defs\ModHelperDefs\ModHelper.xml">
+      <Link>Defs\ModHelperDefs\ModHelper.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\StatDefs\Stats_Apparel.xml">
       <Link>Defs\StatDefs\Stats_Apparel.xml</Link>
       <SubType>Designer</SubType>
@@ -207,13 +209,12 @@
     <Content Include="..\..\Defs\ThingDefs\Things_Special.xml">
       <Link>Defs\ThingDefs\Things_Special.xml</Link>
     </Content>
-    <Content Include="..\..\Defs\ThingDefs\Vehicle_Gunned.xml">
-      <Link>Defs\ThingDefs\Vehicle_Gunned.xml</Link>
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Haul.xml">
       <Link>Defs\ThingDefs\Vehicle_Haul.xml</Link>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Vehicle_Turret.xml">
+      <Link>Defs\ThingDefs\Vehicle_Turret.xml</Link>
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers.xml">
       <Link>Defs\WorkGivers.xml</Link>

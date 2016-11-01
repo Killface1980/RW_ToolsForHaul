@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using CommunityCoreLibrary;
+using RimWorld;
 using ToolsForHaul.JobDefs;
 using ToolsForHaul.Utilities;
 using Verse;
@@ -10,6 +11,7 @@ namespace ToolsForHaul
     {
         protected abstract Job TryGiveTerminalJob(Pawn pawn);
 
+        [DetourClassMethod(typeof(ThinkNode_JobGiver), "TryIssueJobPackage", InjectionSequence.DLLLoad, InjectionTiming.Priority_23)]
         public override ThinkResult TryIssueJobPackage(Pawn pawn)
         {
             Job job = TryGiveTerminalJob(pawn);

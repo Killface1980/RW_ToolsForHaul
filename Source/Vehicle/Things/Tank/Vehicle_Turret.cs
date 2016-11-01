@@ -10,6 +10,7 @@ using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.JobDefs;
 using ToolsForHaul.StatDefs;
+using ToolsForHaul.Things;
 using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
@@ -28,14 +29,13 @@ namespace ToolsForHaul
 
         public bool instantiated;
 
-        // RimWorld.Building_TurretGun
-        public override void OrderAttack(TargetInfo targ)
-        {
-        }
 
         public bool ThreatDisabled()
         {
             if (GetComp<CompExplosive>().wickStarted)
+                return true;
+
+            if (!mountableComp.IsMounted)
                 return true;
 
             CompPowerTrader comp = GetComp<CompPowerTrader>();
@@ -44,10 +44,10 @@ namespace ToolsForHaul
                 CompMannable comp2 = GetComp<CompMannable>();
                 if (comp2 == null || !comp2.MannedNow)
                 {
+                    return !mountableComp.IsMounted;
                     return true;
                 }
             }
-            return !mountableComp.IsMounted;
             return false;
 
         }
@@ -86,7 +86,6 @@ namespace ToolsForHaul
             return (refuelableComp != null && refuelableComp.HasFuel) || vehiclesComp.MotorizedWithoutFuel();
         }
 
-
         public float VehicleSpeed;
         public bool despawnAtEdge;
 
@@ -108,12 +107,12 @@ namespace ToolsForHaul
 
 
         //mount and storage data
-     // public ThingContainer storage;
-     // public ThingContainer GetContainer() { return storage; }
+        // public ThingContainer storage;
+        // public ThingContainer GetContainer() { return storage; }
         public IntVec3 GetPosition() { return Position; }
 
         //slotGroupParent Interface
-    //    public ThingFilter allowances;
+        //    public ThingFilter allowances;
 
         public int MaxItem
         {
@@ -147,10 +146,10 @@ namespace ToolsForHaul
             // current spin degree
             wheelRotation = 0;
             //Inventory Initialize. It should be moved in constructor
-          //storage = new ThingContainer(this);
-          //allowances = new ThingFilter();
-          //allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
-          //allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
+            //storage = new ThingContainer(this);
+            //allowances = new ThingFilter();
+            //allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
+            //allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
             stunner = new StunHandler(this);
         }
 
@@ -189,12 +188,12 @@ namespace ToolsForHaul
                 }
             }
 
-          //if (allowances == null)
-          //{
-          //    allowances = new ThingFilter();
-          //    allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
-          //    allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
-          //}
+            //if (allowances == null)
+            //{
+            //    allowances = new ThingFilter();
+            //    allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
+            //    allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
+            //}
 
             LongEventHandler.ExecuteWhenFinished(UpdateGraphics);
         }
@@ -269,8 +268,8 @@ namespace ToolsForHaul
         public override void ExposeData()
         {
             base.ExposeData();
-     //       Scribe_Deep.LookDeep(ref storage, "storage");
-      //      Scribe_Deep.LookDeep(ref allowances, "allowances");
+            //       Scribe_Deep.LookDeep(ref storage, "storage");
+            //      Scribe_Deep.LookDeep(ref allowances, "allowances");
             Scribe_Values.LookValue(ref tankLeaking, "tankLeaking");
             Scribe_Values.LookValue(ref _tankHitPos, "tankHitPos");
             Scribe_Values.LookValue(ref despawnAtEdge, "despawnAtEdge");
@@ -420,13 +419,13 @@ namespace ToolsForHaul
         {
             if (mode == DestroyMode.Deconstruct)
                 mode = DestroyMode.Kill;
-          //else if (explosiveComp != null && explosiveComp.wickStarted)
-          //{
-          //    storage.ClearAndDestroyContents();
-          //
-          //}
+            //else if (explosiveComp != null && explosiveComp.wickStarted)
+            //{
+            //    storage.ClearAndDestroyContents();
+            //
+            //}
 
-       //     storage.TryDropAll(Position, ThingPlaceMode.Near);
+            //     storage.TryDropAll(Position, ThingPlaceMode.Near);
 
             base.Destroy(mode);
         }
@@ -540,7 +539,6 @@ namespace ToolsForHaul
 
         #endregion
 
-
         #region Ticker
         // ==================================
 
@@ -551,10 +549,10 @@ namespace ToolsForHaul
         {
             if (!instantiated)
             {
-              //foreach (Thing thing in GetContainer())
-              //{
-              //    thing.holder.owner = this;
-              //}
+                //foreach (Thing thing in GetContainer())
+                //{
+                //    thing.holder.owner = this;
+                //}
 
                 currentDriverSpeed = VehicleSpeed;
                 instantiated = true;
@@ -749,15 +747,15 @@ namespace ToolsForHaul
                 {
                     UpdateGraphics();
                 }
-              //if (graphic_FullStorage == null)
-              //{
-                    return base.Graphic;
-              //  }
-              //if (storage.Count <= 0)
-              //{
-              //    return base.Graphic;
-              //}
-              //return graphic_FullStorage;
+                //if (graphic_FullStorage == null)
+                //{
+                return base.Graphic;
+                //  }
+                //if (storage.Count <= 0)
+                //{
+                //    return base.Graphic;
+                //}
+                //return graphic_FullStorage;
             }
         }
         float wheel_shake;
@@ -777,6 +775,7 @@ namespace ToolsForHaul
             }
         }
         double tick_time = 0;
+        private Graphic_Shadow shadowGraphic;
 
         public override void DrawAt(Vector3 drawLoc)
         {
@@ -825,6 +824,15 @@ namespace ToolsForHaul
                 }
             }
             base.DrawAt(bodyLoc);
+
+            if (vehiclesComp.compProps.specialShadowData != null)
+            {
+                if (shadowGraphic == null)
+                {
+                    shadowGraphic = new Graphic_Shadow(vehiclesComp.compProps.specialShadowData);
+                }
+                shadowGraphic.Draw(drawLoc, Rot4.North, this);
+            }
         }
 
         public override string GetInspectString()
@@ -851,11 +859,6 @@ namespace ToolsForHaul
             return stringBuilder.ToString();
         }
         #endregion
-
-
-
-
-
 
         public IEnumerable<Pawn> AssigningCandidates
         {

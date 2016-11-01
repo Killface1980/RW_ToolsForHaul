@@ -64,7 +64,7 @@
       <bodyPartGroups>
         <li>Shoulders</li>
       </bodyPartGroups>
-      <worngraphicPath>Things/Pawn/Humanlike/Apparel/Backpack/Backpack</worngraphicPath>
+      <worngraphicPath>Things/Apparel/Backpack/Backpack</worngraphicPath>
       <layers>
         <li>Accessory</li>
       </layers>
@@ -207,6 +207,19 @@
         </allowedThingCategoryDefs>
       </li>
     </comps>
+    <apparel>
+      <bodyPartGroups>
+        <li>Shoulders</li>
+      </bodyPartGroups>
+      <worngraphicPath>Things/Apparel/Backpack_Mil/Milpack</worngraphicPath>
+      <layers>
+        <li>Accessory</li>
+      </layers>
+      <commonality>1</commonality>
+      <tags>
+        <li>Backpack</li>
+      </tags>
+    </apparel>
   </ThingDef>
 
 

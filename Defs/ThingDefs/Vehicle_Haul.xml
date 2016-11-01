@@ -158,6 +158,10 @@
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <specialshadowData>
+          <volume>(0.6, 0.45, 0.45)</volume>
+          <offset>(0,0,-0.25)</offset>
+        </specialshadowData>
       </li>
     </comps>
   </ThingDef>
@@ -258,6 +262,10 @@
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <specialshadowData>
+          <volume>(0.6, 0.45, 0.45)</volume>
+          <offset>(0,0,-0.25)</offset>
+        </specialshadowData>
       </li>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
@@ -326,6 +334,10 @@
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <specialshadowData>
+          <volume>(0.6, 0.45, 0.45)</volume>
+          <offset>(0,0,-0.25)</offset>
+        </specialshadowData>
       </li>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
@@ -478,6 +490,10 @@
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <specialshadowData>
+          <volume>(0.6, 0.45, 0.45)</volume>
+          <offset>(0,0,-0.25)</offset>
+        </specialshadowData>
       </li>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
@@ -602,6 +618,10 @@
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
         <isMedical>true</isMedical>
+        <specialshadowData>
+          <volume>(0.6, 0.45, 0.45)</volume>
+          <offset>(0,0,-0.25)</offset>
+        </specialshadowData>
       </li>
     </comps>
     <colorGenerator Class="ColorGenerator_Options">

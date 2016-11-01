@@ -20,7 +20,7 @@ namespace ToolsForHaul       // Replace with yours.
             {
                 Find.Map.components.Add((MapComponent)Activator.CreateInstance(toolsForHaul));
 
-                Log.Message("ToolsForHaul :: Added an TFH to the map.");
+                Log.Message("ToolsForHaul :: Added TFH to the map.");
             }
 
             Destroy(this);

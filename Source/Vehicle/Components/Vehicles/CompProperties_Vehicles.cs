@@ -21,5 +21,7 @@ namespace ToolsForHaul.Components
 
         public bool isMedical;
 
+        public ShadowData specialShadowData;
+
     }
 }

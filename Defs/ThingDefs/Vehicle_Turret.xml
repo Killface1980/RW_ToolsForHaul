@@ -128,6 +128,10 @@
         <fuelCatchesFireHitPointsPercent>0.2</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <specialshadowData>
+          <volume>(0.6, 0.45, 0.45)</volume>
+          <offset>(0,0,-0.25)</offset>
+        </specialshadowData>
       </li>
       <li Class="CompProperties_Breakdownable"/>
     </comps>

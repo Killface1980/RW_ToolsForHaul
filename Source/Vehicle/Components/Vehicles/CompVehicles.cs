@@ -37,8 +37,5 @@ namespace ToolsForHaul.Components
             return compProps.fuelCatchesFireHitPointsPercent;
         }
 
-
-        
-        
     }
 }

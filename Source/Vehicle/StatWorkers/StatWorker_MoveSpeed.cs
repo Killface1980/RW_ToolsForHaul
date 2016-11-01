@@ -61,11 +61,11 @@ namespace ToolsForHaul.StatWorkers
                         {
 
                             stringBuilder.AppendLine();
-                            stringBuilder.AppendLine("CR_CarriedWeight".Translate() + ": x" + compSlotsBackpack.moveSpeedFactor.ToStringPercent());
+                            stringBuilder.AppendLine("CR_CarriedWeightBackpack".Translate() + ": x" + compSlotsBackpack.moveSpeedFactor.ToStringPercent());
                             if (compSlotsBackpack.encumberPenalty > 0f)
                             {
-                                stringBuilder.AppendLine("CR_Encumbered".Translate() + ": -" + compSlotsBackpack.encumberPenalty.ToStringPercent());
-                                stringBuilder.AppendLine("CR_FinalModifier".Translate() + ": x" + GetStatFactor(thisPawn).ToStringPercent());
+                                stringBuilder.AppendLine("CR_EncumberedBackpack".Translate() + ": -" + compSlotsBackpack.encumberPenalty.ToStringPercent());
+                                stringBuilder.AppendLine("CR_FinalModifierBackpack".Translate() + ": x" + GetStatFactor(thisPawn).ToStringPercent());
                             }
                         }
                     }
@@ -140,13 +140,14 @@ namespace ToolsForHaul.StatWorkers
                 }
             }
 
-            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(thisPawn);
-            if (backpack != null)
+            Apparel_Backpack apparelBackpack = ToolsForHaulUtility.TryGetBackpack(thisPawn);
+            CompSlotsBackpack compSlotsBackpack = apparelBackpack?.slotsComp;
+            if (compSlotsBackpack != null)
             {
-                result = Mathf.Clamp(backpack.slotsComp.moveSpeedFactor - backpack.slotsComp.encumberPenalty, 0.1f, 1f);
+                result = Mathf.Clamp(compSlotsBackpack.moveSpeedFactor - compSlotsBackpack.encumberPenalty, 0.1f, 1f);
             }
 
-            CompInventory compInventory = ThingCompUtility.TryGetComp<CompInventory>(thisPawn);
+            CompInventory compInventory = thisPawn.TryGetComp<CompInventory>();
             if (compInventory != null)
             {
                 result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);

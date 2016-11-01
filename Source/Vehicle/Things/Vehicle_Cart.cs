@@ -9,6 +9,7 @@ using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.JobDefs;
 using ToolsForHaul.StatDefs;
+using ToolsForHaul.Things;
 using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
@@ -66,15 +67,12 @@ namespace ToolsForHaul
         public bool despawnAtEdge;
 
         public bool fueledByAI;
-        private bool fuelSpilled;
         private int tickCheck = Find.TickManager.TicksGame;
 
         private int tickCooldown = 60;
-        private float _puddleHitpointCounter;
 
         //Graphic data
         private Graphic_Single graphic_Wheel_Single;
-        private Graphic_Multi graphic_FullStorage;
 
         //Body and part location
         private Vector3 wheelLoc;
@@ -221,12 +219,6 @@ namespace ToolsForHaul
                 string text = "Things/Pawn/" + def.defName + "/Wheel";
                 graphic_Wheel_Single = new Graphic_Single();
                 graphic_Wheel_Single = GraphicDatabase.Get<Graphic_Single>(text, def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Single;
-            }
-            if (vehiclesComp.ShowsStorage())
-            {
-                string text2 = string.Concat("Things/Pawn/", def.defName, "/", def.defName, "_FullStorage");
-                graphic_FullStorage = new Graphic_Multi();
-                graphic_FullStorage = GraphicDatabase.Get<Graphic_Multi>(text2, def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Multi;
             }
         }
         public override void ExposeData()
@@ -703,15 +695,7 @@ namespace ToolsForHaul
                 {
                     UpdateGraphics();
                 }
-                if (graphic_FullStorage == null)
-                {
-                    return base.Graphic;
-                }
-                if (storage.Count <= 0)
-                {
-                    return base.Graphic;
-                }
-                return graphic_FullStorage;
+                return base.Graphic;
             }
         }
         float wheel_shake;
@@ -731,6 +715,7 @@ namespace ToolsForHaul
             }
         }
         double tick_time = 0;
+        private Graphic_Shadow shadowGraphic;
 
         public override void DrawAt(Vector3 drawLoc)
         {
@@ -764,18 +749,19 @@ namespace ToolsForHaul
                 mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.06f;
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
 
-                if (!storage.Any())
-                    foreach (Thing mountThing in storage)
-                    {
-                        mountThing.Rotation = Rotation;
-                        mountThing.DrawAt(mountThingLoc + mountThingOffset);
+                if (vehiclesComp.ShowsStorage())
+                    if (storage.Any())
+                        foreach (Thing mountThing in storage)
+                        {
+                            mountThing.Rotation = Rotation;
+                            mountThing.DrawAt(mountThingLoc + mountThingOffset);
 
-                        //Pawn p = (Pawn)mountThing;
-                        //p.ExposeData();
-                        //p.Rotation = Rotation;
-                        //p.DrawAt(mountThingLoc + mountThingOffset);
-                        //p.DrawGUIOverlay();
-                    }
+                            //Pawn p = (Pawn)mountThing;
+                            //p.ExposeData();
+                            //p.Rotation = Rotation;
+                            //p.DrawAt(mountThingLoc + mountThingOffset);
+                            //p.DrawGUIOverlay();
+                        }
 
                 if (Rotation.AsInt % 2 == 0) //Vertical
                     wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
@@ -792,6 +778,15 @@ namespace ToolsForHaul
                 }
             }
             base.DrawAt(bodyLoc);
+
+            if (vehiclesComp.compProps.specialShadowData != null)
+            {
+                if (shadowGraphic == null)
+                {
+                    shadowGraphic = new Graphic_Shadow(vehiclesComp.compProps.specialShadowData);
+                }
+                shadowGraphic.Draw(drawLoc, Rot4.North, this);
+            }
         }
 
         public override string GetInspectString()
