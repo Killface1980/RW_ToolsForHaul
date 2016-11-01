@@ -787,6 +787,11 @@ namespace ToolsForHaul
 
             wheelLoc = drawLoc;
             bodyLoc = drawLoc;
+            //Vertical
+            if (Rotation.AsInt % 2 == 0)
+                wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
+
+            //horizontal 
             if (axlesComp.HasAxles() && Rotation.AsInt % 2 == 1)
             {
                 wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.04f;
@@ -808,9 +813,6 @@ namespace ToolsForHaul
                 Vector3 mountThingLoc = drawLoc;
                 mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.06f;
                 Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
-
-                if (Rotation.AsInt % 2 == 0) //Vertical
-                    wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
 
                 List<Vector3> list;
                 if (axlesComp.GetAxleLocations(drawSize, num, out list))
