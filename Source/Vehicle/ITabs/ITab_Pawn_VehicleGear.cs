@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CommunityCoreLibrary;
 using RimWorld;
 using ToolsForHaul.Components;
 using UnityEngine;
@@ -57,6 +58,8 @@ namespace ToolsForHaul.ITabs
                 Pawn driver = compMountable.Driver;
                 Widgets.ThingIcon(thingIconRect, driver);
                 Widgets.Label(thingLabelRect, driver.Label);
+                if (Mouse.IsOver(thingLabelRect))
+                    GUI.DrawTexture(thingLabelRect, TexUI.HighlightTex);
                 if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
                 {
                     List<FloatMenuOption> options = new List<FloatMenuOption>();
@@ -80,7 +83,7 @@ namespace ToolsForHaul.ITabs
             thingButtonRect.y = storageRect.y;
 
           #region Cart
-          var cart = SelThing as Vehicle_Cart;
+          Vehicle_Cart cart = SelThing as Vehicle_Cart;
           if (cart != null)
           {
               foreach (Thing thing in cart.storage)
@@ -89,10 +92,9 @@ namespace ToolsForHaul.ITabs
                       Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconHuman_Corpse"), 1.0f);
                   else if (thing.ThingID.IndexOf("Corpse") > -1)
                   {
-                      Corpse corpse = thing as Corpse;
-                      Widgets.ThingIcon(thingIconRect, corpse.innerPawn.def);
-                  }
-                  else
+                        Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconAnimal_Corpse"), 1.0f);
+                    }
+                    else
                       Widgets.ThingIcon(thingIconRect, thing);
                   Widgets.Label(thingLabelRect, thing.LabelCap);
                   if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
@@ -110,11 +112,10 @@ namespace ToolsForHaul.ITabs
           
                       Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap));
                   }
-                  if (Mouse.IsOver(thingButtonRect))
-                  {
-                      GUI.DrawTexture(thingButtonRect, TexUI.HighlightTex);
-                  }
-                  TooltipHandler.TipRegion(thingIconRect, thing.def.LabelCap);
+                  if (Mouse.IsOver(thingLabelRect))
+                      GUI.DrawTexture(thingLabelRect, TexUI.HighlightTex);
+                  
+                  TooltipHandler.TipRegion(thingLabelRect, thing.def.LabelStyled());
                   thingIconRect.y += fieldHeight;
                   thingLabelRect.y += fieldHeight;
               }

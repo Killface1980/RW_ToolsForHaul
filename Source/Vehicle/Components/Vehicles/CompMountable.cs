@@ -53,7 +53,7 @@ namespace ToolsForHaul.Components
 
             MapComponent_ToolsForHaul.currentVehicle.Add(pawn, parent);
 
-            if (!parent.GetComp<CompVehicles>().AnimalsCanDrive())
+            if (Driver.RaceProps.Humanlike)
             {
                 Driver.RaceProps.makesFootprints = false;
             }

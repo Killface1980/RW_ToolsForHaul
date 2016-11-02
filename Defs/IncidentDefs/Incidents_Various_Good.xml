@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<IncidentDefs>
+
+<!--================= AllyArrival ================-->
+<!--
+  <IncidentDef>
+    <defName>TraderCaravanArrival</defName>
+    <label>trader caravan arrival</label>
+    <workerClass>IncidentWorker_TraderCaravanArrival</workerClass>
+    <category>AllyArrival</category>
+    <baseChance>4</baseChance>
+  </IncidentDef>
+-->
+
+  <IncidentDef>
+    <defName>VisitorGroup</defName>
+    <label>visitor group</label>
+    <workerClass>ToolsForHaul.IncidentWorkers.IncidentWorker_VisitorGroup</workerClass>
+    <category>AllyArrival</category>
+    <baseChance>4</baseChance>
+    <pointsScaleable>true</pointsScaleable>
+  </IncidentDef>
+
+  <!--
+  <IncidentDef>
+    <defName>TravelerGroup</defName>
+    <label>traveler group</label>
+    <workerClass>IncidentWorker_TravelerGroup</workerClass>
+    <category>AllyArrival</category>
+    <baseChance>4</baseChance>
+    <pointsScaleable>true</pointsScaleable>
+  </IncidentDef>
+-->
+  
+  <!--================= Misc ================-->
+
+  <!--
+  <IncidentDef>
+    <defName>ResourcePodCrash</defName>
+    <label>resource pod crash</label>
+    <workerClass>IncidentWorker_ResourcePodCrash</workerClass>
+    <baseChance>4</baseChance>
+  </IncidentDef>
+-->
+
+  <IncidentDef>
+    <defName>WandererJoin</defName>
+    <label>wanderer join</label>
+    <workerClass>ToolsForHaul.IncidentWorkers.IncidentWorker_WandererJoin</workerClass>
+    <baseChance>0.4</baseChance>
+    <populationEffect>Increase</populationEffect>
+  </IncidentDef>
+
+  
+  <!--
+	<IncidentDef>
+		<defName>MiracleHeal</defName>
+    <label>miracle heal</label>
+		<workerClass>IncidentWorker_MiracleHeal</workerClass>
+		<baseChance>2</baseChance>
+		<favorability>Good</favorability>
+	</IncidentDef>
+  -->
+
+</IncidentDefs>

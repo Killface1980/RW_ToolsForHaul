@@ -8,7 +8,7 @@ using Verse.AI.Group;
 
 namespace ToolsForHaul.IncidentWorkers
 {
-    public class IncidentWorker_VisitorGroupTFH : IncidentWorker_NeutralGroup
+    public class IncidentWorker_VisitorGroup : IncidentWorker_NeutralGroup
     {
         private const float TraderChance = 0.8f;
 

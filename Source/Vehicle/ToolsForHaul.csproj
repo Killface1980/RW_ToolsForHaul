@@ -65,8 +65,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MoteCounter.cs" />
     <Compile Include="Defs\HaulStatDefOf.cs" />
     <Compile Include="Components\Vehicles\CompDriver.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_WandererJoin.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
     <None Include="_JT\AreaFinder.cs" />
@@ -91,17 +93,18 @@
     <None Include="NoCCL\DetourAttribute.cs" />
     <None Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="Things\Textures.cs" />
-    <Compile Include="Things\Tank\Vehicle_Turret.cs" />
-    <None Include="Things\Tank\nn\_Targeter.cs" />
-    <None Include="Things\Tank\nn\_AttackTargetFinder.cs" />
-    <Compile Include="Things\Tank\Vehicle_TurretGun.cs" />
-    <Compile Include="Things\Tank\VehicleTurretTop.cs" />
-    <Compile Include="Things\Tank\Command_VerbTarget.cs" />
+    <Compile Include="Things\Turret\Vehicle_Turret.cs" />
+    <None Include="Things\Turret\nn\_Targeter.cs" />
+    <None Include="Things\Turret\nn\_AttackTargetFinder.cs" />
+    <Compile Include="Things\Turret\Vehicle_TurretGun.cs" />
+    <Compile Include="Things\Turret\VehicleTurretTop.cs" />
+    <Compile Include="Things\Turret\Command_VerbTarget.cs" />
+    <Compile Include="WorkGivers\WorkGiver_FixBrokenDownBuilding.cs" />
+    <Compile Include="WorkGivers\WorkGiver_Repair.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
     <Compile Include="_inactive\_TESTING\HeadLights.cs" />
-    <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy_Sanity.cs" />
-    <Compile Include="IncidentWorker\IncidentWorker_VisitorGroupTFH.cs" />
-    <None Include="IncidentWorker\IncidentWorker_VisitorGroup_Sanity.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_VisitorGroup.cs" />
     <None Include="_inactive\JobGiver_ExitMapRandom2.cs" />
     <Compile Include="Alerts\Alert_TankIsLeaking.cs" />
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
@@ -172,6 +175,16 @@
   <ItemGroup>
     <Content Include="..\..\Defs\EffecterDefs\Effecter_Misc.xml">
       <Link>Defs\EffecterDefs\Effecter_Misc.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\IncidentDefs\Incidents_ThreatsBig.xml">
+      <Link>Defs\IncidentDefs\Incidents_ThreatsBig.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\IncidentDefs\Incidents_Various_Good.xml">
+      <Link>Defs\IncidentDefs\Incidents_Various_Good.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\IncidentDefs\Incidents_Various_Neutral.xml">
+      <Link>Defs\IncidentDefs\Incidents_Various_Neutral.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
       <Link>Defs\JobDefs\Jobs_Misc.xml</Link>

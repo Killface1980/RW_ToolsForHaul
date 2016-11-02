@@ -1,14 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<IncidentDefs>
-
-  <IncidentDef>
-    <defName>VisitorGroup</defName>
-    <label>visitor group</label>
-	<workerClass>ToolsForHaul.IncidentWorkers.IncidentWorker_VisitorGroupTFH</workerClass>
-    <category>AllyArrival</category>
-    <baseChance>4</baseChance>
-    <pointsScaleable>true</pointsScaleable>
-  </IncidentDef>
+<Defs>
 
   <IncidentDef>
     <defName>RefugeeChased</defName>
@@ -19,4 +10,4 @@
     <minRefireDays>8</minRefireDays>
   </IncidentDef>
   
-</IncidentDefs>
+</Defs>

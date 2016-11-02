@@ -13,7 +13,7 @@ using Verse.Sound;
 
 namespace ToolsForHaul.IncidentWorkers
 {
-    public class IncidentWorker_RaidEnemy_Sanity : IncidentWorker_Raid
+    public class IncidentWorker_RaidEnemy : IncidentWorker_Raid
     {
 
         protected override bool CanFireNowSub()

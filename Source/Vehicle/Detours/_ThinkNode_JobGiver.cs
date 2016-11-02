@@ -20,19 +20,19 @@ namespace ToolsForHaul
 
             if (pawn.mindState.IsIdle)
             {
-              //if (previousPawnWeapons.ContainsKey(pawn))
-              //{
-              //    Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
-              //    Pawn wearer = toolbelt.wearer;
-              //    if (wearer.equipment.Primary != null)
-              //        toolbelt.slotsComp.SwapEquipment(previousPawnWeapons[pawn]);
-              //    else
-              //    {
-              //        wearer.equipment.AddEquipment(previousPawnWeapons[pawn]);
-              //        toolbelt.slotsComp.slots.Remove(previousPawnWeapons[pawn]);
-              //    }
-              //    previousPawnWeapons.Remove(pawn);
-              //}
+                //if (previousPawnWeapons.ContainsKey(pawn))
+                //{
+                //    Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+                //    Pawn wearer = toolbelt.wearer;
+                //    if (wearer.equipment.Primary != null)
+                //        toolbelt.slotsComp.SwapEquipment(previousPawnWeapons[pawn]);
+                //    else
+                //    {
+                //        wearer.equipment.AddEquipment(previousPawnWeapons[pawn]);
+                //        toolbelt.slotsComp.slots.Remove(previousPawnWeapons[pawn]);
+                //    }
+                //    previousPawnWeapons.Remove(pawn);
+                //}
                 if (ToolsForHaulUtility.IsDriver(pawn))
                 {
                     job = ToolsForHaulUtility.DismountInBase(pawn, MapComponent_ToolsForHaul.currentVehicle[pawn]);
@@ -61,7 +61,12 @@ namespace ToolsForHaul
                     if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
                     {
                         RightTools.EquipRigthTool(pawn, StatDefOf.ConstructionSpeed);
-                        job = GetVehicle(pawn, job, WorkTypeDefOf.Construction);
+                        if (ToolsForHaulUtility.Cart.Count > 0 || ToolsForHaulUtility.CartTurret.Count > 0)
+                        {
+                            Thing vehicle = RightTools.GetRightVehicle(pawn, WorkTypeDefOf.Construction);
+                            if (vehicle != null && pawn.Position.DistanceToSquared(vehicle.Position) < pawn.Position.DistanceToSquared(job.targetA.Cell))
+                                job = GetVehicle(pawn, job, WorkTypeDefOf.Construction);
+                        }
                     }
 
                     if (job.def == JobDefOf.CutPlant || job.def == JobDefOf.Harvest)

@@ -84,8 +84,6 @@
       <MaxHitPoints>250</MaxHitPoints>
       <Flammability>1.0</Flammability>
       <Beauty>10</Beauty>
-      <ComfyTemperatureMin>-10</ComfyTemperatureMin>
-      <ComfyTemperatureMax>25</ComfyTemperatureMax>
       <VehicleSpeed>12</VehicleSpeed>
     </statBases>
     <comps>
@@ -129,8 +127,8 @@
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
         <specialshadowData>
-          <volume>(0.6, 0.45, 0.45)</volume>
-          <offset>(0,0,-0.25)</offset>
+          <volume>(0.65, 0.6, 0.5)</volume>
+          <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
       <li Class="CompProperties_Breakdownable"/>

@@ -37,5 +37,9 @@ namespace ToolsForHaul.Components
             return compProps.fuelCatchesFireHitPointsPercent;
         }
 
+        public bool LeaveTrail()
+        {
+            return compProps.leaveTrail;
+        }
     }
 }

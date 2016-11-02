@@ -8,21 +8,16 @@
   </ThingCategoryDef>
 
   <ThingCategoryDef>
-    <defName>ToolsForHaulSets</defName>
-    <label>Tools For Haul</label>
+    <defName>Loadout</defName>
+    <label>Backpacks and Loadout</label>
     <parent>Apparel</parent>
   </ThingCategoryDef>
 
   <ThingCategoryDef>
     <defName>Backpacks</defName>
     <label>backpacks</label>
-    <parent>ToolsForHaulSets</parent>
+    <parent>Loadout</parent>
   </ThingCategoryDef>
 
-  <ThingCategoryDef>
-    <defName>Toolbelts</defName>
-    <label>toolbelts</label>
-    <parent>ToolsForHaulSets</parent>
-  </ThingCategoryDef>
   
 </ThingCategoryDefs>

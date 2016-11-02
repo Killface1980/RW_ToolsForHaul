@@ -159,8 +159,8 @@
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
         <specialshadowData>
-          <volume>(0.6, 0.45, 0.45)</volume>
-          <offset>(0,0,-0.25)</offset>
+          <volume>(0.65, 0.6, 0.5)</volume>
+          <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
     </comps>
@@ -263,8 +263,8 @@
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
         <specialshadowData>
-          <volume>(0.6, 0.45, 0.45)</volume>
-          <offset>(0,0,-0.25)</offset>
+          <volume>(0.65, 0.6, 0.5)</volume>
+          <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
       <li Class="CompProperties_Breakdownable"/>
@@ -292,8 +292,7 @@
       <VehicleSpeed>15</VehicleSpeed>
       <VehicleMaxItem>2</VehicleMaxItem>
       <Beauty>10</Beauty>
-      <ComfyTemperatureMin>-10</ComfyTemperatureMin>
-      <ComfyTemperatureMax>25</ComfyTemperatureMax> </statBases>
+    </statBases>
     <comps>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>3.6</explosiveRadius>
@@ -335,8 +334,8 @@
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
         <specialshadowData>
-          <volume>(0.6, 0.45, 0.45)</volume>
-          <offset>(0,0,-0.25)</offset>
+          <volume>(0.65, 0.6, 0.5)</volume>
+          <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
       <li Class="CompProperties_Breakdownable"/>
@@ -411,6 +410,15 @@
   <ThingDef ParentName="VehicleBase">
     <defName>VehicleSpeeder</defName>
     <label>Speeder</label>
+    <graphicData>
+      <texPath>Things/Pawn/VehicleSpeeder/Speeder</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(3,3)</drawSize>
+      <damageData>
+        <!-- no damage marks because they don't move with the vehicle <rect>(0,0.12,1,0.76)</rect>-->
+        <enabled>false</enabled>
+      </damageData>
+    </graphicData>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
@@ -421,15 +429,6 @@
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
-    <graphicData>
-      <texPath>Things/Pawn/VehicleSpeeder/Speeder</texPath>
-      <graphicClass>Graphic_Multi</graphicClass>
-      <drawSize>(3,3)</drawSize>
-      <damageData>
-        <!-- no damage marks because they don't move with the vehicle <rect>(0,0.12,1,0.76)</rect>-->
-        <enabled>false</enabled>
-      </damageData>
-    </graphicData>
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>30</VehicleSpeed>
@@ -490,9 +489,10 @@
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <leaveTrail>false</leaveTrail>
         <specialshadowData>
-          <volume>(0.6, 0.45, 0.45)</volume>
-          <offset>(0,0,-0.25)</offset>
+          <volume>(0.65, 0.6, 0.5)</volume>
+          <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
       <li Class="CompProperties_Breakdownable"/>
@@ -552,7 +552,7 @@
     </graphicData>
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
-      <VehicleSpeed>3.5</VehicleSpeed>
+      <VehicleSpeed>8</VehicleSpeed>
       <!--   <VehicleMaxItem>2</VehicleMaxItem>-->
       <Beauty>3</Beauty>
       <Comfort>0.5</Comfort>
@@ -619,8 +619,8 @@
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
         <isMedical>true</isMedical>
         <specialshadowData>
-          <volume>(0.6, 0.45, 0.45)</volume>
-          <offset>(0,0,-0.25)</offset>
+          <volume>(0.65, 0.6, 0.5)</volume>
+          <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
     </comps>

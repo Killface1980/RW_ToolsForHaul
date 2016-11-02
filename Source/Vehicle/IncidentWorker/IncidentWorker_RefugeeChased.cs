@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using RimWorld;
+using ToolsForHaul.Components;
 using ToolsForHaul.JobDefs;
 using UnityEngine;
 using Verse;
@@ -53,25 +54,34 @@ namespace ToolsForHaul.IncidentWorkers
 
                 // Refugee stole vehicle?
                 float value = Rand.Value;
-                if (enemyFac.def.techLevel >= TechLevel.Industrial && value >= 0.5f)
+                if (enemyFac.def.techLevel >= TechLevel.Industrial && value >= 0.33f)
                 {
                     CellFinder.RandomClosewalkCellNear(spawnSpot, 5);
-                    Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
+                    Thing thing;
+                    if (value >= 0.8f)
+                    {
+                        thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
+                    }
+                    else
+                    {
+                        thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
+                    }
                     GenSpawn.Spawn(thing, spawnSpot);
-                    Vehicle_Cart cart = (thing as Vehicle_Cart);
-                    var fuel = ThingMaker.MakeThing(cart.refuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault());
-                    fuel.stackCount += Mathf.FloorToInt(5 + Rand.Value * 0.3f);
-                    cart.refuelableComp.Refuel(fuel);
-                    int num2 = Mathf.FloorToInt(Rand.Value*0.9f*cart.MaxHitPoints);
-                    cart.TakeDamage(new DamageInfo(DamageDefOf.Bullet, num2, null, null));
+
+                    Thing fuel = ThingMaker.MakeThing(thing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.FirstOrDefault());
+                    fuel.stackCount += Mathf.FloorToInt(5 + Rand.Value * 15f);
+                    thing.TryGetComp<CompRefuelable>().Refuel(fuel);
+                    int num2 = Mathf.FloorToInt(Rand.Value * 0.3f * thing.MaxHitPoints);
+                    thing.TakeDamage(new DamageInfo(DamageDefOf.Bullet, num2, null, null));
+                    thing.SetFaction(Faction.OfPlayer);
+
                     Job job = new Job(HaulJobDefOf.Mount);
                     Find.Reservations.ReleaseAllForTarget(thing);
                     job.targetA = thing;
                     refugee.jobs.StartJob(job, JobCondition.InterruptForced);
 
-                    Vehicle_Cart vehicle = thing as Vehicle_Cart;
-                    SoundInfo info = SoundInfo.InWorld(vehicle);
-                    vehicle.mountableComp.sustainerAmbient = vehicle.vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
+                    SoundInfo info = SoundInfo.InWorld(thing);
+                    thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicles>().compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
 
@@ -83,7 +93,7 @@ namespace ToolsForHaul.IncidentWorkers
                 incidentParms.raidArrivalMode = PawnsArriveMode.EdgeWalkIn;
                 incidentParms.spawnCenter = spawnSpot;
                 incidentParms.points *= RaidPointsFactor;
-                QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDefOf.RaidEnemy, null, incidentParms), Find.TickManager.TicksGame + IncidentWorker_RefugeeChased.RaidDelay.RandomInRange);
+                QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDefOf.RaidEnemy, null, incidentParms), Find.TickManager.TicksGame + RaidDelay.RandomInRange);
                 Find.Storyteller.incidentQueue.Add(qi);
             };
             diaOption.resolveTree = true;

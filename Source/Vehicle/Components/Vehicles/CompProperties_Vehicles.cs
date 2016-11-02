@@ -23,5 +23,7 @@ namespace ToolsForHaul.Components
 
         public ShadowData specialShadowData;
 
+        public bool leaveTrail = true;
+
     }
 }

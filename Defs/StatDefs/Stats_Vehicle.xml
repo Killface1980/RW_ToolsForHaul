@@ -14,17 +14,17 @@
         <factorShoddy>.8</factorShoddy>
         <factorPoor>.9</factorPoor>
         <factorNormal>1</factorNormal>
-        <factorGood>1.1</factorGood>
-        <factorSuperior>1.2</factorSuperior>
-        <factorExcellent>1.3</factorExcellent>
-        <factorMasterwork>1.4</factorMasterwork>
-        <factorLegendary>1.5</factorLegendary>
+        <factorGood>1.2</factorGood>
+        <factorSuperior>1.4</factorSuperior>
+        <factorExcellent>1.6</factorExcellent>
+        <factorMasterwork>1.8</factorMasterwork>
+        <factorLegendary>2</factorLegendary>
       </li>
       <li Class="StatPart_Health">
         <curve>
           <points>
             <li>
-              <loc>(0,0)</loc>
+              <loc>(0,0.3)</loc>
             </li>
             <li>
               <loc>(1,1)</loc>

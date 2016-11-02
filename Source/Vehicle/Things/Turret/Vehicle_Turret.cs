@@ -641,36 +641,38 @@ namespace ToolsForHaul
                     }
 
                     // TODO  move all variables like smoke amount and break sound to xml etc.
-                    if (Find.TerrainGrid.TerrainAt(Position).takeFootprints || Find.SnowGrid.GetDepth(Position) > 0.2f)
+                    if (Find.TerrainGrid.TerrainAt(DrawPos.ToIntVec3()).takeFootprints || Find.SnowGrid.GetDepth(DrawPos.ToIntVec3()) > 0.2f)
                     {
-                        Vector3 normalized = (DrawPos - _lastFootprintPlacePos).normalized;
-                        float rot = normalized.AngleFlat();
-                        Vector3 loc = DrawPos + TrailOffset;
+                        if (vehiclesComp.LeaveTrail())
+                        {
+                            Vector3 normalized = (DrawPos - _lastFootprintPlacePos).normalized;
+                            float rot = normalized.AngleFlat();
+                            Vector3 loc = DrawPos + TrailOffset;
 
-                        if ((loc - _lastFootprintPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
-                            if (loc.ShouldSpawnMotesAt() && !MoteCounter.SaturatedLowPriority)
-                            {
-                                MoteThrown moteThrown =
-                                    (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Trail_ATV"));
-                                moteThrown.exactRotation = rot;
-                                moteThrown.exactPosition = loc;
-                                GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
-                                _lastFootprintPlacePos = DrawPos;
-                            }
-                        if (!vehiclesComp.AnimalsCanDrive())
-                            MoteMaker.ThrowDustPuff(DrawPos + DustOffset, 0.3f);
+                            if ((loc - _lastFootprintPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
+                                if (loc.ShouldSpawnMotesAt() && !MoteCounter.SaturatedLowPriority)
+                                {
+                                    MoteThrown moteThrown =
+                                        (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Trail_ATV"));
+                                    moteThrown.exactRotation = rot;
+                                    moteThrown.exactPosition = loc;
+                                    GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
+                                    _lastFootprintPlacePos = DrawPos;
+                                }
+                        }
+                        if (axlesComp.HasAxles())
+                            MoteMaker.ThrowDustPuff(DrawPos + DustOffset, 0.15f + Mathf.InverseLerp(0, 50, currentDriverSpeed) * 0.6f);
+                        else
+                            MoteMaker.ThrowDustPuff(DrawPos + DustOffset, 0.15f + Mathf.InverseLerp(0, 50, VehicleSpeed) * 0.6f);
                     }
 
-                    //Exhaustion fumes
-                    if (!vehiclesComp.MotorizedWithoutFuel() && !vehiclesComp.AnimalsCanDrive())
-                        MoteMaker.ThrowSmoke(DrawPos + FumesOffset, 0.3f + currentDriverSpeed * 0.01f);
                 }
 
-                else
-                {
-                    if (!vehiclesComp.MotorizedWithoutFuel() && !vehiclesComp.AnimalsCanDrive())
-                        MoteMaker.ThrowSmoke(DrawPos + FumesOffset, 0.08f);
-                }
+                //Exhaustion fumes - basic
+                // only fumes on vehicles with combustion and no animals driving
+                if (!vehiclesComp.MotorizedWithoutFuel() && !vehiclesComp.AnimalsCanDrive())
+                    MoteMaker.ThrowSmoke(DrawPos + FumesOffset, 0.05f + currentDriverSpeed * 0.01f);
+
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
                 {
                     if (mountableComp.Driver.pather.Moving)
