@@ -110,9 +110,9 @@
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
     <None Include="_inactive\Class1.cs" />
     <Compile Include="Components\Vehicles\CompAxles.cs" />
-    <Compile Include="Components\Vehicles\CompProperties_Axles.cs" />
-    <Compile Include="Components\Vehicles\CompProperties_Vehicles.cs" />
-    <Compile Include="Components\Vehicles\CompVehicles.cs" />
+    <Compile Include="Components\Vehicles\CompProperties_Axle.cs" />
+    <Compile Include="Components\Vehicles\CompProperties_Vehicle.cs" />
+    <Compile Include="Components\Vehicles\CompVehicle.cs" />
     <Compile Include="Things\Apparel_Backpack.cs" />
     <Compile Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />

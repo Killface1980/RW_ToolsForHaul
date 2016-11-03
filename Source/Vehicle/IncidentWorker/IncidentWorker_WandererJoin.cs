@@ -67,7 +67,7 @@ namespace ToolsForHaul.IncidentWorkers
                     pawn.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
                     SoundInfo info = SoundInfo.InWorld(thing);
-                    thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicles>().compProps.soundAmbient.TrySpawnSustainer(info);
+                    thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
                 }
             }
 

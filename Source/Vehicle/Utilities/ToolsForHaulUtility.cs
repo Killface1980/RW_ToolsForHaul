@@ -541,7 +541,7 @@ namespace ToolsForHaul.Utilities
         {
             foreach (Vehicle_Cart vehicle in Cart)
             {
-                if (vehicle.vehiclesComp.IsMedical() && vehicle.mountableComp.Driver == null &&
+                if (vehicle.vehicleComp.IsMedical() && vehicle.mountableComp.Driver == null &&
                     pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Some) &&
                     vehicle.Faction == pawn.Faction)
                 {

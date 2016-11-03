@@ -2,13 +2,13 @@
 
 namespace ToolsForHaul.Components
 {
-    public class CompVehicles : ThingComp
+    public class CompVehicle : ThingComp
     {
-        public CompProperties_Vehicles compProps
+        public CompProperties_Vehicle compProps
         {
             get
             {
-                return (CompProperties_Vehicles)props;
+                return (CompProperties_Vehicle)props;
             }
         }
 

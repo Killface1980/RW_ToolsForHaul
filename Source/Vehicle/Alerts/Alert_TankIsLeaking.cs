@@ -11,11 +11,11 @@ namespace ToolsForHaul.Alerts
             get
             {
                 foreach (Vehicle_Cart vehicleCart in ToolsForHaulUtility.Cart)
-                    if (vehicleCart.Faction == Faction.OfPlayer && vehicleCart.vehiclesComp.tankLeaking)
+                    if (vehicleCart.Faction == Faction.OfPlayer && vehicleCart.vehicleComp.tankLeaking)
                         return vehicleCart;
 
                 foreach (Vehicle_Turret vehicleTurret in ToolsForHaulUtility.CartTurret)
-                    if (vehicleTurret.Faction == Faction.OfPlayer && vehicleTurret.vehiclesComp.tankLeaking)
+                    if (vehicleTurret.Faction == Faction.OfPlayer && vehicleTurret.vehicleComp.tankLeaking)
                         return vehicleTurret;
 
                 return false;

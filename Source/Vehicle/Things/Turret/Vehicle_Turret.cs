@@ -83,7 +83,7 @@ namespace ToolsForHaul
         }
         public bool IsCurrentlyMotorized()
         {
-            return (refuelableComp != null && refuelableComp.HasFuel) || vehiclesComp.MotorizedWithoutFuel();
+            return (refuelableComp != null && refuelableComp.HasFuel) || vehicleComp.MotorizedWithoutFuel();
         }
 
         public float VehicleSpeed;
@@ -124,7 +124,7 @@ namespace ToolsForHaul
 
         public CompAxles axlesComp => GetComp<CompAxles>();
 
-        public CompVehicles vehiclesComp => GetComp<CompVehicles>();
+        public CompVehicle vehicleComp => GetComp<CompVehicle>();
 
         #endregion
 
@@ -163,7 +163,7 @@ namespace ToolsForHaul
                 LongEventHandler.ExecuteWhenFinished(delegate
                 {
                     SoundInfo info = SoundInfo.InWorld(this);
-                    mountableComp.sustainerAmbient = vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
+                    mountableComp.sustainerAmbient = vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
                 });
 
             if (mountableComp.Driver != null)
@@ -248,7 +248,7 @@ namespace ToolsForHaul
                 graphic_Wheel_Single = new Graphic_Single();
                 graphic_Wheel_Single = GraphicDatabase.Get<Graphic_Single>(text, def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Single;
             }
-            if (vehiclesComp.ShowsStorage())
+            if (vehicleComp.ShowsStorage())
             {
                 string text2 = string.Concat("Things/Pawn/", def.defName, "/", def.defName, "_FullStorage");
                 graphic_FullStorage = new Graphic_Multi();
@@ -260,7 +260,7 @@ namespace ToolsForHaul
             base.ExposeData();
             //       Scribe_Deep.LookDeep(ref storage, "storage");
             //      Scribe_Deep.LookDeep(ref allowances, "allowances");
-            Scribe_Values.LookValue(ref vehiclesComp.tankLeaking, "tankLeaking");
+            Scribe_Values.LookValue(ref vehicleComp.tankLeaking, "tankLeaking");
             Scribe_Values.LookValue(ref _tankHitPos, "tankHitPos");
             Scribe_Values.LookValue(ref despawnAtEdge, "despawnAtEdge");
 
@@ -444,9 +444,9 @@ namespace ToolsForHaul
             if (!Spawned)
                 return;
 
-            if (dinfo.Def == DamageDefOf.Repair && vehiclesComp.tankLeaking)
+            if (dinfo.Def == DamageDefOf.Repair && vehicleComp.tankLeaking)
             {
-                vehiclesComp.tankLeaking = false;
+                vehicleComp.tankLeaking = false;
                 _tankHitPos = 1f;
                 //if (breakdownableComp.BrokenDown)
                 //    breakdownableComp.Notify_Repaired();
@@ -472,13 +472,13 @@ namespace ToolsForHaul
 
             bool makeHole = false;
 
-            if (!vehiclesComp.MotorizedWithoutFuel())
+            if (!vehicleComp.MotorizedWithoutFuel())
             {
                 if (dinfo.Def == DamageDefOf.Deterioration && Rand.Value > 0.5f)
                 {
                     if (hitpointsPercent < 0.35f)
                     {
-                        vehiclesComp.tankLeaking = true;
+                        vehicleComp.tankLeaking = true;
                         tankHitCount += 1;
                         _tankHitPos = Math.Min(_tankHitPos, Rand.Value);
 
@@ -495,9 +495,9 @@ namespace ToolsForHaul
 
                 if (refuelableComp != null && refuelableComp.HasFuel)
                 {
-                    if (hitpointsPercent < vehiclesComp.FuelCatchesFireHitPointsPercent() && Rand.Value > 0.5f)
+                    if (hitpointsPercent < vehicleComp.FuelCatchesFireHitPointsPercent() && Rand.Value > 0.5f)
                     {
-                        if (!vehiclesComp.tankLeaking)
+                        if (!vehicleComp.tankLeaking)
                         {
                             refuelableComp.ConsumeFuel(1f);
                             FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 6);
@@ -509,7 +509,7 @@ namespace ToolsForHaul
 
                 if (Random.value <= 0.1f || makeHole)
                 {
-                    vehiclesComp.tankLeaking = true;
+                    vehicleComp.tankLeaking = true;
                     tankHitCount += 1;
                     _tankHitPos = Math.Min(_tankHitPos, Rand.Value);
 
@@ -629,7 +629,7 @@ namespace ToolsForHaul
                     // TODO  move all variables like smoke amount and break sound to xml etc.
                     if (Find.TerrainGrid.TerrainAt(DrawPos.ToIntVec3()).takeFootprints || Find.SnowGrid.GetDepth(DrawPos.ToIntVec3()) > 0.2f)
                     {
-                        if (vehiclesComp.LeaveTrail())
+                        if (vehicleComp.LeaveTrail())
                         {
                             Vector3 normalized = (DrawPos - _lastFootprintPlacePos).normalized;
                             float rot = normalized.AngleFlat();
@@ -657,7 +657,7 @@ namespace ToolsForHaul
 
                 //Exhaustion fumes - basic
                 // only fumes on vehicles with combustion and no animals driving
-                if (!vehiclesComp.MotorizedWithoutFuel() && !vehiclesComp.AnimalsCanDrive())
+                if (!vehicleComp.MotorizedWithoutFuel() && !vehicleComp.AnimalsCanDrive())
                     MoteMaker.ThrowSmoke(DrawPos + FumesOffset, 0.05f + currentDriverSpeed * 0.01f);
 
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
@@ -692,7 +692,7 @@ namespace ToolsForHaul
             //    damagetick = Find.TickManager.TicksGame + 3600;
             //}
 
-            if (vehiclesComp.tankLeaking)
+            if (vehicleComp.tankLeaking)
             {
                 if (Find.TickManager.TicksGame > _tankSpillTick)
                 {
@@ -816,11 +816,11 @@ namespace ToolsForHaul
             }
             base.DrawAt(bodyLoc);
 
-            if (vehiclesComp.compProps.specialShadowData != null)
+            if (vehicleComp.compProps.specialShadowData != null)
             {
                 if (shadowGraphic == null)
                 {
-                    shadowGraphic = new Graphic_Shadow(vehiclesComp.compProps.specialShadowData);
+                    shadowGraphic = new Graphic_Shadow(vehicleComp.compProps.specialShadowData);
                 }
                 shadowGraphic.Draw(drawLoc, Rot4.North, this);
             }
@@ -838,7 +838,7 @@ namespace ToolsForHaul
                 currentDriverString = "NoDriver".Translate();
 
             stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
-            if (vehiclesComp.tankLeaking)
+            if (vehicleComp.tankLeaking)
                 stringBuilder.AppendLine("TankLeaking".Translate());
             //string text = storage.ContentsString;
             //stringBuilder.AppendLine(string.Concat(new object[]

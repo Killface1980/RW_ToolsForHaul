@@ -114,13 +114,13 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axles">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicles">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.2</fuelCatchesFireHitPointsPercent>

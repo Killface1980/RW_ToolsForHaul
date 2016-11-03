@@ -31,15 +31,6 @@ namespace ToolsForHaul.Components
         public Sustainer sustainerAmbient;
         public CompDriver driverComp;
 
-        public int DefaultMaxItem
-        {
-            get { return (int)parent.GetStatValue(HaulStatDefOf.VehicleMaxItem); }
-        }
-
-        public int MaxItemPerBodySize
-        {
-            get { return (int)parent.GetStatValue(HaulStatDefOf.VehicleMaxItem); }
-        }
 
         public void MountOn(Pawn pawn)
         {
@@ -91,7 +82,7 @@ namespace ToolsForHaul.Components
                 if (vehicleCart.IsCurrentlyMotorized())
                 {
                     SoundInfo info = SoundInfo.InWorld(parent);
-                    sustainerAmbient = vehicleCart.vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
+                    sustainerAmbient = vehicleCart.vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
 
@@ -110,7 +101,7 @@ namespace ToolsForHaul.Components
                 if (vehicleTurret.IsCurrentlyMotorized())
                 {
                     SoundInfo info = SoundInfo.InWorld(parent);
-                    sustainerAmbient = vehicleTurret.vehiclesComp.compProps.soundAmbient.TrySpawnSustainer(info);
+                    sustainerAmbient = vehicleTurret.vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
                 return;
@@ -301,7 +292,7 @@ namespace ToolsForHaul.Components
                     tickCheck = Find.TickManager.TicksGame;
                     tickCooldown = Rand.RangeInclusive(60, 180);
 
-                    CompVehicles vehicleComp = parent.TryGetComp<CompVehicles>();
+                    CompVehicle vehicleComp = parent.TryGetComp<CompVehicle>();
 
                     if (!vehicleComp.MotorizedWithoutFuel())
                     {
@@ -312,7 +303,7 @@ namespace ToolsForHaul.Components
                         {
                             if (!GenAI.EnemyIsNear(Driver, 40f))
                             {
-                                if (parent.HitPoints / parent.MaxHitPoints < 0.75f ||
+                                if (parent.HitPoints / parent.MaxHitPoints < 0.65f ||
                                     (Driver.CurJob != null && Driver.jobs.curDriver.asleep) ||
                                     vehicleComp.tankLeaking ||
                                     !refuelableComp.HasFuel)

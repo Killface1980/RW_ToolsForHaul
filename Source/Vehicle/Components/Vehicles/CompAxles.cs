@@ -6,11 +6,11 @@ namespace ToolsForHaul.Components
 {
     public class CompAxles : ThingComp
     {
-        public CompProperties_Axles Props
+        public CompProperties_Axle Props
         {
             get
             {
-                return (CompProperties_Axles)props;
+                return (CompProperties_Axle)props;
             }
         }
 

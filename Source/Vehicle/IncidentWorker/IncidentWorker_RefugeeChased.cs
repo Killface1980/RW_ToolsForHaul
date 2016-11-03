@@ -81,7 +81,7 @@ namespace ToolsForHaul.IncidentWorkers
                     refugee.jobs.StartJob(job, JobCondition.InterruptForced);
 
                     SoundInfo info = SoundInfo.InWorld(thing);
-                    thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicles>().compProps.soundAmbient.TrySpawnSustainer(info);
+                    thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
 

@@ -102,7 +102,7 @@ namespace ToolsForHaul.IncidentWorkers
                                 thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null));
 
                                 SoundInfo info = SoundInfo.InWorld(thing);
-                                thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicles>().compProps.soundAmbient.TrySpawnSustainer(info);
+                                thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
                             }
                         }
 

@@ -2,7 +2,7 @@
 
 namespace ToolsForHaul.Components
 {
-    public class CompProperties_Vehicles : CompProperties
+    public class CompProperties_Vehicle : CompProperties
     {
         public bool showsStorage;
 
@@ -14,9 +14,9 @@ namespace ToolsForHaul.Components
 
         public SoundDef soundAmbient;
 
-        public CompProperties_Vehicles()
+        public CompProperties_Vehicle()
         {
-            compClass = typeof(CompVehicles);
+            compClass = typeof(CompVehicle);
         }
 
         public bool isMedical;

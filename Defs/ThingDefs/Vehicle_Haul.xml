@@ -147,12 +147,12 @@
       </skillRequirements>
     </recipeMaker>
     <comps>
-      <li Class="ToolsForHaul.Components.CompProperties_Axles">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
           <li>(-20,-40)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicles">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>true</showsStorage>
         <animalsCanDrive>true</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
@@ -252,13 +252,13 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axles">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
           <li>(-35,-45)</li>
           <li>(85,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicles">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>true</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
@@ -323,13 +323,13 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axles">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicles">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
@@ -481,11 +481,11 @@
           <max>600</max>
         </wickTicks>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axles">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicles">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
@@ -563,11 +563,12 @@
       <li>Advanced</li>
     </techHediffsTags>
     <size>(1,1)</size>
-    <inspectorTabs>
+  <!--<inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
-    <CostList>
+    -->
+      <CostList>
       <Steel>150</Steel>
       <Plasteel>15</Plasteel>
       <Component>1</Component>
@@ -607,12 +608,12 @@
           <max>600</max>
         </wickTicks>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axles">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
           <li>(-25,-40)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicles">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
