@@ -1,5 +1,6 @@
 ﻿using System;
 using RimWorld;
+using ToolsForHaul.Components;
 using Verse;
 using Verse.AI;
 
@@ -66,6 +67,12 @@ namespace ToolsForHaul.WorkGivers
                 }));
                 return false;
             }
+            CompMountable compMountable = t.TryGetComp<CompMountable>();
+            if (compMountable != null && compMountable.IsMounted)
+            {
+                return false;
+            }
+
             return true;
         }
 

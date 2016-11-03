@@ -119,8 +119,6 @@
     </subSounds>
   </SoundDef>
 
-
-
   <SoundDef>
     <defName>VehicleATV_Ambience</defName>  
     <sustain>True</sustain>  
@@ -142,7 +140,7 @@
         </volumeRange>      
         <pitchRange>
           <min>1</min>        
-          <max>1.4</max>
+          <max>1.2</max>
         </pitchRange>      
         <distRange>
           <min>0</min>        
@@ -151,5 +149,131 @@
       </li>
     </subSounds>
   </SoundDef>
+
+  <SoundDef>
+    <defName>VehicleTruck_Ambience</defName>
+    <sustain>True</sustain>
+    <eventNames />
+    <priorityMode>PrioritizeNearest</priorityMode>
+    <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>
+    <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Vehicles/VehicleATV/Run/VehicleATVRun_Loop1a</clipPath>
+          </li>
+        </grains>
+        <volumeRange>
+          <min>35</min>
+          <max>35</max>
+        </volumeRange>
+        <pitchRange>
+          <min>0.2</min>
+          <max>0.4</max>
+        </pitchRange>
+        <distRange>
+          <min>0</min>
+          <max>60</max>
+        </distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+
+  <SoundDef>
+    <defName>VehicleCombattATV_Ambience</defName>
+    <sustain>True</sustain>
+    <eventNames />
+    <priorityMode>PrioritizeNearest</priorityMode>
+    <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>
+    <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Vehicles/VehicleATV/Run/VehicleATVRun_Loop1a</clipPath>
+          </li>
+        </grains>
+        <volumeRange>
+          <min>25</min>
+          <max>25</max>
+        </volumeRange>
+        <pitchRange>
+          <min>0.6</min>
+          <max>0.8</max>
+        </pitchRange>
+        <distRange>
+          <min>0</min>
+          <max>60</max>
+        </distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>VehicleSmackWay_Ambience</defName>
+    <sustain>True</sustain>
+    <eventNames />
+    <priorityMode>PrioritizeNearest</priorityMode>
+    <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>
+    <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Vehicles/VehicleATV/Run/VehicleATVRun_Loop1a</clipPath>
+          </li>
+        </grains>
+        <volumeRange>
+          <min>16</min>
+          <max>16</max>
+        </volumeRange>
+        <pitchRange>
+          <min>2</min>
+          <max>2.4</max>
+        </pitchRange>
+        <distRange>
+          <min>0</min>
+          <max>30</max>
+        </distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>VehicleSpeeder_Ambience</defName>
+    <sustain>True</sustain>
+    <eventNames />
+    <priorityMode>PrioritizeNearest</priorityMode>
+    <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>
+    <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Vehicles/VehicleATV/Run/VehicleATVRun_Loop1a</clipPath>
+          </li>
+        </grains>
+        <volumeRange>
+          <min>20</min>
+          <max>20</max>
+        </volumeRange>
+        <pitchRange>
+          <min>3.2</min>
+          <max>3.6</max>
+        </pitchRange>
+        <distRange>
+          <min>0</min>
+          <max>60</max>
+        </distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
 
 </DefPackage-SoundDef>

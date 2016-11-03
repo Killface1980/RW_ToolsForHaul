@@ -114,16 +114,6 @@ namespace ToolsForHaul
         //slotGroupParent Interface
         //    public ThingFilter allowances;
 
-        public int MaxItem
-        {
-            get
-            {
-                return mountableComp.IsMounted && mountableComp.Driver.RaceProps.Animal ?
-                    Mathf.CeilToInt(mountableComp.Driver.BodySize * mountableComp.MaxItemPerBodySize) : mountableComp.DefaultMaxItem;
-            }
-        }
-        public int MaxStack { get { return MaxItem * 100; } }
-
         public CompMountable mountableComp => GetComp<CompMountable>();
 
         public CompRefuelable refuelableComp => GetComp<CompRefuelable>();
@@ -270,14 +260,12 @@ namespace ToolsForHaul
             base.ExposeData();
             //       Scribe_Deep.LookDeep(ref storage, "storage");
             //      Scribe_Deep.LookDeep(ref allowances, "allowances");
-            Scribe_Values.LookValue(ref tankLeaking, "tankLeaking");
+            Scribe_Values.LookValue(ref vehiclesComp.tankLeaking, "tankLeaking");
             Scribe_Values.LookValue(ref _tankHitPos, "tankHitPos");
             Scribe_Values.LookValue(ref despawnAtEdge, "despawnAtEdge");
 
-            Scribe_Deep.LookDeep(ref stunner, "stunner", new object[]
-     {
-                this
-     });
+            Scribe_Deep.LookDeep(ref stunner, "stunner", this);
+            Scribe_Values.LookValue(ref mountableComp.lastDrawAsAngle, "lastDrawAsAngle");
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -346,7 +334,7 @@ namespace ToolsForHaul
             };
             action_DismountInBase = () =>
             {
-                Job jobNew = ToolsForHaulUtility.DismountInBase(mountableComp.Driver, this);
+                Job jobNew = ToolsForHaulUtility.DismountInBase(mountableComp.Driver, MapComponent_ToolsForHaul.currentVehicle[mountableComp.Driver]);
 
                 myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
             };
@@ -431,7 +419,6 @@ namespace ToolsForHaul
         }
         private ThingDef fuelDefName = ThingDef.Named("Puddle_BioDiesel_Fuel");
 
-        public bool tankLeaking = false;
         private int tankHitCount;
 
         /// <summary>
@@ -457,9 +444,9 @@ namespace ToolsForHaul
             if (!Spawned)
                 return;
 
-            if (dinfo.Def == DamageDefOf.Repair && tankLeaking)
+            if (dinfo.Def == DamageDefOf.Repair && vehiclesComp.tankLeaking)
             {
-                tankLeaking = false;
+                vehiclesComp.tankLeaking = false;
                 _tankHitPos = 1f;
                 //if (breakdownableComp.BrokenDown)
                 //    breakdownableComp.Notify_Repaired();
@@ -491,7 +478,7 @@ namespace ToolsForHaul
                 {
                     if (hitpointsPercent < 0.35f)
                     {
-                        tankLeaking = true;
+                        vehiclesComp.tankLeaking = true;
                         tankHitCount += 1;
                         _tankHitPos = Math.Min(_tankHitPos, Rand.Value);
 
@@ -510,7 +497,7 @@ namespace ToolsForHaul
                 {
                     if (hitpointsPercent < vehiclesComp.FuelCatchesFireHitPointsPercent() && Rand.Value > 0.5f)
                     {
-                        if (!tankLeaking)
+                        if (!vehiclesComp.tankLeaking)
                         {
                             refuelableComp.ConsumeFuel(1f);
                             FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 6);
@@ -522,7 +509,7 @@ namespace ToolsForHaul
 
                 if (Random.value <= 0.1f || makeHole)
                 {
-                    tankLeaking = true;
+                    vehiclesComp.tankLeaking = true;
                     tankHitCount += 1;
                     _tankHitPos = Math.Min(_tankHitPos, Rand.Value);
 
@@ -614,29 +601,28 @@ namespace ToolsForHaul
                         }
                 }
 
-
-                if (mountableComp.Driver.pather.Moving)// || mountableComp.Driver.drafter.pawn.pather.Moving)
+                if (mountableComp.Driver.pather.Moving) // || mountableComp.Driver.drafter.pawn.pather.Moving)
                 {
+
                     if (!mountableComp.Driver.stances.FullBodyBusy && axlesComp.HasAxles())
                     {
                         wheelRotation += currentDriverSpeed / 3f;
                         tick_time += 0.01f * currentDriverSpeed / 5f;
                     }
 
-                    if (mountableComp.Driver.Position.InHorDistOf(mountableComp.Driver.pather.Destination.Cell, 1f))
+                    if (mountableComp.Driver.Position.AdjacentTo8WayOrInside(mountableComp.Driver.pather.Destination.Cell) && axlesComp.HasAxles())
                     {
                         // Make the breaks sound once and throw some dust if Driver comes to his destination
                         if (!soundPlayed)
                         {
                             SoundDef.Named("VehicleATV_Ambience_Break").PlayOneShot(mountableComp.Driver.Position);
-                            MoteMaker.ThrowDustPuff(mountableComp.Driver.Position, 0.8f);
+                            MoteMaker.ThrowDustPuff(DrawPos, 0.8f);
                             soundPlayed = true;
                         }
                     }
                     else
                     {
-                        Position = mountableComp.Position.ToIntVec3();
-                        Rotation = mountableComp.Rotation;
+
                         soundPlayed = false;
                     }
 
@@ -665,8 +651,9 @@ namespace ToolsForHaul
                         else
                             MoteMaker.ThrowDustPuff(DrawPos + DustOffset, 0.15f + Mathf.InverseLerp(0, 50, VehicleSpeed) * 0.6f);
                     }
-
                 }
+
+
 
                 //Exhaustion fumes - basic
                 // only fumes on vehicles with combustion and no animals driving
@@ -705,7 +692,7 @@ namespace ToolsForHaul
             //    damagetick = Find.TickManager.TicksGame + 3600;
             //}
 
-            if (tankLeaking)
+            if (vehiclesComp.tankLeaking)
             {
                 if (Find.TickManager.TicksGame > _tankSpillTick)
                 {
@@ -851,7 +838,7 @@ namespace ToolsForHaul
                 currentDriverString = "NoDriver".Translate();
 
             stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
-            if (tankLeaking)
+            if (vehiclesComp.tankLeaking)
                 stringBuilder.AppendLine("TankLeaking".Translate());
             //string text = storage.ContentsString;
             //stringBuilder.AppendLine(string.Concat(new object[]

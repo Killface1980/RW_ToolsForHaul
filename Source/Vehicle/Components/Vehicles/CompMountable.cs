@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Combat_Realism;
 using RimWorld;
 using ToolsForHaul.Designators;
 using ToolsForHaul.JobDefs;
@@ -30,14 +31,26 @@ namespace ToolsForHaul.Components
         public Sustainer sustainerAmbient;
         public CompDriver driverComp;
 
-        public int DefaultMaxItem { get { return (int)parent.GetStatValue(HaulStatDefOf.VehicleMaxItem); } }
-        public int MaxItemPerBodySize { get { return (int)parent.GetStatValue(HaulStatDefOf.VehicleMaxItem); } }
+        public int DefaultMaxItem
+        {
+            get { return (int)parent.GetStatValue(HaulStatDefOf.VehicleMaxItem); }
+        }
 
+        public int MaxItemPerBodySize
+        {
+            get { return (int)parent.GetStatValue(HaulStatDefOf.VehicleMaxItem); }
+        }
 
         public void MountOn(Pawn pawn)
         {
             if (Driver != null)
                 return;
+
+            Building_Reloadable turret = (parent as Building_Reloadable);
+            if (turret != null)
+            {
+                turret.dontReload = true;
+            }
 
             // Check to make pawns not mount two vehicles at once
             if (ToolsForHaulUtility.IsDriver(pawn))
@@ -102,8 +115,6 @@ namespace ToolsForHaul.Components
 
                 return;
             }
-
-
         }
 
         public bool IsMounted => Driver != null;
@@ -112,6 +123,12 @@ namespace ToolsForHaul.Components
 
         public void Dismount()
         {
+            Building_Reloadable turret = (parent as Building_Reloadable);
+            if (turret != null)
+            {
+                turret.dontReload = false;
+            }
+
             if (Driver.RaceProps.Humanlike)
             {
                 Driver.AllComps?.Remove(driverComp);
@@ -154,12 +171,11 @@ namespace ToolsForHaul.Components
             Log.Warning("Tried dismount at " + dismountPos);
         }
 
+        public float lastDrawAsAngle = 0;
+
         public Vector3 InteractionOffset
         {
-            get
-            {
-                return parent.def.interactionCellOffset.ToVector3().RotatedBy(Driver.Rotation.AsAngle);
-            }
+            get { return parent.def.interactionCellOffset.ToVector3().RotatedBy(lastDrawAsAngle); }
         }
 
         public Vector3 Position
@@ -185,19 +201,6 @@ namespace ToolsForHaul.Components
             }
         }
 
-        static Rot4 _rotation;
-
-        public Rot4 Rotation
-        {
-            get
-            {
-                if (Driver.DrawPos.ToIntVec3().AdjacentTo8Way(Position.ToIntVec3()))
-                    _rotation = Rot4.FromIntVec3(Driver.DrawPos.ToIntVec3() - Position.ToIntVec3());
-                else _rotation = Driver.Rotation;
-                return _rotation;
-            }
-        }
-
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -216,7 +219,9 @@ namespace ToolsForHaul.Components
                     return;
                 }
 
-                if (Driver.Dead || Driver.Downed || Driver.health.InPainShock || Driver.MentalStateDef == MentalStateDefOf.WanderPsychotic || (parent.IsForbidden(Faction.OfPlayer) && Driver.Faction == Faction.OfPlayer))
+                if (Driver.Dead || Driver.Downed || Driver.health.InPainShock ||
+                    Driver.MentalStateDef == MentalStateDefOf.WanderPsychotic ||
+                    (parent.IsForbidden(Faction.OfPlayer) && Driver.Faction == Faction.OfPlayer))
                 {
                     if (!Driver.Position.InBounds())
                     {
@@ -228,7 +233,6 @@ namespace ToolsForHaul.Components
                     Driver.Position = Driver.Position.RandomAdjacentCell8Way();
                     return;
                 }
-
 
 
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
@@ -277,7 +281,6 @@ namespace ToolsForHaul.Components
                             Driver.CurJob.def == JobDefOf.Milk ||
                             Driver.CurJob.def == JobDefOf.Shear ||
                             Driver.CurJob.def == JobDefOf.Train ||
-
                             Driver.CurJob.def == JobDefOf.Mate ||
                             Driver.health.NeedsMedicalRest ||
                             Driver.health.PrefersMedicalRest
@@ -297,10 +300,43 @@ namespace ToolsForHaul.Components
                     }
                     tickCheck = Find.TickManager.TicksGame;
                     tickCooldown = Rand.RangeInclusive(60, 180);
+
+                    CompVehicles vehicleComp = parent.TryGetComp<CompVehicles>();
+
+                    if (!vehicleComp.MotorizedWithoutFuel())
+                    {
+                        CompRefuelable refuelableComp = parent.TryGetComp<CompRefuelable>();
+                        Job jobNew = ToolsForHaulUtility.DismountInBase(Driver, MapComponent_ToolsForHaul.currentVehicle[Driver]);
+
+                        if (Driver.Faction == Faction.OfPlayer)
+                        {
+                            if (!GenAI.EnemyIsNear(Driver, 40f))
+                            {
+                                if (parent.HitPoints / parent.MaxHitPoints < 0.75f ||
+                                    (Driver.CurJob != null && Driver.jobs.curDriver.asleep) ||
+                                    vehicleComp.tankLeaking ||
+                                    !refuelableComp.HasFuel)
+                                {
+                                    Driver.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                                }
+                            }
+                        }
+
+                        else if (!refuelableComp.HasFuel)
+                        {
+                            Dismount();
+                            FireUtility.TryStartFireIn(Position.ToIntVec3(), 0.1f);
+                        }
+
+                    }
                 }
-                if (Find.TickManager.TicksGame - tickLastDoorCheck >= 96 && (Driver.Position.GetEdifice() is Building_Door || parent.Position.GetEdifice() is Building_Door))
+                if (Find.TickManager.TicksGame - tickLastDoorCheck >= 96 &&
+                    (Driver.Position.GetEdifice() is Building_Door || parent.Position.GetEdifice() is Building_Door))
                 {
-                    lastPassedDoor = (Driver.Position.GetEdifice() is Building_Door ? Driver.Position.GetEdifice() : parent.Position.GetEdifice()) as Building_Door;
+                    lastPassedDoor =
+                        (Driver.Position.GetEdifice() is Building_Door
+                            ? Driver.Position.GetEdifice()
+                            : parent.Position.GetEdifice()) as Building_Door;
                     lastPassedDoor.StartManualOpenBy(Driver);
                     tickLastDoorCheck = Find.TickManager.TicksGame;
                 }
@@ -309,10 +345,12 @@ namespace ToolsForHaul.Components
                     lastPassedDoor.StartManualCloseBy(Driver);
                     lastPassedDoor = null;
                 }
-
-
-
-
+                if (Driver.pather.Moving && Driver.Position != (Driver.pather.Destination.Cell))
+                {
+                    lastDrawAsAngle = Driver.Rotation.AsAngle;
+                    parent.Position = (Position.ToIntVec3());
+                    parent.Rotation = (Driver.Rotation);
+                }
             }
         }
 
@@ -348,23 +386,6 @@ namespace ToolsForHaul.Components
             }
         }
 
-        private bool targetIsMoving
-        {
-            get
-            {
-                return Driver != null && Driver.pather != null && Driver.pather.Moving;
-            }
-        }
-
-        private bool targetIsNearDestination
-        {
-            get
-            {
-                Vehicle_Cart cart = parent as Vehicle_Cart;
-                if (Driver.Position.AdjacentTo8WayOrInside(Driver.pather.Destination)) return true;
-                return false;
-            }
-        }
 
         public override IEnumerable<Command> CompGetGizmosExtra()
         {
@@ -398,7 +419,6 @@ namespace ToolsForHaul.Components
 
                 yield return designator;
             }
-
         }
 
         public IEnumerable<FloatMenuOption> CompGetFloatMenuOptionsForExtra(Pawn myPawn)
@@ -420,18 +440,14 @@ namespace ToolsForHaul.Components
                     verb = txtMountOn;
                     yield return new FloatMenuOption(verb.Translate(parent.LabelShort), action_Order);
                 }
-                else if (IsMounted && myPawn == Driver)// && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
+                else if (IsMounted && myPawn == Driver)
+                // && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
                 {
-                    action_Order = () =>
-                    {
-                        Dismount();
-                    };
+                    action_Order = () => { Dismount(); };
                     verb = txtDismount;
                     yield return new FloatMenuOption(verb.Translate(parent.LabelShort), action_Order);
                 }
-
             }
         }
-
     }
 }

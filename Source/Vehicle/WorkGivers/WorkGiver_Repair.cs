@@ -49,7 +49,8 @@ namespace ToolsForHaul.WorkGivers
             {
                 return false;
             }
-            if (t.TryGetComp<CompMountable>().IsMounted)
+            CompMountable compMountable = t.TryGetComp<CompMountable>();
+            if (compMountable != null && compMountable.IsMounted)
             {
                 return false;
             }

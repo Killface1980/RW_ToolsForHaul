@@ -27,9 +27,6 @@ namespace ToolsForHaul
 
         #region Properties
 
-        // forbids the vehicle to reload whicle driver is mounted
-        public bool dontReload { get { return mountableComp.IsMounted; } }
-
         #endregion
 
         #region Methods

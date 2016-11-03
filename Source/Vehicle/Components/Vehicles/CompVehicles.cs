@@ -41,5 +41,8 @@ namespace ToolsForHaul.Components
         {
             return compProps.leaveTrail;
         }
+
+        public bool tankLeaking;
+
     }
 }

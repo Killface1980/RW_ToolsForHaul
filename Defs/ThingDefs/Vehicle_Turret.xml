@@ -125,7 +125,7 @@
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.2</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
-        <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <soundAmbient>VehicleCombattATV_Ambience</soundAmbient>
         <specialshadowData>
           <volume>(0.65, 0.6, 0.5)</volume>
           <offset>(0,0,-0.3)</offset>

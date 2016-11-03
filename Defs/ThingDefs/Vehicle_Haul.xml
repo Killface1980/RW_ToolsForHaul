@@ -157,8 +157,10 @@
         <animalsCanDrive>true</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
-        <soundAmbient>VehicleATV_Ambience</soundAmbient>
-        <specialshadowData>
+      <!--
+      <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        -->  
+          <specialshadowData>
           <volume>(0.65, 0.6, 0.5)</volume>
           <offset>(0,0,-0.3)</offset>
         </specialshadowData>
@@ -261,7 +263,7 @@
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
-        <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <soundAmbient>VehicleTruck_Ambience</soundAmbient>
         <specialshadowData>
           <volume>(0.65, 0.6, 0.5)</volume>
           <offset>(0,0,-0.3)</offset>
@@ -488,7 +490,7 @@
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
-        <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <soundAmbient>VehicleSpeeder_Ambience</soundAmbient>
         <leaveTrail>false</leaveTrail>
         <specialshadowData>
           <volume>(0.65, 0.6, 0.5)</volume>
@@ -553,7 +555,7 @@
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>8</VehicleSpeed>
-      <!--   <VehicleMaxItem>2</VehicleMaxItem>-->
+      <VehicleMaxItem>2</VehicleMaxItem>
       <Beauty>3</Beauty>
       <Comfort>0.5</Comfort>
     </statBases>
@@ -561,11 +563,10 @@
       <li>Advanced</li>
     </techHediffsTags>
     <size>(1,1)</size>
-    <!--<inspectorTabs>
+    <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
-   -->
     <CostList>
       <Steel>150</Steel>
       <Plasteel>15</Plasteel>
@@ -616,7 +617,7 @@
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
-        <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <soundAmbient>VehicleSmackWay_Ambience</soundAmbient>
         <isMedical>true</isMedical>
         <specialshadowData>
           <volume>(0.65, 0.6, 0.5)</volume>

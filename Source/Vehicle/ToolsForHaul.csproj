@@ -198,6 +198,9 @@
     <Content Include="..\..\Defs\ModHelperDefs\ModHelper.xml">
       <Link>Defs\ModHelperDefs\ModHelper.xml</Link>
     </Content>
+    <Content Include="..\..\Defs\SoundDefs\Vehicle_Sustainers_Ambiences.xml">
+      <Link>Defs\SoundDefs\Vehicle_Sustainers_Ambiences.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\StatDefs\Stats_Apparel.xml">
       <Link>Defs\StatDefs\Stats_Apparel.xml</Link>
       <SubType>Designer</SubType>
