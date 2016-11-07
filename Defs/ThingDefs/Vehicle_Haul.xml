@@ -19,6 +19,8 @@
     <hasTooltip>true</hasTooltip>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
     <blockLight>true</blockLight>
+    <hasInteractionCell>True</hasInteractionCell>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <building>
       <ai_combatDangerous>true</ai_combatDangerous>
       <isEdifice>true</isEdifice>
@@ -75,6 +77,11 @@
       <li>
         <compClass>CompColorable</compClass>
       </li>
+      <!--
+      <li Class="ToolsForHaul.Components.CompProperties_Mountable">
+        <driverPosOffset>(0,0,0)</driverPosOffset>
+      </li>
+      -->
     </comps>
   </ThingDef>
 
@@ -82,14 +89,12 @@
     <defName>VehicleCart</defName>
     <label>cart</label>
     <repairEffect>ConstructWood</repairEffect>
-    <hasInteractionCell>True</hasInteractionCell>
-    <interactionCellOffset>(0,0,1)</interactionCellOffset>
-    <altitudeLayer>Building</altitudeLayer>
     <description>A cart is an old-fashioned wooden vehicle that is used for transporting goods or people.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
+    <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <graphicData>
       <texPath>Things/Pawn/VehicleCart/Cart</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
@@ -157,10 +162,10 @@
         <animalsCanDrive>true</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
-      <!--
+        <!--
       <soundAmbient>VehicleATV_Ambience</soundAmbient>
-        -->  
-          <specialshadowData>
+        -->
+        <specialshadowData>
           <volume>(0.65, 0.6, 0.5)</volume>
           <offset>(0,0,-0.3)</offset>
         </specialshadowData>
@@ -173,13 +178,12 @@
     <label>truck</label>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
-    <interactionCellOffset>(0,0,1)</interactionCellOffset>
-    <altitudeLayer>Building</altitudeLayer>
     <description>A truck is what you drive when you're done taking shit off of other people.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
+    <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <graphicData>
       <texPath>Things/Pawn/VehicleTruck/Truck</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
@@ -286,9 +290,6 @@
       </damageData>
     </graphicData>
     <repairEffect>Repair</repairEffect>
-    <hasInteractionCell>True</hasInteractionCell>
-    <altitudeLayer>Building</altitudeLayer>
-    <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>15</VehicleSpeed>
@@ -302,10 +303,10 @@
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.2</startWickHitPointsPercent>
         <chanceNeverExplodeFromDamage>0.5</chanceNeverExplodeFromDamage>
-				<wickTicks>
-					<min>300</min>
-					<max>600</max>
-				</wickTicks>
+        <wickTicks>
+          <min>300</min>
+          <max>600</max>
+        </wickTicks>
         <postExplosionSpawnThingDef>Puddle_BioDiesel_Fuel</postExplosionSpawnThingDef>
         <postExplosionSpawnChance>1</postExplosionSpawnChance>
         <postExplosionSpawnThingCount>3</postExplosionSpawnThingCount>
@@ -422,9 +423,6 @@
       </damageData>
     </graphicData>
     <repairEffect>Repair</repairEffect>
-    <hasInteractionCell>True</hasInteractionCell>
-    <interactionCellOffset>(0,0,0)</interactionCellOffset>
-    <altitudeLayer>Building</altitudeLayer>
     <description>Keep out of reach of lightsabers.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
@@ -533,9 +531,6 @@
     <defName>VehicleSmackWay</defName>
     <label>SmackWay</label>
     <repairEffect>Repair</repairEffect>
-    <hasInteractionCell>True</hasInteractionCell>
-    <interactionCellOffset>(0,0,0)</interactionCellOffset>
-    <altitudeLayer>Building</altitudeLayer>
     <description>For those who have some disability to walk</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isBodyPartOrImplant>true</isBodyPartOrImplant>
@@ -555,7 +550,7 @@
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>8</VehicleSpeed>
-      <VehicleMaxItem>2</VehicleMaxItem>
+      <VehicleMaxItem>0</VehicleMaxItem>
       <Beauty>3</Beauty>
       <Comfort>0.5</Comfort>
     </statBases>
@@ -563,12 +558,13 @@
       <li>Advanced</li>
     </techHediffsTags>
     <size>(1,1)</size>
-  <!--<inspectorTabs>
+    <!--
+  <inspectorTabs>
       <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     -->
-      <CostList>
+    <CostList>
       <Steel>150</Steel>
       <Plasteel>15</Plasteel>
       <Component>1</Component>
@@ -661,7 +657,6 @@
 		<label>saddle</label>
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,0)</interactionCellOffset>
-		<altitudeLayer>Building</altitudeLayer>
 		<description>A saddle is a leather seat that you put on the back of an animal so that you can ride the animal.</description>
 		<thingClass>ToolsForHaul.Vehicle_Saddle</thingClass>
 		<thingCategories>
@@ -706,7 +701,6 @@
     <label>trolley</label>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
-    <altitudeLayer>Building</altitudeLayer>
     <description>A trolley is a small table on wheels which is used for serving drinks or food.</description>
     <thingClass>ToolsForHaul.Vehicle_Trolley</thingClass>
     <thingCategories>

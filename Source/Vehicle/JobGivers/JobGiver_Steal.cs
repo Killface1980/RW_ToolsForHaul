@@ -24,15 +24,15 @@ namespace ToolsForHaul.JobGivers
             }
 
             List<Thing> steelVehicle = new List<Thing>();
-            foreach (Vehicle_Turret vehicle_Cart in ToolsForHaulUtility.CartTurret)
+            foreach (Vehicle_Turret vehicleTurret in ToolsForHaulUtility.CartTurret)
             {
                 if (ToolsForHaulUtility.IsDriver(pawn))
                     break;
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;
-                if (!vehicle_Cart.IsBurning() && vehicle_Cart.Position.InHorDistOf(pawn.Position, 12f) && !vehicle_Cart.mountableComp.IsMounted && (float)vehicle_Cart.HitPoints / vehicle_Cart.MaxHitPoints > 0.2f && vehicle_Cart.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicle_Cart, PathEndMode.InteractionCell, Danger.Deadly))
+                if (!vehicleTurret.IsBurning() && vehicleTurret.Position.InHorDistOf(pawn.Position, ItemsSearchRadiusOngoing) && !vehicleTurret.mountableComp.IsMounted && (float)vehicleTurret.HitPoints / vehicleTurret.MaxHitPoints > 0.2f && vehicleTurret.vehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicleTurret, PathEndMode.InteractionCell, Danger.Deadly))
                 {
-                    steelVehicle.Add(vehicle_Cart);
+                    steelVehicle.Add(vehicleTurret);
                 }
             }
             foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart)
@@ -41,7 +41,7 @@ namespace ToolsForHaul.JobGivers
                     break;
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;
-                if (!vehicle_Cart.IsBurning() && vehicle_Cart.Position.InHorDistOf(pawn.Position, 12f) && !vehicle_Cart.mountableComp.IsMounted && (float)vehicle_Cart.HitPoints / vehicle_Cart.MaxHitPoints > 0.2f && vehicle_Cart.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicle_Cart, PathEndMode.InteractionCell, Danger.Deadly))
+                if (!vehicle_Cart.IsBurning() && vehicle_Cart.Position.InHorDistOf(pawn.Position, ItemsSearchRadiusOngoing) && !vehicle_Cart.mountableComp.IsMounted && (float)vehicle_Cart.HitPoints / vehicle_Cart.MaxHitPoints > 0.2f && vehicle_Cart.vehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicle_Cart, PathEndMode.InteractionCell, Danger.Deadly))
                 {
                     steelVehicle.Add(vehicle_Cart);
                 }
@@ -57,7 +57,7 @@ namespace ToolsForHaul.JobGivers
             }
 
             Thing thing;
-            if (StealAIUtility.TryFindBestItemToSteal(pawn.Position, 12f, out thing, pawn) && !GenAI.InDangerousCombat(pawn))
+            if (StealAIUtility.TryFindBestItemToSteal(pawn.Position, ItemsSearchRadiusOngoing, out thing, pawn) && !GenAI.InDangerousCombat(pawn))
             {
                 return new Job(JobDefOf.Steal)
                 {

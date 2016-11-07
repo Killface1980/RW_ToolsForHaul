@@ -108,7 +108,7 @@ namespace ToolsForHaul
                     Vehicle_Turret vehicleTurret = (Vehicle_Turret)thing;
                     if (vehicleTurret == null) continue;
                     if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleTurret)) continue;
-                    if (!vehicleTurret.IsCurrentlyMotorized()) continue;
+                    if (!vehicleTurret.vehicleComp.IsCurrentlyMotorized()) continue;
                     if (vehicleTurret.vehicleComp.tankLeaking) continue;
                     cart = vehicleTurret;
                     skip = true;
@@ -124,7 +124,7 @@ namespace ToolsForHaul
                         if (vehicleCart == null)
                             continue;
                         if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
-                        if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                        if (!vehicleCart.vehicleComp.IsCurrentlyMotorized()) continue;
                         if (vehicleCart.vehicleComp.tankLeaking) continue;
                         cart = vehicleCart;
                         break;
@@ -150,14 +150,14 @@ namespace ToolsForHaul
             if (worktype.Equals(WorkTypeDefOf.Construction))
             {
                 IOrderedEnumerable<Thing> orderedEnumerable2 =
-                      ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).VehicleSpeed);
+                      ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).vehicleComp.VehicleSpeed);
                 foreach (Thing thing in orderedEnumerable2)
                 {
                     Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
                     if (vehicleCart == null)
                         continue;
                     if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
-                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                    if (!vehicleCart.vehicleComp.IsCurrentlyMotorized()) continue;
                     if (vehicleCart.vehicleComp.tankLeaking) continue;
                     cart = vehicleCart;
                     break;

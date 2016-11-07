@@ -13,14 +13,14 @@ namespace ToolsForHaul.JobGivers
             {
                 if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == pawn.ThingID)
                 {
-                    vehicle_Cart.despawnAtEdge = true;
+                    vehicle_Cart.vehicleComp.despawnAtEdge = true;
                 }
             }
             foreach (Vehicle_Turret vehicle_Cart in ToolsForHaulUtility.CartTurret)
             {
                 if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == pawn.ThingID)
                 {
-                    vehicle_Cart.despawnAtEdge = true;
+                    vehicle_Cart.vehicleComp.despawnAtEdge = true;
                 }
             }
             TraverseMode mode = canDig ? TraverseMode.PassAnything : TraverseMode.ByPawn;

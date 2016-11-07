@@ -81,13 +81,10 @@ namespace ToolsForHaul
 
         private readonly int tickCooldown = 60;
 
-        //Graphic data
-        private Graphic_Single graphic_Wheel_Single;
 
         //Body and part location
         private Vector3 wheelLoc;
         private Vector3 bodyLoc;
-        public float wheelRotation;
 
 
         //mount and storage data
@@ -141,7 +138,6 @@ namespace ToolsForHaul
         public Vehicle_Cart()
         {
             // current spin degree
-            wheelRotation = 0;
             //Inventory Initialize. It should be moved in constructor
             storage = new ThingContainer(this);
             allowances = new ThingFilter();
@@ -166,32 +162,12 @@ namespace ToolsForHaul
 
             ToolsForHaulUtility.Cart.Add(this);
 
-            if (mountableComp.Driver != null && IsCurrentlyMotorized())
-                LongEventHandler.ExecuteWhenFinished(delegate
-                {
-                    SoundInfo info = SoundInfo.InWorld(this);
-                    mountableComp.sustainerAmbient = vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
-                });
-
-            if (mountableComp.Driver != null)
-            {
-                if (mountableComp.Driver.RaceProps.Humanlike)
-                {
-                    mountableComp.Driver.RaceProps.makesFootprints = false;
-                    mountableComp.driverComp = new CompDriver { vehicle = this };
-                    mountableComp.Driver.AllComps?.Add(mountableComp.driverComp);
-                    mountableComp.driverComp.parent = mountableComp.Driver;
-                }
-            }
-
             if (allowances == null)
             {
                 allowances = new ThingFilter();
                 allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
                 allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
             }
-
-            LongEventHandler.ExecuteWhenFinished(UpdateGraphics);
         }
 
         public override void DeSpawn()
@@ -232,18 +208,6 @@ namespace ToolsForHaul
             //
             //    }
             //}
-        }
-
-        private void UpdateGraphics()
-        {
-            if (axlesComp.HasAxles())
-            {
-                string text = "Things/Pawn/" + def.defName + "/Wheel";
-                graphic_Wheel_Single = new Graphic_Single();
-                graphic_Wheel_Single =
-                    GraphicDatabase.Get<Graphic_Single>(text, def.graphic.Shader, def.graphic.drawSize,
-                        def.graphic.color, def.graphic.colorTwo) as Graphic_Single;
-            }
         }
 
         public override void ExposeData()
@@ -416,88 +380,6 @@ namespace ToolsForHaul
         private int tankHitCount;
 
 
-        public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
-        {
-            base.PostApplyDamage(dinfo, totalDamageDealt);
-            if (!Spawned)
-                return;
-
-            if (dinfo.Def == DamageDefOf.Repair && vehicleComp.tankLeaking)
-            {
-                vehicleComp.tankLeaking = false;
-                _tankHitPos = 1f;
-                //if (breakdownableComp.BrokenDown)
-                //    breakdownableComp.Notify_Repaired();
-                return;
-            }
-
-
-            float hitpointsPercent = (float)HitPoints / MaxHitPoints;
-
-
-            if (hitpointsPercent <= 0.35f)
-            {
-                if (IsCurrentlyMotorized())
-                    MoteMaker.ThrowMicroSparks(base.DrawPos);
-            }
-
-            if (dinfo.Def == DamageDefOf.Flame || dinfo.Def == DamageDefOf.Repair || dinfo.Def == DamageDefOf.Bomb)
-            {
-                return;
-            }
-
-            bool makeHole = false;
-
-            if (!vehicleComp.MotorizedWithoutFuel())
-            {
-                if (dinfo.Def == DamageDefOf.Deterioration && Rand.Value > 0.5f)
-                {
-                    if (hitpointsPercent < 0.35f)
-                    {
-                        vehicleComp.tankLeaking = true;
-                        tankHitCount += 1;
-                        _tankHitPos = Math.Min(_tankHitPos, Rand.Value);
-
-                        int splash = (int)(refuelableComp.FuelPercent - _tankHitPos * 20);
-
-                        FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, splash);
-                    }
-                    if (hitpointsPercent < 0.05f && Rand.Value > 0.5f)
-                    {
-                        FireUtility.TryStartFireIn(Position, 0.1f);
-                    }
-                    return;
-                }
-
-                if (refuelableComp != null && refuelableComp.HasFuel)
-                {
-                    if (hitpointsPercent < vehicleComp.FuelCatchesFireHitPointsPercent() && Rand.Value > 0.5f)
-                    {
-                        if (!vehicleComp.tankLeaking)
-                        {
-                            refuelableComp.ConsumeFuel(1f);
-                            FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, 6);
-                            makeHole = true;
-                        }
-                        FireUtility.TryStartFireIn(Position, 0.1f);
-                    }
-                }
-
-                if (Random.value <= 0.1f || makeHole)
-                {
-                    vehicleComp.tankLeaking = true;
-                    tankHitCount += 1;
-                    _tankHitPos = Math.Min(_tankHitPos, Rand.Value);
-
-                    int splash = (int)(refuelableComp.FuelPercent - _tankHitPos * 20);
-
-                    FilthMaker.MakeFilth(Position, fuelDefName, LabelCap, splash);
-                }
-            }
-        }
-
-
-        private bool soundPlayed;
 
         #endregion
 
@@ -579,52 +461,10 @@ namespace ToolsForHaul
 
                     if (!mountableComp.Driver.stances.FullBodyBusy && axlesComp.HasAxles())
                     {
-                        wheelRotation += currentDriverSpeed / 3f;
-                        tick_time += 0.01f * currentDriverSpeed / 5f;
+                        axlesComp.wheelRotation += currentDriverSpeed / 3f;
+                        axlesComp.tick_time += 0.01f * currentDriverSpeed / 5f;
                     }
 
-                    if (mountableComp.Driver.Position.AdjacentTo8WayOrInside(mountableComp.Driver.pather.Destination.Cell) && axlesComp.HasAxles())
-                    {
-                        // Make the breaks sound once and throw some dust if Driver comes to his destination
-                        if (axlesComp.HasAxles())
-                            if (!soundPlayed)
-                            {
-                                SoundDef.Named("VehicleATV_Ambience_Break").PlayOneShot(mountableComp.Driver.Position);
-                                MoteMaker.ThrowDustPuff(DrawPos, 0.8f);
-                                soundPlayed = true;
-                            }
-                    }
-                    else
-                    {
-                        soundPlayed = false;
-                    }
-
-                    // TODO  move all variables like smoke amount and break sound to xml etc.
-
-                    if (Find.TerrainGrid.TerrainAt(DrawPos.ToIntVec3()).takeFootprints || Find.SnowGrid.GetDepth(DrawPos.ToIntVec3()) > 0.2f)
-                    {
-                        if (vehicleComp.LeaveTrail())
-                        {
-                            Vector3 normalized = (DrawPos - _lastFootprintPlacePos).normalized;
-                            float rot = normalized.AngleFlat();
-                            Vector3 loc = DrawPos + TrailOffset;
-
-                            if ((loc - _lastFootprintPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
-                                if (loc.ShouldSpawnMotesAt() && !MoteCounter.SaturatedLowPriority)
-                                {
-                                    MoteThrown moteThrown =
-                                        (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Trail_ATV"));
-                                    moteThrown.exactRotation = rot;
-                                    moteThrown.exactPosition = loc;
-                                    GenSpawn.Spawn(moteThrown, loc.ToIntVec3());
-                                    _lastFootprintPlacePos = DrawPos;
-                                }
-                        }
-                        if (axlesComp.HasAxles())
-                            MoteMaker.ThrowDustPuff(DrawPos + DustOffset, 0.15f + Mathf.InverseLerp(0, 50, currentDriverSpeed) * 0.6f);
-                        else
-                            MoteMaker.ThrowDustPuff(DrawPos + DustOffset, 0.15f + Mathf.InverseLerp(0, 50, VehicleSpeed) * 0.6f);
-                    }
                 }
 
 
@@ -704,37 +544,22 @@ namespace ToolsForHaul
         //{
         //}
 
-        public override Graphic Graphic
-        {
-            get
-            {
-                if (axlesComp.HasAxles() && graphic_Wheel_Single == null)
-                {
-                    UpdateGraphics();
-                }
-                return base.Graphic;
-            }
-        }
-
-        private float wheel_shake;
 
         public override Vector3 DrawPos
         {
             get
             {
-                if (!Spawned || !mountableComp.IsMounted || !instantiated)
+                if (!Spawned || !mountableComp.IsMounted || !instantiated || vehicleComp == null)
                 {
                     return base.DrawPos;
                 }
-                float num = mountableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
+                float num = mountableComp.Driver.BodySize - 1f;
+                //    float num = mountableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
                 num *= mountableComp.Driver.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
                 Vector3 vector = new Vector3(0f, 0f, -num);
                 return mountableComp.Position + vector.RotatedBy(mountableComp.Driver.Rotation.AsAngle);
             }
         }
-
-        private double tick_time;
-        private Graphic_Shadow shadowGraphic;
 
         public override void DrawAt(Vector3 drawLoc)
         {
@@ -761,14 +586,14 @@ namespace ToolsForHaul
                 int num = Rotation == Rot4.West ? -1 : 1;
                 Vector3 vector3 = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
                 Quaternion asQuat = Rotation.AsQuat;
-                float x = 1f * Mathf.Sin(num * (wheelRotation * 0.05f) % (2 * Mathf.PI));
-                float z = 1f * Mathf.Cos(num * (wheelRotation * 0.05f) % (2 * Mathf.PI));
+                float x = 1f * Mathf.Sin(num * (axlesComp.wheelRotation * 0.05f) % (2 * Mathf.PI));
+                float z = 1f * Mathf.Cos(num * (axlesComp.wheelRotation * 0.05f) % (2 * Mathf.PI));
 
                 asQuat.SetLookRotation(new Vector3(x, 0f, z), Vector3.up);
 
-                wheel_shake = (float)((Math.Sin(tick_time) + Math.Abs(Math.Sin(tick_time))) / 40.0);
+                axlesComp.wheel_shake = (float)((Math.Sin(axlesComp.tick_time) + Math.Abs(Math.Sin(axlesComp.tick_time))) / 40.0);
 
-                wheelLoc.z = wheelLoc.z + wheel_shake;
+                wheelLoc.z = wheelLoc.z + axlesComp.wheel_shake;
 
                 List<Vector3> list;
                 if (axlesComp.GetAxleLocations(drawSize, num, out list))
@@ -777,13 +602,14 @@ namespace ToolsForHaul
                     {
                         Matrix4x4 matrix = default(Matrix4x4);
                         matrix.SetTRS(wheelLoc + current, asQuat, vector3);
-                        Graphics.DrawMesh(MeshPool.plane10, matrix, graphic_Wheel_Single.MatAt(Rotation), 0);
+                        Graphics.DrawMesh(MeshPool.plane10, matrix, axlesComp.graphic_Wheel_Single.MatAt(Rotation), 0);
                     }
                 }
             }
 
             if (vehicleComp.ShowsStorage())
-                if (storage.Any())
+            {
+                if (storage.Any() || (mountableComp.IsMounted && mountableComp.Driver.kindDef.carrier && mountableComp.Driver.RaceProps.Animal))
                 {
                     Vector3 mountThingLoc = drawLoc;
                     if (Rotation.AsInt % 2 == 1)
@@ -795,31 +621,32 @@ namespace ToolsForHaul
                         mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.07f; // vertical
 
                     Vector3 mountThingOffset = (-0.3f * def.interactionCellOffset.ToVector3()).RotatedBy(Rotation.AsAngle);
+                    if (mountableComp.IsMounted)
+                        mountThingOffset = (- 0.3f * def.interactionCellOffset.ToVector3()).RotatedBy(Rotation.AsAngle);
 
-                    foreach (Thing mountThing in storage)
+                    if (mountableComp.Driver.kindDef.carrier && mountableComp.Driver.RaceProps.Animal)
                     {
-                        mountThing.Rotation = Rotation;
-                        mountThing.DrawAt(mountThingLoc + mountThingOffset);
-
-                        //Pawn p = (Pawn)mountThing;
-                        //p.ExposeData();
-                        //p.Rotation = Rotation;
-                        //p.DrawAt(mountThingLoc + mountThingOffset);
-                        //p.DrawGUIOverlay();
+                        if (mountableComp.IsMounted && mountableComp.Driver.inventory.container.Count > 0)
+                            foreach (Thing mountThing in mountableComp.Driver.inventory.container)
+                            {
+                                mountThing.Rotation = Rotation;
+                                mountThing.DrawAt(mountThingLoc + mountThingOffset);
+                            }
+                    }
+                    else if (storage.Count > 0)
+                    {
+                        foreach (Thing mountThing in storage)
+                        {
+                            mountThing.Rotation = Rotation;
+                            mountThing.DrawAt(mountThingLoc + mountThingOffset);
+                        }
                     }
                 }
+            }
 
 
             base.DrawAt(bodyLoc);
 
-            if (vehicleComp.compProps.specialShadowData != null)
-            {
-                if (shadowGraphic == null)
-                {
-                    shadowGraphic = new Graphic_Shadow(vehicleComp.compProps.specialShadowData);
-                }
-                shadowGraphic.Draw(drawLoc, Rot4.North, this);
-            }
         }
 
         public override string GetInspectString()

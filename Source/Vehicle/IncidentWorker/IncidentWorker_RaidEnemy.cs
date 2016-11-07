@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Combat_Realism;
 using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.JobDefs;

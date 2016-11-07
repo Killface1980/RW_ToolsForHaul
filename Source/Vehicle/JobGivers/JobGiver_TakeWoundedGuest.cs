@@ -13,14 +13,14 @@ namespace ToolsForHaul.JobGivers
             {
                 if (cart.mountableComp.IsMounted && !cart.mountableComp.Driver.RaceProps.Animal && cart.mountableComp.Driver.ThingID == pawn.ThingID)
                 {
-                    cart.despawnAtEdge = true;
+                    cart.vehicleComp.despawnAtEdge = true;
                 }
             }
             foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret)
             {
                 if (cart.mountableComp.IsMounted && !cart.mountableComp.Driver.RaceProps.Animal && cart.mountableComp.Driver.ThingID == pawn.ThingID)
                 {
-                    cart.despawnAtEdge = true;
+                    cart.vehicleComp.despawnAtEdge = true;
                 }
             }
 

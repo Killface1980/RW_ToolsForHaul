@@ -77,9 +77,6 @@
       </damageData>
     </graphicData>
     <repairEffect>Repair</repairEffect>
-    <hasInteractionCell>True</hasInteractionCell>
-    <altitudeLayer>Building</altitudeLayer>
-    <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <statBases>
       <MaxHitPoints>250</MaxHitPoints>
       <Flammability>1.0</Flammability>
@@ -198,17 +195,9 @@
     </colorGenerator>
     <specialDisplayRadius>25.9</specialDisplayRadius>
     <building>
-      <ai_combatDangerous>true</ai_combatDangerous>
       <turretGunDef>Gun_VehicleTurretImprovised</turretGunDef>
       <turretBurstCooldownTicks>120</turretBurstCooldownTicks>
       <turretTopgraphicPath>Things/Building/Security/TurretImprovised_Top</turretTopgraphicPath>
-      <repairable>true</repairable>
-      <isSittable>true</isSittable>
-      <expandHomeArea>false</expandHomeArea>
-      <allowWireConnection>false</allowWireConnection>
-      <bed_humanlike>false</bed_humanlike>
-      <deconstructible>false</deconstructible>
-      <isJoySource>true</isJoySource>
     </building>
     <researchPrerequisites>
       <li>GunTurrets</li>

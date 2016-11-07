@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using ToolsForHaul.Components;
@@ -18,14 +17,14 @@ namespace ToolsForHaul.IncidentWorkers
         public override bool TryExecute(IncidentParms parms)
         {
             IntVec3 loc;
-            if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 c) => c.CanReachColony(), out loc))
+            if (!CellFinder.TryFindRandomEdgeCellWith(c => c.CanReachColony(), out loc))
             {
                 return false;
             }
             PawnKindDef pawnKindDef = new List<PawnKindDef>
             {
                 PawnKindDefOf.Villager
-            }.RandomElement<PawnKindDef>();
+            }.RandomElement();
             PawnGenerationRequest request = new PawnGenerationRequest(pawnKindDef, Faction.OfPlayer, PawnGenerationContext.NonPlayer, false, false, false, false, true, false, RelationWithColonistWeight, false, true, true, null, null, null, null, null, null);
             Pawn pawn = PawnGenerator.GeneratePawn(request);
             GenSpawn.Spawn(pawn, loc);
@@ -47,11 +46,14 @@ namespace ToolsForHaul.IncidentWorkers
                     {
                         thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
                     }
+                    else if (value >= 0.75f)
+                    {
+                        thing = ThingMaker.MakeThing(ThingDef.Named("VehicleSpeeder"));
+                    }
                     else
                     {
                         thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
                     }
-
                     GenSpawn.Spawn(thing, pawn.Position);
 
                     Thing fuel = ThingMaker.MakeThing(thing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.FirstOrDefault());
@@ -72,11 +74,7 @@ namespace ToolsForHaul.IncidentWorkers
             }
 
 
-            string text = "WandererJoin".Translate(new object[]
-            {
-                pawnKindDef.label,
-                pawn.story.adulthood.title.ToLower()
-            });
+            string text = "WandererJoin".Translate(pawnKindDef.label, pawn.story.adulthood.title.ToLower());
             text = text.AdjustedFor(pawn);
             string label = "LetterLabelWandererJoin".Translate();
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, ref label, pawn);

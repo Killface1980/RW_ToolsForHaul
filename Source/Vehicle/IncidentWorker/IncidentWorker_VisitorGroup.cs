@@ -2,6 +2,7 @@
 using System.Linq;
 using RimWorld;
 using ToolsForHaul.JobDefs;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -14,11 +15,11 @@ namespace ToolsForHaul.IncidentWorkers
 
         public override bool TryExecute(IncidentParms parms)
         {
-            if (!this.TryResolveParms(parms))
+            if (!TryResolveParms(parms))
             {
                 return false;
             }
-            List<Pawn> list = base.SpawnPawns(parms);
+            List<Pawn> list = SpawnPawns(parms);
             if (list.Count == 0)
             {
                 return false;
@@ -30,9 +31,9 @@ namespace ToolsForHaul.IncidentWorkers
             bool flag = false;
             if (Rand.Value < TraderChance)
             {
-                flag = this.TryConvertOnePawnToSmallTrader(list, parms.faction);
+                flag = TryConvertOnePawnToSmallTrader(list, parms.faction);
             }
-            Pawn pawn = list.Find((Pawn x) => parms.faction.leader == x);
+            Pawn pawn = list.Find(x => parms.faction.leader == x);
             string label;
             string text3;
             if (list.Count == 1)
@@ -40,30 +41,15 @@ namespace ToolsForHaul.IncidentWorkers
                 string text = (!flag) ? string.Empty : "SingleVisitorArrivesTraderInfo".Translate();
                 string text2 = (pawn == null) ? string.Empty : "SingleVisitorArrivesLeaderInfo".Translate();
                 label = "LetterLabelSingleVisitorArrives".Translate();
-                text3 = "SingleVisitorArrives".Translate(new object[]
-                {
-                    list[0].story.adulthood.title.ToLower(),
-                    parms.faction.Name,
-                    list[0].Name,
-                    text,
-                    text2
-                });
+                text3 = "SingleVisitorArrives".Translate(list[0].story.adulthood.title.ToLower(), parms.faction.Name, list[0].Name, text, text2);
                 text3 = text3.AdjustedFor(list[0]);
             }
             else
             {
                 string text4 = (!flag) ? string.Empty : "GroupVisitorsArriveTraderInfo".Translate();
-                string text5 = (pawn == null) ? string.Empty : "GroupVisitorsArriveLeaderInfo".Translate(new object[]
-                {
-                    pawn.LabelShort
-                });
+                string text5 = (pawn == null) ? string.Empty : "GroupVisitorsArriveLeaderInfo".Translate(pawn.LabelShort);
                 label = "LetterLabelGroupVisitorsArrive".Translate();
-                text3 = "GroupVisitorsArrive".Translate(new object[]
-                {
-                    parms.faction.Name,
-                    text4,
-                    text5
-                });
+                text3 = "GroupVisitorsArrive".Translate(parms.faction.Name, text4, text5);
             }
             Find.LetterStack.ReceiveLetter(label, text3, LetterType.Good, list[0]);
             return true;
@@ -71,15 +57,15 @@ namespace ToolsForHaul.IncidentWorkers
 
         private bool TryConvertOnePawnToSmallTrader(List<Pawn> pawns, Faction faction)
         {
-            if (faction.def.visitorTraderKinds.NullOrEmpty<TraderKindDef>())
+            if (faction.def.visitorTraderKinds.NullOrEmpty())
             {
                 return false;
             }
-            Pawn pawn = pawns.RandomElement<Pawn>();
+            Pawn pawn = pawns.RandomElement();
             Lord lord = pawn.GetLord();
             pawn.mindState.wantsToTradeWithColony = true;
             PawnComponentsUtility.AddAndRemoveDynamicComponents(pawn, true);
-            TraderKindDef traderKindDef = faction.def.visitorTraderKinds.RandomElement<TraderKindDef>();
+            TraderKindDef traderKindDef = faction.def.visitorTraderKinds.RandomElement();
             pawn.trader.traderKind = traderKindDef;
             pawn.inventory.DestroyAll();
             foreach (Thing current in TraderStockGenerator.GenerateTraderThings(traderKindDef))
@@ -100,13 +86,26 @@ namespace ToolsForHaul.IncidentWorkers
                     current.Destroy();
                 }
             }
-            if (!pawn.inventory.container.Any((Thing x) => x.def.IsNutritionGivingIngestible && x.def.ingestible.preferability >= FoodPreferability.MealAwful))
+            if (!pawn.inventory.container.Any(x => x.def.IsNutritionGivingIngestible && x.def.ingestible.preferability >= FoodPreferability.MealAwful))
             {
                 PawnInventoryGenerator.GiveRandomFood(pawn);
             }
 
             CellFinder.RandomClosewalkCellNear(pawn.Position, 5);
-            Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCart"));
+            float value = Rand.Value;
+
+            Thing thing;
+            if (pawn.Faction.def.techLevel >= TechLevel.Industrial && value >= 0.75f)
+            {
+                thing = ThingMaker.MakeThing(ThingDef.Named("VehicleTruck"));
+                Thing fuel = ThingMaker.MakeThing(thing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.FirstOrDefault());
+                fuel.stackCount += Mathf.FloorToInt(5 + Rand.Value * 15f);
+                thing.TryGetComp<CompRefuelable>().Refuel(fuel);
+            }
+            else
+            {
+                thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCart"));
+            }
             GenSpawn.Spawn(thing, pawn.Position);
             Job job = new Job(HaulJobDefOf.Mount);
             thing.SetFaction(faction);

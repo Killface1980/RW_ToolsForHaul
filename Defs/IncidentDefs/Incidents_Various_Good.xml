@@ -2,15 +2,15 @@
 <IncidentDefs>
 
 <!--================= AllyArrival ================-->
-<!--
+
   <IncidentDef>
     <defName>TraderCaravanArrival</defName>
     <label>trader caravan arrival</label>
-    <workerClass>IncidentWorker_TraderCaravanArrival</workerClass>
+    <workerClass>ToolsForHaul.IncidentWorkers.IncidentWorker_TraderCaravanArrival</workerClass>
     <category>AllyArrival</category>
     <baseChance>4</baseChance>
   </IncidentDef>
--->
+
 
   <IncidentDef>
     <defName>VisitorGroup</defName>

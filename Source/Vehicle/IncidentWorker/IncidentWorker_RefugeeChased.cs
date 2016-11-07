@@ -20,7 +20,7 @@ namespace ToolsForHaul.IncidentWorkers
         public override bool TryExecute(IncidentParms parms)
         {
             IntVec3 spawnSpot;
-            if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 c) => c.CanReachColony(), out spawnSpot))
+            if (!CellFinder.TryFindRandomEdgeCellWith(c => c.CanReachColony(), out spawnSpot))
             {
                 return false;
             }
@@ -35,14 +35,7 @@ namespace ToolsForHaul.IncidentWorkers
             {
                 return false;
             }
-            string text = "RefugeeChasedInitial".Translate(new object[]
-            {
-                refugee.Name.ToStringFull,
-                refugee.story.adulthood.title.ToLower(),
-                enemyFac.def.pawnsPlural,
-                enemyFac.Name,
-                refugee.ageTracker.AgeBiologicalYears
-            });
+            string text = "RefugeeChasedInitial".Translate(refugee.Name.ToStringFull, refugee.story.adulthood.title.ToLower(), enemyFac.def.pawnsPlural, enemyFac.Name, refugee.ageTracker.AgeBiologicalYears);
             text = text.AdjustedFor(refugee);
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, refugee);
             DiaNode diaNode = new DiaNode(text);
@@ -98,10 +91,7 @@ namespace ToolsForHaul.IncidentWorkers
             };
             diaOption.resolveTree = true;
             diaNode.options.Add(diaOption);
-            string text2 = "RefugeeChasedRejected".Translate(new object[]
-            {
-                refugee.NameStringShort
-            });
+            string text2 = "RefugeeChasedRejected".Translate(refugee.NameStringShort);
             DiaNode diaNode2 = new DiaNode(text2);
             DiaOption diaOption2 = new DiaOption("OK".Translate());
             diaOption2.resolveTree = true;

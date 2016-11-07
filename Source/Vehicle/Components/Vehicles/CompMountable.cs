@@ -24,12 +24,13 @@ namespace ToolsForHaul.Components
 
         private Building_Door lastPassedDoor;
         private int tickLastDoorCheck = Find.TickManager.TicksGame;
-        private const int TickCooldownDoorCheck = 96;
         private int tickCheck = Find.TickManager.TicksGame;
         private int tickCooldown = 60;
 
         public Sustainer sustainerAmbient;
         public CompDriver driverComp;
+
+
 
 
         public void MountOn(Pawn pawn)
@@ -79,7 +80,7 @@ namespace ToolsForHaul.Components
                 }
 
 
-                if (vehicleCart.IsCurrentlyMotorized())
+                if (vehicleCart.vehicleComp.IsCurrentlyMotorized())
                 {
                     SoundInfo info = SoundInfo.InWorld(parent);
                     sustainerAmbient = vehicleCart.vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
@@ -98,7 +99,7 @@ namespace ToolsForHaul.Components
                     parent.SetFaction(Driver.Faction);
                 }
 
-                if (vehicleTurret.IsCurrentlyMotorized())
+                if (vehicleTurret.vehicleComp.IsCurrentlyMotorized())
                 {
                     SoundInfo info = SoundInfo.InWorld(parent);
                     sustainerAmbient = vehicleTurret.vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
@@ -169,6 +170,7 @@ namespace ToolsForHaul.Components
             get { return parent.def.interactionCellOffset.ToVector3().RotatedBy(lastDrawAsAngle); }
         }
 
+
         public Vector3 Position
         {
             get
@@ -197,6 +199,7 @@ namespace ToolsForHaul.Components
             base.PostExposeData();
             Scribe_References.LookReference(ref Driver, "Driver");
             Scribe_References.LookReference(ref lastPassedDoor, "lastPassedDoor");
+            Scribe_Values.LookValue(ref lastDrawAsAngle, "lastDrawAsAngle");
         }
 
         public override void CompTick()
@@ -225,6 +228,7 @@ namespace ToolsForHaul.Components
                     return;
                 }
 
+                CompVehicle vehicleComp = parent.TryGetComp<CompVehicle>();
 
                 if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
                 {
@@ -292,33 +296,27 @@ namespace ToolsForHaul.Components
                     tickCheck = Find.TickManager.TicksGame;
                     tickCooldown = Rand.RangeInclusive(60, 180);
 
-                    CompVehicle vehicleComp = parent.TryGetComp<CompVehicle>();
-
+                    // bring vehicles home
                     if (!vehicleComp.MotorizedWithoutFuel())
                     {
                         CompRefuelable refuelableComp = parent.TryGetComp<CompRefuelable>();
                         Job jobNew = ToolsForHaulUtility.DismountInBase(Driver, MapComponent_ToolsForHaul.currentVehicle[Driver]);
+                        float hitPointsPercent = parent.HitPoints / parent.MaxHitPoints;
 
                         if (Driver.Faction == Faction.OfPlayer)
                         {
                             if (!GenAI.EnemyIsNear(Driver, 40f))
                             {
-                                if (parent.HitPoints / parent.MaxHitPoints < 0.65f ||
+                                if (hitPointsPercent < 0.65f ||
                                     (Driver.CurJob != null && Driver.jobs.curDriver.asleep) ||
-                                    vehicleComp.tankLeaking ||
+                                    ((parent as Vehicle_Cart) != null && (parent as Vehicle_Cart).vehicleComp.tankLeaking) ||
+                                    ((parent as Vehicle_Turret) != null && (parent as Vehicle_Turret).vehicleComp.tankLeaking) ||
                                     !refuelableComp.HasFuel)
                                 {
                                     Driver.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                                 }
                             }
                         }
-
-                        else if (!refuelableComp.HasFuel)
-                        {
-                            Dismount();
-                            FireUtility.TryStartFireIn(Position.ToIntVec3(), 0.1f);
-                        }
-
                     }
                 }
                 if (Find.TickManager.TicksGame - tickLastDoorCheck >= 96 &&
@@ -336,11 +334,18 @@ namespace ToolsForHaul.Components
                     lastPassedDoor.StartManualCloseBy(Driver);
                     lastPassedDoor = null;
                 }
-                if (Driver.pather.Moving && Driver.Position != (Driver.pather.Destination.Cell))
+
+                Vector3 pos = parent.DrawPos;
+                if (Driver.pather.Moving)
                 {
-                    lastDrawAsAngle = Driver.Rotation.AsAngle;
-                    parent.Position = (Position.ToIntVec3());
-                    parent.Rotation = (Driver.Rotation);
+                    if (Driver.Position != (Driver.pather.Destination.Cell))
+                    {
+                        lastDrawAsAngle = Driver.Rotation.AsAngle;
+                        parent.Position = (Position.ToIntVec3());
+                        parent.Rotation = (Driver.Rotation);
+                    }
+ 
+ 
                 }
             }
         }
@@ -377,6 +382,48 @@ namespace ToolsForHaul.Components
             }
         }
 
+        public override void PostSpawnSetup()
+        {
+            base.PostSpawnSetup();
+            CompVehicle compVehicle = parent.TryGetComp<CompVehicle>();
+            if (Driver != null && compVehicle.IsCurrentlyMotorized())
+                LongEventHandler.ExecuteWhenFinished(delegate
+                {
+                    SoundInfo info = SoundInfo.InWorld(parent);
+                    sustainerAmbient = compVehicle.compProps.soundAmbient.TrySpawnSustainer(info);
+                });
+
+            if (Driver != null)
+            {
+                if (Driver.RaceProps.Humanlike)
+                {
+                    Driver.RaceProps.makesFootprints = false;
+                    driverComp = new CompDriver { vehicle = parent };
+                    Driver.AllComps?.Add(driverComp);
+                    driverComp.parent = Driver;
+                }
+            }
+
+
+        }
+
+        public override void PostDeSpawn()
+        {
+            if (ToolsForHaulUtility.Cart.Contains(parent))
+                ToolsForHaulUtility.Cart.Remove(parent);
+
+            if (ToolsForHaulUtility.CartTurret.Contains(parent))
+                ToolsForHaulUtility.CartTurret.Remove(parent);
+
+
+            if (IsMounted)
+                if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(Driver))
+                    MapComponent_ToolsForHaul.currentVehicle.Remove(Driver);
+
+            if (sustainerAmbient != null)
+                sustainerAmbient.End();
+            base.PostDeSpawn();
+        }
 
         public override IEnumerable<Command> CompGetGizmosExtra()
         {

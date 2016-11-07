@@ -30,7 +30,7 @@ namespace ToolsForHaul.StatWorkers
                                 if (vehicle_Cart.mountableComp.IsMounted && vehicle_Cart.mountableComp.Driver == thisPawn)
                                 {
                                     stringBuilder.AppendLine();
-                                    stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Cart.VehicleSpeed);
+                                    stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Cart.vehicleComp.VehicleSpeed);
                                     return stringBuilder.ToString();
                                 }
 
@@ -39,7 +39,7 @@ namespace ToolsForHaul.StatWorkers
                                 if (vehicle_Turret.mountableComp.IsMounted && vehicle_Turret.mountableComp.Driver == thisPawn)
                                 {
                                     stringBuilder.AppendLine();
-                                    stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Turret.VehicleSpeed);
+                                    stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Turret.vehicleComp.VehicleSpeed);
                                     return stringBuilder.ToString();
                                 }
                         }
@@ -110,13 +110,13 @@ namespace ToolsForHaul.StatWorkers
                 {
                     if (vehicleCart.mountableComp.IsMounted && !vehicleCart.mountableComp.Driver.RaceProps.Animal && vehicleCart.mountableComp.Driver == thisPawn)
                     {
-                        if (vehicleCart.IsCurrentlyMotorized())
+                        if (vehicleCart.vehicleComp.IsCurrentlyMotorized())
                         {
-                            result = Mathf.Clamp(vehicleCart.VehicleSpeed, 2f, 100f);
+                            result = Mathf.Clamp(vehicleCart.vehicleComp.VehicleSpeed, 2f, 100f);
                         }
                         else
                         {
-                            result = Mathf.Clamp(vehicleCart.VehicleSpeed, 0.5f, 1f);
+                            result = Mathf.Clamp(vehicleCart.vehicleComp.VehicleSpeed, 0.5f, 1f);
                         }
                         return result;
                     }
@@ -127,13 +127,13 @@ namespace ToolsForHaul.StatWorkers
                 {
                     if (vehicleTank.mountableComp.IsMounted && !vehicleTank.mountableComp.Driver.RaceProps.Animal && vehicleTank.mountableComp.Driver == thisPawn)
                     {
-                        if (vehicleTank.IsCurrentlyMotorized())
+                        if (vehicleTank.vehicleComp.IsCurrentlyMotorized())
                         {
-                            result = Mathf.Clamp(vehicleTank.VehicleSpeed, 2f, 100f);
+                            result = Mathf.Clamp(vehicleTank.vehicleComp.VehicleSpeed, 2f, 100f);
                         }
                         else
                         {
-                            result = Mathf.Clamp(vehicleTank.VehicleSpeed, 0.5f, 1f);
+                            result = Mathf.Clamp(vehicleTank.vehicleComp.VehicleSpeed, 0.5f, 1f);
                         }
                         return result;
                     }
