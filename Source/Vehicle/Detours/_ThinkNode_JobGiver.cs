@@ -13,7 +13,7 @@ namespace ToolsForHaul
     {
         protected abstract Job TryGiveTerminalJob(Pawn pawn);
 
-        [DetourClassMethod(typeof(Combat_Realism.Detours_ThinkNode_JobGiver), "TryIssueJobPackage", InjectionSequence.DLLLoad)]
+        [DetourClassMethod(typeof(ThinkNode_JobGiver), "TryIssueJobPackage", InjectionSequence.DLLLoad)]
         public override ThinkResult TryIssueJobPackage(Pawn pawn)
         {
             Job job = TryGiveTerminalJob(pawn);
@@ -47,7 +47,7 @@ namespace ToolsForHaul
                 result = ThinkResult.NoJob;
             else
             {
-                if (pawn.Faction == Faction.OfPlayer && !Combat_Realism.Detours_ThinkNode_JobGiver.robotBodyList.Contains(pawn.def.race.body.defName))
+                if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Humanlike && pawn.RaceProps.IsFlesh)
                 {
                     if (job.def == JobDefOf.DoBill)
                     {

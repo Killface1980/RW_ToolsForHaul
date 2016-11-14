@@ -115,7 +115,7 @@
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <TFHMaxItem>4</TFHMaxItem>
+      <InventoryMaxItem>4</InventoryMaxItem>
       <Weight>1</Weight>
       <Bulk>3</Bulk>
       <WornWeight>0</WornWeight>
@@ -149,7 +149,7 @@
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <TFHMaxItem>6</TFHMaxItem>
+      <InventoryMaxItem>6</InventoryMaxItem>
       <Weight>1</Weight>
       <Bulk>3</Bulk>
       <WornWeight>0</WornWeight>
@@ -188,7 +188,7 @@
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <TFHMaxItem>8</TFHMaxItem>
+      <InventoryMaxItem>8</InventoryMaxItem>
       <Weight>1</Weight>
       <Bulk>3</Bulk>
       <WornWeight>0</WornWeight>

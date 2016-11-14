@@ -26,36 +26,16 @@ namespace ToolsForHaul.Components
         {
             base.CompTick();
 
-         
+
         }
 
-#if CR            
-                public float moveSpeedFactor
-        {
-            get
-            {
-                return Mathf.Lerp(1f, 0.75f, currentWeight / this.parentPawn.GetStatValue(StatDef.Named("CarryWeight")));
-            }
-        }
-
-        public float encumberPenalty
-        {
-            get
-            {
-                float penalty = 0f;
-                if (availableWeight < 0)
-                {
-                    penalty = currentWeight / this.parentPawn.GetStatValue(StatDef.Named("CarryWeight")) - 1;
-                }
-                return penalty;
-            }
-        }
-#else
         public float moveSpeedFactor
         {
             get
             {
-                return Mathf.Lerp(1f, 0.75f, slots.Count / (parent as Apparel_Backpack).MaxItem);
+                if (slots != null && slots.Count > 0)
+                    return Mathf.Lerp(1f, 0.75f, slots.Count / (parent as Apparel_Backpack).MaxItem);
+                return 1f;
             }
         }
 
@@ -64,14 +44,13 @@ namespace ToolsForHaul.Components
             get
             {
                 float penalty = 0f;
-                if (slots.Count != 0)
+                if (slots != null && slots.Count > 0)
                 {
                     penalty = slots.Count / (parent as Apparel_Backpack).MaxItem;
                 }
                 return penalty;
             }
         }
-#endif
 
 
 

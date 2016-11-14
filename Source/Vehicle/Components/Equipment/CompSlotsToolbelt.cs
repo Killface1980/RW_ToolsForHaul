@@ -30,28 +30,7 @@ namespace ToolsForHaul.Components
  
         }
 
-#if CR            
-                public float moveSpeedFactor
-        {
-            get
-            {
-                return Mathf.Lerp(1f, 0.75f, currentWeight / this.parentPawn.GetStatValue(StatDef.Named("CarryWeight")));
-            }
-        }
 
-        public float encumberPenalty
-        {
-            get
-            {
-                float penalty = 0f;
-                if (availableWeight < 0)
-                {
-                    penalty = currentWeight / this.parentPawn.GetStatValue(StatDef.Named("CarryWeight")) - 1;
-                }
-                return penalty;
-            }
-        }
-#else
         public float moveSpeedFactor
         {
             get
@@ -72,7 +51,6 @@ namespace ToolsForHaul.Components
                 return penalty;
             }
         }
-#endif
 
 
         // IThingContainerOwner requirement

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if CR
 using Combat_Realism;
+#endif
 #if Headlights
 using ppumkin.LEDTechnology.Managers;
 #endif
@@ -10,18 +12,19 @@ using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.JobDefs;
 using ToolsForHaul.StatDefs;
-using ToolsForHaul.Things;
 using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using Verse.Sound;
-using Random = UnityEngine.Random;
 
 namespace ToolsForHaul
 {
     [StaticConstructorOnStartup]
+#if CR
     public class Vehicle_Turret : Building_Reloadable, IAttackTarget
+#else
+    public class Vehicle_Turret : Building_Turret, IAttackTarget
+#endif
     {
 
         #region Variables
@@ -122,9 +125,9 @@ namespace ToolsForHaul
 
         public CompVehicle vehicleComp => GetComp<CompVehicle>();
 
-        #endregion
+#endregion
 
-        #region Setup Work
+#region Setup Work
 
 
         public Vehicle_Turret()
@@ -397,9 +400,9 @@ namespace ToolsForHaul
 
 
 
-        #endregion
+#endregion
 
-        #region Ticker
+#region Ticker
         // ==================================
 
         /// <summary>
@@ -420,7 +423,7 @@ namespace ToolsForHaul
 
             base.Tick();
 
-            #region Headlights
+#region Headlights
 #if Headlights
             {
                 if (Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell - Rotation.FacingCell) < 0.4f)
@@ -456,7 +459,7 @@ namespace ToolsForHaul
                 }
             }
 #endif
-            #endregion
+#endregion
 
             if (mountableComp.IsMounted)
             {
@@ -542,9 +545,9 @@ namespace ToolsForHaul
 
         private int _tankSpillTick = -5000;
 
-        #endregion
+#endregion
 
-        #region Graphics / Inspections
+#region Graphics / Inspections
         // ==================================
 
         //private void UpdateGraphics()
@@ -640,7 +643,7 @@ namespace ToolsForHaul
             //}));
             return stringBuilder.ToString();
         }
-        #endregion
+#endregion
 
         public IEnumerable<Pawn> AssigningCandidates
         {

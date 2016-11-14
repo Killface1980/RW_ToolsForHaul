@@ -2,8 +2,8 @@
 <Defs>
 
   <StatDef>
-    <defName>TFHMaxItem</defName>
-    <label>Backpack max item</label>
+    <defName>InventoryMaxItem</defName>
+    <label>Inventory max item</label>
     <description>The maximum amount of items a backpack can carry at once.</description>
     <category>Apparel</category>
     <toStringStyle>Integer</toStringStyle>

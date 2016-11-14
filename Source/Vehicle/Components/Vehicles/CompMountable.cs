@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if CR
 using Combat_Realism;
+#endif
 using RimWorld;
 using ToolsForHaul.Designators;
 using ToolsForHaul.JobDefs;

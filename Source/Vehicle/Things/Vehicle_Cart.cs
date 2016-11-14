@@ -10,8 +10,7 @@ using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using Verse.Sound;
-using Random = UnityEngine.Random;
+
 #if Headlights
 using ppumkin.LEDTechnology.Managers;
 #endif
@@ -28,12 +27,12 @@ namespace ToolsForHaul
 
         public int DefaultMaxItem
         {
-            get { return (int)this.GetStatValue(HaulStatDefOf.MaxItem); }
+            get { return (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem); }
         }
 
         public int MaxItemPerBodySize
         {
-            get { return (int)this.GetStatValue(HaulStatDefOf.MaxItem); }
+            get { return (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem); }
         }
 
         public bool instantiated;

@@ -107,7 +107,7 @@
     <statBases>
       <MaxHitPoints>150</MaxHitPoints>
       <VehicleSpeed>0.75</VehicleSpeed>
-      <TFHMaxItem>4</TFHMaxItem>
+      <VehicleMaxItem>4</VehicleMaxItem>
     </statBases>
     <size>(1,1)</size>
     <fillPercent>0.99</fillPercent>
@@ -196,7 +196,7 @@
     <statBases>
       <MaxHitPoints>300</MaxHitPoints>
       <VehicleSpeed>9</VehicleSpeed>
-      <TFHMaxItem>8</TFHMaxItem>
+      <VehicleMaxItem>8</VehicleMaxItem>
     </statBases>
     <size>(1,1)</size>
     <fillPercent>0.99</fillPercent>
@@ -293,7 +293,7 @@
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>15</VehicleSpeed>
-      <TFHMaxItem>2</TFHMaxItem>
+      <VehicleMaxItem>2</VehicleMaxItem>
       <Beauty>10</Beauty>
     </statBases>
     <comps>
@@ -432,7 +432,7 @@
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>30</VehicleSpeed>
-      <TFHMaxItem>2</TFHMaxItem>
+      <VehicleMaxItem>2</VehicleMaxItem>
     </statBases>
     <size>(1,1)</size>
     <inspectorTabs>
@@ -550,7 +550,7 @@
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>8</VehicleSpeed>
-      <TFHMaxItem>0</TFHMaxItem>
+      <VehicleMaxItem>0</VehicleMaxItem>
       <Beauty>3</Beauty>
       <Comfort>0.5</Comfort>
     </statBases>

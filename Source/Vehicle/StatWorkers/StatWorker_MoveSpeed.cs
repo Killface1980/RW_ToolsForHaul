@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+#if CR
 using Combat_Realism;
+#endif
 using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.Utilities;
@@ -44,6 +46,7 @@ namespace ToolsForHaul.StatWorkers
                                 }
                         }
 
+#if CR
                         CompInventory compInventory = ThingCompUtility.TryGetComp<CompInventory>(req.Thing);
                         if (compInventory != null)
                         {
@@ -55,7 +58,7 @@ namespace ToolsForHaul.StatWorkers
                                 stringBuilder.AppendLine(Translator.Translate("CR_FinalModifier") + ": x" + GenText.ToStringPercent(this.GetStatFactor(thisPawn)));
                             }
                         }
-
+#endif
                         CompSlotsBackpack compSlotsBackpack = ToolsForHaulUtility.TryGetBackpack(thisPawn).TryGetComp<CompSlotsBackpack>();
                         if (compSlotsBackpack != null)
                         {
@@ -147,13 +150,14 @@ namespace ToolsForHaul.StatWorkers
                 result = Mathf.Clamp(compSlotsBackpack.moveSpeedFactor - compSlotsBackpack.encumberPenalty, 0.1f, 1f);
             }
 
+#if CR
             CompInventory compInventory = thisPawn.TryGetComp<CompInventory>();
             if (compInventory != null)
             {
                 result = Mathf.Clamp(compInventory.moveSpeedFactor - compInventory.encumberPenalty, 0.1f, 1f);
                 return result;
             }
-
+#endif
             return result;
         }
     }

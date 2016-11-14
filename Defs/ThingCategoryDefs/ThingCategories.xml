@@ -19,5 +19,10 @@
     <parent>Loadout</parent>
   </ThingCategoryDef>
 
+  <ThingCategoryDef>
+    <defName>Toolbelts</defName>
+    <label>toolbelts</label>
+    <parent>Loadout</parent>
+  </ThingCategoryDef>
   
 </ThingCategoryDefs>

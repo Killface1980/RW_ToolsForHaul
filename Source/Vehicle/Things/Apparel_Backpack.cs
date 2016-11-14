@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 using RimWorld;
 using ToolsForHaul.Components;
 using ToolsForHaul.Designators;
@@ -8,7 +6,6 @@ using ToolsForHaul.Gizmos;
 using ToolsForHaul.StatDefs;
 using UnityEngine;
 using Verse;
-using Object = UnityEngine.Object;
 
 namespace ToolsForHaul
 {
@@ -28,6 +25,7 @@ namespace ToolsForHaul
 
         public int numOfSavedItems;
         public Pawn postWearer;
+
 
         public int MaxItem;
         public int MaxStack { get { return MaxItem * 20; } }
@@ -50,7 +48,7 @@ namespace ToolsForHaul
         public override void SpawnSetup()
         {
             base.SpawnSetup();
-            MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.MaxItem));
+            MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.InventoryMaxItem));
         }
 
         public override void ExposeData()

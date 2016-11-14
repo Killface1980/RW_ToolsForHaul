@@ -1,14 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ThingDefs>
 
-	<!-- 
+  <!-- 
 	- defaultOutfitTags - used to determine gear in preset outfit sets available in the outfits menu
 	- equippedStatOffsets - applies offset to the pawns stat when worn
 	- worngraphicPath - used to fraw apparel texture on the pawn. shows nothing if not set
 	 -->
-
-
-
 
   <ThingDef Name="ToolsForHaulToolbeltBase" ParentName="ToolsForHaulApparelMakeableBase" Abstract="True">
     <thingClass>ToolsForHaul.Apparel_Toolbelt</thingClass>
@@ -17,14 +14,13 @@
     </thingCategories>
   </ThingDef>
 
-  
-  
+
   <ThingDef ParentName="ToolsForHaulToolbeltBase">
     <defName>Basic_Toolbelt</defName>
     <label>basic toolbelt</label>
     <description>A toolbelt to keep your tools to yourself.</description>
-		<graphicData>
-			<texPath>Things/Items/Apparels/Various/Toolbelt/Toolbelt</texPath>
+    <graphicData>
+      <texPath>Things/Apparel/Toolbelt/Toolbelt</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
@@ -32,22 +28,23 @@
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <TFHMaxItem>2</TFHMaxItem>
+      <InventoryMaxItem>2</InventoryMaxItem>
       <MarketValue>150</MarketValue>
-    </statBases>  
+    </statBases>
     <costStuffCount>50</costStuffCount>
     <stuffCategories>
       <li>Leathery</li>
       <li>Fabric</li>
-    </stuffCategories>	<apparel>
-			<bodyPartGroups>
-				<li>Shoulders</li>
-			</bodyPartGroups>
-			<worngraphicPath>Things/Items/Apparels/Various/Toolbelt/Toolbelt</worngraphicPath>
-			<layers>
-				<li>Middle</li>
-			</layers>
-			<commonality>1</commonality>
+    </stuffCategories>
+    <apparel>
+      <bodyPartGroups>
+        <li>Shoulders</li>
+      </bodyPartGroups>
+      <worngraphicPath>Things/Apparel/Toolbelt/Toolbelt</worngraphicPath>
+      <layers>
+        <li>Middle</li>
+      </layers>
+      <commonality>1</commonality>
       <tags>
         <li>Outlander</li>
         <li>Spacer</li>
@@ -57,7 +54,7 @@
       </defaultOutfitTags>
     </apparel>
     <colorGenerator Class="ColorGenerator_StandardApparel" />
-<!--<colorGenerator Class="ColorGenerator_Options">
+    <!--<colorGenerator Class="ColorGenerator_Options">
 			<options>
 				<li>
 					<weight>10</weight>
@@ -75,23 +72,23 @@
 		</colorGenerator>
 		-->
     <comps>
-			<li Class="ToolsForHaul.Components.CompSlotsToolbelt_Properties">
-				<allowedThingCategoryDefs>
-					<li>WeaponsMelee</li>
-				</allowedThingCategoryDefs>
-			</li>
-		</comps>
+      <li Class="ToolsForHaul.Components.CompSlotsToolbelt_Properties">
+        <allowedThingCategoryDefs>
+          <li>WeaponsMelee</li>
+        </allowedThingCategoryDefs>
+      </li>
+    </comps>
     <equippedStatOffsets>
       <WorkSpeedGlobal>0.3</WorkSpeedGlobal>
     </equippedStatOffsets>
-	</ThingDef>
+  </ThingDef>
 
   <ThingDef ParentName="ToolsForHaulToolbeltBase">
     <defName>Professional_Toolbelt</defName>
     <label>professional toolbelt</label>
     <description>An advanced toolbelt to keep your tools to yourself.</description>
     <graphicData>
-      <texPath>Things/Items/Apparels/Various/Toolbelt/ADVToolbelt</texPath>
+      <texPath>Things/Apparel/Toolbelt/ADVToolbelt</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
@@ -99,7 +96,7 @@
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <TFHMaxItem>4</TFHMaxItem>
+      <InventoryMaxItem>4</InventoryMaxItem>
       <MarketValue>500</MarketValue>
     </statBases>
     <tickerType>Normal</tickerType>
@@ -112,7 +109,7 @@
       <bodyPartGroups>
         <li>Shoulders</li>
       </bodyPartGroups>
-      <worngraphicPath>Things/Items/Apparels/Various/Toolbelt/ADVToolbelt</worngraphicPath>
+      <worngraphicPath>Things/Apparel/Toolbelt/ADVToolbelt</worngraphicPath>
       <layers>
         <li>Middle</li>
       </layers>
@@ -151,5 +148,5 @@
       <WorkSpeedGlobal>0.3</WorkSpeedGlobal>
     </equippedStatOffsets>
   </ThingDef>
-	
+
 </ThingDefs>

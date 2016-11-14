@@ -36,7 +36,7 @@
   </StatDef>
   
   <StatDef>
-    <defName>TFHMaxItem</defName>
+    <defName>VehicleMaxItem</defName>
     <label>Vehicle max items</label>
     <description>The maximum amount of items the vehicle can haul.</description>
     <category>BasicsNonPawn</category>

@@ -23,9 +23,6 @@ namespace ToolsForHaul
         public virtual IEnumerable<Gizmo> GetWornGizmos();
         */
 
-        private static string DesignatorPutInInventoryDefaultLabel = "DesignatorPutInDefaultLabel".Translate();
-        private static string DesignatorPutInInventoryDefaultDesc = "DesignatorPutInDefaultDesc".Translate();
-
         public Pawn postWearer;
 
         public int MaxItem;
@@ -49,7 +46,7 @@ namespace ToolsForHaul
         public override void SpawnSetup()
         {
             base.SpawnSetup();
-            MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.MaxItem));
+            MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.InventoryMaxItem));
         }
 
         public override void ExposeData()

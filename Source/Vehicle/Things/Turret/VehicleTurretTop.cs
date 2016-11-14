@@ -1,6 +1,4 @@
-﻿using System;
-using Combat_Realism;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 
 namespace ToolsForHaul
