@@ -18,7 +18,7 @@ namespace ToolsForHaul.JobDefs
         public static readonly JobDef MakeMount = DefDatabase<JobDef>.GetNamed("MakeMount");
 
       public static readonly JobDef PutInBackpackSlot = DefDatabase<JobDef>.GetNamed("PutInBackpackSlot");
-      //public static readonly JobDef PutInToolbeltSlot = DefDatabase<JobDef>.GetNamed("PutInToolbeltSlot");
+      public static readonly JobDef PutInToolbeltSlot = DefDatabase<JobDef>.GetNamed("PutInToolbeltSlot");
 
     }
 }

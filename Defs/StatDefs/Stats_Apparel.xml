@@ -2,7 +2,7 @@
 <Defs>
 
   <StatDef>
-    <defName>BackpackMaxItem</defName>
+    <defName>TFHMaxItem</defName>
     <label>Backpack max item</label>
     <description>The maximum amount of items a backpack can carry at once.</description>
     <category>Apparel</category>

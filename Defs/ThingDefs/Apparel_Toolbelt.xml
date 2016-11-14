@@ -49,8 +49,12 @@
 			</layers>
 			<commonality>1</commonality>
       <tags>
-        <li>Toolbelt</li>
+        <li>Outlander</li>
+        <li>Spacer</li>
       </tags>
+      <defaultOutfitTags>
+        <li>Worker</li>
+      </defaultOutfitTags>
     </apparel>
     <colorGenerator Class="ColorGenerator_StandardApparel" />
 <!--<colorGenerator Class="ColorGenerator_Options">

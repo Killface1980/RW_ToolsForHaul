@@ -85,13 +85,11 @@
     <reportString>Putting TargetA in TargetB.</reportString>
   </JobDef>
 
-  <!--
   <JobDef>
     <defName>PutInToolbeltSlot</defName>
     <driverClass>ToolsForHaul.JobDrivers.JobDriver_PutInToolbeltSlot</driverClass>
     <reportString>Putting TargetA in TargetB.</reportString>
   </JobDef>
--->
 
   <!--
   <JobDef>

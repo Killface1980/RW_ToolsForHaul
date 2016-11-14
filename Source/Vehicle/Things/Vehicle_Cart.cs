@@ -28,12 +28,12 @@ namespace ToolsForHaul
 
         public int DefaultMaxItem
         {
-            get { return (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem); }
+            get { return (int)this.GetStatValue(HaulStatDefOf.MaxItem); }
         }
 
         public int MaxItemPerBodySize
         {
-            get { return (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem); }
+            get { return (int)this.GetStatValue(HaulStatDefOf.MaxItem); }
         }
 
         public bool instantiated;

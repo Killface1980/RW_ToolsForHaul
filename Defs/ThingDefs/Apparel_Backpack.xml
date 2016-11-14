@@ -70,8 +70,12 @@
       </layers>
       <commonality>1</commonality>
       <tags>
-        <li>Backpack</li>
+        <li>Outlander</li>
+        <li>Spacer</li>
       </tags>
+      <defaultOutfitTags>
+        <li>Worker</li>
+      </defaultOutfitTags>
     </apparel>
     <colorGenerator Class="ColorGenerator_StandardApparel" />
   <!--<colorGenerator Class="ColorGenerator_Options">
@@ -111,7 +115,7 @@
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <BackpackMaxItem>4</BackpackMaxItem>
+      <TFHMaxItem>4</TFHMaxItem>
       <Weight>1</Weight>
       <Bulk>3</Bulk>
       <WornWeight>0</WornWeight>
@@ -145,7 +149,7 @@
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <BackpackMaxItem>6</BackpackMaxItem>
+      <TFHMaxItem>6</TFHMaxItem>
       <Weight>1</Weight>
       <Bulk>3</Bulk>
       <WornWeight>0</WornWeight>
@@ -184,7 +188,7 @@
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
-      <BackpackMaxItem>8</BackpackMaxItem>
+      <TFHMaxItem>8</TFHMaxItem>
       <Weight>1</Weight>
       <Bulk>3</Bulk>
       <WornWeight>0</WornWeight>

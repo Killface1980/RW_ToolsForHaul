@@ -87,14 +87,14 @@
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="Defs\HaulJobDefOf.cs" />
     <Compile Include="Detours\_Pawn_ApparelTracker.cs" />
-    <None Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
-    <None Include="Components\Equipment\CompSlotsToolbelt.cs" />
-    <None Include="Designators\Designator_PutInToolbeltSlot.cs" />
+    <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
+    <Compile Include="Components\Equipment\CompSlotsToolbelt.cs" />
+    <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
-    <None Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
+    <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="JobGivers\JobGiver_Steal.cs" />
     <None Include="NoCCL\DetourAttribute.cs" />
-    <None Include="Things\Apparel_Toolbelt.cs" />
+    <Compile Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="Things\Textures.cs" />
     <Compile Include="Things\Turret\Vehicle_Turret.cs" />
     <None Include="Things\Turret\nn\_Targeter.cs" />
@@ -216,6 +216,9 @@
     <Content Include="..\..\Defs\ThingDefs\Apparel_Backpack.xml">
       <Link>Defs\ThingDefs\Apparel_Backpack.xml</Link>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Apparel_Toolbelt.xml">
+      <Link>Defs\ThingDefs\Apparel_Toolbelt.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
       <Link>Defs\ThingDefs\Items_IRResources.xml</Link>

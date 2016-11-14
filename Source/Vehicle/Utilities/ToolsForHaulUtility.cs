@@ -45,16 +45,16 @@ namespace ToolsForHaul.Utilities
             return null;
         }
 
-      //public static Apparel_Toolbelt TryGetToolbelt(Pawn pawn)
-      //{
-      //    if (!pawn.RaceProps.Humanlike)
-      //        return null;
-      //
-      //    foreach (Apparel apparel in pawn.apparel.WornApparel)
-      //        if (apparel is Apparel_Toolbelt)
-      //            return apparel as Apparel_Toolbelt;
-      //    return null;
-      //}
+        public static Apparel_Toolbelt TryGetToolbelt(Pawn pawn)
+        {
+            if (!pawn.RaceProps.Humanlike)
+                return null;
+        
+            foreach (Apparel apparel in pawn.apparel.WornApparel)
+                if (apparel is Apparel_Toolbelt)
+                    return apparel as Apparel_Toolbelt;
+            return null;
+        }
 
         /// <summary>
         ///     Calculates the actual current movement speed of a pawn

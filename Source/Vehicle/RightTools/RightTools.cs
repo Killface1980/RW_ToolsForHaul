@@ -49,18 +49,19 @@ namespace ToolsForHaul
         /// <param name="def"></param>
         public static void EquipRigthTool(Pawn pawn, StatDef def)
         {
-            CompInventory compInventory = ThingCompUtility.TryGetComp<CompInventory>(pawn);
-            bool flag = compInventory != null;
+            Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+
+            bool flag = toolbelt != null;
             if (flag)
             {
                 ThingWithComps thingWithComps = pawn.equipment.Primary;
                 float stat = GetMaxStat(pawn.equipment.Primary, def);
 
-                foreach (ThingWithComps slot in compInventory.container)
+                foreach (ThingWithComps slot in toolbelt.slotsComp.slots)
                 {
                     ThingWithComps thingWithComps2 = slot;
-                    bool flag2 = thingWithComps2.def.IsWeapon;
-                    if (flag2)
+                    bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
+                    if (!flag2)
                     {
                         float maxStat = GetMaxStat(thingWithComps2, def);
                         bool flag3 = stat < maxStat;
@@ -72,23 +73,47 @@ namespace ToolsForHaul
                     }
                 }
 
+                //using (IEnumerator<Thing> enumerator = pawn.inventory.container.GetEnumerator())
+                //{
+                //    while (enumerator.MoveNext())
+                //    {
+                //        ThingWithComps thingWithComps2 = (ThingWithComps)enumerator.Current;
+                //        bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
+                //        if (!flag2)
+                //        {
+                //            float maxStat = GetMaxStat(thingWithComps2, def);
+                //            bool flag3 = stat < maxStat;
+                //            if (flag3)
+                //            {
+                //                stat = maxStat;
+                //                thingWithComps = thingWithComps2;
+                //            }
+                //        }
+                //    }
+                //}
                 bool unEquipped = thingWithComps != pawn.equipment.Primary;
                 if (unEquipped)
                 {
-                    compInventory.TrySwitchToWeapon(thingWithComps);
-                }
-                else
-                {
-                    bool flag5 = stat == 0f && def != StatDefOf.WorkSpeedGlobal;
-                    if (flag5)
-                    {
-                        RightTools.EquipRigthTool(pawn, StatDefOf.WorkSpeedGlobal);
-                    }
-                }
+                    if (!MapComponent_ToolsForHaul.previousPawnWeapons.ContainsKey(pawn))
+                        MapComponent_ToolsForHaul.previousPawnWeapons.Add(pawn, pawn.equipment.Primary);
 
+                    toolbelt.slotsComp.SwapEquipment(thingWithComps);
+
+
+                    //pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container, out dummy);
+                    //pawn.equipment.AddEquipment(thingWithComps);
+                    //pawn.inventory.container.Remove(thingWithComps);
+                }
+                //else
+                //{
+                //    bool flag5 = stat == 0f && def != StatDefOf.WorkSpeedGlobal;
+                //    if (flag5)
+                //    {
+                //        EquipRigthTool(pawn, StatDefOf.WorkSpeedGlobal);
+                //    }
+                //}
             }
         }
-
         /// <summary>
         /// Selects the appropriate vehicle by worktype
         /// </summary>
