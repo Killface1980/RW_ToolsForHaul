@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿#if !CR
+using System;
+using UnityEngine;
 using Verse;
 
 namespace ToolsForHaul
 {
-    public class Vehicle_TurretTop
+    public class VehicleTurretTop
     {
         private const float IdleTurnDegreesPerTick = 0.26f;
 
@@ -43,12 +45,10 @@ namespace ToolsForHaul
             }
         }
 
-        public Vehicle_TurretTop(Vehicle_Turret ParentTurret)
+        public VehicleTurretTop(Vehicle_Turret ParentTurret)
         {
             parentTurret = ParentTurret;
         }
-
-
 
         public void TurretTopTick()
         {
@@ -99,7 +99,6 @@ namespace ToolsForHaul
             matrix.SetTRS(parentTurret.DrawPos + Altitudes.AltIncVect, CurRotation.ToQuat(), Vector3.one);
             Graphics.DrawMesh(MeshPool.plane20, matrix, parentTurret.def.building.turretTopMat, 0);
         }
-
-        
     }
 }
+#endif

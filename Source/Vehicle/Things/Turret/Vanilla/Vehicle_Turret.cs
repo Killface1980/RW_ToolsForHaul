@@ -1,10 +1,8 @@
-﻿using System;
+﻿#if !CR
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-#if CR
-using Combat_Realism;
-#endif
 #if Headlights
 using ppumkin.LEDTechnology.Managers;
 #endif
@@ -16,41 +14,56 @@ using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.Sound;
+using Random = UnityEngine.Random;
 
 namespace ToolsForHaul
 {
     [StaticConstructorOnStartup]
-#if CR
-    public class Vehicle_Turret : Building_Reloadable, IAttackTarget
-#else
-    public class Vehicle_Turret : Building_Turret, IAttackTarget
-#endif
+    public class Vehicle_Turret : Building_Turret, IThingContainerOwner, IAttackTarget
     {
+        #region Tank
+
+
+        protected StunHandler stunner;
+
+        protected TargetInfo forcedTarget = TargetInfo.Invalid;
+
+        public override TargetInfo CurrentTarget
+        {
+            get;
+        }
+        public override Verb AttackVerb
+        {
+            get;
+        }
+
+        #endregion
+
 
         #region Variables
         // ==================================
-
+        public int DefaultMaxItem { get { return (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem); } }
+        public int MaxItemPerBodySize { get { return (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem); } }
         public bool instantiated;
 
+        // RimWorld.Building_TurretGun
+        public override void OrderAttack(TargetInfo targ)
+        {
+        }
 
         public bool ThreatDisabled()
         {
-            if (GetComp<CompExplosive>().wickStarted)
-                return true;
-
-            if (!mountableComp.IsMounted)
-                return true;
-
             CompPowerTrader comp = GetComp<CompPowerTrader>();
             if (comp == null || !comp.PowerOn)
             {
                 CompMannable comp2 = GetComp<CompMannable>();
                 if (comp2 == null || !comp2.MannedNow)
                 {
-                    return !mountableComp.IsMounted;
                     return true;
                 }
             }
+            return !mountableComp.IsMounted;
             return false;
 
         }
@@ -89,6 +102,7 @@ namespace ToolsForHaul
             return (refuelableComp != null && refuelableComp.HasFuel) || vehicleComp.MotorizedWithoutFuel();
         }
 
+
         public float VehicleSpeed;
         public bool despawnAtEdge;
 
@@ -99,6 +113,9 @@ namespace ToolsForHaul
         private int tickCooldown = 60;
         private float _puddleHitpointCounter;
 
+        //Graphic data
+        private Graphic_Single graphic_Wheel_Single;
+        private Graphic_Multi graphic_FullStorage;
 
         //Body and part location
         private Vector3 wheelLoc;
@@ -106,12 +123,12 @@ namespace ToolsForHaul
 
 
         //mount and storage data
-        // public ThingContainer storage;
-        // public ThingContainer GetContainer() { return storage; }
+        public ThingContainer storage;
+        public ThingContainer GetContainer() { return storage; }
         public IntVec3 GetPosition() { return Position; }
 
         //slotGroupParent Interface
-        //    public ThingFilter allowances;
+        public ThingFilter allowances;
 
         public CompMountable mountableComp => GetComp<CompMountable>();
 
@@ -125,19 +142,18 @@ namespace ToolsForHaul
 
         public CompVehicle vehicleComp => GetComp<CompVehicle>();
 
-#endregion
+        #endregion
 
-#region Setup Work
+        #region Setup Work
 
 
         public Vehicle_Turret()
         {
-            // current spin degree
             //Inventory Initialize. It should be moved in constructor
-            //storage = new ThingContainer(this);
-            //allowances = new ThingFilter();
-            //allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
-            //allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
+            storage = new ThingContainer(this);
+            allowances = new ThingFilter();
+            allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
+            allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
             stunner = new StunHandler(this);
         }
 
@@ -157,8 +173,33 @@ namespace ToolsForHaul
 
             ToolsForHaulUtility.CartTurret.Add(this);
 
-   
+            if (mountableComp.Driver != null && IsCurrentlyMotorized())
+                LongEventHandler.ExecuteWhenFinished(delegate
+                {
+                    SoundInfo info = SoundInfo.InWorld(this);
+                    mountableComp.sustainerAmbient = vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
+                });
 
+            if (mountableComp.Driver != null)
+            {
+                mountableComp.Driver.RaceProps.makesFootprints = false;
+
+                if (mountableComp.Driver.RaceProps.Humanlike)
+                {
+                    mountableComp.driverComp = new CompDriver { vehicle = this };
+                    mountableComp.Driver.AllComps?.Add(mountableComp.driverComp);
+                    mountableComp.driverComp.parent = mountableComp.Driver;
+                }
+            }
+
+            if (allowances == null)
+            {
+                allowances = new ThingFilter();
+                allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
+                allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
+            }
+
+            LongEventHandler.ExecuteWhenFinished(UpdateGraphics);
         }
 
         public override void DeSpawn()
@@ -213,18 +254,34 @@ namespace ToolsForHaul
             //}
         }
 
-
+        private void UpdateGraphics()
+        {
+            if (axlesComp.HasAxles())
+            {
+                string text = "Things/Pawn/" + def.defName + "/Wheel";
+                graphic_Wheel_Single = new Graphic_Single();
+                graphic_Wheel_Single = GraphicDatabase.Get<Graphic_Single>(text, def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Single;
+            }
+            if (vehicleComp.ShowsStorage())
+            {
+                string text2 = string.Concat("Things/Pawn/", def.defName, "/", def.defName, "_FullStorage");
+                graphic_FullStorage = new Graphic_Multi();
+                graphic_FullStorage = GraphicDatabase.Get<Graphic_Multi>(text2, def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Multi;
+            }
+        }
         public override void ExposeData()
         {
             base.ExposeData();
-            //       Scribe_Deep.LookDeep(ref storage, "storage");
-            //      Scribe_Deep.LookDeep(ref allowances, "allowances");
+            Scribe_Deep.LookDeep(ref storage, "storage");
+            Scribe_Deep.LookDeep(ref allowances, "allowances");
             Scribe_Values.LookValue(ref vehicleComp.tankLeaking, "tankLeaking");
             Scribe_Values.LookValue(ref _tankHitPos, "tankHitPos");
             Scribe_Values.LookValue(ref despawnAtEdge, "despawnAtEdge");
 
-            Scribe_Deep.LookDeep(ref stunner, "stunner", this);
-            Scribe_Values.LookValue(ref mountableComp.lastDrawAsAngle, "lastDrawAsAngle");
+            Scribe_Deep.LookDeep(ref stunner, "stunner", new object[]
+     {
+                this
+     });
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -293,7 +350,7 @@ namespace ToolsForHaul
             };
             action_DismountInBase = () =>
             {
-                Job jobNew = ToolsForHaulUtility.DismountInBase(mountableComp.Driver, MapComponent_ToolsForHaul.currentVehicle[mountableComp.Driver]);
+                Job jobNew = ToolsForHaulUtility.DismountInBase(mountableComp.Driver, this);
 
                 myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
             };
@@ -366,13 +423,13 @@ namespace ToolsForHaul
         {
             if (mode == DestroyMode.Deconstruct)
                 mode = DestroyMode.Kill;
-            //else if (explosiveComp != null && explosiveComp.wickStarted)
-            //{
-            //    storage.ClearAndDestroyContents();
-            //
-            //}
+            else if (explosiveComp != null && explosiveComp.wickStarted)
+            {
+                storage.ClearAndDestroyContents();
 
-            //     storage.TryDropAll(Position, ThingPlaceMode.Near);
+            }
+
+            storage.TryDropAll(Position, ThingPlaceMode.Near);
 
             base.Destroy(mode);
         }
@@ -396,13 +453,14 @@ namespace ToolsForHaul
             absorbed = false;
         }
 
+        private bool soundPlayed;
 
 
 
+        #endregion
 
-#endregion
 
-#region Ticker
+        #region Ticker
         // ==================================
 
         /// <summary>
@@ -412,10 +470,10 @@ namespace ToolsForHaul
         {
             if (!instantiated)
             {
-                //foreach (Thing thing in GetContainer())
-                //{
-                //    thing.holder.owner = this;
-                //}
+                foreach (Thing thing in GetContainer())
+                {
+                    thing.holder.owner = this;
+                }
 
                 currentDriverSpeed = VehicleSpeed;
                 instantiated = true;
@@ -423,7 +481,7 @@ namespace ToolsForHaul
 
             base.Tick();
 
-#region Headlights
+            #region Headlights
 #if Headlights
             {
                 if (Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell - Rotation.FacingCell) < 0.4f)
@@ -459,7 +517,7 @@ namespace ToolsForHaul
                 }
             }
 #endif
-#endregion
+            #endregion
 
             if (mountableComp.IsMounted)
             {
@@ -477,61 +535,68 @@ namespace ToolsForHaul
                         }
                 }
 
-                
 
-
-
+                if (mountableComp.Driver.pather.Moving)// || mountableComp.Driver.drafter.pawn.pather.Moving)
+                {
+                    if (!mountableComp.Driver.stances.FullBodyBusy && axlesComp.HasAxles())
+                    {
+                        axlesComp.wheelRotation += currentDriverSpeed / 3f;
+                        axlesComp.tick_time += 0.01f * currentDriverSpeed / 5f;
+                    }
+                }
                 //Exhaustion fumes - basic
                 // only fumes on vehicles with combustion and no animals driving
                 if (!vehicleComp.MotorizedWithoutFuel() && !vehicleComp.AnimalsCanDrive())
-                    MoteMaker.ThrowSmoke(DrawPos + FumesOffset, 0.05f + currentDriverSpeed * 0.01f);
+                        MoteMaker.ThrowSmoke(DrawPos + FumesOffset, 0.05f + currentDriverSpeed * 0.01f);
 
-                if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
-                {
-                    if (mountableComp.Driver.pather.Moving)
+                    if (Find.TickManager.TicksGame - tickCheck >= tickCooldown)
                     {
-                        if (!mountableComp.Driver.stances.FullBodyBusy)
+                        if (mountableComp.Driver.pather.Moving)
                         {
-                            if (refuelableComp != null)
-                                refuelableComp.Notify_UsedThisTick();
-                            damagetick -= 1;
+                            if (!mountableComp.Driver.stances.FullBodyBusy)
+                            {
+                                if (refuelableComp != null)
+                                    refuelableComp.Notify_UsedThisTick();
+                                damagetick -= 1;
 
-                            if (axlesComp.HasAxles())
-                                currentDriverSpeed = ToolsForHaulUtility.GetMoveSpeed(mountableComp.Driver);
+                                if (axlesComp.HasAxles())
+                                    currentDriverSpeed = ToolsForHaulUtility.GetMoveSpeed(mountableComp.Driver);
+                            }
+                            if (breakdownableComp != null && breakdownableComp.BrokenDown ||
+                                refuelableComp != null && !refuelableComp.HasFuel)
+                                VehicleSpeed = 0.75f;
+                            else VehicleSpeed = DesiredSpeed;
+                            tickCheck = Find.TickManager.TicksGame;
                         }
-                        if (breakdownableComp != null && breakdownableComp.BrokenDown ||
-                            refuelableComp != null && !refuelableComp.HasFuel)
-                            VehicleSpeed = 0.75f;
-                        else VehicleSpeed = DesiredSpeed;
-                        tickCheck = Find.TickManager.TicksGame;
-                    }
 
-                    if (Position.InNoBuildEdgeArea() && despawnAtEdge && Spawned && (mountableComp.Driver.Faction != Faction.OfPlayer || mountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee))
-                        DeSpawn();
+                        if (Position.InNoBuildEdgeArea() && despawnAtEdge && Spawned &&
+                            (mountableComp.Driver.Faction != Faction.OfPlayer ||
+                             mountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee))
+                            DeSpawn();
+                    }
                 }
 
-            }
+                //if (Find.TickManager.TicksGame >= damagetick)
+                //{
+                //    TakeDamage(new DamageInfo(DamageDefOf.Deterioration, 1, null, null, null));
+                //    damagetick = Find.TickManager.TicksGame + 3600;
+                //}
 
-            //if (Find.TickManager.TicksGame >= damagetick)
-            //{
-            //    TakeDamage(new DamageInfo(DamageDefOf.Deterioration, 1, null, null, null));
-            //    damagetick = Find.TickManager.TicksGame + 3600;
-            //}
-
-            if (vehicleComp.tankLeaking)
-            {
-                if (Find.TickManager.TicksGame > _tankSpillTick)
+                if (vehicleComp.tankLeaking)
                 {
-                    if (refuelableComp.FuelPercent > _tankHitPos)
+                    if (Find.TickManager.TicksGame > _tankSpillTick)
                     {
-                        refuelableComp.ConsumeFuel(0.15f);
+                        if (refuelableComp.FuelPercent > _tankHitPos)
+                        {
+                            refuelableComp.ConsumeFuel(0.15f);
 
-                        FilthMaker.MakeFilth(Position, fuelDefName, LabelCap);
-                        _tankSpillTick = Find.TickManager.TicksGame + 15;
+                            FilthMaker.MakeFilth(Position, fuelDefName, LabelCap);
+                            _tankSpillTick = Find.TickManager.TicksGame + 15;
+                        }
                     }
                 }
             }
-        }
+        
 
         private static readonly Vector3 TrailOffset = new Vector3(0f, 0f, -0.3f);
         private static readonly Vector3 FumesOffset = new Vector3(-0.3f, 0f, 0f);
@@ -545,21 +610,41 @@ namespace ToolsForHaul
 
         private int _tankSpillTick = -5000;
 
-#endregion
+        #endregion
 
-#region Graphics / Inspections
+        #region Graphics / Inspections
         // ==================================
 
         //private void UpdateGraphics()
         //{
         //}
 
+        public override Graphic Graphic
+        {
+            get
+            {
+                if (axlesComp.HasAxles() && graphic_Wheel_Single == null)
+                {
+                    UpdateGraphics();
+                }
+                if (graphic_FullStorage == null)
+                {
+                    return base.Graphic;
+                }
+                if (storage.Count <= 0)
+                {
+                    return base.Graphic;
+                }
+                return graphic_FullStorage;
+            }
+        }
+        float wheel_shake;
 
         public override Vector3 DrawPos
         {
             get
             {
-                if (!Spawned || !mountableComp.IsMounted || !instantiated || vehicleComp==null)
+                if (!Spawned || !mountableComp.IsMounted || !instantiated)
                 {
                     return base.DrawPos;
                 }
@@ -580,11 +665,12 @@ namespace ToolsForHaul
 
             wheelLoc = drawLoc;
             bodyLoc = drawLoc;
+
             //Vertical
             if (Rotation.AsInt % 2 == 0)
                 wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
 
-            //horizontal 
+            // horizontal
             if (axlesComp.HasAxles() && Rotation.AsInt % 2 == 1)
             {
                 wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.04f;
@@ -599,12 +685,9 @@ namespace ToolsForHaul
 
                 asQuat.SetLookRotation(new Vector3(x, 0f, z), Vector3.up);
 
+                axlesComp.wheel_shake = (float)((Math.Sin(axlesComp.tick_time) + Math.Abs(Math.Sin(axlesComp.tick_time))) / 40.0);
 
                 wheelLoc.z = wheelLoc.z + axlesComp.wheel_shake;
-
-                Vector3 mountThingLoc = drawLoc;
-                mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.06f;
-                Vector3 mountThingOffset = new Vector3(0, 0, 1).RotatedBy(Rotation.AsAngle);
 
                 List<Vector3> list;
                 if (axlesComp.GetAxleLocations(drawSize, num, out list))
@@ -643,7 +726,12 @@ namespace ToolsForHaul
             //}));
             return stringBuilder.ToString();
         }
-#endregion
+        #endregion
+
+
+
+
+
 
         public IEnumerable<Pawn> AssigningCandidates
         {
@@ -664,3 +752,4 @@ namespace ToolsForHaul
         }
     }
 }
+#endif

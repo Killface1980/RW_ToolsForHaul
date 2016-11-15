@@ -39,13 +39,13 @@ namespace ToolsForHaul.Components
         {
             if (Driver != null)
                 return;
-
+#if CR
             Building_Reloadable turret = (parent as Building_Reloadable);
             if (turret != null)
             {
                 turret.dontReload = true;
             }
-
+#endif
             // Check to make pawns not mount two vehicles at once
             if (ToolsForHaulUtility.IsDriver(pawn))
             {
@@ -117,12 +117,13 @@ namespace ToolsForHaul.Components
 
         public void Dismount()
         {
+#if CR
             Building_Reloadable turret = (parent as Building_Reloadable);
             if (turret != null)
             {
                 turret.dontReload = false;
             }
-
+#endif
             if (Driver.RaceProps.Humanlike)
             {
                 Driver.AllComps?.Remove(driverComp);

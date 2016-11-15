@@ -36,7 +36,9 @@ namespace ToolsForHaul.Detoured
             {
                 _this.pawn.outfits.forcedHandler.SetForced(ap, false);
             }
+#if CR
             Combat_Realism.CR_Utility.TryUpdateInventory(_this.pawn);     // Apparel was dropped, update inventory
+#endif
             return flag;
         }
 

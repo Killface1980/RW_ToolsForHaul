@@ -30,7 +30,8 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>CR</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -95,12 +96,13 @@
     <None Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="Things\Textures.cs" />
-    <Compile Include="Things\Turret\Vehicle_Turret.cs" />
-    <None Include="Things\Turret\nn\_Targeter.cs" />
-    <None Include="Things\Turret\nn\_AttackTargetFinder.cs" />
-    <Compile Include="Things\Turret\Vehicle_TurretGun.cs" />
-    <Compile Include="Things\Turret\VehicleTurretTop.cs" />
+    <Compile Include="Things\Turret\CR\Vehicle_TurretCR.cs" />
+    <Compile Include="Things\Turret\CR\Vehicle_TurretGunCR.cs" />
+    <Compile Include="Things\Turret\CR\VehicleTurretTopCR.cs" />
     <Compile Include="Things\Turret\Command_VerbTarget.cs" />
+    <Compile Include="Things\Turret\Vanilla\VehicleTurretTop.cs" />
+    <Compile Include="Things\Turret\Vanilla\Vehicle_Turret.cs" />
+    <Compile Include="Things\Turret\Vanilla\Vehicle_TurretGun.cs" />
     <Compile Include="WorkGivers\WorkGiver_FixBrokenDownBuilding.cs" />
     <Compile Include="WorkGivers\WorkGiver_Repair.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />

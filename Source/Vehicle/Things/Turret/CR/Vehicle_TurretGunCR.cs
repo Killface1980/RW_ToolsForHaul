@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if CR
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Combat_Realism;
@@ -216,3 +217,4 @@ namespace ToolsForHaul
         #endregion
     }
 }
+#endif
