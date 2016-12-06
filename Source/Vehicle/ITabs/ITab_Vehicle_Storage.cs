@@ -13,7 +13,6 @@ using Verse;
 // RimWorld specific functions are found here (like 'Building_Battery')
 //using RimWorld.Planet;   // RimWorld specific functions for world creation
 //using RimWorld.SquadAI;  // RimWorld specific functions for squad brains 
-
 namespace ToolsForHaul.ITabs
 {
     class Itab_Pawn_Vehicle_Storage : ITab_Storage
@@ -32,8 +31,9 @@ namespace ToolsForHaul.ITabs
             get
             {
                 Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
-                //   Vehicle_Turret vehicleTurret = Find.Selector.SelectedObjects.First() as Vehicle_Turret;
-                return cart != null; //|| vehicleTurret != null;
+
+                // Vehicle_Turret vehicleTurret = Find.Selector.SelectedObjects.First() as Vehicle_Turret;
+                return cart != null; // || vehicleTurret != null;
             }
         }
 
@@ -51,7 +51,7 @@ namespace ToolsForHaul.ITabs
             Rect position = new Rect(0.0f, 0.0f, WinSize.x, WinSize.y).ContractedBy(10f);
             GUI.BeginGroup(position);
 
-            ThingFilterUI.DoThingFilterConfigWindow(new Rect(0.0f, 35f, position.width, position.height - 35f), ref scrollPosition, allowances);
+            ThingFilterUI.DoThingFilterConfigWindow(new Rect(0.0f, 35f, position.width, position.height - 35f), ref this.scrollPosition, allowances);
             GUI.EndGroup();
         }
     }

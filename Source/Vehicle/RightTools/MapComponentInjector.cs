@@ -3,8 +3,10 @@ using System;
 using UnityEngine;
 using Verse;
 
-namespace ToolsForHaul       // Replace with yours.
-{       // This code is mostly borrowed from Pawn State Icons mod by Dan Sadler, which has open source and no license I could find, so...
+namespace ToolsForHaul
+{
+    // This code is mostly borrowed from Pawn State Icons mod by Dan Sadler, which has open source and no license I could find, so...
+    // Replace with yours.
     public class MapComponentInjector : MonoBehaviour
     {
         private static Type toolsForHaul = typeof(MapComponent_ToolsForHaul);
@@ -26,6 +28,4 @@ namespace ToolsForHaul       // Replace with yours.
             Destroy(this);
         }
     }
-
-
 }

@@ -9,26 +9,14 @@ namespace ToolsForHaul.JobDrivers
     {
         private const int BaseTreatmentDuration = 600;
 
-        protected Thing Medicine
-        {
-            get
-            {
-                return CurJob.targetB.Thing;
-            }
-        }
+        protected Thing Medicine => this.CurJob.targetB.Thing;
 
-        protected Pawn Deliveree
-        {
-            get
-            {
-                return (Pawn)CurJob.targetA.Thing;
-            }
-        }
+        protected Pawn Deliveree => (Pawn)this.CurJob.targetA.Thing;
 
         public override string GetReport()
         {
             string repString;
-            repString = "TreatPatient.reportString".Translate(TargetThingA.LabelCap);
+            repString = "TreatPatient.reportString".Translate(this.TargetThingA.LabelCap);
 
             return repString;
         }
@@ -36,59 +24,60 @@ namespace ToolsForHaul.JobDrivers
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ///
-            //Set fail conditions
+            // Set fail conditions
             ///
 
             this.FailOnDestroyedOrNull(TargetIndex.A);
-            AddEndCondition(() => { return Deliveree.health.ShouldBeTendedNow ? JobCondition.Ongoing : JobCondition.Succeeded; });
-            //Note we only fail on forbidden if the target doesn't start that way
-            //This helps haul-aside jobs on forbidden items
+            AddEndCondition(
+                () =>
+                    {
+                        return this.Deliveree.health.ShouldBeTendedNow ? JobCondition.Ongoing : JobCondition.Succeeded;
+                    });
 
-
-
-            ///
-            //Define Toil
-            ///
-
-
+            // Note we only fail on forbidden if the target doesn't start that way
+            // This helps haul-aside jobs on forbidden items
 
             ///
-            //Toils Start
+            // Define Toil
             ///
 
-            //Reserve thing to be stored and storage cell 
+            ///
+            // Toils Start
+            ///
+
+            // Reserve thing to be stored and storage cell 
             yield return Toils_Reserve.Reserve(TargetIndex.A);
-
 
             StatWorker statWorker = new StatWorker();
             statWorker.InitSetStat(StatDefOf.BaseHealingQuality);
 
             Toil toilApplyMedicine = new Toil();
             toilApplyMedicine.initAction = () =>
-            {
-                Thing dummy;
-                Medicine.holder.TryDrop(Medicine, pawn.Position + IntVec3.North.RotatedBy(pawn.Rotation), ThingPlaceMode.Direct, out dummy);
-            };
+                {
+                    Thing dummy;
+                    this.Medicine.holder.TryDrop(
+                        this.Medicine,
+                        this.pawn.Position + IntVec3.North.RotatedBy(this.pawn.Rotation),
+                        ThingPlaceMode.Direct,
+                        out dummy);
+                };
             yield return toilApplyMedicine;
-            
-            yield return Toils_Tend.PickupMedicine(TargetIndex.B, Deliveree);
+
+            yield return Toils_Tend.PickupMedicine(TargetIndex.B, this.Deliveree);
 
             Toil toilGoTodeliveree = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
             yield return toilGoTodeliveree;
 
-            int duration = (int) (1.0 / pawn.GetStatValue(StatDefOf.HealingSpeed) * 600.0);
+            int duration = (int)(1.0 / this.pawn.GetStatValue(StatDefOf.HealingSpeed) * 600.0);
             Toil toilDelivereeWait = new Toil();
-            toilDelivereeWait.initAction = () =>
-            {
-                Deliveree.drafter.TakeOrderedJob(new Job(JobDefOf.Wait, duration));
-            };
+            toilDelivereeWait.initAction =
+                () => { this.Deliveree.drafter.TakeOrderedJob(new Job(JobDefOf.Wait, duration)); };
 
             yield return Toils_General.Wait(duration);
 
-            yield return Toils_Tend.FinalizeTend(Deliveree);
+            yield return Toils_Tend.FinalizeTend(this.Deliveree);
 
             yield return Toils_Jump.Jump(toilGoTodeliveree);
         }
-
     }
 }

@@ -13,11 +13,11 @@ namespace ToolsForHaul.Designators
 
         public Designator_Mount()
         {
-            useMouseIcon = true;
-            soundSucceeded = SoundDefOf.Click;
+            this.useMouseIcon = true;
+            this.soundSucceeded = SoundDefOf.Click;
         }
 
-        public override int DraggableDimensions { get { return 2; } }
+        public override int DraggableDimensions => 2;
 
         public override AcceptanceReport CanDesignateCell(IntVec3 loc)
         {
@@ -46,7 +46,7 @@ namespace ToolsForHaul.Designators
 
                 bool alreadyMounted = false;
                 foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart)
-                    if (cart.mountableComp.Driver == pawn)
+                    if (cart.MountableComp.Driver == pawn)
                         alreadyMounted = true;
                 foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret)
                     if (cart.mountableComp.Driver == pawn)
@@ -54,18 +54,19 @@ namespace ToolsForHaul.Designators
                 if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !alreadyMounted)
                 {
                     Job jobNew = new Job(HaulJobDefOf.Mount);
-                    Find.Reservations.ReleaseAllForTarget(vehicle);
-                    jobNew.targetA = vehicle;
+                    Find.Reservations.ReleaseAllForTarget(this.vehicle);
+                    jobNew.targetA = this.vehicle;
                     pawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                     break;
                 }
+
                 if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal) && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !alreadyMounted)
                 {
                     Pawn worker = null;
                     Job jobNew = new Job(HaulJobDefOf.MakeMount);
-                    Find.Reservations.ReleaseAllForTarget(vehicle);
+                    Find.Reservations.ReleaseAllForTarget(this.vehicle);
                     jobNew.maxNumToCarry = 1;
-                    jobNew.targetA = vehicle;
+                    jobNew.targetA = this.vehicle;
                     jobNew.targetB = pawn;
                     foreach (Pawn colonyPawn in Find.MapPawns.FreeColonistsSpawned)
                         if (colonyPawn.CurJob.def != jobNew.def && (worker == null || (worker.Position - pawn.Position).LengthHorizontal > (colonyPawn.Position - pawn.Position).LengthHorizontal))
@@ -75,10 +76,12 @@ namespace ToolsForHaul.Designators
                         Messages.Message("NoWorkForMakeMount".Translate(), MessageSound.RejectInput);
                         break;
                     }
+
                     worker.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                     break;
                 }
             }
+
             DesignatorManager.Deselect();
         }
     }

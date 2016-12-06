@@ -13,7 +13,7 @@ namespace ToolsForHaul.WorkGivers
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
 
-            //return ToolsForHaulUtility.Cart();
+            // return ToolsForHaulUtility.Cart();
             return ListerHaulables.ThingsPotentiallyNeedingHauling();
         }
 
@@ -39,14 +39,13 @@ namespace ToolsForHaul.WorkGivers
             }
 
             // Vehicle selection
-
           if (ToolsForHaulUtility.IsDriver(pawn))
           {
               cart = ToolsForHaulUtility.GetCartByDriver(pawn);
           
               if (cart ==null)
               {
-                    //  JobFailReason.Is("Can't haul with military vehicle");
+                    // JobFailReason.Is("Can't haul with military vehicle");
                    return ToolsForHaulUtility.DismountInBase(pawn, MapComponent_ToolsForHaul.currentVehicle[pawn]);
                 }
           }
@@ -74,7 +73,7 @@ namespace ToolsForHaul.WorkGivers
                 return null;
             }
 
-            if (ListerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.storage.Count == 0)
+            if (ListerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.Storage.Count == 0)
             {
                 JobFailReason.Is("NoHaulable".Translate());
                 return null;

@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+
 using RimWorld;
+
 using ToolsForHaul.Components;
+using ToolsForHaul.JobDefs;
+
 using Verse;
 using Verse.AI;
-using ToolsForHaul.JobDefs;
 
 namespace ToolsForHaul.Designators
 {
@@ -20,11 +23,11 @@ namespace ToolsForHaul.Designators
 
         public Designator_ApplyMedicine()
         {
-            useMouseIcon = true;
-            soundSucceeded = SoundDefOf.Click;
+            this.useMouseIcon = true;
+            this.soundSucceeded = SoundDefOf.Click;
         }
 
-        public override int DraggableDimensions { get { return 1; } }
+        public override int DraggableDimensions => 1;
 
         public override AcceptanceReport CanDesignateCell(IntVec3 loc)
         {
@@ -36,6 +39,7 @@ namespace ToolsForHaul.Designators
                 if (pawn != null && pawn.health.ShouldBeTendedNow)
                     return true;
             }
+
             return new AcceptanceReport(txtNoNeedTreatment.Translate());
         }
 
@@ -51,15 +55,16 @@ namespace ToolsForHaul.Designators
                     jobNew.targetA = pawn;
 
                     Thing dummy;
-                    SlotsBackpackComp.slots.TryDrop(medicine, doctor.Position, ThingPlaceMode.Direct, Medicine.GetMedicineCountToFullyHeal(jobNew.targetA.Thing as Pawn), out dummy);
+                    this.SlotsBackpackComp.slots.TryDrop(this.medicine, this.doctor.Position, ThingPlaceMode.Direct, Medicine.GetMedicineCountToFullyHeal(jobNew.targetA.Thing as Pawn), out dummy);
 
                     jobNew.targetB = dummy;
 
                     jobNew.maxNumToCarry = Medicine.GetMedicineCountToFullyHeal(jobNew.targetA.Thing as Pawn);
-                    doctor.drafter.TakeOrderedJob(jobNew);
+                    this.doctor.drafter.TakeOrderedJob(jobNew);
                     break;
                 }
             }
+
             DesignatorManager.Deselect();
         }
     }

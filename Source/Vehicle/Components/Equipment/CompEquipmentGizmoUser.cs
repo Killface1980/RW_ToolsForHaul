@@ -5,7 +5,7 @@ namespace ToolsForHaul.Components
 {
     public class CompEquipmentGizmoUser : ThingComp
     {
-        public Pawn Owner => parent as Pawn;
+        public Pawn Owner => this.parent as Pawn;
 
         public bool SpawnedAndWell(Pawn pawn)
         {
@@ -53,18 +53,19 @@ namespace ToolsForHaul.Components
                 yield return current;
             }
 
-            if (SpawnedAndWell(Owner))
+            if (this.SpawnedAndWell(this.Owner))
             {
                 // NOTE: should use concatenation of both enumerables, but can't cast to the same type without error
                 // iterate through all apparels
-                foreach (ThingWithComps thing in Owner.apparel.WornApparel)
-                // NOTE: check what type to return (If it's designator, command_action, command or gizmo)
+                foreach (ThingWithComps thing in this.Owner.apparel.WornApparel)
                 {
+                    // NOTE: check what type to return (If it's designator, command_action, command or gizmo)
                     foreach (ThingComp thingComp in thing.AllComps.FindAll(comp => comp.GetType().IsSubclassOf(typeof(CompEquipmentGizmoProvider))))
                     {
                         CompEquipmentGizmoProvider comp = (CompEquipmentGizmoProvider)thingComp;
+
                         // reassign pawn owner in comp, if not already set
-                        comp.owner = comp.owner != Owner ? Owner : comp.owner;
+                        comp.owner = comp.owner != this.Owner ? this.Owner : comp.owner;
 
                         foreach (Command gizmo in comp.CompGetGizmosExtra())
                         {
@@ -74,13 +75,14 @@ namespace ToolsForHaul.Components
                 }
 
                 // iterate through all equipment (weapons)
-                foreach (ThingWithComps thing in Owner.equipment.AllEquipment)
+                foreach (ThingWithComps thing in this.Owner.equipment.AllEquipment)
                 {
                     foreach (ThingComp thingComp in thing.AllComps.FindAll(comp => comp.GetType().IsSubclassOf(typeof(CompEquipmentGizmoProvider))))
                     {
                         CompEquipmentGizmoProvider comp = (CompEquipmentGizmoProvider)thingComp;
+
                         // reassign pawn owner in comp, if not already set
-                        comp.owner = comp.owner != Owner ? Owner : comp.owner;
+                        comp.owner = comp.owner != this.Owner ? this.Owner : comp.owner;
 
                         foreach (Command gizmo in comp.CompGetGizmosExtra())
                         {

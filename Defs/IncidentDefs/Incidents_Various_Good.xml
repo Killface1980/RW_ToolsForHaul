@@ -6,7 +6,7 @@
   <IncidentDef>
     <defName>TraderCaravanArrival</defName>
     <label>trader caravan arrival</label>
-    <workerClass>ToolsForHaul.IncidentWorkers.IncidentWorker_TraderCaravanArrival</workerClass>
+    <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_TraderCaravanArrival</workerClass>
     <category>AllyArrival</category>
     <baseChance>4</baseChance>
   </IncidentDef>
@@ -15,7 +15,7 @@
   <IncidentDef>
     <defName>VisitorGroup</defName>
     <label>visitor group</label>
-    <workerClass>ToolsForHaul.IncidentWorkers.IncidentWorker_VisitorGroup</workerClass>
+    <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_VisitorGroup</workerClass>
     <category>AllyArrival</category>
     <baseChance>4</baseChance>
     <pointsScaleable>true</pointsScaleable>
@@ -46,7 +46,7 @@
   <IncidentDef>
     <defName>WandererJoin</defName>
     <label>wanderer join</label>
-    <workerClass>ToolsForHaul.IncidentWorkers.IncidentWorker_WandererJoin</workerClass>
+    <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_WandererJoin</workerClass>
     <baseChance>0.4</baseChance>
     <populationEffect>Increase</populationEffect>
   </IncidentDef>

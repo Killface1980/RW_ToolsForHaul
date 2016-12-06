@@ -24,6 +24,7 @@ namespace ToolsForHaul
             {
                 return null;
             }
+
             Pawn patient = SickPawnVisitUtility.FindRandomSickPawn(pawn, JoyCategory.High);
             if (patient == null)
             {
@@ -35,6 +36,7 @@ namespace ToolsForHaul
             {
                 return null;
             }
+
             return new Job(DefDatabase<JobDef>.GetNamed("TakeToWheelChair"), patient, wheelChair)
             {
                 maxNumToCarry = 1

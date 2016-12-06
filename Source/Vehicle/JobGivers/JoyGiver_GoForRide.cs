@@ -7,15 +7,12 @@ using Verse.AI;
 
 namespace ToolsForHaul.JoyGivers
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
     public class JoyGiver_GoForRide : JoyGiver_InteractBuilding
     {
-        protected override bool CanDoDuringParty
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool CanDoDuringParty => false;
 
         protected override Job TryGivePlayJob(Pawn pawn, Thing t)
         {
@@ -38,25 +35,30 @@ namespace ToolsForHaul.JoyGivers
             {
                 return null;
             }
+
             if (PawnUtility.WillSoonHaveBasicNeed(pawn))
             {
                 return null;
             }
+
             Region reg;
             if (!CellFinder.TryFindClosestRegionWith(pawn.Position.GetRegion(), TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), (Region r) => r.Room.PsychologicallyOutdoors && !r.IsForbiddenEntirely(pawn), 100, out reg))
             {
                 return null;
             }
+
             IntVec3 root;
             if (!reg.TryFindRandomCellInRegionUnforbidden(pawn, null, out root))
             {
                 return null;
             }
+
             List<IntVec3> list;
             if (!WalkPathFinder.TryFindWalkPath(pawn, root, out list))
             {
                 return null;
             }
+
             Job job = new Job(this.def.jobDef, list[0])
             {
                 targetQueueA = new List<TargetInfo>(),

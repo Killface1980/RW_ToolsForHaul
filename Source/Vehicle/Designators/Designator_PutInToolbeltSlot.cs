@@ -24,49 +24,34 @@ namespace ToolsForHaul.Designators
 
         // overall gizmo width
         // Height = 75f
-        //      public override float Width => slotsComp.Properties.maxSlots * Height + Height;
-
+        // public override float Width => slotsComp.Properties.maxSlots * Height + Height;
         public Designator_PutInToolbeltSlot()
         {
-            useMouseIcon = true;
-            soundSucceeded = SoundDefOf.DesignateHaul;
-            soundDragSustain = SoundDefOf.DesignateDragStandard;
-            soundDragChanged = SoundDefOf.DesignateDragStandardChanged;
-            activateSound = SoundDef.Named("Click");
+            this.useMouseIcon = true;
+            this.soundSucceeded = SoundDefOf.DesignateHaul;
+            this.soundDragSustain = SoundDefOf.DesignateDragStandard;
+            this.soundDragChanged = SoundDefOf.DesignateDragStandardChanged;
+            this.activateSound = SoundDef.Named("Click");
         }
 
-        //EquipmentSlot Properties
+        // EquipmentSlot Properties
         private const int numOfRow = 2;
 
-        private float curWidth
-        {
-            get
-            {
-                return Height;
-            }
-        }
+        private float curWidth => Height;
 
-        public override float Width
-        {
-            get
-            {
-
-                return Height;
-            }
-        }
+        public override float Width => Height;
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft)
         {
-            Rect gizmoRect = new Rect(topLeft.x, topLeft.y, Width, Height);
+            Rect gizmoRect = new Rect(topLeft.x, topLeft.y, this.Width, Height);
 
             Rect designatorRect = new Rect(gizmoRect.x, gizmoRect.y, Height, Height);
-            GizmoResult result = DrawDesignator(designatorRect);
+            GizmoResult result = this.DrawDesignator(designatorRect);
             GUI.DrawTexture(designatorRect, texPutInArrow);
 
-            //Rect inventoryRect = new Rect(gizmoRect.x + designatorRect.width, gizmoRect.y, curWidth, Height);
-            //Widgets.DrawWindowBackground(inventoryRect);
-            //     DrawSlots(inventoryRect);
-
+            // Rect inventoryRect = new Rect(gizmoRect.x + designatorRect.width, gizmoRect.y, curWidth, Height);
+            // Widgets.DrawWindowBackground(inventoryRect);
+            // DrawSlots(inventoryRect);
             return result;
         }
 
@@ -79,30 +64,33 @@ namespace ToolsForHaul.Designators
                 mouseOver = true;
                 GUI.color = GenUI.MouseoverColor;
             }
+
             GUI.DrawTexture(rect, BGTex);
             MouseoverSounds.DoRegion(rect, SoundDefOf.MouseoverCommand);
 
             // draw thing's texture
-            Widgets.ThingIcon(rect, SlotsToolbeltComp.parent);
+            Widgets.ThingIcon(rect, this.SlotsToolbeltComp.parent);
 
             bool gizmoActivated = false;
-            KeyCode keyCode = hotKey?.MainKey ?? KeyCode.None;
+            KeyCode keyCode = this.hotKey?.MainKey ?? KeyCode.None;
             if (keyCode != KeyCode.None && !GizmoGridDrawer.drawnHotKeys.Contains(keyCode))
             {
                 Rect rect2 = new Rect(rect.x + 5f, rect.y + 5f, 16f, 18f);
                 Widgets.Label(rect2, keyCode.ToString());
                 GizmoGridDrawer.drawnHotKeys.Add(keyCode);
-                if (hotKey.KeyDownEvent)
+                if (this.hotKey.KeyDownEvent)
                 {
                     gizmoActivated = true;
                     Event.current.Use();
                 }
             }
+
             if (Widgets.ButtonInvisible(rect))
             {
                 gizmoActivated = true;
             }
-            string labelCap = LabelCap;
+
+            string labelCap = this.LabelCap;
             if (!labelCap.NullOrEmpty())
             {
                 float num = Text.CalcHeight(labelCap, rect.width);
@@ -115,37 +103,45 @@ namespace ToolsForHaul.Designators
                 Text.Anchor = TextAnchor.UpperLeft;
                 GUI.color = Color.white;
             }
+
             GUI.color = Color.white;
-            if (DoTooltip)
+            if (this.DoTooltip)
             {
-                TipSignal tip = Desc;
-                if (disabled && !disabledReason.NullOrEmpty())
+                TipSignal tip = this.Desc;
+                if (this.disabled && !this.disabledReason.NullOrEmpty())
                 {
-                    tip.text = tip.text + "\n\nDISABLED: " + disabledReason;
+                    tip.text = tip.text + "\n\nDISABLED: " + this.disabledReason;
                 }
+
                 TooltipHandler.TipRegion(rect, tip);
             }
-            if (!HighlightTag.NullOrEmpty() &&
+
+            if (!this.HighlightTag.NullOrEmpty() &&
                 (Find.WindowStack.FloatMenu == null || !Find.WindowStack.FloatMenu.windowRect.Overlaps(rect)))
             {
-                UIHighlighter.HighlightOpportunity(rect, HighlightTag);
+                UIHighlighter.HighlightOpportunity(rect, this.HighlightTag);
             }
+
             if (gizmoActivated)
             {
-                if (disabled)
+                if (this.disabled)
                 {
-                    if (!disabledReason.NullOrEmpty())
+                    if (!this.disabledReason.NullOrEmpty())
                     {
-                        Messages.Message(disabledReason, MessageSound.RejectInput);
+                        Messages.Message(this.disabledReason, MessageSound.RejectInput);
                     }
+
                     return new GizmoResult(GizmoState.Mouseover, null);
                 }
+
                 return new GizmoResult(GizmoState.Interacted, Event.current);
             }
+
             if (mouseOver)
             {
                 return new GizmoResult(GizmoState.Mouseover, null);
             }
+
             return new GizmoResult(GizmoState.Clear, null);
         }
 
@@ -170,43 +166,43 @@ namespace ToolsForHaul.Designators
             }
 
             Thing firstItem = cell.GetFirstItem();
-            if (firstItem != null && CanDesignateThing(firstItem).Accepted)
+            if (firstItem != null && this.CanDesignateThing(firstItem).Accepted)
             {
                 return true;
             }
 
-            numOfContents = SlotsToolbeltComp.slots.Count;
+            this.numOfContents = this.SlotsToolbeltComp.slots.Count;
 
             int designationsTotalStackCount = 0;
-            foreach (Thing designation in SlotsToolbeltComp.designatedThings)
+            foreach (Thing designation in this.SlotsToolbeltComp.designatedThings)
                 designationsTotalStackCount += designation.stackCount;
 
-            //No Item space or no stack space
-            if (SlotsToolbeltComp.designatedThings.Count + numOfContents >= MaxItem
-                || designationsTotalStackCount + SlotsToolbeltComp.slots.TotalStackCount >= SlotsToolbeltComp.MaxStack)
+            // No Item space or no stack space
+            if (this.SlotsToolbeltComp.designatedThings.Count + this.numOfContents >= this.MaxItem
+                || designationsTotalStackCount + this.SlotsToolbeltComp.slots.TotalStackCount >= this.SlotsToolbeltComp.MaxStack)
                 return new AcceptanceReport("BackpackIsFull".Translate());
 
 
-            foreach (Thing designation in SlotsToolbeltComp.designatedThings)
+            foreach (Thing designation in this.SlotsToolbeltComp.designatedThings)
             {
                 if (designation.def.category == ThingCategory.Item && !Find.Reservations.IsReserved(designation, Faction.OfPlayer))
                     return true;
             }
+
             return new AcceptanceReport("InvalidPutInTarget".Translate());
 
-            //Thing firstItem = cell.GetFirstItem();
-            //if (firstItem != null && CanDesignateThing(firstItem).Accepted)
-            //{
-            //    return true;
-            //}
-            //
-            //return false;
+            // Thing firstItem = cell.GetFirstItem();
+            // if (firstItem != null && CanDesignateThing(firstItem).Accepted)
+            // {
+            // return true;
+            // }
+            // return false;
         }
 
         public override AcceptanceReport CanDesignateThing(Thing thing)
         {
             // fast check if already added to "designations"
-            if (SlotsToolbeltComp.designatedThings.Contains(thing))
+            if (this.SlotsToolbeltComp.designatedThings.Contains(thing))
             {
                 return true;
             }
@@ -217,21 +213,21 @@ namespace ToolsForHaul.Designators
                 return false;
             }
 
-            if (!SlotsToolbeltComp.owner.CanReserveAndReach(thing, PathEndMode.ClosestTouch, SlotsToolbeltComp.owner.NormalMaxDanger()))
+            if (!this.SlotsToolbeltComp.owner.CanReserveAndReach(thing, PathEndMode.ClosestTouch, this.SlotsToolbeltComp.owner.NormalMaxDanger()))
             {
                 return false;
             }
 
             // if there are free slots
-            if (SlotsToolbeltComp.designatedThings.Count + SlotsToolbeltComp.slots.Count >= MaxItem)
+            if (this.SlotsToolbeltComp.designatedThings.Count + this.SlotsToolbeltComp.slots.Count >= this.MaxItem)
             {
                 return false;
             }
 
             // if any of the thing's categories is allowed and not forbidden
-            if (thing.def.thingCategories.Exists(category => SlotsToolbeltComp.Properties.allowedThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)) && !SlotsToolbeltComp.Properties.forbiddenSubThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))))
+            if (thing.def.thingCategories.Exists(category => this.SlotsToolbeltComp.Properties.allowedThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)) && !this.SlotsToolbeltComp.Properties.forbiddenSubThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))))
             {
-                SlotsToolbeltComp.designatedThings.Add(thing);
+                this.SlotsToolbeltComp.designatedThings.Add(thing);
                 return true;
             }
 
@@ -240,13 +236,13 @@ namespace ToolsForHaul.Designators
 
         public override void DesignateSingleCell(IntVec3 cell)
         {
-            DesignateThing(cell.GetFirstItem());
+            this.DesignateThing(cell.GetFirstItem());
         }
 
         public override void DesignateThing(Thing thing)
         {
             // throws puffs to indicate that thigns were selected
-            MoteMaker.ThrowMetaPuffs(thing);
+            MoteMakerTFH.ThrowMetaPuffs(thing);
         }
 
         // called when designator successfuly selects at least one thing
@@ -259,24 +255,24 @@ namespace ToolsForHaul.Designators
             {
                 targetQueueA = new List<TargetInfo>(),
                 numToBringList = new List<int>(),
-                targetB = SlotsToolbeltComp.parent
+                targetB = this.SlotsToolbeltComp.parent
             };
 
-            foreach (Thing thing in SlotsToolbeltComp.designatedThings)
+            foreach (Thing thing in this.SlotsToolbeltComp.designatedThings)
             {
-                if (thing.IsForbidden(SlotsToolbeltComp.owner))
+                if (thing.IsForbidden(this.SlotsToolbeltComp.owner))
                 {
                     thing.SetForbidden(false);
                 }
 
                 job.targetQueueA.Add(thing);
                 job.numToBringList.Add(thing.def.stackLimit);
-                SlotsToolbeltComp.owner.Reserve(thing);
+                this.SlotsToolbeltComp.owner.Reserve(thing);
             }
-            SlotsToolbeltComp.designatedThings.Clear();
 
-            if (!job.targetQueueA.NullOrEmpty())
-                SlotsToolbeltComp.owner.drafter.TakeOrderedJob(job);
+            this.SlotsToolbeltComp.designatedThings.Clear();
+
+            if (!job.targetQueueA.NullOrEmpty()) this.SlotsToolbeltComp.owner.drafter.TakeOrderedJob(job);
 
             // remove active selection after click
             DesignatorManager.Deselect();

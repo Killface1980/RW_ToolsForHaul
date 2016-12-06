@@ -6,23 +6,14 @@ using Verse.AI;
 
 namespace ToolsForHaul.WorkGivers
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
     public class WorkGiver_Refuel : WorkGiver_Scanner
     {
-        public override ThingRequest PotentialWorkThingRequest
-        {
-            get
-            {
-                return ThingRequest.ForGroup(ThingRequestGroup.Refuelable);
-            }
-        }
+        public override ThingRequest PotentialWorkThingRequest => ThingRequest.ForGroup(ThingRequestGroup.Refuelable);
 
-        public override PathEndMode PathEndMode
-        {
-            get
-            {
-                return PathEndMode.Touch;
-            }
-        }
+        public override PathEndMode PathEndMode => PathEndMode.Touch;
 
         public override bool HasJobOnThing(Pawn pawn, Thing t)
         {
@@ -50,14 +41,17 @@ namespace ToolsForHaul.WorkGivers
             {
                 return false;
             }
+
             if (mustBeAutoRefuelable && !compRefuelable.ShouldAutoRefuelNow)
             {
                 return false;
             }
+
             if (t.IsForbidden(pawn) || !pawn.CanReserveAndReach(t, PathEndMode.Touch, pawn.NormalMaxDanger(), 1))
             {
                 return false;
             }
+
             if (this.FindBestFuel(pawn, t) == null)
             {
                 ThingFilter fuelFilter = t.TryGetComp<CompRefuelable>().Props.fuelFilter;
@@ -67,6 +61,7 @@ namespace ToolsForHaul.WorkGivers
                 }));
                 return false;
             }
+
             CompMountable compMountable = t.TryGetComp<CompMountable>();
             if (compMountable != null && compMountable.IsMounted)
             {

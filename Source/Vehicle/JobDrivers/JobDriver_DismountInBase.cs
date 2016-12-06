@@ -8,24 +8,27 @@ using Verse.AI;
 
 namespace ToolsForHaul.JobDrivers
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
     public class JobDriver_DismountInBase : JobDriver
     {
-        //Constants
+        // Constants
         private const TargetIndex CartInd = TargetIndex.A;
         private const TargetIndex StoreCellInd = TargetIndex.B;
 
         public override string GetReport()
         {
-            ThingWithComps cart = TargetThingA as ThingWithComps;
+            ThingWithComps cart = this.TargetThingA as ThingWithComps;
 
             IntVec3 destLoc = new IntVec3(-1000, -1000, -1000);
             string destName = null;
             SlotGroup destGroup = null;
 
 
-            if (pawn.jobs.curJob.targetB != null)
+            if (this.pawn.jobs.curJob.targetB != null)
             {
-                destLoc = pawn.jobs.curJob.targetB.Cell;
+                destLoc = this.pawn.jobs.curJob.targetB.Cell;
                 destGroup = destLoc.GetSlotGroup();
             }
 
@@ -44,23 +47,21 @@ namespace ToolsForHaul.JobDrivers
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ///
-            //Set fail conditions
+            // Set fail conditions
             ///
 
             this.FailOnDestroyedOrNull(CartInd);
-            //Note we only fail on forbidden if the target doesn't start that way
-            //This helps haul-aside jobs on forbidden items
-            if (!TargetThingA.IsForbidden(pawn.Faction))
-                this.FailOnForbidden(CartInd);
 
+            // Note we only fail on forbidden if the target doesn't start that way
+            // This helps haul-aside jobs on forbidden items
+            if (!this.TargetThingA.IsForbidden(this.pawn.Faction)) this.FailOnForbidden(CartInd);
 
-            ThingWithComps cart = TargetThingA as ThingWithComps;
+            ThingWithComps cart = this.TargetThingA as ThingWithComps;
 
-            if (ToolsForHaulUtility.FindStorageCell(pawn, cart) == IntVec3.Invalid)
+            if (ToolsForHaulUtility.FindStorageCell(this.pawn, cart) == IntVec3.Invalid)
             {
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceForCart);
             }
-
 
             if (cart.TryGetComp<CompMountable>().Driver != null)
             {
@@ -68,36 +69,33 @@ namespace ToolsForHaul.JobDrivers
             }
 
             ///
-            //Define Toil
+            // Define Toil
             ///
 
             Toil toilGoToCell = Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch);
 
             ///
-            //Toils Start
+            // Toils Start
             ///
 
-
-            //Reserve thing to be stored and storage cell 
+            // Reserve thing to be stored and storage cell 
             yield return Toils_Reserve.Reserve(CartInd);
             yield return Toils_Reserve.Reserve(StoreCellInd);
 
-            //JumpIf already mounted
-            yield return Toils_Jump.JumpIf(toilGoToCell, () =>
-            {
-                return cart.TryGetComp<CompMountable>().Driver == pawn ? true : false;
-            });
+            // JumpIf already mounted
+            yield return
+                Toils_Jump.JumpIf(
+                    toilGoToCell,
+                    () => { return cart.TryGetComp<CompMountable>().Driver == this.pawn ? true : false; });
 
-            //Mount on Target
-            yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch)
-                                        .FailOnDestroyedOrNull(CartInd);
+            // Mount on Target
+            yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch).FailOnDestroyedOrNull(CartInd);
             yield return Toils_Cart.MountOn(CartInd);
 
-            //Dismount
+            // Dismount
             yield return toilGoToCell;
 
             yield return Toils_Cart.DismountAt(CartInd, StoreCellInd);
         }
-
     }
 }

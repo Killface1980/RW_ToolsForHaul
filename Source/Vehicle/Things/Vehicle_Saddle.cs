@@ -14,27 +14,39 @@ namespace ToolsForHaul
     [StaticConstructorOnStartup]
     public class Vehicle_Saddle : ThingWithComps, IThingContainerOwner
     {
-
         #region Variables
+
         // ==================================
         private const int maxNumBoarding = 1;
 
-        //Graphic data
-        private  Graphic_Multi graphic_Saddle;
-        //Body and part location
+        // Graphic data
+        private Graphic_Multi graphic_Saddle;
+
+        // Body and part location
         private Vector3 saddleLoc;
 
-        //mount and storage data
+        // mount and storage data
         public CompMountable mountableComp;
+
         public ThingContainer storage;
-        public ThingContainer GetContainer() { return storage; }
+
+        public ThingContainer GetContainer()
+        {
+            return storage;
+        }
 
         public IntVec3 GetPosition()
         {
             return Position;
         }
 
-        public int MaxItem { get { return Rider != null ? 3 : 2; } }
+        public int MaxItem
+        {
+            get
+            {
+                return Rider != null ? 3 : 2;
+            }
+        }
 
         public Pawn Rider
         {
@@ -43,18 +55,23 @@ namespace ToolsForHaul
                 return storage.Any(x => x is Pawn) ? storage.First(x => x is Pawn) as Pawn : null;
             }
         }
+
         public virtual void BoardOn(Pawn pawn)
         {
-            if (mountableComp.IsMounted
-                && (storage.Count(x => x is Pawn) >= maxNumBoarding                                //No Space
-                || (Faction != null && Faction != pawn.Faction)))                        //Not your vehicle
+            if (mountableComp.IsMounted && (storage.Count(x => x is Pawn) >= maxNumBoarding // No Space
+                                            || (Faction != null && Faction != pawn.Faction))) // Not your vehicle
                 return;
 
-            if (pawn.Faction == Faction.OfPlayer && (pawn.needs.food.CurCategory == HungerCategory.Starving || pawn.needs.rest.CurCategory == RestCategory.Exhausted))
+            if (pawn.Faction == Faction.OfPlayer
+                && (pawn.needs.food.CurCategory == HungerCategory.Starving
+                    || pawn.needs.rest.CurCategory == RestCategory.Exhausted))
             {
-                Messages.Message(pawn.LabelCap + "cannot board on " + LabelCap + ": " + pawn.LabelCap + "is starving or exhausted", MessageSound.RejectInput);
+                Messages.Message(
+                    pawn.LabelCap + "cannot board on " + LabelCap + ": " + pawn.LabelCap + "is starving or exhausted",
+                    MessageSound.RejectInput);
                 return;
             }
+
             Job jobNew = new Job(HaulJobDefOf.StandBy, mountableComp.Driver.Position, 4800);
             mountableComp.Driver.jobs.StartJob(jobNew, JobCondition.Incompletable);
 
@@ -66,8 +83,7 @@ namespace ToolsForHaul
 
         public virtual void Unboard(Pawn pawn)
         {
-            if (storage.Count(x => x is Pawn) <= 0)
-                return;
+            if (storage.Count(x => x is Pawn) <= 0) return;
 
             if (storage.Contains(pawn))
             {
@@ -77,23 +93,25 @@ namespace ToolsForHaul
                 storage.TryDrop(pawn, Position, ThingPlaceMode.Near, out dummy);
             }
         }
+
         public virtual void UnboardAll()
         {
-            if (storage.Count(x => x is Pawn) <= 0)
-                return;
+            if (storage.Count(x => x is Pawn) <= 0) return;
 
             foreach (Thing thing in storage.Where(x => x is Pawn).ToList())
             {
-                Pawn crew = (Pawn) thing;
+                Pawn crew = (Pawn)thing;
                 if (crew == null) continue;
 
                 crew.holder = null;
                 crew.jobs?.StopAll();
                 Thing dummy;
                 storage.TryDrop(crew, Position, ThingPlaceMode.Near, out dummy);
-                //     storage.TryDropAll(Position, ThingPlaceMode.Near);
+
+                // storage.TryDropAll(Position, ThingPlaceMode.Near);
             }
         }
+
         #endregion
 
         #region Setup Work
@@ -102,7 +120,6 @@ namespace ToolsForHaul
         {
             storage = new ThingContainer(this);
         }
-
 
         public override void SpawnSetup()
         {
@@ -123,15 +140,13 @@ namespace ToolsForHaul
             UnboardAll();
             storage.TryDropAll(Position, ThingPlaceMode.Near);
 
-            if (mode == DestroyMode.Deconstruct)
-                mode = DestroyMode.Kill;
+            if (mode == DestroyMode.Deconstruct) mode = DestroyMode.Kill;
             base.Destroy(mode);
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            foreach (Gizmo baseGizmo in base.GetGizmos())
-                yield return baseGizmo;
+            foreach (Gizmo baseGizmo in base.GetGizmos()) yield return baseGizmo;
             if (mountableComp.IsMounted && storage.Count(x => x is Pawn) < maxNumBoarding)
             {
                 Designator_Board designatorBoard = new Designator_Board();
@@ -144,6 +159,7 @@ namespace ToolsForHaul
 
                 yield return designatorBoard;
             }
+
             if (mountableComp.IsMounted && storage.Count(x => x is Pawn) >= maxNumBoarding)
             {
                 Command_Action commandUnboardAll = new Command_Action();
@@ -152,10 +168,7 @@ namespace ToolsForHaul
                 commandUnboardAll.defaultDesc = "CommandGetOffDesc".Translate();
                 commandUnboardAll.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnboardAll");
                 commandUnboardAll.activateSound = SoundDef.Named("Click");
-                commandUnboardAll.action = () =>
-                {
-                    UnboardAll();
-                };
+                commandUnboardAll.action = () => { UnboardAll(); };
 
                 yield return commandUnboardAll;
 
@@ -174,8 +187,7 @@ namespace ToolsForHaul
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
         {
-            foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn))
-                yield return fmo;
+            foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn)) yield return fmo;
 
             if (mountableComp.IsMounted)
             {
@@ -184,10 +196,10 @@ namespace ToolsForHaul
                 fmoBoard.Label = "Ride".Translate(mountableComp.Driver.LabelCap);
                 fmoBoard.priority = MenuOptionPriority.High;
                 fmoBoard.action = () =>
-                {
-                    Job jobNew = new Job(HaulJobDefOf.Board, this);
-                    myPawn.drafter.TakeOrderedJob(jobNew);
-                };
+                    {
+                        Job jobNew = new Job(HaulJobDefOf.Board, this);
+                        myPawn.drafter.TakeOrderedJob(jobNew);
+                    };
                 if (storage.Count(x => x is Pawn) >= 1)
                 {
                     fmoBoard.Label = "AlreadyRide".Translate();
@@ -204,12 +216,19 @@ namespace ToolsForHaul
         private void UpdateGraphics()
         {
             graphic_Saddle = new Graphic_Multi();
-            graphic_Saddle = GraphicDatabase.Get<Graphic_Multi>("Things/Pawn/Vehicle/Saddle", def.graphic.Shader, def.graphic.drawSize, def.graphic.color, def.graphic.colorTwo) as Graphic_Multi;
+            graphic_Saddle =
+                GraphicDatabase.Get<Graphic_Multi>(
+                    "Things/Pawn/Vehicle/Saddle",
+                    def.graphic.Shader,
+                    def.graphic.drawSize,
+                    def.graphic.color,
+                    def.graphic.colorTwo) as Graphic_Multi;
         }
 
         #endregion
 
         #region Ticker
+
         // ==================================
 
         /// <summary>
@@ -221,19 +240,19 @@ namespace ToolsForHaul
             storage.ThingContainerTick();
             foreach (Thing thing in storage.Where(x => x is Pawn))
             {
-                Pawn crew = (Pawn) thing;
-                if (crew.Downed || crew.Dead)
-                    Unboard(crew);
+                Pawn crew = (Pawn)thing;
+                if (crew.Downed || crew.Dead) Unboard(crew);
                 crew.Position = Position;
             }
-            if (mountableComp != null && mountableComp.IsMounted)
-                return;
+
+            if (mountableComp != null && mountableComp.IsMounted) return;
             UnboardAll();
         }
 
         #endregion
 
         #region Graphics / Inspections
+
         // ==================================
 
         /// <summary>
@@ -243,8 +262,7 @@ namespace ToolsForHaul
         {
             get
             {
-                if (!mountableComp.IsMounted || !Spawned)
-                    return base.DrawPos;
+                if (!mountableComp.IsMounted || !Spawned) return base.DrawPos;
                 return mountableComp.Position;
             }
         }
@@ -256,6 +274,7 @@ namespace ToolsForHaul
                 base.DrawAt(drawLoc);
                 return;
             }
+
             saddleLoc = drawLoc;
             saddleLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.01f;
 
@@ -265,17 +284,17 @@ namespace ToolsForHaul
                 Vector3 crewLoc = drawLoc;
                 crewLoc.y = Altitudes.AltitudeFor(AltitudeLayer.PawnUnused) + 0.1f;
                 Vector3 crewsOffset = new Vector3(0.25f, 0.02f, -0.25f);
-                if (Rotation == Rot4.North || Rotation == Rot4.South)
-                    crewsOffset.x = 0f;
+                if (Rotation == Rot4.North || Rotation == Rot4.South) crewsOffset.x = 0f;
                 else
                 {
                     crewLoc.z += 1f;
                 }
+
                 if (storage == null) return;
 
                 foreach (Thing thing in storage.Where(x => x is Pawn).ToList())
                 {
-                    Pawn pawn = (Pawn) thing;
+                    Pawn pawn = (Pawn)thing;
                     if (pawn == null) continue;
                     pawn.Rotation = Rotation;
                     pawn.DrawAt(crewLoc + crewsOffset.RotatedBy(Rotation.AsAngle));
@@ -284,12 +303,15 @@ namespace ToolsForHaul
                     {
                         Stance_Warmup stanceWarmup = pawn.stances.curStance as Stance_Warmup;
                         float num2 = stanceWarmup.ticksLeft >= 300 ? (stanceWarmup.ticksLeft >= 450 ? 0.5f : 0.75f) : 1f;
-                        GenDraw.DrawAimPie(stanceWarmup.stanceTracker.pawn, stanceWarmup.focusTarg, (int)(stanceWarmup.ticksLeft * (double)num2), 0.2f);
+                        GenDraw.DrawAimPie(
+                            stanceWarmup.stanceTracker.pawn,
+                            stanceWarmup.focusTarg,
+                            (int)(stanceWarmup.ticksLeft * (double)num2),
+                            0.2f);
                     }
                 }
             }
-            else
-                base.DrawAt(drawLoc);
+            else base.DrawAt(drawLoc);
         }
 
         public override string GetInspectString()
@@ -297,11 +319,11 @@ namespace ToolsForHaul
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append(base.GetInspectString());
             stringBuilder.AppendLine("Rider".Translate());
-            foreach (Pawn pawn in storage.Where(x => x is Pawn).ToList())
-                stringBuilder.Append(pawn.LabelCap.Translate() + ", ");
+            foreach (Pawn pawn in storage.Where(x => x is Pawn).ToList()) stringBuilder.Append(pawn.LabelCap.Translate() + ", ");
             stringBuilder.Remove(stringBuilder.Length - 3, 1);
             return stringBuilder.ToString();
         }
+
         #endregion
     }
 }

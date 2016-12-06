@@ -12,8 +12,8 @@ namespace ToolsForHaul.Components
         {
             get
             {
-                if (owner != null
-                    && (owner.equipment.AllEquipment.Contains(parent) || owner.apparel.WornApparel.Contains(parent as Apparel))) return true;
+                if (this.owner != null
+                    && (this.owner.equipment.AllEquipment.Contains(this.parent) || this.owner.apparel.WornApparel.Contains(this.parent as Apparel))) return true;
 
                 return false;
             }

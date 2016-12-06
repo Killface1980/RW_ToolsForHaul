@@ -7,8 +7,13 @@ using Verse;
 using Verse.AI;
 using Verse.Sound;
 
-namespace ToolsForHaul.IncidentWorkers
+namespace ToolsForHaul.IncidentWorker
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
+    using IncidentWorker = RimWorld.IncidentWorker;
+
     public class IncidentWorker_RefugeeChased : IncidentWorker
     {
         private const float RaidPointsFactor = 1.35f;
@@ -24,6 +29,7 @@ namespace ToolsForHaul.IncidentWorkers
             {
                 return false;
             }
+
             Faction faction = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Spacer);
             PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDefOf.SpaceRefugee, faction, PawnGenerationContext.NonPlayer, false, false, false, false, true, false, RelationWithColonistWeight, false, true, true, null, null, null, null, null);
             Pawn refugee = PawnGenerator.GeneratePawn(request);
@@ -35,6 +41,7 @@ namespace ToolsForHaul.IncidentWorkers
             {
                 return false;
             }
+
             string text = "RefugeeChasedInitial".Translate(refugee.Name.ToStringFull, refugee.story.adulthood.title.ToLower(), enemyFac.def.pawnsPlural, enemyFac.Name, refugee.ageTracker.AgeBiologicalYears);
             text = text.AdjustedFor(refugee);
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, refugee);
@@ -59,6 +66,7 @@ namespace ToolsForHaul.IncidentWorkers
                     {
                         thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
                     }
+
                     GenSpawn.Spawn(thing, spawnSpot);
 
                     Thing fuel = ThingMaker.MakeThing(thing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.FirstOrDefault());
@@ -74,7 +82,7 @@ namespace ToolsForHaul.IncidentWorkers
                     refugee.jobs.StartJob(job, JobCondition.InterruptForced);
 
                     SoundInfo info = SoundInfo.InWorld(thing);
-                    thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
+                    thing.TryGetComp<CompMountable>().SustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
 

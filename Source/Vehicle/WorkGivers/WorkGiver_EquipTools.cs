@@ -38,12 +38,11 @@ namespace ToolsForHaul.WorkGivers
         public override bool ShouldSkip(Pawn pawn)
         {
             Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
-            //Should skip pawn that don't have a toolbelt.
-            if (toolbelt == null)
-                return true;
+
+            // Should skip pawn that don't have a toolbelt.
+            if (toolbelt == null) return true;
 
             // Skip it toolbelt full
-
             if (toolbelt.MaxItem <= toolbelt.slotsComp.slots.Count)
             {
                 return true;

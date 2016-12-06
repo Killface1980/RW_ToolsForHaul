@@ -11,11 +11,12 @@ namespace ToolsForHaul.JobGivers
         {
             foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart)
             {
-                if (cart.mountableComp.IsMounted && !cart.mountableComp.Driver.RaceProps.Animal && cart.mountableComp.Driver.ThingID == pawn.ThingID)
+                if (cart.MountableComp.IsMounted && !cart.MountableComp.Driver.RaceProps.Animal && cart.MountableComp.Driver.ThingID == pawn.ThingID)
                 {
-                    cart.vehicleComp.despawnAtEdge = true;
+                    cart.VehicleComp.despawnAtEdge = true;
                 }
             }
+
             foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret)
             {
                 if (cart.mountableComp.IsMounted && !cart.mountableComp.Driver.RaceProps.Animal && cart.mountableComp.Driver.ThingID == pawn.ThingID)
@@ -29,11 +30,13 @@ namespace ToolsForHaul.JobGivers
             {
                 return null;
             }
+
             Pawn pawn2 = KidnapAIUtility.ReachableWoundedGuest(pawn);
             if (pawn2 == null)
             {
                 return null;
             }
+
             return new Job(JobDefOf.Kidnap)
             {
                 targetA = pawn2,

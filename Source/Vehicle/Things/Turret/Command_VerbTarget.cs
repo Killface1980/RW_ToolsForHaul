@@ -12,10 +12,11 @@ namespace Verse
         {
             get
             {
-                if (verb.ownerEquipment != null)
+                if (this.verb.ownerEquipment != null)
                 {
-                    return verb.ownerEquipment.DrawColor;
+                    return this.verb.ownerEquipment.DrawColor;
                 }
+
                 return base.IconDrawColor;
             }
         }
@@ -25,17 +26,24 @@ namespace Verse
             base.ProcessInput(ev);
             SoundDefOf.TickTiny.PlayOneShotOnCamera();
             Targeter targeter = Find.Targeter;
-            if (verb.CasterIsPawn && targeter.targetingVerb != null && targeter.targetingVerb.verbProps == verb.verbProps)
+            if (this.verb.CasterIsPawn && targeter.targetingVerb != null)
             {
-                Pawn casterPawn = verb.CasterPawn;
-                if (!targeter.IsPawnTargeting(casterPawn))
+                if (targeter.targetingVerb.verbProps == this.verb.verbProps)
                 {
-                    targeter.targetingVerbAdditionalPawns.Add(casterPawn);
+                    Pawn casterPawn = this.verb.CasterPawn;
+                    if (!targeter.IsPawnTargeting(casterPawn))
+                    {
+                        targeter.targetingVerbAdditionalPawns.Add(casterPawn);
+                    }
+                }
+                else
+                {
+                    Find.Targeter.BeginTargeting(this.verb);
                 }
             }
             else
             {
-                Find.Targeter.BeginTargeting(verb);
+                Find.Targeter.BeginTargeting(this.verb);
             }
         }
     }

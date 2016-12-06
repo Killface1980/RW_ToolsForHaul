@@ -8,6 +8,9 @@ using Verse.AI;
 
 namespace ToolsForHaul.JobDrivers
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
     public class JobDriver_GoForRide : JobDriver
     {
         private const TargetIndex DrivePathInd = TargetIndex.A;
@@ -19,31 +22,32 @@ namespace ToolsForHaul.JobDrivers
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.EndOnDespawnedOrNull(MountableInd);
-            if (TargetThingB.IsForbidden(pawn.Faction))
+            if (this.TargetThingB.IsForbidden(this.pawn.Faction))
                 this.FailOnForbidden(MountableInd);
 
-            yield return Toils_Reserve.Reserve(MountableInd, CurJob.def.joyMaxParticipants);
+            yield return Toils_Reserve.Reserve(MountableInd, this.CurJob.def.joyMaxParticipants);
 
             Toil toil = Toils_Goto.GotoCell(DrivePathInd, PathEndMode.OnCell);
             toil.tickAction = delegate
             {
-                if (Find.TickManager.TicksGame > startTick + CurJob.def.joyDuration)
+                if (Find.TickManager.TicksGame > this.startTick + this.CurJob.def.joyDuration)
                 {
-                    EndJobWith(JobCondition.Succeeded);
+                    this.EndJobWith(JobCondition.Succeeded);
                     return;
                 }
-                JoyUtility.JoyTickCheckEnd(pawn, JoyTickFullJoyAction.EndJob, 1f);
-            };
-            ThingWithComps cart = CurJob.GetTarget(MountableInd).Thing as ThingWithComps;
 
-            //JumpIf already mounted
+                JoyUtility.JoyTickCheckEnd(this.pawn, JoyTickFullJoyAction.EndJob, 1f);
+            };
+            ThingWithComps cart = this.CurJob.GetTarget(MountableInd).Thing as ThingWithComps;
+
+            // JumpIf already mounted
             yield return Toils_Jump.JumpIf(toil, () =>
             {
-                if (cart.TryGetComp<CompMountable>().Driver == pawn) return true;
+                if (cart.TryGetComp<CompMountable>().Driver == this.pawn) return true;
                 return false;
             });
 
-            //Mount on Target
+            // Mount on Target
             yield return Toils_Goto.GotoThing(MountableInd, PathEndMode.ClosestTouch)
                                         .FailOnDestroyedOrNull(MountableInd);
             yield return Toils_Cart.MountOn(MountableInd);
@@ -55,12 +59,12 @@ namespace ToolsForHaul.JobDrivers
             {
                 initAction = delegate
                 {
-                    if (CurJob.targetQueueA.Count > 0)
+                    if (this.CurJob.targetQueueA.Count > 0)
                     {
-                        TargetInfo targetA = CurJob.targetQueueA[0];
-                        CurJob.targetQueueA.RemoveAt(0);
-                        CurJob.targetA = targetA;
-                        JumpToToil(toil);
+                        TargetInfo targetA = this.CurJob.targetQueueA[0];
+                        this.CurJob.targetQueueA.RemoveAt(0);
+                        this.CurJob.targetA = targetA;
+                        this.JumpToToil(toil);
                         return;
                     }
                 }

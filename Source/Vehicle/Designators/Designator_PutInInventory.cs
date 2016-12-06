@@ -35,7 +35,7 @@ namespace ToolsForHaul
             foreach (Designation designation in designations)
                 designationsTotalStackCount += designation.target.Thing.stackCount;
 
-            //No Item space or no stack space
+            // No Item space or no stack space
             if (designations.Count + numOfContents >= backpack.MaxItem
                 || designationsTotalStackCount + backpack.wearer.inventory.container.TotalStackCount >= backpack.MaxStack)
                 return new AcceptanceReport("BackpackIsFull".Translate());
@@ -46,6 +46,7 @@ namespace ToolsForHaul
                 if (thing.def.category == ThingCategory.Item && !Find.Reservations.IsReserved(thing, Faction.OfPlayer))
                     return true;
             }
+
             return new AcceptanceReport("InvalidPutInTarget".Translate());
         }
 
@@ -69,11 +70,14 @@ namespace ToolsForHaul
                 jobNew.targetQueueA.Add(designations.First().target.Thing);
                 designations.RemoveAt(0);
             }
+
             if (!jobNew.targetQueueA.NullOrEmpty())
-                //if (backpack.wearer.drafter.CanTakePlayerJob())
+
+                // if (backpack.wearer.drafter.CanTakePlayerJob())
                 backpack.wearer.drafter.TakeOrderedJob(jobNew);
-            //else
-            //    backpack.wearer.drafter.QueueJob(jobNew);
+
+            // else
+            // backpack.wearer.drafter.QueueJob(jobNew);
             DesignatorManager.Deselect();
         }
 

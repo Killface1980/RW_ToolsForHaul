@@ -36,10 +36,12 @@ namespace ToolsForHaul
             {
                 return null;
             }
+
             if (!SickPawnVisitUtility.CanVisit(pawn, patient, JoyCategory.High))
             {
                 return null;
             }
+
             if (patient.health.capacities.GetEfficiency(PawnCapacityDefOf.Moving) > 0.6f)
                 return null;
             if (patient.health.capacities.GetEfficiency(PawnCapacityDefOf.Consciousness) < 0.6f)

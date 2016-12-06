@@ -7,7 +7,7 @@ using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 
-namespace ToolsForHaul.IncidentWorkers
+namespace ToolsForHaul.IncidentWorker
 {
     public class IncidentWorker_VisitorGroup : IncidentWorker_NeutralGroup
     {
@@ -15,15 +15,17 @@ namespace ToolsForHaul.IncidentWorkers
 
         public override bool TryExecute(IncidentParms parms)
         {
-            if (!TryResolveParms(parms))
+            if (!this.TryResolveParms(parms))
             {
                 return false;
             }
-            List<Pawn> list = SpawnPawns(parms);
+
+            List<Pawn> list = this.SpawnPawns(parms);
             if (list.Count == 0)
             {
                 return false;
             }
+
             IntVec3 chillSpot;
             RCellFinder.TryFindRandomSpotJustOutsideColony(list[0], out chillSpot);
             LordJob_VisitColony lordJob = new LordJob_VisitColony(parms.faction, chillSpot);
@@ -31,8 +33,9 @@ namespace ToolsForHaul.IncidentWorkers
             bool flag = false;
             if (Rand.Value < TraderChance)
             {
-                flag = TryConvertOnePawnToSmallTrader(list, parms.faction);
+                flag = this.TryConvertOnePawnToSmallTrader(list, parms.faction);
             }
+
             Pawn pawn = list.Find(x => parms.faction.leader == x);
             string label;
             string text3;
@@ -51,6 +54,7 @@ namespace ToolsForHaul.IncidentWorkers
                 label = "LetterLabelGroupVisitorsArrive".Translate();
                 text3 = "GroupVisitorsArrive".Translate(parms.faction.Name, text4, text5);
             }
+
             Find.LetterStack.ReceiveLetter(label, text3, LetterType.Good, list[0]);
             return true;
         }
@@ -61,6 +65,7 @@ namespace ToolsForHaul.IncidentWorkers
             {
                 return false;
             }
+
             Pawn pawn = pawns.RandomElement();
             Lord lord = pawn.GetLord();
             pawn.mindState.wantsToTradeWithColony = true;
@@ -77,6 +82,7 @@ namespace ToolsForHaul.IncidentWorkers
                     {
                         pawn2.SetFaction(pawn.Faction);
                     }
+
                     IntVec3 loc = CellFinder.RandomClosewalkCellNear(pawn.Position, 5);
                     GenSpawn.Spawn(pawn2, loc);
                     lord.AddPawn(pawn2);
@@ -86,6 +92,7 @@ namespace ToolsForHaul.IncidentWorkers
                     current.Destroy();
                 }
             }
+
             if (!pawn.inventory.container.Any(x => x.def.IsNutritionGivingIngestible && x.def.ingestible.preferability >= FoodPreferability.MealAwful))
             {
                 PawnInventoryGenerator.GiveRandomFood(pawn);
@@ -106,6 +113,7 @@ namespace ToolsForHaul.IncidentWorkers
             {
                 thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCart"));
             }
+
             GenSpawn.Spawn(thing, pawn.Position);
             Job job = new Job(HaulJobDefOf.Mount);
             thing.SetFaction(faction);

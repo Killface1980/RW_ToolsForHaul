@@ -30,6 +30,7 @@ namespace ToolsForHaul.Designators
                 if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike))
                     return true;
             }
+
             return new AcceptanceReport(txtCannotBoard.Translate());
         }
 
@@ -49,6 +50,7 @@ namespace ToolsForHaul.Designators
                     break;
                 }
             }
+
             DesignatorManager.Deselect();
         }
     }

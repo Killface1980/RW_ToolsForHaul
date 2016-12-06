@@ -6,7 +6,7 @@ namespace ToolsForHaul.JobDrivers
 {
     class JobDriver_StandBy : JobDriver
     {
-        //Constants
+        // Constants
         private const TargetIndex DestInd = TargetIndex.A;
 
         public override string GetReport()
@@ -20,25 +20,25 @@ namespace ToolsForHaul.JobDrivers
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ///
-            //Set fail conditions
+            // Set fail conditions
             ///
 
-            this.FailOn(() => !TargetA.Cell.IsValid);
+            this.FailOn(() => !this.TargetA.Cell.IsValid);
             this.FailOnBurningImmobile(DestInd);
 
             ///
-            //Define Toil
+            // Define Toil
             ///
 
 
 
             ///
-            //Toils Start
+            // Toils Start
             ///
 
             yield return Toils_Goto.GotoCell(DestInd, PathEndMode.ClosestTouch);
 
-            yield return Toils_General.Wait(CurJob.expiryInterval);
+            yield return Toils_General.Wait(this.CurJob.expiryInterval);
 
         }
 

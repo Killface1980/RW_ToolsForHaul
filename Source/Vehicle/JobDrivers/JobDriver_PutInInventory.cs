@@ -8,7 +8,7 @@ namespace ToolsForHaul
 {
     public class JobDriver_PutInInventory : JobDriver
     {
-        //Constants
+        // Constants
         private const TargetIndex HaulableInd = TargetIndex.A;
         private const TargetIndex BackpackInd = TargetIndex.B;
 
@@ -30,16 +30,17 @@ namespace ToolsForHaul
             Apparel_Backpack backpack = CurJob.GetTarget(BackpackInd).Thing as Apparel_Backpack;
 
             ///
-            //Set fail conditions
+            // Set fail conditions
             ///
 
 
-            //Backpack is full.
+            // Backpack is full.
             this.FailOn(() =>{ return pawn.inventory.container.Count < backpack.MaxItem ? false : true; });
 
             this.FailOn(() => { return pawn == backpack.wearer ? false : true; });
+
             ///
-            //Define Toil
+            // Define Toil
             ///
 
             Toil extractA = new Toil();
@@ -59,26 +60,25 @@ namespace ToolsForHaul
                                     .FailOnDestroyedOrNull(HaulableInd);
 
             ///
-            //Toils Start
+            // Toils Start
             ///
 
-            //Reserve thing to be stored and storage cell 
+            // Reserve thing to be stored and storage cell 
             yield return Toils_Reserve.Reserve(BackpackInd);
             yield return Toils_Reserve.Reserve(HaulableInd);
             yield return Toils_Reserve.ReserveQueue(HaulableInd);
 
 
             yield return Toils_Jump.JumpIf(toilGoToThing, () => { return CurJob.targetA.HasThing ? true : false;  });
-
-            //Collect TargetQueue
             {
+                // Collect TargetQueue
 
-                //Extract an haulable into TargetA
+                // Extract an haulable into TargetA
                 yield return extractA;
 
                 yield return toilGoToThing;
 
-                //CollectIntoCarrier
+                // CollectIntoCarrier
                 Toil toilPutInInventory = new Toil();
                 toilPutInInventory.initAction = () =>
                 {

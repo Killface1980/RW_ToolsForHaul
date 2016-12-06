@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using CommunityCoreLibrary;
+using System.Reflection;
 using RimWorld;
 using ToolsForHaul.JobDefs;
 using ToolsForHaul.Utilities;
@@ -13,28 +13,28 @@ namespace ToolsForHaul
     {
         protected abstract Job TryGiveTerminalJob(Pawn pawn);
 
-        [DetourClassMethod(typeof(ThinkNode_JobGiver), "TryIssueJobPackage", InjectionSequence.DLLLoad)]
+        [Detour(typeof(ThinkNode_JobGiver), bindingFlags = BindingFlags.Instance | BindingFlags.Public)]
         public override ThinkResult TryIssueJobPackage(Pawn pawn)
         {
-            Job job = TryGiveTerminalJob(pawn);
+            Job job = this.TryGiveTerminalJob(pawn);
             bool jobNull = job == null;
             ThinkResult result;
 
             if (pawn.mindState.IsIdle)
             {
-                //if (previousPawnWeapons.ContainsKey(pawn))
-                //{
-                //    Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
-                //    Pawn wearer = toolbelt.wearer;
-                //    if (wearer.equipment.Primary != null)
-                //        toolbelt.slotsComp.SwapEquipment(previousPawnWeapons[pawn]);
-                //    else
-                //    {
-                //        wearer.equipment.AddEquipment(previousPawnWeapons[pawn]);
-                //        toolbelt.slotsComp.slots.Remove(previousPawnWeapons[pawn]);
-                //    }
-                //    previousPawnWeapons.Remove(pawn);
-                //}
+                // if (previousPawnWeapons.ContainsKey(pawn))
+                // {
+                // Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+                // Pawn wearer = toolbelt.wearer;
+                // if (wearer.equipment.Primary != null)
+                // toolbelt.slotsComp.SwapEquipment(previousPawnWeapons[pawn]);
+                // else
+                // {
+                // wearer.equipment.AddEquipment(previousPawnWeapons[pawn]);
+                // toolbelt.slotsComp.slots.Remove(previousPawnWeapons[pawn]);
+                // }
+                // previousPawnWeapons.Remove(pawn);
+                // }
                 if (ToolsForHaulUtility.IsDriver(pawn))
                 {
                     job = ToolsForHaulUtility.DismountInBase(pawn, MapComponent_ToolsForHaul.currentVehicle[pawn]);
@@ -118,6 +118,7 @@ namespace ToolsForHaul
                     job = ToolsForHaulUtility.DismountInBase(pawn, MapComponent_ToolsForHaul.currentVehicle[pawn]);
                 }
             }
+
             return job;
         }
     }

@@ -12,40 +12,39 @@ namespace ToolsForHaul
         {
             base.SpawnSetup();
 
-            spawnTick = Find.TickManager.TicksGame;
+            this.spawnTick = Find.TickManager.TicksGame;
 
-            List<Thing> list = new List<Thing>(Position.GetThingList());
+            List<Thing> list = new List<Thing>(this.Position.GetThingList());
             foreach (Thing thing in list)
             {
                 if (thing.HasAttachment(ThingDefOf.Fire))
                 {
                     Fire fire = (Fire)thing.GetAttachment(ThingDefOf.Fire);
-                    if (fire != null)
-                        fire.fireSize = maxFireSize;
+                    if (fire != null) fire.fireSize = maxFireSize;
                 }
-              //else
-              //{
-              //    if (thing.HitPoints < 5)
-              //    {
-              //        thing.TryAttachFire(maxFireSize);
-              //    }
-              //}
+
+                // else
+                // {
+                // if (thing.HitPoints < 5)
+                // {
+                // thing.TryAttachFire(maxFireSize);
+                // }
+                // }
             }
         }
+
         private int spawnTick;
         private int fireTick = -5000;
 
         public override void Tick()
         {
-            if (Position.GetThingList().Any(x => x.def == ThingDefOf.FilthFireFoam))
+            if (this.Position.GetThingList().Any(x => x.def == ThingDefOf.FilthFireFoam))
             {
-                if (!Destroyed)
-                    Destroy();
+                if (!this.Destroyed) this.Destroy();
             }
             else
             {
-
-                if (this.HasAttachment(ThingDefOf.Fire) && Find.TickManager.TicksGame>fireTick)
+                if (this.HasAttachment(ThingDefOf.Fire) && Find.TickManager.TicksGame > this.fireTick)
                 {
                     Fire fire = (Fire)this.GetAttachment(ThingDefOf.Fire);
                     if (fire != null)
@@ -53,13 +52,14 @@ namespace ToolsForHaul
                         fire.fireSize = maxFireSize;
                     }
 
-                    fireTick = Find.TickManager.TicksGame + 200;
+                    this.fireTick = Find.TickManager.TicksGame + 200;
                 }
             }
-          //if (spawnTick + 15000 < Find.TickManager.TicksGame)
-          //{
-          //    Destroy(DestroyMode.Vanish);
-          //}
+
+            // if (spawnTick + 15000 < Find.TickManager.TicksGame)
+            // {
+            // Destroy(DestroyMode.Vanish);
+            // }
         }
     }
 }

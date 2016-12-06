@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+
+using RimWorld;
+
 using Verse;
 using Verse.AI;
-using RimWorld;
 
 namespace ToolsForHaul.JTBetterHauling
 {
     public class JobGiver_Work_JT : JobGiver_Work
     {
-        [Detour(typeof(JobGiver_Work), bindingFlags = (BindingFlags.Instance | BindingFlags.NonPublic))]
+        [Detour(typeof(JobGiver_Work), bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic)]
         protected override Job TryGiveJob(Pawn pawn)
         {
-            //Player forced? or fire?
+            // Player forced? or fire?
             if (this.emergency && pawn.mindState.priorityWork.IsPrioritized)
             {
                 List<WorkGiverDef> workGiversByPriority = pawn.mindState.priorityWork.WorkType.workGiversByPriority;
@@ -26,8 +28,10 @@ namespace ToolsForHaul.JTBetterHauling
                         return job;
                     }
                 }
+
                 pawn.mindState.priorityWork.Clear();
             }
+
             List<WorkGiver> list = this.emergency ? pawn.workSettings.WorkGiversInOrderEmergency : pawn.workSettings.WorkGiversInOrderNormal;
             int num = -999;
             TargetInfo targetInfo = TargetInfo.Invalid;
@@ -35,60 +39,96 @@ namespace ToolsForHaul.JTBetterHauling
             for (int j = 0; j < list.Count; j++)
             {
                 WorkGiver workGiver = list[j];
-                //If pawn cannot do job
+
+                // If pawn cannot do job
                 if (workGiver.def.priorityInType != num && targetInfo.IsValid)
                 {
                     break;
                 }
+
                 if (this.GiverCanGiveJobToPawn(pawn, workGiver))
                 {
                     try
                     {
-                        //If needs to go to bed? Resting?
+                        // If needs to go to bed? Resting?
                         Job job2 = workGiver.NonScanJob(pawn);
                         if (job2 != null)
                         {
                             return job2;
                         }
+
                         WorkGiver_Scanner scanner = workGiver as WorkGiver_Scanner;
                         if (scanner != null)
                         {
                             if (workGiver.def.scanThings)
                             {
-                                Predicate<Thing> predicate = (Thing t) => !t.IsForbidden(pawn) && scanner.HasJobOnThing(pawn, t);
+                                Predicate<Thing> predicate =
+                                    (Thing t) => !t.IsForbidden(pawn) && scanner.HasJobOnThing(pawn, t);
                                 IEnumerable<Thing> enumerable = scanner.PotentialWorkThingsGlobal(pawn);
                                 Thing thing;
-                                //Always false unless roof or researcher
+
+                                // Always false unless roof or researcher
                                 if (scanner.Prioritized)
                                 {
                                     IEnumerable<Thing> enumerable2 = enumerable;
                                     if (enumerable2 == null)
                                     {
-                                        enumerable2 = Find.ListerThings.ThingsMatching(scanner.PotentialWorkThingRequest);
+                                        enumerable2 = Find.ListerThings.ThingsMatching(
+                                            scanner.PotentialWorkThingRequest);
                                     }
+
                                     Predicate<Thing> validator = predicate;
-                                    thing = GenClosest.ClosestThing_Global_Reachable(pawn.Position, enumerable2, scanner.PathEndMode, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, validator, (Thing x) => scanner.GetPriority(pawn, x));
+                                    thing = GenClosest.ClosestThing_Global_Reachable(
+                                        pawn.Position,
+                                        enumerable2,
+                                        scanner.PathEndMode,
+                                        TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false),
+                                        9999f,
+                                        validator,
+                                        (Thing x) => scanner.GetPriority(pawn, x));
                                 }
                                 else
                                 {
                                     Predicate<Thing> validator = predicate;
-                                    //Start of my code
+
+                                    // Start of my code
                                     if (scanner is WorkGiver_HaulGeneral)
                                     {
-                                        thing = GenClosest_JT.ClosestThingReachable_JT(pawn.Position, scanner.PotentialWorkThingRequest, scanner.PathEndMode, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, validator, enumerable, scanner.LocalRegionsToScanFirst, enumerable != null);
+                                        thing = GenClosest_JT.ClosestThingReachable_JT(
+                                            pawn.Position,
+                                            scanner.PotentialWorkThingRequest,
+                                            scanner.PathEndMode,
+                                            TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false),
+                                            9999f,
+                                            validator,
+                                            enumerable,
+                                            scanner.LocalRegionsToScanFirst,
+                                            enumerable != null);
                                     }
                                     else
                                     {
-                                        thing = GenClosest.ClosestThingReachable(pawn.Position, scanner.PotentialWorkThingRequest, scanner.PathEndMode, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, validator, enumerable, scanner.LocalRegionsToScanFirst, enumerable != null);
+                                        thing = GenClosest.ClosestThingReachable(
+                                            pawn.Position,
+                                            scanner.PotentialWorkThingRequest,
+                                            scanner.PathEndMode,
+                                            TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false),
+                                            9999f,
+                                            validator,
+                                            enumerable,
+                                            scanner.LocalRegionsToScanFirst,
+                                            enumerable != null);
                                     }
-                                    //End of my code
+
+                                    // End of my code
                                 }
+
                                 if (thing != null)
                                 {
                                     targetInfo = thing;
                                     workGiver_Scanner = scanner;
                                 }
                             }
+
                             if (workGiver.def.scanCells)
                             {
                                 IntVec3 position = pawn.Position;
@@ -111,10 +151,12 @@ namespace ToolsForHaul.JTBetterHauling
                                             }
                                         }
                                     }
-                                    else if (lengthHorizontalSquared < num2 && !current.IsForbidden(pawn) && scanner.HasJobOnCell(pawn, current))
+                                    else if (lengthHorizontalSquared < num2 && !current.IsForbidden(pawn)
+                                             && scanner.HasJobOnCell(pawn, current))
                                     {
                                         flag = true;
                                     }
+
                                     if (flag)
                                     {
                                         targetInfo = current;
@@ -127,18 +169,18 @@ namespace ToolsForHaul.JTBetterHauling
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(string.Concat(new object[]
-                        {
-                            pawn,
-                            " threw exception in WorkGiver ",
-                            workGiver.def.defName,
-                            ": ",
-                            ex.ToString()
-                        }));
+                        Log.Error(
+                            string.Concat(
+                                new object[]
+                                    {
+                                        pawn, " threw exception in WorkGiver ", workGiver.def.defName, ": ",
+                                        ex.ToString()
+                                    }));
                     }
                     finally
                     {
                     }
+
                     if (targetInfo.IsValid)
                     {
                         pawn.mindState.lastGivenWorkType = workGiver.def.workType;
@@ -151,23 +193,27 @@ namespace ToolsForHaul.JTBetterHauling
                         {
                             job3 = workGiver_Scanner.JobOnCell(pawn, targetInfo.Cell);
                         }
+
                         if (job3 != null)
                         {
                             return job3;
                         }
-                        Log.ErrorOnce(string.Concat(new object[]
-                        {
-                            workGiver_Scanner,
-                            " provided target ",
-                            targetInfo,
-                            " but yielded no actual job for pawn ",
-                            pawn,
-                            ". The CanGiveJob and JobOnX methods may not be synchronized."
-                        }), 6112651);
+
+                        Log.ErrorOnce(
+                            string.Concat(
+                                new object[]
+                                    {
+                                        workGiver_Scanner, " provided target ", targetInfo,
+                                        " but yielded no actual job for pawn ", pawn,
+                                        ". The CanGiveJob and JobOnX methods may not be synchronized."
+                                    }),
+                            6112651);
                     }
+
                     num = workGiver.def.priorityInType;
                 }
             }
+
             return null;
         }
 
@@ -182,6 +228,7 @@ namespace ToolsForHaul.JTBetterHauling
             {
                 return null;
             }
+
             try
             {
                 Job job = giver.NonScanJob(pawn);
@@ -190,6 +237,7 @@ namespace ToolsForHaul.JTBetterHauling
                     Job result = job;
                     return result;
                 }
+
                 WorkGiver_Scanner scanner = giver as WorkGiver_Scanner;
                 if (scanner != null)
                 {
@@ -208,6 +256,7 @@ namespace ToolsForHaul.JTBetterHauling
                             }
                         }
                     }
+
                     if (giver.def.scanCells && !cell.IsForbidden(pawn) && scanner.HasJobOnCell(pawn, cell))
                     {
                         pawn.mindState.lastGivenWorkType = giver.def.workType;
@@ -227,6 +276,7 @@ namespace ToolsForHaul.JTBetterHauling
                     ex.ToString()
                 }));
             }
+
             return null;
         }
 

@@ -1,16 +1,18 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using RimWorld;
+
 using Verse;
 
 namespace ToolsForHaul.JTBetterHauling
 {
     static class AreaFinder
     {
-        //Returns Home area, then any areas that contain "haul" in alphabetical order
+        // Returns Home area, then any areas that contain "haul" in alphabetical order
         public static List<Area> getHaulAreas()
         {
-            List<string> areaName = new List<String>();
+            List<string> areaName = new List<string>();
             foreach (Area a in Find.AreaManager.AllAreas)
             {
                 if (a is Area_Allowed && a.Label.ToLower().Contains("haul"))
@@ -26,11 +28,12 @@ namespace ToolsForHaul.JTBetterHauling
             {
                 areas.Add(Find.AreaManager.GetLabeled(s));
             }
+
             areas.Add(Find.AreaHome);
             return areas;
         }
 
-        //Returns things that are in area
+        // Returns things that are in area
         public static IEnumerable<Thing> searcher(Area area, List<Thing> things)
         {
             List<Thing> results = new List<Thing>();
@@ -41,6 +44,7 @@ namespace ToolsForHaul.JTBetterHauling
                     yield return thing;
                 }
             }
+
             yield break;
         }
     }

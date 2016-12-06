@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using RimWorld;
+
 using UnityEngine;
+
 using Verse;
 using Verse.AI;
 using Verse.Sound;
-using RimWorld;
 
 namespace Vehicle
 {
@@ -37,6 +39,7 @@ namespace Vehicle
                 if (pawn != null && (pawn.Faction == Faction.OfPlayer || (pawn.RaceProps.Animal && pawn.drafter != null)))
                     return true;
             }
+
             return new AcceptanceReport(txtCannotBoard.Translate());
         }
 
@@ -57,6 +60,7 @@ namespace Vehicle
                     break;
                 }
             }
+
             DesignatorManager.Deselect();
         }
     }

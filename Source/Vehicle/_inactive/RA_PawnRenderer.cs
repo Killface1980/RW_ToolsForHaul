@@ -42,27 +42,32 @@ namespace ToolsForHaul
             {
                 return;
             }
+
             if (pawn.equipment?.Primary == null)
             {
                 return;
             }
+
             if (pawn.CurJob?.def.neverShowWeapon ?? false)
             {
                 return;
             }
+
             Stance_Busy stance_Busy = pawn.stances.curStance as Stance_Busy;
             if (stance_Busy != null && !stance_Busy.neverAimWeapon && stance_Busy.focusTarg.IsValid)
             {
                 Vector3 aimVector = stance_Busy.focusTarg.HasThing
-                    ? stance_Busy.focusTarg.Thing.DrawPos
-                    : stance_Busy.focusTarg.Cell.ToVector3Shifted();
+                                        ? stance_Busy.focusTarg.Thing.DrawPos
+                                        : stance_Busy.focusTarg.Cell.ToVector3Shifted();
                 float num = 0f;
                 if ((aimVector - pawn.DrawPos).MagnitudeHorizontalSquared() > 0.001f)
                 {
                     num = (aimVector - pawn.DrawPos).AngleFlat();
                 }
+
                 Vector3 drawLoc = rootLoc + new Vector3(0f, 0f, 0.4f).RotatedBy(num);
                 drawLoc.y += 0.04f;
+
                 // default weapon angle axis is upward, but all weapons are facing right, so we turn base weapon angle by 90°
                 num -= 90f;
                 DrawEquipmentAiming(pawn.equipment.Primary, drawLoc, num);
@@ -116,6 +121,7 @@ namespace ToolsForHaul
                 if (!aiming && compWeaponExtensions != null)
                 {
                     weaponPositionOffset += compWeaponExtensions.WeaponPositionOffset;
+
                     // flip x position offset
                     weaponPositionOffset.x = -weaponPositionOffset.x;
                 }
@@ -177,6 +183,7 @@ namespace ToolsForHaul
                 if (damageDef == DamageDefOf.Stab)
                 {
                     weaponPosition += Jitterer.CurrentJitterOffset;
+
                     // + new Vector3(0, 0, Mathf.Pow(Jitterer.CurrentJitterOffset.magnitude, 0.25f))/2;
                 }
                 else if (damageDef == DamageDefOf.Blunt || damageDef == DamageDefOf.Cut)
@@ -187,6 +194,7 @@ namespace ToolsForHaul
                                           Mathf.Sin(Jitterer.CurrentJitterOffset.magnitude * Mathf.PI / Jitterer.JitterMax) /
                                           10);
                 }
+
                 weaponAngle += flipped
                     ? -animationPhasePercent * totalSwingAngle
                     : animationPhasePercent * totalSwingAngle;
@@ -208,6 +216,7 @@ namespace ToolsForHaul
                 if (flipped)
                 {
                     handPosition = -handPosition;
+
                     // keep z the same
                     handPosition.z = -handPosition.z;
                 }
@@ -216,12 +225,14 @@ namespace ToolsForHaul
                     weaponPosition + handPosition.RotatedBy(weaponAngle),
                     Quaternion.AngleAxis(weaponAngle, Vector3.up), handMat, 0);
             }
+
             if (compWeaponExtensions.SecondHandPosition != Vector3.zero)
             {
                 Vector3 handPosition = compWeaponExtensions.SecondHandPosition;
                 if (flipped)
                 {
                     handPosition = -handPosition;
+
                     // keep z the same
                     handPosition.z = -handPosition.z;
                 }
@@ -232,12 +243,12 @@ namespace ToolsForHaul
             }
 
             //// for debug
-            //var centerMat =
-            //    GraphicDatabase.Get<Graphic_Single>("Overlays/Hand", ShaderDatabase.CutoutSkin, Vector2.one,
-            //        Color.red).MatSingle;
+            // var centerMat =
+            // GraphicDatabase.Get<Graphic_Single>("Overlays/Hand", ShaderDatabase.CutoutSkin, Vector2.one,
+            // Color.red).MatSingle;
 
-            //Graphics.DrawMesh(handsMesh, weaponPosition + new Vector3(0, 0.001f, 0),
-            //    Quaternion.AngleAxis(weaponAngle, Vector3.up), centerMat, 0);
+            // Graphics.DrawMesh(handsMesh, weaponPosition + new Vector3(0, 0.001f, 0),
+            // Quaternion.AngleAxis(weaponAngle, Vector3.up), centerMat, 0);
         }
     }
 }

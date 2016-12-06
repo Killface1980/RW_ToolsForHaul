@@ -17,10 +17,11 @@ namespace ToolsForHaul
         public static Stopwatch stopWatch = new Stopwatch();
 
         [Conditional("DEBUG")]
-        public static void AppendLine(String str)
+        public static void AppendLine(string str)
         {
-            stringBuilder.AppendLine((stopWatch.IsRunning ? stopWatch.ElapsedMilliseconds + "ms: " : "") + str);
+            stringBuilder.AppendLine((stopWatch.IsRunning ? stopWatch.ElapsedMilliseconds + "ms: " : string.Empty) + str);
         }
+
         [Conditional("DEBUG")]
         public static void LogMessage()
         {
@@ -28,6 +29,7 @@ namespace ToolsForHaul
             stringBuilder.Remove(0, stringBuilder.Length);
             stopWatch.Reset();
         }
+
         [Conditional("DEBUG")]public static void stopWatchStart() { stopWatch.Start(); }
         [Conditional("DEBUG")]public static void stopWatchStop() { stopWatch.Stop(); }
         [Conditional("DEBUG")]
@@ -38,16 +40,17 @@ namespace ToolsForHaul
                 + " lastGivenWorkType: " + pawn.mindState.lastGivenWorkType);
             foreach (Pawn other in Find.MapPawns.FreeColonistsSpawned)
             {
-                //Vanilla haul or Haul with backpack
+                // Vanilla haul or Haul with backpack
                 if (other.CurJob != null && (other.CurJob.def == JobDefOf.HaulToCell || other.CurJob.def == HaulJobDefOf.HaulWithBackpack))
                     AppendLine(other.LabelCap + " Job: " + other.CurJob.def.defName
                         + " Backpack: " + (ToolsForHaulUtility.TryGetBackpack(other) != null ? "True" : "False")
                         + " lastGivenWorkType: " + other.mindState.lastGivenWorkType);
             }
+
             foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart)
             {
-                string driver = cart.mountableComp.IsMounted ? cart.mountableComp.Driver.LabelCap : "No Driver";
-                string state = "";
+                string driver = cart.MountableComp.IsMounted ? cart.MountableComp.Driver.LabelCap : "No Driver";
+                string state = string.Empty;
                 if (cart.IsForbidden(pawn.Faction))
                     state = string.Concat(state, "Forbidden ");
                 if (pawn.CanReserveAndReach(cart, PathEndMode.Touch, Danger.Some))
@@ -62,6 +65,7 @@ namespace ToolsForHaul
                 AppendLine(cart.LabelCap + "- " + driver + ": " + state);
 
             }
+
             LogMessage();
         }
     }

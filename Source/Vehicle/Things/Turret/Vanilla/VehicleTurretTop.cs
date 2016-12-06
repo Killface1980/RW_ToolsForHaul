@@ -29,66 +29,70 @@ namespace ToolsForHaul
         {
             get
             {
-                return curRotationInt;
+                return this.curRotationInt;
             }
+
             set
             {
-                curRotationInt = value;
-                if (curRotationInt > 360f)
+                this.curRotationInt = value;
+                if (this.curRotationInt > 360f)
                 {
-                    curRotationInt -= 360f;
+                    this.curRotationInt -= 360f;
                 }
-                if (curRotationInt < 0f)
+
+                if (this.curRotationInt < 0f)
                 {
-                    curRotationInt += 360f;
+                    this.curRotationInt += 360f;
                 }
             }
         }
 
         public VehicleTurretTop(Vehicle_Turret ParentTurret)
         {
-            parentTurret = ParentTurret;
+            this.parentTurret = ParentTurret;
         }
 
         public void TurretTopTick()
         {
-            TargetInfo currentTarget = parentTurret.CurrentTarget;
+            TargetInfo currentTarget = this.parentTurret.CurrentTarget;
             if (currentTarget.IsValid)
             {
-                float curRotation = (currentTarget.Cell.ToVector3Shifted() - parentTurret.DrawPos).AngleFlat();
-                CurRotation = curRotation;
-                ticksUntilIdleTurn = Rand.RangeInclusive(IdleTurnIntervalMin, IdleTurnIntervalMax);
+                float curRotation = (currentTarget.Cell.ToVector3Shifted() - this.parentTurret.DrawPos).AngleFlat();
+                this.CurRotation = curRotation;
+                this.ticksUntilIdleTurn = Rand.RangeInclusive(IdleTurnIntervalMin, IdleTurnIntervalMax);
             }
-            else if (ticksUntilIdleTurn > 0)
+            else if (this.ticksUntilIdleTurn > 0)
             {
-                ticksUntilIdleTurn--;
-                if (ticksUntilIdleTurn == 0)
+                this.ticksUntilIdleTurn--;
+                if (this.ticksUntilIdleTurn == 0)
                 {
                     if (Rand.Value < 0.5f)
                     {
-                        idleTurnClockwise = true;
+                        this.idleTurnClockwise = true;
                     }
                     else
                     {
-                        idleTurnClockwise = false;
+                        this.idleTurnClockwise = false;
                     }
-                    idleTurnTicksLeft = IdleTurnDuration;
+
+                    this.idleTurnTicksLeft = IdleTurnDuration;
                 }
             }
             else
             {
-                if (idleTurnClockwise)
+                if (this.idleTurnClockwise)
                 {
-                    CurRotation += IdleTurnDegreesPerTick;
+                    this.CurRotation += IdleTurnDegreesPerTick;
                 }
                 else
                 {
-                    CurRotation -= IdleTurnDegreesPerTick;
+                    this.CurRotation -= IdleTurnDegreesPerTick;
                 }
-                idleTurnTicksLeft--;
-                if (idleTurnTicksLeft <= 0)
+
+                this.idleTurnTicksLeft--;
+                if (this.idleTurnTicksLeft <= 0)
                 {
-                    ticksUntilIdleTurn = Rand.RangeInclusive(IdleTurnIntervalMin, IdleTurnIntervalMax);
+                    this.ticksUntilIdleTurn = Rand.RangeInclusive(IdleTurnIntervalMin, IdleTurnIntervalMax);
                 }
             }
         }
@@ -96,8 +100,8 @@ namespace ToolsForHaul
         public void DrawTurret()
         {
             Matrix4x4 matrix = default(Matrix4x4);
-            matrix.SetTRS(parentTurret.DrawPos + Altitudes.AltIncVect, CurRotation.ToQuat(), Vector3.one);
-            Graphics.DrawMesh(MeshPool.plane20, matrix, parentTurret.def.building.turretTopMat, 0);
+            matrix.SetTRS(this.parentTurret.DrawPos + Altitudes.AltIncVect, this.CurRotation.ToQuat(), Vector3.one);
+            Graphics.DrawMesh(MeshPool.plane20, matrix, this.parentTurret.def.building.turretTopMat, 0);
         }
     }
 }

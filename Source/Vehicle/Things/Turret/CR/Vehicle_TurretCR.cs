@@ -69,8 +69,6 @@ namespace ToolsForHaul
             return false;
         }
 
-        public float currentDriverSpeed;
-
         public float DesiredSpeed
         {
             get
@@ -82,9 +80,6 @@ namespace ToolsForHaul
         {
             return (refuelableComp != null && refuelableComp.HasFuel) || vehicleComp.MotorizedWithoutFuel();
         }
-
-        public float VehicleSpeed;
-        public bool despawnAtEdge;
 
         public bool fueledByAI;
         private bool fuelSpilled;
@@ -215,7 +210,6 @@ namespace ToolsForHaul
             //      Scribe_Deep.LookDeep(ref allowances, "allowances");
             Scribe_Values.LookValue(ref vehicleComp.tankLeaking, "tankLeaking");
             Scribe_Values.LookValue(ref _tankHitPos, "tankHitPos");
-            Scribe_Values.LookValue(ref despawnAtEdge, "despawnAtEdge");
 
             Scribe_Deep.LookDeep(ref stunner, "stunner", this);
             Scribe_Values.LookValue(ref mountableComp.lastDrawAsAngle, "lastDrawAsAngle");
@@ -500,7 +494,7 @@ namespace ToolsForHaul
                         tickCheck = Find.TickManager.TicksGame;
                     }
 
-                    if (Position.InNoBuildEdgeArea() && despawnAtEdge && Spawned && (mountableComp.Driver.Faction != Faction.OfPlayer || mountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee))
+                    if (Position.InNoBuildEdgeArea() && compvehicles.despawnAtEdge && Spawned && (mountableComp.Driver.Faction != Faction.OfPlayer || mountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee))
                         DeSpawn();
                 }
 

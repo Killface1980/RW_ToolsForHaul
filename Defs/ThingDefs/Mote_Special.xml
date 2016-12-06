@@ -20,13 +20,13 @@
   <!--=============== Fuel puddle ==============-->
 
   <ThingDef ParentName="MoteBase">
-    <defName>Mote_Trail_ATV</defName>
+    <defName>Mote_Track_ATV</defName>
     
     <isSaveable>true</isSaveable>
     <rotatable>true</rotatable>
     
     <graphicData>
-      <texPath>Things/Mote/Mote_Trail_ATV</texPath>
+      <texPath>Things/Mote/Mote_Track_ATV</texPath>
     </graphicData>
     <altitudeLayer>MoteLow</altitudeLayer>
     <mote>

@@ -111,13 +111,13 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Axle">
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.2</fuelCatchesFireHitPointsPercent>
@@ -203,7 +203,7 @@
       <li>GunTurrets</li>
     </researchPrerequisites>
   </ThingDef>
-<!--
+
   <ThingDef ParentName="BaseBullet">
     <defName>Bullet_VehicleTurretImprovised</defName>
     <label>improvised vehicle turret bullet</label>
@@ -217,7 +217,7 @@
       <speed>70</speed>
     </projectile>
   </ThingDef>
--->
+
   <ThingDef ParentName="BaseHumanGun">
     <defName>Gun_VehicleTurretImprovised</defName>
     <label>improvised vehicle turret gun</label>
@@ -233,23 +233,25 @@
     <destroyOnDrop>true</destroyOnDrop>
     <canMakeOnMapGen>false</canMakeOnMapGen>
     <statBases>
+      <!-- CR
       <AimEfficiency>0.35</AimEfficiency>
       <ShotSpread>0.08</ShotSpread>
       <SwayFactor>1.20</SwayFactor>
       <Bulk>7.00</Bulk>
       <Weight>3.00</Weight>
-      <RangedWeapon_Cooldown>0.4</RangedWeapon_Cooldown>   <!--
+      <RangedWeapon_Cooldown>0.4</RangedWeapon_Cooldown>   
+    -->
       <AccuracyTouch>0.80</AccuracyTouch>
       <AccuracyShort>0.64</AccuracyShort>
       <AccuracyMedium>0.41</AccuracyMedium>
       <AccuracyLong>0.22</AccuracyLong>
       <RangedWeapon_Cooldown>0.33</RangedWeapon_Cooldown>
-    -->
     </statBases>
     <weaponTags>
       <li>TurretGun</li>
     </weaponTags>
     <verbs>
+ <!--CR
       <li Class="Combat_Realism.VerbPropertiesCR">
         <recoilPattern>Mounted</recoilPattern>
         <recoilAmount>0.72</recoilAmount>
@@ -264,7 +266,8 @@
         <soundCastTail>GunTail_Light</soundCastTail>
         <muzzleFlashScale>9</muzzleFlashScale>
       </li>
-      <!--
+      -->
+      <!-- Vanilla -->
       <li>
         <verbClass>Verb_Shoot</verbClass>
         <hasStandardCommand>true</hasStandardCommand>
@@ -277,8 +280,8 @@
         <soundCastTail>GunTail_Light</soundCastTail>
         <muzzleFlashScale>9</muzzleFlashScale>
       </li>
-      -->  
     </verbs>
+    <!--CR
     <comps>
       <li Class="Combat_Realism.CompProperties_AmmoUser">
         <magazineSize>300</magazineSize>
@@ -292,6 +295,7 @@
         <noSingleShot>true</noSingleShot>
       </li>
     </comps>
+    -->
   </ThingDef>
 
 </ThingDefs>

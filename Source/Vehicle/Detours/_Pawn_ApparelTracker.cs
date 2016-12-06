@@ -26,16 +26,18 @@ namespace ToolsForHaul.Detoured
                 resultingAp = null;
                 return false;
             }
+
             _this.WornApparel.Remove(ap);
             ap.wearer = null;
             Thing thing = null;
             bool flag = GenThing.TryDropAndSetForbidden(ap, pos, ThingPlaceMode.Near, out thing, forbid);
-            resultingAp = (thing as Apparel);
+            resultingAp = thing as Apparel;
             _this.ApparelChanged();
             if (flag && _this.pawn.outfits != null)
             {
                 _this.pawn.outfits.forcedHandler.SetForced(ap, false);
             }
+
 #if CR
             Combat_Realism.CR_Utility.TryUpdateInventory(_this.pawn);     // Apparel was dropped, update inventory
 #endif

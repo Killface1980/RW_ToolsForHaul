@@ -19,15 +19,16 @@ namespace ToolsForHaul.JobGivers
             List<Thing> steelVehicle = new List<Thing>();
             foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart)
             {
-                if (vehicle_Cart.mountableComp.IsMounted && !vehicle_Cart.mountableComp.Driver.RaceProps.Animal && vehicle_Cart.mountableComp.Driver.ThingID == pawn.ThingID)
+                if (vehicle_Cart.MountableComp.IsMounted && !vehicle_Cart.MountableComp.Driver.RaceProps.Animal && vehicle_Cart.MountableComp.Driver.ThingID == pawn.ThingID)
                 {
-                    vehicle_Cart.vehicleComp.despawnAtEdge = true;
+                    vehicle_Cart.VehicleComp.despawnAtEdge = true;
                     break;
                 }
+
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;
 
-                if (!vehicle_Cart.IsBurning() && vehicle_Cart.Position.InHorDistOf(pawn.Position, 20f) && !vehicle_Cart.mountableComp.IsMounted && (float)vehicle_Cart.HitPoints / vehicle_Cart.MaxHitPoints > 0.2f && vehicle_Cart.vehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicle_Cart, PathEndMode.InteractionCell, Danger.Deadly))
+                if (!vehicle_Cart.IsBurning() && vehicle_Cart.Position.InHorDistOf(pawn.Position, 20f) && !vehicle_Cart.MountableComp.IsMounted && (float)vehicle_Cart.HitPoints / vehicle_Cart.MaxHitPoints > 0.2f && vehicle_Cart.VehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicle_Cart, PathEndMode.InteractionCell, Danger.Deadly))
                 {
                     steelVehicle.Add(vehicle_Cart);
                 }
@@ -40,6 +41,7 @@ namespace ToolsForHaul.JobGivers
                     vehicle_Cart.vehicleComp.despawnAtEdge = true;
                     break;
                 }
+
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;
 
@@ -65,12 +67,14 @@ namespace ToolsForHaul.JobGivers
             {
                 return null;
             }
+
             Pawn pawn2;
             KidnapAIUtility.TryFindGoodKidnapVictim(pawn, 20f, out pawn2);
             if (pawn2 == null)
             {
                 return null;
             }
+
             return new Job(JobDefOf.Kidnap)
             {
                 targetA = pawn2,

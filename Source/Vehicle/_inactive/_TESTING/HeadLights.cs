@@ -18,8 +18,9 @@ namespace ToolsForHaul
 
         public List<GlowGridCache> ColorCellIndexCache { get; set; }
         public List<GlowGridCache> ColorCellIndexCacheOriginal { get; set; }
-        //public List<FloodBlocker> FloodBlockers { get; set; }
+        
 
+// public List<FloodBlocker> FloodBlockers { get; set; }
         Thing[] innerArray;
 
         int targetDistance;
@@ -32,19 +33,21 @@ namespace ToolsForHaul
             Position = position;
             Orientation = orientation;
 
-            //TODO move the colors to xml along with the angleModulus + targetDistance
+            // TODO move the colors to xml along with the angleModulus + targetDistance
             ColorCellIndexCache = new List<GlowGridCache>();
-            //FloodBlockers = new List<FloodBlocker>();
+            
 
-            //Color = new Color32(191, 63, 191, 1);
-            //Color = new Color32(254, 255, 179, 0);
+// FloodBlockers = new List<FloodBlocker>();
+
+            // Color = new Color32(191, 63, 191, 1);
+            // Color = new Color32(254, 255, 179, 0);
             Color = new Color32(210, 210, 140, 0);
 
 
             innerArray = Find.EdificeGrid.InnerArray;
 
             targetDistance = 20;
-            angleModulus = 4;  //0 is 90 and the higher you go the more narrow the angle. //angle 45 is every two tiles? - actually its 90 because left side is 0->45 and then right is 45<-0
+            angleModulus = 4;  // 0 is 90 and the higher you go the more narrow the angle. //angle 45 is every two tiles? - actually its 90 because left side is 0->45 and then right is 45<-0
         }
 
         public void CalculateGlowFlood()
@@ -52,20 +55,20 @@ namespace ToolsForHaul
             calculateGrid();
         }
 
-        //public void CalculateGlowFlood(bool forceGridRefresh)
-        //{
-        //    CalculateGlowFlood();
-        //    Find.MapDrawer.MapMeshDirty(Position, MapMeshFlag.GroundGlow);
-        //}
-
-
+        // public void CalculateGlowFlood(bool forceGridRefresh)
+        // {
+        // CalculateGlowFlood();
+        // Find.MapDrawer.MapMeshDirty(Position, MapMeshFlag.GroundGlow);
+        // }
         public void Clear()
         {
             Color32 noColor = new Color32(0, 0, 0, 0);
             foreach (GlowGridCache i in ColorCellIndexCache)
             {
                 Find.GlowGrid.glowGrid[i.CellGridIndex] = noColor;
-                //Find.MapDrawer.MapMeshDirty(thingPosition, MapMeshFlag.GroundGlow);
+                
+
+// Find.MapDrawer.MapMeshDirty(thingPosition, MapMeshFlag.GroundGlow);
             }
             ColorCellIndexCache = new List<GlowGridCache>();
         }
@@ -73,23 +76,25 @@ namespace ToolsForHaul
 
         private void calculateGrid()
         {
-            //Log.Message("Anlge: Calc init");
+            // Log.Message("Anlge: Calc init");
 
 
 
-            //Log.Message("Anlge: Power ON");
+            // Log.Message("Anlge: Power ON");
 
-            //if (!LEDTools.IsGridGlowing(thisPosition))
-            //    return;
+            // if (!LEDTools.IsGridGlowing(thisPosition))
+            // return;
 
-            //Log.Message("Anlge: checking cache");
+            // Log.Message("Anlge: checking cache");
             if (ColorCellIndexCache.Count > 0)
                 updateGlowGrid();
 
-            //Log.Message("Anlge: Not cached - doing calc");
-            //start tile
+            // Log.Message("Anlge: Not cached - doing calc");
+            // start tile
             addCellIndex(Position, false);
-            //next tiles
+            
+
+// next tiles
 
 
             ///implement collision detector
@@ -103,12 +108,12 @@ namespace ToolsForHaul
             do
             {
 
-                if (andgleDistanceDelta == 0) //TODO CHECK BLOCKERS HERE, DUHHH!
+                if (andgleDistanceDelta == 0) // TODO CHECK BLOCKERS HERE, DUHHH!
                     addCellIndex(Position.ToOffsetPositionDirection(distance, 0, Orientation), false);
 
                 for (int angleDelta = andgleDistanceDelta * (-1); angleDelta <= andgleDistanceDelta; angleDelta++)
                 {
-                    //Log.Message("distance: " + distance + " xD:" + x + " zD:" + z + " mod:" + distance % 3);
+                    // Log.Message("distance: " + distance + " xD:" + x + " zD:" + z + " mod:" + distance % 3);
                     IntVec3 _pos = Position.ToOffsetPositionDirection(distance, angleDelta, Orientation);
                     if (_pos.InBounds())
                     {
@@ -116,27 +121,30 @@ namespace ToolsForHaul
                         if (isBlocked(_pos, angleDelta))
                         {
                             completeBlocker = true;
-                            //addCellIndex(_pos, true); //it gets added in isBlocked method
+                            
+
+// addCellIndex(_pos, true); //it gets added in isBlocked method
                         }
                         else
                         {
                             completeBlocker = false;
-                            //Log.Message("Not blocking: X:" + _pos.x + " Z: " + _pos.z);
+                            
+
+// Log.Message("Not blocking: X:" + _pos.x + " Z: " + _pos.z);
                             addCellIndex(_pos, false);
                         }
 
                     }
                     else
-                        break; //Ge'me oughta here!
+                        break; // Ge'me oughta here!
                 }
 
-                //if (completeBlocker)
-                //{
-                //    //Log.Message("Blocker: Complete blocker detected at: " )
-                //    break; //dont bother calculating any more, thats all folks.
-                //}
-
-                if (distance % angleModulus == 0) //bigger mod casues tighter angles
+                // if (completeBlocker)
+                // {
+                // //Log.Message("Blocker: Complete blocker detected at: " )
+                // break; //dont bother calculating any more, thats all folks.
+                // }
+                if (distance % angleModulus == 0) // bigger mod casues tighter angles
                     andgleDistanceDelta++;
 
                 distance++;
@@ -154,44 +162,52 @@ namespace ToolsForHaul
             {
                 if (thingBlockers.def.blockLight)
                 {
-                    //block this tile
+                    // block this tile
                     addCellIndex(position, true);
-                    //block next forward tile to prevent further light going this way
+                    
+
+// block next forward tile to prevent further light going this way
                     addCellIndex(position.TranslateDirection(Orientation), true);
 
-                    //block next left and right tiles to prevent further light going this way and help with "angle" detection
+                    // block next left and right tiles to prevent further light going this way and help with "angle" detection
                     addCellIndex(position.TranslateDirection(Orientation, 1), true);
                     addCellIndex(position.TranslateDirection(Orientation, -1), true);
                 }
                 thingBlockers = null;
-                //Log.Message("Blocking by Def: X: " + position.x + " Z: " + position.z);
+                
+
+// Log.Message("Blocking by Def: X: " + position.x + " Z: " + position.z);
                 return true;
             }
 
             /////----------If def.blocked not found scan for previous blocks-------------//////
 
 
-            //I pre emtifly block the cell at the building collision level so now I can find it here and carry on blocking
-            //This part feels a bit iffy to me because I have to carry on calculation blockers. Not sure how flag any further
-            //blockers in that particular direction to be forgotten about. possibly a shortfall in my calculation logic. Oh well..it works I suppose
+            // I pre emtifly block the cell at the building collision level so now I can find it here and carry on blocking
+            // This part feels a bit iffy to me because I have to carry on calculation blockers. Not sure how flag any further
+            // blockers in that particular direction to be forgotten about. possibly a shortfall in my calculation logic. Oh well..it works I suppose
             GlowGridCache thisCellBlocked = ColorCellIndexCache.FirstOrDefault(deltaZ => position == deltaZ.Position & deltaZ.IsBlocked);
 
             if (thisCellBlocked != null)
             {
-                //block the next cell ahead and repeat el'kapitan!
+                // block the next cell ahead and repeat el'kapitan!
                 addCellIndex(thisCellBlocked.Position.TranslateDirection(Orientation), true);
                 if (angleDelta < 0)
                 {
-                    //pffff.. a bit ugly i know.. but i need to compensate for wide angles over distance
+                    // pffff.. a bit ugly i know.. but i need to compensate for wide angles over distance
                     addCellIndex(thisCellBlocked.Position.TranslateDirection(Orientation, -1), true);
-                    //addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -2), true);
-                    //addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -3), true);
+                    
+
+// addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -2), true);
+                    // addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -3), true);
                 }
                 if (angleDelta > 0)
                 {
                     addCellIndex(thisCellBlocked.Position.TranslateDirection(Orientation, 1), true);
-                    //addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, 2), true);
-                    //addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, 3), true);
+                    
+
+// addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, 2), true);
+                    // addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, 3), true);
                 }
             }
 
@@ -221,7 +237,7 @@ namespace ToolsForHaul
         {
             int _idx = position.AsCellIndex();
 
-            //protect from multipoe entires of the same index. I know we can use an array but in this case we want an IEnumarable list
+            // protect from multipoe entires of the same index. I know we can use an array but in this case we want an IEnumarable list
             if (!ColorCellIndexCache.Any(x => x.CellGridIndex == _idx))
             {
                 ColorCellIndexCache.Add(new GlowGridCache
@@ -234,33 +250,33 @@ namespace ToolsForHaul
             }
 
 
-            //Log.Message("ANGLE POS: " + position.ToLog());
+            // Log.Message("ANGLE POS: " + position.ToLog());
         }
 
         private void updateGlowGrid()
         {
-            //Log.Message("Angle: start update glow grid using cache");
+            // Log.Message("Angle: start update glow grid using cache");
 
-            //this is why I wanted a list to and not an array, saves some valuable CPU overhead
+            // this is why I wanted a list to and not an array, saves some valuable CPU overhead
             foreach (GlowGridCache cell in ColorCellIndexCache.Where(x => !x.IsBlocked))
             {
                 Find.GlowGrid.glowGrid[cell.CellGridIndex] = cell.ColorAtCellIndex;
             }
 
 
-            //for (int i = 0; i < ColorCellIndexCache.Count; i++)
-            //{
-            //    var pos = ColorCellIndexCache[i];
-            //    Find.GlowGrid.glowGrid[pos.CellGridIndex] = pos.ColorAtCellIndex;
+            // for (int i = 0; i < ColorCellIndexCache.Count; i++)
+            // {
+            // var pos = ColorCellIndexCache[i];
+            // Find.GlowGrid.glowGrid[pos.CellGridIndex] = pos.ColorAtCellIndex;
 
-            //    //dont know if this is inneficeint or what but it works for long range lighting in this case
-            //    //Find.MapDrawer.MapMeshDirty(pos.Position, MapMeshFlag.GroundGlow);
-            //}
+            // //dont know if this is inneficeint or what but it works for long range lighting in this case
+            // //Find.MapDrawer.MapMeshDirty(pos.Position, MapMeshFlag.GroundGlow);
+            // }
 
-            //Log.Message("Anlge: updated glowgrid from cache");
-            //Dont really want this here but the timing of this particulr object is weird so I need to mark it dirty
+            // Log.Message("Anlge: updated glowgrid from cache");
+            // Dont really want this here but the timing of this particulr object is weird so I need to mark it dirty
 
-            //In this case we need to mark several positions as dirty as the internal updated works with regions only
+            // In this case we need to mark several positions as dirty as the internal updated works with regions only
             Find.MapDrawer.MapMeshDirty(Position, MapMeshFlag.GroundGlow);
         }
 
@@ -275,42 +291,63 @@ namespace ToolsForHaul
 
 
 ////if (andgleDistanceDelta == 0)
-//                //    addCellIndex(LEDTools.OffsetPosition(Position, 0, distance));
 
-//                if (andgleDistanceDelta == 0)
-//                    addCellIndex(LEDTools.OffsetPositionDirection(Position, distance, 0, this.Orientation));
+// //    addCellIndex(LEDTools.OffsetPosition(Position, 0, distance));
 
-//                for (int angleDelta = andgleDistanceDelta * (-1); angleDelta <= andgleDistanceDelta; angleDelta++)
-//                {
-//                    //Log.Message("distance: " + distance + " xD:" + x + " zD:" + z + " mod:" + distance % 3);
-//                    var _pos = LEDTools.OffsetPosition(Position, angleDelta, distance); //TODO: rotation should be trnsformed here
+// if (andgleDistanceDelta == 0)
+
+// addCellIndex(LEDTools.OffsetPositionDirection(Position, distance, 0, this.Orientation));
+
+// for (int angleDelta = andgleDistanceDelta * (-1); angleDelta <= andgleDistanceDelta; angleDelta++)
+
+// {
+
+// //Log.Message("distance: " + distance + " xD:" + x + " zD:" + z + " mod:" + distance % 3);
+
+// var _pos = LEDTools.OffsetPosition(Position, angleDelta, distance); //TODO: rotation should be trnsformed here
 
 
-//                    if (_pos.InBounds())
-//                    {
-//                        //Log.Message("Block?: X:" + _pos.x + " Z: " + _pos.z);
-//                        if (isBlocked(_pos, angleDelta, andgleDistanceDelta))
-//                        {
-//                            completeBlocker = true;
-//                            continue;
-//                        }
+// if (_pos.InBounds())
 
-//                        completeBlocker = false;
-//                        //Log.Message("Not blocking: X:" + _pos.x + " Z: " + _pos.z);
-//                        addCellIndex(_pos);
-//                    }
-//                }
+// {
 
-//                if (completeBlocker)
-//                {
-//                    //Log.Message("Blocker: Complete blocker detected at: " )
-//                    break; //dont bother calculating any more, thats all folks.
-//                }
+// //Log.Message("Block?: X:" + _pos.x + " Z: " + _pos.z);
 
-//                if (distance % angleModulus == 0) //bigger mod casues tighter angles
-//                    andgleDistanceDelta++;
+// if (isBlocked(_pos, angleDelta, andgleDistanceDelta))
 
-//                distance++;
+// {
 
-//            } while (distance < targetDistance);
+// completeBlocker = true;
+
+// continue;
+
+// }
+
+// completeBlocker = false;
+
+// //Log.Message("Not blocking: X:" + _pos.x + " Z: " + _pos.z);
+
+// addCellIndex(_pos);
+
+// }
+
+// }
+
+// if (completeBlocker)
+
+// {
+
+// //Log.Message("Blocker: Complete blocker detected at: " )
+
+// break; //dont bother calculating any more, thats all folks.
+
+// }
+
+// if (distance % angleModulus == 0) //bigger mod casues tighter angles
+
+// andgleDistanceDelta++;
+
+// distance++;
+
+// } while (distance < targetDistance);
 #endif

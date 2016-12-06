@@ -8,24 +8,24 @@ namespace ToolsForHaul.JobDrivers
 {
     public class JobDriver_HaulWithCart : JobDriver
     {
-        //Constants
+        // Constants
         private const TargetIndex HaulableInd = TargetIndex.A;
         private const TargetIndex StoreCellInd = TargetIndex.B;
         private const TargetIndex CartInd = TargetIndex.C;
 
         public override string GetReport()
         {
-            Thing hauledThing = TargetThingA;
-            if (TargetThingA == null)  //Haul Cart
-                hauledThing = CurJob.targetC.Thing;
-            this.FailOn(() => !pawn.CanReach(hauledThing, PathEndMode.ClosestTouch, Danger.Some));
+            Thing hauledThing = this.TargetThingA;
+            if (this.TargetThingA == null)  // Haul Cart
+                hauledThing = this.CurJob.targetC.Thing;
+            this.FailOn(() => !this.pawn.CanReach(hauledThing, PathEndMode.ClosestTouch, Danger.Some));
             IntVec3 destLoc = IntVec3.Invalid;
             string destName = null;
             SlotGroup destGroup = null;
 
-            if (pawn.jobs.curJob.targetB != null)
+            if (this.pawn.jobs.curJob.targetB != null)
             {
-                destLoc = pawn.jobs.curJob.targetB.Cell;
+                destLoc = this.pawn.jobs.curJob.targetB.Cell;
                 destGroup = destLoc.GetSlotGroup();
             }
 
@@ -43,62 +43,65 @@ namespace ToolsForHaul.JobDrivers
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            Vehicle_Cart cart = CurJob.GetTarget(CartInd).Thing as Vehicle_Cart;
+            Vehicle_Cart cart = this.CurJob.GetTarget(CartInd).Thing as Vehicle_Cart;
 
             ///
-            //Set fail conditions
+            // Set fail conditions
             ///
 
             this.FailOnDestroyedOrNull(CartInd);
-            //Note we only fail on forbidden if the target doesn't start that way
-            //This helps haul-aside jobs on forbidden items
-            if (!TargetThingA.IsForbidden(pawn.Faction))
-                this.FailOnForbidden(CartInd);
 
-            this.FailOn(() => !pawn.RaceProps.IsFlesh || !pawn.RaceProps.Humanlike);
+            // Note we only fail on forbidden if the target doesn't start that way
+            // This helps haul-aside jobs on forbidden items
+            if (!this.TargetThingA.IsForbidden(this.pawn.Faction)) this.FailOnForbidden(CartInd);
+
+            this.FailOn(() => !this.pawn.RaceProps.IsFlesh || !this.pawn.RaceProps.Humanlike);
 
             ///
-            //Define Toil
+            // Define Toil
             ///
 
             Toil findStoreCellForCart = Toils_Cart.FindStoreCellForCart(CartInd);
-            Toil checkCartEmpty = Toils_Jump.JumpIf(findStoreCellForCart, () => cart.storage.Count <= 0);
+            Toil checkCartEmpty = Toils_Jump.JumpIf(findStoreCellForCart, () => cart.Storage.Count <= 0);
 
-
-            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(findStoreCellForCart, () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
-            Toil checkHaulableEmpty = Toils_Jump.JumpIf(checkStoreCellEmpty, () => CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
+            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(
+                findStoreCellForCart,
+                () => this.CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
+            Toil checkHaulableEmpty = Toils_Jump.JumpIf(
+                checkStoreCellEmpty,
+                () => this.CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
 
             ///
-            //Toils Start
+            // Toils Start
             ///
 
-            //Reserve thing to be stored and storage cell 
+            // Reserve thing to be stored and storage cell 
             yield return Toils_Reserve.Reserve(CartInd);
             yield return Toils_Reserve.ReserveQueue(HaulableInd);
             yield return Toils_Reserve.ReserveQueue(StoreCellInd);
 
-            //JumpIf already mounted
-            yield return Toils_Jump.JumpIf(checkHaulableEmpty, () =>
-            {
-                if (cart.mountableComp.Driver == pawn) return true;
-                return false;
-            });
+            // JumpIf already mounted
+            yield return Toils_Jump.JumpIf(
+                checkHaulableEmpty,
+                () =>
+                    {
+                        if (cart.MountableComp.Driver == this.pawn) return true;
+                        return false;
+                    });
 
-            //Mount on Target
-            yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch)
-                                        .FailOnDestroyedOrNull(CartInd);
+            // Mount on Target
+            yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch).FailOnDestroyedOrNull(CartInd);
             yield return Toils_Cart.MountOn(CartInd);
 
-            //JumpIf checkStoreCellEmpty
+            // JumpIf checkStoreCellEmpty
             yield return checkHaulableEmpty;
-
-            //Collect TargetQueue
             {
+                // Collect TargetQueue
                 Toil extractA = Toils_Collect.Extract(HaulableInd);
                 yield return extractA;
 
-                Toil gotoThing = Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch)
-                                                    .FailOnDestroyedOrNull(HaulableInd);
+                Toil gotoThing =
+                    Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch).FailOnDestroyedOrNull(HaulableInd);
                 yield return gotoThing;
 
                 yield return Toils_Collect.CollectInCarrier(CartInd, HaulableInd);
@@ -108,11 +111,10 @@ namespace ToolsForHaul.JobDrivers
                 yield return Toils_Jump.JumpIfHaveTargetInQueue(HaulableInd, extractA);
             }
 
-            //JumpIf findStoreCellForCart
+            // JumpIf findStoreCellForCart
             yield return checkStoreCellEmpty;
-
-            //Drop TargetQueue
             {
+                // Drop TargetQueue
                 yield return checkCartEmpty;
 
                 Toil extractB = Toils_Collect.Extract(StoreCellInd);
@@ -134,6 +136,5 @@ namespace ToolsForHaul.JobDrivers
 
             yield return Toils_Cart.DismountAt(CartInd, StoreCellInd);
         }
-
     }
 }

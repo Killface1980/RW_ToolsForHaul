@@ -30,6 +30,7 @@ namespace ToolsForHaul
             {
                 return;
             }
+
             parms.points = (float)Rand.Range(50, 300);
         }
 
@@ -39,6 +40,7 @@ namespace ToolsForHaul
             {
                 return;
             }
+
             if (parms.faction.def.techLevel < TechLevel.Spacer || parms.points < 240f)
             {
                 parms.raidArrivalMode = PawnsArriveMode.EdgeWalkIn;
@@ -68,6 +70,7 @@ namespace ToolsForHaul
             {
                 return;
             }
+
             if (parms.raidArrivalMode == PawnsArriveMode.CenterDrop || parms.raidArrivalMode == PawnsArriveMode.EdgeDrop)
             {
                 if (parms.raidArrivalMode == PawnsArriveMode.CenterDrop)
@@ -82,6 +85,7 @@ namespace ToolsForHaul
                         parms.raidArrivalMode = PawnsArriveMode.EdgeDrop;
                     }
                 }
+
                 if (parms.raidArrivalMode == PawnsArriveMode.EdgeDrop)
                 {
                     parms.raidPodOpenDelay = 140;
@@ -101,6 +105,7 @@ namespace ToolsForHaul
             {
                 return false;
             }
+
             ResolveRaidStrategy(parms);
             ResolveRaidArriveMode(parms);
             ResolveRaidSpawnCenter(parms);
@@ -111,6 +116,7 @@ namespace ToolsForHaul
                 Log.Error("Got no pawns spawning raid from parms " + parms);
                 return false;
             }
+
             TargetInfo letterLookTarget = TargetInfo.Invalid;
             if (parms.raidArrivalMode == PawnsArriveMode.CenterDrop || parms.raidArrivalMode == PawnsArriveMode.EdgeDrop)
             {
@@ -142,6 +148,7 @@ namespace ToolsForHaul
 
                 }
             }
+
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Points = " + parms.points.ToString("F0"));
 
@@ -150,11 +157,13 @@ namespace ToolsForHaul
                 string str = (current2.equipment == null || current2.equipment.Primary == null) ? "unarmed" : current2.equipment.Primary.LabelCap;
                 stringBuilder.AppendLine(current2.KindLabel + " - " + str);
             }
+
             Find.LetterStack.ReceiveLetter(this.GetLetterLabel(parms), this.GetLetterText(parms, list), this.GetLetterType(), letterLookTarget, stringBuilder.ToString());
             if (this.GetLetterType() == LetterType.BadUrgent)
             {
                 TaleRecorder.RecordTale(TaleDefOf.RaidArrived, new object[0]);
             }
+
             PawnRelationUtility.Notify_PawnsSeenByPlayer(list, GetRelatedPawnsInfoLetterText(parms), true);
             Lord lord = LordMaker.MakeNewLord(parms.faction, parms.raidStrategy.Worker.MakeLordJob(ref parms), list);
             AvoidGridMaker.RegenerateAvoidGridsFor(parms.faction);
@@ -171,6 +180,7 @@ namespace ToolsForHaul
                     }
                 }
             }
+
             if (DebugViewSettings.drawStealDebug && parms.faction.HostileTo(Faction.OfPlayer))
             {
                 Log.Message(string.Concat(new object[]
@@ -182,6 +192,7 @@ namespace ToolsForHaul
             ")"
                 }));
             }
+
             return true;
         }
     }

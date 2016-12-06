@@ -10,8 +10,11 @@ using Verse.AI;
 using Verse.AI.Group;
 using Verse.Sound;
 
-namespace ToolsForHaul.IncidentWorkers
+namespace ToolsForHaul.IncidentWorker
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
     public class IncidentWorker_RaidEnemy : IncidentWorker_Raid
     {
 
@@ -24,6 +27,7 @@ namespace ToolsForHaul.IncidentWorkers
         {
             return base.FactionCanBeGroupSource(f, desperate) && f.HostileTo(Faction.OfPlayer) && (desperate || GenDate.DaysPassed >= f.def.earliestRaidDays);
         }
+
         protected override string GetLetterLabel(IncidentParms parms)
         {
             return parms.raidStrategy.letterLabelEnemy;
@@ -31,16 +35,17 @@ namespace ToolsForHaul.IncidentWorkers
 
         public override bool TryExecute(IncidentParms parms)
         {
-            //    if (!base.TryExecute(parms))
             {
-                ResolveRaidPoints(parms);
-                if (!TryResolveRaidFaction(parms))
+                // if (!base.TryExecute(parms))
+                this.ResolveRaidPoints(parms);
+                if (!this.TryResolveRaidFaction(parms))
                 {
                     return false;
                 }
-                ResolveRaidStrategy(parms);
-                ResolveRaidArriveMode(parms);
-                ResolveRaidSpawnCenter(parms);
+
+                this.ResolveRaidStrategy(parms);
+                this.ResolveRaidArriveMode(parms);
+                this.ResolveRaidSpawnCenter(parms);
                 PawnGroupMakerUtility.AdjustPointsForGroupArrivalParams(parms);
                 List<Pawn> list = PawnGroupMakerUtility.GenerateArrivingPawns(parms).ToList();
                 if (list.Count == 0)
@@ -48,6 +53,7 @@ namespace ToolsForHaul.IncidentWorkers
                     Log.Error("Got no pawns spawning raid from parms " + parms);
                     return false;
                 }
+
                 TargetInfo letterLookTarget = TargetInfo.Invalid;
                 if (parms.raidArrivalMode == PawnsArriveMode.CenterDrop || parms.raidArrivalMode == PawnsArriveMode.EdgeDrop)
                 {
@@ -66,7 +72,6 @@ namespace ToolsForHaul.IncidentWorkers
 
                         // Vehicles for raiders
                         // lowered probability for shield users as they are overpowered
-
                         bool isShieldUser = false;
 
                         if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.fleshType != FleshType.Mechanoid && current.RaceProps.ToolUser)
@@ -80,6 +85,7 @@ namespace ToolsForHaul.IncidentWorkers
                                     break;
                                 }
                             }
+
                             if (value >= 0.66f && !isShieldUser || isShieldUser && value > 0.9f)
                             {
                                 CellFinder.RandomClosewalkCellNear(current.Position, 5);
@@ -101,12 +107,13 @@ namespace ToolsForHaul.IncidentWorkers
                                 thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null));
 
                                 SoundInfo info = SoundInfo.InWorld(thing);
-                                thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
+                                thing.TryGetComp<CompMountable>().SustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
                             }
                         }
 
                     }
                 }
+
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine("Points = " + parms.points.ToString("F0"));
 
@@ -115,12 +122,14 @@ namespace ToolsForHaul.IncidentWorkers
                     string str = (current2.equipment == null || current2.equipment.Primary == null) ? "unarmed" : current2.equipment.Primary.LabelCap;
                     stringBuilder.AppendLine(current2.KindLabel + " - " + str);
                 }
-                Find.LetterStack.ReceiveLetter(GetLetterLabel(parms), GetLetterText(parms, list), GetLetterType(), letterLookTarget, stringBuilder.ToString());
-                if (GetLetterType() == LetterType.BadUrgent)
+
+                Find.LetterStack.ReceiveLetter(this.GetLetterLabel(parms), this.GetLetterText(parms, list), this.GetLetterType(), letterLookTarget, stringBuilder.ToString());
+                if (this.GetLetterType() == LetterType.BadUrgent)
                 {
                     TaleRecorder.RecordTale(TaleDefOf.RaidArrived);
                 }
-                PawnRelationUtility.Notify_PawnsSeenByPlayer(list, GetRelatedPawnsInfoLetterText(parms), true);
+
+                PawnRelationUtility.Notify_PawnsSeenByPlayer(list, this.GetRelatedPawnsInfoLetterText(parms), true);
                 Lord lord = LordMaker.MakeNewLord(parms.faction, parms.raidStrategy.Worker.MakeLordJob(ref parms), list);
                 AvoidGridMaker.RegenerateAvoidGridsFor(parms.faction);
                 LessonAutoActivator.TeachOpportunity(ConceptDefOf.EquippingWeapons, OpportunityType.Critical);
@@ -136,11 +145,13 @@ namespace ToolsForHaul.IncidentWorkers
                         }
                     }
                 }
+
                 if (DebugViewSettings.drawStealDebug && parms.faction.HostileTo(Faction.OfPlayer))
                 {
                     Log.Message(string.Concat("Market value threshold to start stealing: ", StealAIUtility.StartStealingMarketValueThreshold(lord), " (colony wealth = ", Find.StoryWatcher.watcherWealth.WealthTotal, ")"));
                 }
             }
+
             Find.TickManager.slower.SignalForceNormalSpeedShort();
             Find.StoryWatcher.statsRecord.numRaidsEnemy++;
 
@@ -154,23 +165,26 @@ namespace ToolsForHaul.IncidentWorkers
             {
                 return true;
             }
+
             float maxPoints = parms.points;
             if (maxPoints <= 0f)
             {
                 maxPoints = 999999f;
             }
+
             if (!(from f in Find.FactionManager.AllFactions
-                  where FactionCanBeGroupSource(f) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
+                  where this.FactionCanBeGroupSource(f) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
                   select f).TryRandomElementByWeight(f => f.def.raidCommonality, out parms.faction))
             {
                 if (!(from f in Find.FactionManager.AllFactions
-                      where FactionCanBeGroupSource(f, true) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
+                      where this.FactionCanBeGroupSource(f, true) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
                       select f).TryRandomElementByWeight(f => f.def.raidCommonality, out parms.faction))
                 {
                     Log.Error("IncidentWorker_RaidEnemy could not fire even though we thought we could: no faction could generate with " + maxPoints + " points.");
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -181,6 +195,7 @@ namespace ToolsForHaul.IncidentWorkers
             {
                 return;
             }
+
             parms.raidStrategy = (from d in DefDatabase<RaidStrategyDef>.AllDefs
                                   where d.Worker.CanUseWith(parms)
                                   select d).RandomElementByWeight(d => d.Worker.SelectionChance);
@@ -202,6 +217,7 @@ namespace ToolsForHaul.IncidentWorkers
                     text = "EnemyRaidCenterDrop".Translate(parms.faction.def.pawnsPlural, parms.faction.Name);
                     break;
             }
+
             text += "\n\n";
             text += parms.raidStrategy.arrivalTextEnemy;
             Pawn pawn = pawns.Find(x => x.Faction.leader == x);
@@ -210,6 +226,7 @@ namespace ToolsForHaul.IncidentWorkers
                 text += "\n\n";
                 text += "EnemyRaidLeaderPresent".Translate(pawn.Faction.def.pawnsPlural, pawn.LabelShort);
             }
+
             return text;
         }
 

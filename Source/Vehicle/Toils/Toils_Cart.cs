@@ -9,6 +9,9 @@ using Verse.AI;
 
 namespace ToolsForHaul.Toils
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
     public static class Toils_Cart
     {
         public static Toil MountOn(TargetIndex CartInd)
@@ -23,6 +26,7 @@ namespace ToolsForHaul.Toils
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
+
                 cart.TryGetComp<CompMountable>().MountOn(actor);
             };
             return toil;
@@ -41,7 +45,7 @@ namespace ToolsForHaul.Toils
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
 
-                cart.mountableComp.MountOn(patient);
+                cart.MountableComp.MountOn(patient);
             };
             return toil;
         }
@@ -59,6 +63,7 @@ namespace ToolsForHaul.Toils
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
+
                 cart.TryGetComp<CompMountable>().DismountAt(toil.actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
             };
             return toil;
@@ -74,102 +79,114 @@ namespace ToolsForHaul.Toils
 #endif
             Toil toil = new Toil();
             toil.initAction = () =>
-            {
-                IntVec3 storeCell = IntVec3.Invalid;
-                Pawn actor = toil.GetActor();
-                ThingWithComps vehicleCart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as ThingWithComps;
-                if (vehicleCart == null)
                 {
-                    Log.Error(actor.LabelCap + " Report: Cart is invalid.");
-                    toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
-                }
-                //Find Valid Storage
-                foreach (IntVec3 cell in GenRadial.RadialCellsAround(vehicleCart.Position, NearbyCell, false))
-                {
-                    if (cell.IsValidStorageFor(vehicleCart)
-                        && actor.CanReserveAndReach(cell, PathEndMode.ClosestTouch, actor.NormalMaxDanger()))
+                    IntVec3 storeCell = IntVec3.Invalid;
+                    Pawn actor = toil.GetActor();
+                    ThingWithComps vehicleCart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as ThingWithComps;
+                    if (vehicleCart == null)
                     {
-                        storeCell = cell;
+                        Log.Error(actor.LabelCap + " Report: Cart is invalid.");
+                        toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
+                    }
+
+                    // Find Valid Storage
+                    foreach (IntVec3 cell in GenRadial.RadialCellsAround(vehicleCart.Position, NearbyCell, false))
+                    {
+                        if (cell.IsValidStorageFor(vehicleCart)
+                            && actor.CanReserveAndReach(cell, PathEndMode.ClosestTouch, actor.NormalMaxDanger()))
+                        {
+                            storeCell = cell;
 #if DEBUG
                         stringBuilder.AppendLine("Found cell: " + storeCell);
 #endif
+                        }
                     }
-                }
 
-                if (storeCell == IntVec3.Invalid)
-                {
-                    //Regionwise Flood-fill cellFinder
-                    int regionInd = 0;
-                    List<Region> regions = new List<Region>();
-                    regions.Add(vehicleCart.Position.GetRegion());
+                    if (storeCell == IntVec3.Invalid)
+                    {
+                        // Regionwise Flood-fill cellFinder
+                        int regionInd = 0;
+                        List<Region> regions = new List<Region>();
+                        regions.Add(vehicleCart.Position.GetRegion());
 #if DEBUG
                     stringBuilder.AppendLine(actor.LabelCap + " Report");
 #endif
-                    bool flag1 = false;
-                    while (regionInd < regions.Count)
-                    {
+                        bool flag1 = false;
+                        while (regionInd < regions.Count)
+                        {
 #if DEBUG
                         stringBuilder.AppendLine("Region id: " + regions[regionInd].id);
 #endif
-                        if (regions[regionInd].extentsClose.CenterCell.InHorDistOf(vehicleCart.Position, NearbyCell + RegionCellOffset))
-                        {
-                            IntVec3 foundCell = IntVec3.Invalid;
-                            IntVec3 distCell = regionInd > 0 ? regions[regionInd - 1].extentsClose.CenterCell : vehicleCart.Position;
-                            float distFoundCell = float.MaxValue;
-                            foreach (IntVec3 cell in regions[regionInd].Cells)
+                            if (regions[regionInd].extentsClose.CenterCell.InHorDistOf(
+                                vehicleCart.Position,
+                                NearbyCell + RegionCellOffset))
                             {
-                                //Find best cell for placing cart
-                                if (cell.GetEdifice() == null && cell.GetZone() == null && cell.Standable()
-                                && !GenAdj.CellsAdjacentCardinal(cell, Rot4.North, IntVec2.One).Any(cardinal => cardinal.GetEdifice() is Building_Door)
-                                && actor.CanReserveAndReach(cell, PathEndMode.ClosestTouch, actor.NormalMaxDanger()))
+                                IntVec3 foundCell = IntVec3.Invalid;
+                                IntVec3 distCell = regionInd > 0
+                                                       ? regions[regionInd - 1].extentsClose.CenterCell
+                                                       : vehicleCart.Position;
+                                float distFoundCell = float.MaxValue;
+                                foreach (IntVec3 cell in regions[regionInd].Cells)
                                 {
-                                    if (distCell.DistanceToSquared(cell) < distFoundCell)
+                                    // Find best cell for placing cart
+                                    if (cell.GetEdifice() == null && cell.GetZone() == null && cell.Standable()
+                                        && !GenAdj.CellsAdjacentCardinal(cell, Rot4.North, IntVec2.One)
+                                            .Any(cardinal => cardinal.GetEdifice() is Building_Door)
+                                        && actor.CanReserveAndReach(
+                                            cell,
+                                            PathEndMode.ClosestTouch,
+                                            actor.NormalMaxDanger()))
                                     {
-                                        foundCell = cell;
-                                        distFoundCell = distCell.DistanceToSquared(cell);
-                                        flag1 = true;
+                                        if (distCell.DistanceToSquared(cell) < distFoundCell)
+                                        {
+                                            foundCell = cell;
+                                            distFoundCell = distCell.DistanceToSquared(cell);
+                                            flag1 = true;
+                                        }
                                     }
                                 }
-                            }
-                            if (flag1)
-                            {
-                                storeCell = foundCell;
+
+                                if (flag1)
+                                {
+                                    storeCell = foundCell;
 #if DEBUG
                                 stringBuilder.AppendLine("Found cell: " + storeCell);
 #endif
-                                break;
+                                    break;
+                                }
+
+                                foreach (RegionLink link in regions[regionInd].links)
+                                {
+                                    if (regions.Contains(link.RegionA) == false) regions.Add(link.RegionA);
+                                    if (regions.Contains(link.RegionB) == false) regions.Add(link.RegionB);
+                                }
                             }
-                            foreach (RegionLink link in regions[regionInd].links)
-                            {
-                                if (regions.Contains(link.RegionA) == false)
-                                    regions.Add(link.RegionA);
-                                if (regions.Contains(link.RegionB) == false)
-                                    regions.Add(link.RegionB);
-                            }
+
+                            regionInd++;
                         }
-                        regionInd++;
                     }
-                }
-                //Log.Message(stringBuilder.ToString());
-                /*
-                //Home Area
-                if (storeCell == IntVec3.Invalid)
-                    foreach (IntVec3 cell in Find.AreaHome.ActiveCells.Where(cell => (cell.GetZone() == null || cell.IsValidStorageFor(cart)) && cell.Standable() && cell.GetEdifice() == null))
-                        if (cell.DistanceToSquared(cart.Position) < NearbyCell)
-                            storeCell = cell;
-                */
-                actor.Reserve(storeCell);
-                toil.actor.jobs.curJob.targetB = storeCell != invalid && storeCell != IntVec3.Invalid ? storeCell : vehicleCart.Position;
-            };
+
+                    // Log.Message(stringBuilder.ToString());
+                    /*
+                    //Home Area
+                    if (storeCell == IntVec3.Invalid)
+                        foreach (IntVec3 cell in Find.AreaHome.ActiveCells.Where(cell => (cell.GetZone() == null || cell.IsValidStorageFor(cart)) && cell.Standable() && cell.GetEdifice() == null))
+                            if (cell.DistanceToSquared(cart.Position) < NearbyCell)
+                                storeCell = cell;
+                    */
+                    actor.Reserve(storeCell);
+                    toil.actor.jobs.curJob.targetB = storeCell != invalid && storeCell != IntVec3.Invalid
+                                                         ? storeCell
+                                                         : vehicleCart.Position;
+                };
             return toil;
         }
 
 
 
         ///////////////
-        //Animal Cart//
+        // Animal Cart//
         ///////////////
-
         private const int defaultWaitWorker = 2056;
         private const int tickCheckInterval = 64;
 
@@ -185,13 +202,14 @@ namespace ToolsForHaul.Toils
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
+
                 Job job;
                 if (pawn != null)
                     job = new Job(HaulJobDefOf.StandBy, pawn.Position, defaultWaitWorker);
                 else
                     job = new Job(HaulJobDefOf.StandBy, toil.actor.jobs.curJob.GetTarget(Ind), defaultWaitWorker);
 
-                cart.mountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
+                cart.MountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
             };
             return toil;
         }
@@ -208,15 +226,16 @@ namespace ToolsForHaul.Toils
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
-                if (cart.mountableComp.IsMounted && cart.mountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy)
-                    cart.mountableComp.Driver.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
+
+                if (cart.MountableComp.IsMounted && cart.MountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy)
+                    cart.MountableComp.Driver.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
             };
             return toil;
         }
 
         public static Toil WaitForAnimalCart(TargetIndex CartInd, TargetIndex HaulableInd)
         {
-            //       Log.Message("WaitForAnimalCart");
+            // Log.Message("WaitForAnimalCart");
             Toil toil = new Toil();
             int tickTime = 0;
             toil.initAction = () =>
@@ -228,25 +247,27 @@ namespace ToolsForHaul.Toils
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
+
                 tickTime = 0;
-                if (cart.mountableComp.IsMounted)
+                if (cart.MountableComp.IsMounted)
                 {
-                    //Worker has arrived and Animal cart is coming
-                    if (cart.mountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy &&
-                        (!actor.Position.InHorDistOf(cart.Position, 1f) ||
-                         !actor.Position.InHorDistOf(cart.mountableComp.Driver.Position, 1f)))
+                    // Worker has arrived and Animal cart is coming
+                    if (cart.MountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy
+                        && (!actor.Position.InHorDistOf(cart.Position, 1f)
+                            || !actor.Position.InHorDistOf(cart.MountableComp.Driver.Position, 1f)))
                     {
                         tickTime = 0;
-
                     }
-                    //Worker has arrived and Animal cart has arrived
-                    else if (cart.mountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy && (actor.Position.InHorDistOf(cart.mountableComp.Driver.Position, 1f)))
-                        toil.actor.jobs.curDriver.ReadyForNextToil();
-                    //Worker has arrived but Animal cart is missing
+
+                    // Worker has arrived and Animal cart has arrived
+                    else if (cart.MountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy
+                             && actor.Position.InHorDistOf(cart.MountableComp.Driver.Position, 1f)) toil.actor.jobs.curDriver.ReadyForNextToil();
+
+                    // Worker has arrived but Animal cart is missing
                     else
                     {
                         Job job = new Job(HaulJobDefOf.StandBy, actor, defaultWaitWorker);
-                        cart.mountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
+                        cart.MountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
                     }
                 }
                 else
@@ -261,18 +282,21 @@ namespace ToolsForHaul.Toils
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
+
                 if (Find.TickManager.TicksGame % tickCheckInterval == 0)
-                    if (cart.mountableComp.IsMounted)
+                    if (cart.MountableComp.IsMounted)
                     {
-                        //Animal cart has arrived
-                        if (cart.mountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy &&
-                            (actor.Position.AdjacentTo8WayOrInside(cart.mountableComp.Driver) || actor.Position.AdjacentTo8WayOrInside(cart)))
+                        // Animal cart has arrived
+                        if (cart.MountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy
+                            && (actor.Position.AdjacentTo8WayOrInside(cart.MountableComp.Driver)
+                                || actor.Position.AdjacentTo8WayOrInside(cart)))
                         {
                             toil.actor.jobs.curDriver.ReadyForNextToil();
                         }
-                        //Animal cart would never come. Imcompletable.
-                        else if (cart.mountableComp.Driver.CurJob.def != HaulJobDefOf.StandBy ||
-                                 tickTime >= defaultWaitWorker)
+
+                        // Animal cart would never come. Imcompletable.
+                        else if (cart.MountableComp.Driver.CurJob.def != HaulJobDefOf.StandBy
+                                 || tickTime >= defaultWaitWorker)
                         {
                             toil.actor.jobs.curDriver.EndJobWith(JobCondition.Incompletable);
                         }

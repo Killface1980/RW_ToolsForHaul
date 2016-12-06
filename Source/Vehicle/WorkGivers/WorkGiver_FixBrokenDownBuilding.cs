@@ -7,23 +7,14 @@ using Verse.AI;
 
 namespace ToolsForHaul.WorkGivers
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
     public class WorkGiver_FixBrokenDownBuilding : WorkGiver_Scanner
     {
-        public override ThingRequest PotentialWorkThingRequest
-        {
-            get
-            {
-                return ThingRequest.ForGroup(ThingRequestGroup.BuildingArtificial);
-            }
-        }
+        public override ThingRequest PotentialWorkThingRequest => ThingRequest.ForGroup(ThingRequestGroup.BuildingArtificial);
 
-        public override PathEndMode PathEndMode
-        {
-            get
-            {
-                return PathEndMode.Touch;
-            }
-        }
+        public override PathEndMode PathEndMode => PathEndMode.Touch;
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
@@ -41,48 +32,59 @@ namespace ToolsForHaul.WorkGivers
             {
                 return false;
             }
+
             if (t.IsForbidden(pawn))
             {
                 return false;
             }
+
             if (pawn.Faction == Faction.OfPlayer && !Find.AreaHome[t.Position])
             {
                 return false;
             }
+
             if (!t.IsBrokenDown())
             {
                 return false;
             }
+
             Building building = t as Building;
             if (building == null)
             {
                 return false;
             }
+
             if (!building.def.building.repairable)
             {
                 return false;
             }
+
             if (!pawn.CanReserve(building, 1))
             {
                 return false;
             }
+
             if (Find.DesignationManager.DesignationOn(building, DesignationDefOf.Deconstruct) != null)
             {
                 return false;
             }
+
             if (building.IsBurning())
             {
                 return false;
             }
+
             if (this.FindClosestComponent(pawn) == null)
             {
                 JobFailReason.Is("NoComponentsToRepair".Translate());
                 return false;
             }
+
             if (t.TryGetComp<CompMountable>().IsMounted)
             {
                 return false;
             }
+
             return true;
         }
 

@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,6 +38,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -46,31 +48,19 @@
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CombatRealism">
-      <HintPath>..\..\..\CombatRealism\Assemblies\CombatRealism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Community Core Library">
-      <HintPath>..\..\..\Community Core Library\Assemblies\Community Core Library.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Components\Vehicles\CompProperties_Mountable.cs" />
+    <None Include="Components\Vehicle\CompProperties_Mountable.cs" />
+    <Compile Include="MoteMakerTFH.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_TraderCaravanArrival.cs" />
-    <Compile Include="MoteCounter.cs" />
+    <Compile Include="MoteCounterTFH.cs" />
     <Compile Include="Defs\HaulStatDefOf.cs" />
-    <Compile Include="Components\Vehicles\CompDriver.cs" />
+    <Compile Include="Components\Vehicle\CompDriver.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_WandererJoin.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
@@ -93,7 +83,7 @@
     <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
     <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="JobGivers\JobGiver_Steal.cs" />
-    <None Include="NoCCL\DetourAttribute.cs" />
+    <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="Things\Apparel_Toolbelt.cs" />
     <Compile Include="Things\Textures.cs" />
     <Compile Include="Things\Turret\CR\Vehicle_TurretCR.cs" />
@@ -106,20 +96,22 @@
     <Compile Include="WorkGivers\WorkGiver_FixBrokenDownBuilding.cs" />
     <Compile Include="WorkGivers\WorkGiver_Repair.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
+    <Compile Include="_inactive\Class2.cs" />
+    <Compile Include="_inactive\Class3.cs" />
     <Compile Include="_inactive\_TESTING\HeadLights.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_VisitorGroup.cs" />
     <Compile Include="Alerts\Alert_TankIsLeaking.cs" />
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
     <None Include="_inactive\Class1.cs" />
-    <Compile Include="Components\Vehicles\CompAxles.cs" />
-    <Compile Include="Components\Vehicles\CompProperties_Axle.cs" />
-    <Compile Include="Components\Vehicles\CompProperties_Vehicle.cs" />
-    <Compile Include="Components\Vehicles\CompVehicle.cs" />
+    <Compile Include="Components\Vehicle\CompAxles.cs" />
+    <Compile Include="Components\Vehicle\CompProperties_Axle.cs" />
+    <Compile Include="Components\Vehicle\CompProperties_Vehicle.cs" />
+    <Compile Include="Components\Vehicle\CompVehicle.cs" />
     <Compile Include="Things\Apparel_Backpack.cs" />
     <Compile Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
-    <None Include="_inactive\ModHelperDef.cs" />
+    <Compile Include="_inactive\ModHelperDef.cs" />
     <Compile Include="Things\IncendiaryFuel.cs" />
     <None Include="_inactive\CompWeaponExtensions.cs" />
     <None Include="_inactive\RA_PawnRenderer.cs" />
@@ -138,7 +130,7 @@
     <Compile Include="Components\MapComponent_ToolsForHaul.cs" />
     <Compile Include="RightTools\MapComponentInjector.cs" />
     <Compile Include="NoCCL\SpecialInjector.cs" />
-    <None Include="NoCCL\Detours.cs" />
+    <Compile Include="NoCCL\Detours.cs" />
     <Compile Include="StatsHelper.cs" />
     <Compile Include="Utilities\ToolsForHaulUtility.cs" />
     <Compile Include="Trace.cs" />
@@ -148,7 +140,7 @@
     <None Include="WorkGivers\Class1.cs" />
     <None Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
-    <Compile Include="Components\Vehicles\CompMountable.cs" />
+    <Compile Include="Components\Vehicle\CompMountable.cs" />
     <Compile Include="Designators\Designator_ApplyMedicine.cs" />
     <Compile Include="Designators\Designator_Mount.cs" />
     <None Include="Designators\Designator_PutInInventory.cs" />
@@ -220,6 +212,7 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Apparel_Toolbelt.xml">
       <Link>Defs\ThingDefs\Apparel_Toolbelt.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
       <Link>Defs\ThingDefs\Items_IRResources.xml</Link>
@@ -227,6 +220,9 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Mote_Special.xml">
+      <Link>Defs\ThingDefs\Mote_Special.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Things_Special.xml">
       <Link>Defs\ThingDefs\Things_Special.xml</Link>
@@ -237,6 +233,7 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Turret.xml">
       <Link>Defs\ThingDefs\Vehicle_Turret.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers.xml">
       <Link>Defs\WorkGivers.xml</Link>

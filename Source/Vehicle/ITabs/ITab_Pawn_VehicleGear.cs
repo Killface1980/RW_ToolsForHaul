@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using CommunityCoreLibrary;
 using RimWorld;
 using ToolsForHaul.Components;
 using UnityEngine;
@@ -15,9 +14,11 @@ using Verse;
 // RimWorld specific functions are found here (like 'Building_Battery')
 //using RimWorld.Planet;   // RimWorld specific functions for world creation
 //using RimWorld.SquadAI;  // RimWorld specific functions for squad brains 
-
 namespace ToolsForHaul.ITabs
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
     class Itab_Pawn_VehicleGear : ITab_Pawn_Gear
     {
         private const string txtTabVehicleGear = "TabVehicleGear";
@@ -27,13 +28,12 @@ namespace ToolsForHaul.ITabs
 
         public Itab_Pawn_VehicleGear()
         {
-            labelKey = txtTabVehicleGear;
-            size = new Vector2(300f, 450f);
+            this.labelKey = txtTabVehicleGear;
+            this.size = new Vector2(300f, 450f);
         }
-        public override bool IsVisible
-        {
-            get { return true; }
-        }
+
+        public override bool IsVisible => true;
+
         protected override void FillTab()
         {
             float fieldHeight = 30.0f;
@@ -41,7 +41,7 @@ namespace ToolsForHaul.ITabs
 
             PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.PrisonerTab, KnowledgeAmount.FrameDisplayed);
             Text.Font = GameFont.Small;
-            Rect innerRect1 = new Rect(0.0f, 0.0f, size.x, size.y).ContractedBy(10f);
+            Rect innerRect1 = new Rect(0.0f, 0.0f, this.size.x, this.size.y).ContractedBy(10f);
             GUI.BeginGroup(innerRect1);
             Rect mountedRect = new Rect(0.0f, 30.0f, innerRect1.width, fieldHeight);
             float mountedRectY = mountedRect.y;
@@ -51,7 +51,7 @@ namespace ToolsForHaul.ITabs
             Rect thingLabelRect = new Rect(mountedRect.x + 35f, mountedRect.y + 5.0f, innerRect1.width - 35f, fieldHeight);
             Rect thingButtonRect = new Rect(mountedRect.x, mountedRect.y, innerRect1.width, fieldHeight);
 
-            CompMountable compMountable = SelThing.TryGetComp<CompMountable>();
+            CompMountable compMountable = this.SelThing.TryGetComp<CompMountable>();
 
             if (compMountable.IsMounted)
             {
@@ -71,9 +71,11 @@ namespace ToolsForHaul.ITabs
 
                     Find.WindowStack.Add(new FloatMenu(options));
                 }
+
                 thingIconRect.y += fieldHeight;
                 thingLabelRect.y += fieldHeight;
             }
+
             Rect storageRect = new Rect(0.0f, thingIconRect.y, innerRect1.width, fieldHeight);
             float storageRectY = storageRect.y;
             Widgets.ListSeparator(ref storageRectY, innerRect1.width, txtStorage.Translate());
@@ -82,11 +84,11 @@ namespace ToolsForHaul.ITabs
             thingLabelRect.y = storageRect.y;
             thingButtonRect.y = storageRect.y;
 
-          #region Cart
-          Vehicle_Cart cart = SelThing as Vehicle_Cart;
+          
+          Vehicle_Cart cart = this.SelThing as Vehicle_Cart;
           if (cart != null)
           {
-              foreach (Thing thing in cart.storage)
+              foreach (Thing thing in cart.Storage)
               {
                   if (thing.ThingID.IndexOf("Human_Corpse") > -1)
                       Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconHuman_Corpse"), 1.0f);
@@ -107,22 +109,24 @@ namespace ToolsForHaul.ITabs
                       options.Add(new FloatMenuOption("DropThing".Translate(), () =>
                       {
                           Thing dummy;
-                          cart.storage.TryDrop(thing, SelThing.Position, ThingPlaceMode.Near, out dummy);
+                          cart.Storage.TryDrop(thing, this.SelThing.Position, ThingPlaceMode.Near, out dummy);
                       }));
           
                       Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap));
                   }
+
                   if (Mouse.IsOver(thingLabelRect))
                       GUI.DrawTexture(thingLabelRect, TexUI.HighlightTex);
                   
-                  TooltipHandler.TipRegion(thingLabelRect, thing.def.LabelStyled());
+                  TooltipHandler.TipRegion(thingLabelRect, thing.def.LabelCap);
                   thingIconRect.y += fieldHeight;
                   thingLabelRect.y += fieldHeight;
               }
+
               if (Widgets.ButtonText(new Rect(180f, 400f, 100f, 30f), "Drop All"))
-                  cart.storage.TryDropAll(SelThing.Position, ThingPlaceMode.Near);
+                  cart.Storage.TryDropAll(this.SelThing.Position, ThingPlaceMode.Near);
           }
-          #endregion
+          
 
 
 

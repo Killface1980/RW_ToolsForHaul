@@ -30,48 +30,46 @@ namespace ToolsForHaul
         protected override IEnumerable<Toil> MakeNewToils()
         {
 
-            //this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
-            //this.FailOn(() => !this.Patient.InBed() || !this.Patient.Awake());
-            //if (WheelChair != null)
-            //{
-            //    this.FailOnDespawnedNullOrForbidden(TargetIndex.B);
-            //}
-            //yield return Toils_Reserve.Reserve(TargetIndex.A, 1);
-            //if (WheelChair != null)
-            //{
-            //    yield return Toils_Reserve.Reserve(TargetIndex.B, 1);
-            //    yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.OnCell);
-            //}
-            //else
-            //{
-            //    yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.InteractionCell);
-            //}
-            //yield return Toils_Interpersonal.WaitToBeAbleToInteract(this.pawn);
-            //yield return new Toil
-            //{
-            //    tickAction = delegate
-            //    {
-            //        this.Patient.needs.joy.GainJoy(this.CurJob.def.joyGainRate * 0.000144f, this.CurJob.def.joyKind);
-            //        if (this.pawn.IsHashIntervalTick(320))
-            //        {
-            //            InteractionDef intDef = (Rand.Value >= 0.8f) ? InteractionDefOf.DeepTalk : InteractionDefOf.Chitchat;
-            //            this.pawn.interactions.TryInteractWith(this.Patient, intDef);
-            //        }
-            //        this.pawn.Drawer.rotator.FaceCell(this.Patient.Position);
-            //        this.pawn.GainComfortFromCellIfPossible();
-            //        JoyUtility.JoyTickCheckEnd(this.pawn, JoyTickFullJoyAction.None, 1f);
-            //        if (this.pawn.needs.joy.CurLevelPercentage > 0.9999f && this.Patient.needs.joy.CurLevelPercentage > 0.9999f)
-            //        {
-            //            this.pawn.jobs.EndCurrentJob(JobCondition.Succeeded);
-            //        }
-            //    },
-            //    socialMode = RandomSocialMode.Off,
-            //    defaultCompleteMode = ToilCompleteMode.Delay,
-            //    defaultDuration = base.CurJob.def.joyDuration
-            //};
-            //yield break;
-
-
+            // this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
+            // this.FailOn(() => !this.Patient.InBed() || !this.Patient.Awake());
+            // if (WheelChair != null)
+            // {
+            // this.FailOnDespawnedNullOrForbidden(TargetIndex.B);
+            // }
+            // yield return Toils_Reserve.Reserve(TargetIndex.A, 1);
+            // if (WheelChair != null)
+            // {
+            // yield return Toils_Reserve.Reserve(TargetIndex.B, 1);
+            // yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.OnCell);
+            // }
+            // else
+            // {
+            // yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.InteractionCell);
+            // }
+            // yield return Toils_Interpersonal.WaitToBeAbleToInteract(this.pawn);
+            // yield return new Toil
+            // {
+            // tickAction = delegate
+            // {
+            // this.Patient.needs.joy.GainJoy(this.CurJob.def.joyGainRate * 0.000144f, this.CurJob.def.joyKind);
+            // if (this.pawn.IsHashIntervalTick(320))
+            // {
+            // InteractionDef intDef = (Rand.Value >= 0.8f) ? InteractionDefOf.DeepTalk : InteractionDefOf.Chitchat;
+            // this.pawn.interactions.TryInteractWith(this.Patient, intDef);
+            // }
+            // this.pawn.Drawer.rotator.FaceCell(this.Patient.Position);
+            // this.pawn.GainComfortFromCellIfPossible();
+            // JoyUtility.JoyTickCheckEnd(this.pawn, JoyTickFullJoyAction.None, 1f);
+            // if (this.pawn.needs.joy.CurLevelPercentage > 0.9999f && this.Patient.needs.joy.CurLevelPercentage > 0.9999f)
+            // {
+            // this.pawn.jobs.EndCurrentJob(JobCondition.Succeeded);
+            // }
+            // },
+            // socialMode = RandomSocialMode.Off,
+            // defaultCompleteMode = ToilCompleteMode.Delay,
+            // defaultDuration = base.CurJob.def.joyDuration
+            // };
+            // yield break;
             this.FailOn(() => !Patient.InBed() || !Patient.Awake());
 
             this.FailOnDestroyedOrNull(TakeeIndex);

@@ -6,19 +6,19 @@ namespace ToolsForHaul.JobDrivers
 {
     public class JobDriver_PutInBackpackSlot : JobDriver
     {
-        //Constants
+        // Constants
         public const TargetIndex HaulableInd = TargetIndex.A;
         public const TargetIndex BackpackInd = TargetIndex.B;
 
         public override string GetReport()
         {
-            Thing hauledThing = TargetThingA;
+            Thing hauledThing = this.TargetThingA;
 
             string repString;
             if (hauledThing != null)
-                repString = "ReportPutInInventory".Translate(hauledThing.LabelCap, CurJob.GetTarget(BackpackInd).Thing.LabelCap);
+                repString = "ReportPutInInventory".Translate(hauledThing.LabelCap, this.CurJob.GetTarget(BackpackInd).Thing.LabelCap);
             else
-                repString = "ReportPutSomethingInInventory".Translate(CurJob.GetTarget(BackpackInd).Thing.LabelCap);
+                repString = "ReportPutSomethingInInventory".Translate(this.CurJob.GetTarget(BackpackInd).Thing.LabelCap);
 
             return repString;
         }
@@ -26,7 +26,7 @@ namespace ToolsForHaul.JobDrivers
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            Apparel_Backpack backpack = CurJob.GetTarget(BackpackInd).Thing as Apparel_Backpack;
+            Apparel_Backpack backpack = this.CurJob.GetTarget(BackpackInd).Thing as Apparel_Backpack;
 
             // no free slots
             this.FailOn(() => backpack.slotsComp.slots.Count >= backpack.MaxItem);
@@ -46,8 +46,7 @@ namespace ToolsForHaul.JobDrivers
             {
                 initAction = () =>
                 {
-                    if (!backpack.slotsComp.slots.TryAdd(CurJob.targetA.Thing))
-                        EndJobWith(JobCondition.Incompletable);
+                    if (!backpack.slotsComp.slots.TryAdd(this.CurJob.targetA.Thing)) this.EndJobWith(JobCondition.Incompletable);
                 }
             };
             yield return pickUpThingIntoSlot;

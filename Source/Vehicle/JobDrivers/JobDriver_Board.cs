@@ -7,10 +7,10 @@ namespace ToolsForHaul
 {
     public class JobDriver_Board : JobDriver
     {
-        //Constants
+        // Constants
         private const TargetIndex MountableInd = TargetIndex.A;
-        //private const TargetIndex MountCellInd = TargetIndex.B;
 
+        // private const TargetIndex MountCellInd = TargetIndex.B;
         public override string GetReport()
         {
             string repString;
@@ -22,45 +22,39 @@ namespace ToolsForHaul
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ///
-            //Set fail conditions
+            // Set fail conditions
             ///
 
-            //this.FailOnBurningImmobile(MountCellInd);
+            // this.FailOnBurningImmobile(MountCellInd);
             this.FailOnDestroyedOrNull(MountableInd);
-            //Note we only fail on forbidden if the target doesn't start that way
-            //This helps haul-aside jobs on forbidden items
-            if (!TargetThingA.IsForbidden(pawn.Faction))
-                this.FailOnForbidden(MountableInd);
 
-
+            // Note we only fail on forbidden if the target doesn't start that way
+            // This helps haul-aside jobs on forbidden items
+            if (!TargetThingA.IsForbidden(pawn.Faction)) this.FailOnForbidden(MountableInd);
 
             ///
-            //Define Toil
+            // Define Toil
             ///
 
-
-
-
             ///
-            //Toils Start
+            // Toils Start
             ///
 
-            //Reserve thing to be stored and storage cell 
-            //yield return Toils_Reserve.Reserve(MountableInd, ReservationType.Total);
+            // Reserve thing to be stored and storage cell 
+            // yield return Toils_Reserve.Reserve(MountableInd, ReservationType.Total);
 
-            //Mount on Target
+            // Mount on Target
             yield return Toils_Goto.GotoThing(MountableInd, PathEndMode.ClosestTouch);
 
             Toil toilBoardOn = new Toil();
             toilBoardOn.initAction = () =>
-            {
-                Pawn actor = toilBoardOn.actor;
-                Vehicle_Saddle vehicle = TargetThingA as Vehicle_Saddle;
-                vehicle.BoardOn(actor);
-            };
+                {
+                    Pawn actor = toilBoardOn.actor;
+                    Vehicle_Saddle vehicle = TargetThingA as Vehicle_Saddle;
+                    vehicle.BoardOn(actor);
+                };
 
             yield return toilBoardOn;
         }
-
     }
 }

@@ -1,406 +1,136 @@
 ﻿#if !CR
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using RimWorld;
-using UnityEngine;
-using Verse;
-using Verse.AI;
-using Verse.Sound;
-
 namespace ToolsForHaul
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Text;
+
+    using RimWorld;
+
+    using UnityEngine;
+
+    using Verse;
+    using Verse.AI;
+    using Verse.Sound;
+
     [StaticConstructorOnStartup]
     public class Vehicle_TurretGun : Vehicle_Turret
     {
-        private Thing gunInt;
-
-        protected VehicleTurretTop top;
-
-        protected CompPowerTrader powerComp;
-
-        protected CompMannable mannableComp;
+        public static Material ForcedTargetLineMat = MaterialPool.MatFrom(
+            GenDraw.LineTexPath,
+            ShaderDatabase.Transparent,
+            new Color(1f, 0.5f, 0.5f));
 
         public bool loaded;
 
-        private bool holdFire;
-
-        protected TargetInfo currentTargetInt = TargetInfo.Invalid;
+        protected int burstCooldownTicksLeft;
 
         protected int burstWarmupTicksLeft;
 
-        protected int burstCooldownTicksLeft;
+        protected TargetInfo currentTargetInt = TargetInfo.Invalid;
 
-        public static Material ForcedTargetLineMat = MaterialPool.MatFrom(GenDraw.LineTexPath, ShaderDatabase.Transparent, new Color(1f, 0.5f, 0.5f));
+        protected CompMannable mannableComp;
 
-        public CompEquippable GunCompEq
+        protected CompPowerTrader powerComp;
+
+        protected VehicleTurretTop top;
+
+        private Thing gunInt;
+
+        private bool holdFire;
+
+        public Vehicle_TurretGun()
         {
-            get
-            {
-                return Gun.TryGetComp<CompEquippable>();
-            }
+            this.top = new VehicleTurretTop(this);
         }
 
+        public override Verb AttackVerb => this.GunCompEq.verbTracker.PrimaryVerb;
 
-
-        public override TargetInfo CurrentTarget
-        {
-            get
-            {
-                return currentTargetInt;
-            }
-        }
-
-        private bool WarmingUp
-        {
-            get
-            {
-                return burstWarmupTicksLeft > 0;
-            }
-        }
+        public override TargetInfo CurrentTarget => this.currentTargetInt;
 
         public Thing Gun
         {
             get
             {
-                if (gunInt == null)
+                if (this.gunInt == null)
                 {
-                    gunInt = ThingMaker.MakeThing(def.building.turretGunDef);
-                    foreach (Verb verb in GunCompEq.AllVerbs)
+                    this.gunInt = ThingMaker.MakeThing(this.def.building.turretGunDef);
+                    foreach (Verb verb in this.GunCompEq.AllVerbs)
                     {
                         verb.caster = this;
                         verb.castCompleteCallback = BurstComplete;
                     }
                 }
-                return gunInt;
+
+                return this.gunInt;
             }
         }
 
-        public override Verb AttackVerb
-        {
-            get
-            {
-                return GunCompEq.verbTracker.PrimaryVerb;
-            }
-        }
+        public CompEquippable GunCompEq => this.Gun.TryGetComp<CompEquippable>();
+
+        private bool CanSetForcedTarget => this.MannedByColonist;
+
+        private bool CanToggleHoldFire => this.Faction == Faction.OfPlayer || this.MannedByColonist;
 
         private bool MannedByColonist
-        {
-            get
-            {
-                return mannableComp != null && mannableComp.ManningPawn != null && mannableComp.ManningPawn.Faction == Faction.OfPlayer;
-            }
-        }
+            =>
+            this.mannableComp != null && this.mannableComp.ManningPawn != null
+            && this.mannableComp.ManningPawn.Faction == Faction.OfPlayer;
 
-        private bool CanSetForcedTarget
-        {
-            get
-            {
-                return MannedByColonist;
-            }
-        }
-
-        private bool CanToggleHoldFire
-        {
-            get
-            {
-                return Faction == Faction.OfPlayer || MannedByColonist;
-            }
-        }
-
-        public Vehicle_TurretGun()
-        {
-            top = new VehicleTurretTop(this);
-        }
-
-        public override void SpawnSetup()
-        {
-            base.SpawnSetup();
-            powerComp = GetComp<CompPowerTrader>();
-            mannableComp = GetComp<CompMannable>();
-            currentTargetInt = TargetInfo.Invalid;
-            burstWarmupTicksLeft = 0;
-            burstCooldownTicksLeft = 0;
-        }
-
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            Scribe_Values.LookValue(ref burstCooldownTicksLeft, "burstCooldownTicksLeft", 0);
-            Scribe_Values.LookValue(ref loaded, "loaded", false);
-            Scribe_Values.LookValue(ref holdFire, "holdFire", false);
-        }
-
-        public override void OrderAttack(TargetInfo targ)
-        {
-            if ((targ.Cell - Position).LengthHorizontal < GunCompEq.PrimaryVerb.verbProps.minRange)
-            {
-                Messages.Message("MessageTargetBelowMinimumRange".Translate(), this, MessageSound.RejectInput);
-                return;
-            }
-            if ((targ.Cell - Position).LengthHorizontal > GunCompEq.PrimaryVerb.verbProps.range)
-            {
-                Messages.Message("MessageTargetBeyondMaximumRange".Translate(), this, MessageSound.RejectInput);
-                return;
-            }
-            if (forcedTarget != targ)
-            {
-                forcedTarget = targ;
-                if (burstCooldownTicksLeft <= 0)
-                {
-                    TryStartShootSomething();
-                }
-            }
-        }
-
-        public override void Tick()
-        {
-            base.Tick();
-
-
-            if (!mountableComp.IsMounted)
-            {
-                return;
-            }
-
-            if (powerComp != null && !powerComp.PowerOn)
-            {
-                return;
-            }
-            if (mannableComp != null && !mannableComp.MannedNow)
-            {
-                return;
-            }
-            if (!CanSetForcedTarget && forcedTarget.IsValid)
-            {
-                ResetForcedTarget();
-            }
-            if (!CanToggleHoldFire)
-            {
-                holdFire = false;
-            }
-            GunCompEq.verbTracker.VerbsTick();
-            if (stunner.Stunned)
-            {
-                return;
-            }
-            if (GunCompEq.PrimaryVerb.state == VerbState.Bursting)
-            {
-                return;
-            }
-            if (WarmingUp)
-            {
-                burstWarmupTicksLeft--;
-                if (burstWarmupTicksLeft == 0)
-                {
-                    BeginBurst();
-                }
-            }
-            else
-            {
-                if (burstCooldownTicksLeft > 0)
-                {
-                    burstCooldownTicksLeft--;
-                }
-                if (burstCooldownTicksLeft == 0)
-                {
-                    TryStartShootSomething();
-                }
-            }
-            top.TurretTopTick();
-        }
-
-        protected void TryStartShootSomething()
-        {
-            if (forcedTarget.ThingDestroyed)
-            {
-                forcedTarget = null;
-            }
-            if (holdFire && CanToggleHoldFire)
-            {
-                return;
-            }
-            if (GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead && Find.RoofGrid.Roofed(Position))
-            {
-                return;
-            }
-            bool isValid = currentTargetInt.IsValid;
-            if (forcedTarget.IsValid)
-            {
-                currentTargetInt = forcedTarget;
-            }
-            else
-            {
-                currentTargetInt = TryFindNewTarget();
-            }
-            if (!isValid && currentTargetInt.IsValid)
-            {
-                SoundDefOf.TurretAcquireTarget.PlayOneShot(Position);
-            }
-            if (currentTargetInt.IsValid)
-            {
-                if (def.building.turretBurstWarmupTicks > 0)
-                {
-                    burstWarmupTicksLeft = def.building.turretBurstWarmupTicks;
-                }
-                else
-                {
-                    BeginBurst();
-                }
-            }
-        }
-
-        protected TargetInfo TryFindNewTarget()
-        {
-            Thing thing = TargSearcher();
-            Faction faction = thing.Faction;
-            float range = GunCompEq.PrimaryVerb.verbProps.range;
-            float minRange = GunCompEq.PrimaryVerb.verbProps.minRange;
-            Building t;
-            if (Rand.Value < 0.5f && GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead && faction.HostileTo(Faction.OfPlayer) && Find.ListerBuildings.allBuildingsColonist.Where(delegate (Building x)
-            {
-                float num = x.Position.DistanceToSquared(Position);
-                return num > minRange * minRange && num < range * range;
-            }).TryRandomElement(out t))
-            {
-                return t;
-            }
-            TargetScanFlags targetScanFlags = TargetScanFlags.NeedThreat;
-            if (!GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead)
-            {
-                targetScanFlags |= TargetScanFlags.NeedLOSToAll;
-            }
-            if (GunCompEq.PrimaryVerb.verbProps.ai_IsIncendiary)
-            {
-                targetScanFlags |= TargetScanFlags.NeedNonBurning;
-            }
-            return AttackTargetFinder.BestShootTargetFromCurrentPosition(thing, IsValidTarget, range, minRange, targetScanFlags);
-        }
-
-        private Thing TargSearcher()
-        {
-            if (mannableComp != null && mannableComp.MannedNow)
-            {
-                return mannableComp.ManningPawn;
-            }
-            return this;
-        }
-
-        private bool IsValidTarget(Thing t)
-        {
-            Pawn pawn = t as Pawn;
-            if (pawn != null)
-            {
-                if (GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead)
-                {
-                    RoofDef roofDef = Find.RoofGrid.RoofAt(t.Position);
-                    if (roofDef != null && roofDef.isThickRoof)
-                    {
-                        return false;
-                    }
-                }
-                if (mannableComp == null)
-                {
-                    return !GenAI.MachinesLike(Faction, pawn);
-                }
-                if (pawn.RaceProps.Animal && pawn.Faction == Faction.OfPlayer)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        protected void BeginBurst()
-        {
-            GunCompEq.PrimaryVerb.TryStartCastOn(CurrentTarget);
-        }
-
-        protected void BurstComplete()
-        {
-            if (def.building.turretBurstCooldownTicks >= 0)
-            {
-                burstCooldownTicksLeft = def.building.turretBurstCooldownTicks;
-            }
-            else
-            {
-                burstCooldownTicksLeft = GunCompEq.PrimaryVerb.verbProps.defaultCooldownTicks;
-            }
-            loaded = false;
-        }
-
-        public override string GetInspectString()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            string inspectString = base.GetInspectString();
-            if (!inspectString.NullOrEmpty())
-            {
-                stringBuilder.AppendLine(inspectString);
-            }
-            stringBuilder.AppendLine("GunInstalled".Translate() + ": " + Gun.Label);
-            if (GunCompEq.PrimaryVerb.verbProps.minRange > 0f)
-            {
-                stringBuilder.AppendLine("MinimumRange".Translate() + ": " + GunCompEq.PrimaryVerb.verbProps.minRange.ToString("F0"));
-            }
-            if (burstCooldownTicksLeft > 0)
-            {
-                stringBuilder.AppendLine("CanFireIn".Translate() + ": " + burstCooldownTicksLeft.TickstoSecondsString());
-            }
-            if (def.building.turretShellDef != null)
-            {
-                if (loaded)
-                {
-                    stringBuilder.AppendLine("ShellLoaded".Translate());
-                }
-                else
-                {
-                    stringBuilder.AppendLine("ShellNotLoaded".Translate());
-                }
-            }
-            return stringBuilder.ToString();
-        }
+        private bool WarmingUp => this.burstWarmupTicksLeft > 0;
 
         public override void Draw()
         {
-            top.DrawTurret();
+            this.top.DrawTurret();
             base.Draw();
         }
 
         public override void DrawExtraSelectionOverlays()
         {
-            float range = GunCompEq.PrimaryVerb.verbProps.range;
+            float range = this.GunCompEq.PrimaryVerb.verbProps.range;
             if (range < 90f)
             {
-                GenDraw.DrawRadiusRing(Position, range);
+                GenDraw.DrawRadiusRing(this.Position, range);
             }
-            float minRange = GunCompEq.PrimaryVerb.verbProps.minRange;
+
+            float minRange = this.GunCompEq.PrimaryVerb.verbProps.minRange;
             if (minRange < 90f && minRange > 0.1f)
             {
-                GenDraw.DrawRadiusRing(Position, minRange);
+                GenDraw.DrawRadiusRing(this.Position, minRange);
             }
-            if (burstWarmupTicksLeft > 0)
+
+            if (this.burstWarmupTicksLeft > 0)
             {
-                int degreesWide = (int)((float)burstWarmupTicksLeft * 0.5f);
-                GenDraw.DrawAimPie(this, CurrentTarget, degreesWide, (float)def.size.x * 0.5f);
+                int degreesWide = (int)((float)this.burstWarmupTicksLeft * 0.5f);
+                GenDraw.DrawAimPie(this, this.CurrentTarget, degreesWide, (float)this.def.size.x * 0.5f);
             }
-            if (forcedTarget.IsValid && (!forcedTarget.HasThing || forcedTarget.Thing.Spawned))
+
+            if (this.forcedTarget.IsValid && (!this.forcedTarget.HasThing || this.forcedTarget.Thing.Spawned))
             {
                 Vector3 b;
-                if (forcedTarget.HasThing)
+                if (this.forcedTarget.HasThing)
                 {
-                    b = forcedTarget.Thing.TrueCenter();
+                    b = this.forcedTarget.Thing.TrueCenter();
                 }
                 else
                 {
-                    b = forcedTarget.Cell.ToVector3Shifted();
+                    b = this.forcedTarget.Cell.ToVector3Shifted();
                 }
+
                 Vector3 a = this.TrueCenter();
                 b.y = Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays);
                 a.y = b.y;
                 GenDraw.DrawLineBetween(a, b, ForcedTargetLineMat);
             }
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.LookValue(ref this.burstCooldownTicksLeft, "burstCooldownTicksLeft", 0);
+            Scribe_Values.LookValue(ref this.loaded, "loaded", false);
+            Scribe_Values.LookValue(ref this.holdFire, "holdFire", false);
         }
 
         [DebuggerHidden]
@@ -411,48 +141,329 @@ namespace ToolsForHaul
                 yield return gizmo;
             }
 
-            if (CanSetForcedTarget)
+            if (this.CanSetForcedTarget)
             {
-                yield return new Command_VerbTarget
-                {
-                    defaultLabel = "CommandSetForceAttackTarget".Translate(),
-                    defaultDesc = "CommandSetForceAttackTargetDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack"),
-                    verb = GunCompEq.PrimaryVerb,
-                    hotKey = KeyBindingDefOf.Misc4
-                };
-            }
-            if (CanToggleHoldFire)
-            {
-                yield return new Command_Toggle
-                {
-                    defaultLabel = "CommandHoldFire".Translate(),
-                    defaultDesc = "CommandHoldFireDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/Commands/HoldFire"),
-                    hotKey = KeyBindingDefOf.Misc6,
-                    toggleAction = delegate
-                    {
-                        holdFire = !holdFire;
-                        if (holdFire)
+                yield return
+                    new Command_VerbTarget
                         {
-                            currentTargetInt = TargetInfo.Invalid;
-                            burstWarmupTicksLeft = 0;
-                        }
-                    },
-                    isActive = (() => holdFire)
-                };
+                            defaultLabel = "CommandSetForceAttackTarget".Translate(),
+                            defaultDesc = "CommandSetForceAttackTargetDesc".Translate(),
+                            icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack"),
+                            verb = this.GunCompEq.PrimaryVerb,
+                            hotKey = KeyBindingDefOf.Misc4
+                        };
             }
+
+            if (this.CanToggleHoldFire)
+            {
+                yield return
+                    new Command_Toggle
+                        {
+                            defaultLabel = "CommandHoldFire".Translate(),
+                            defaultDesc = "CommandHoldFireDesc".Translate(),
+                            icon = ContentFinder<Texture2D>.Get("UI/Commands/HoldFire"),
+                            hotKey = KeyBindingDefOf.Misc6,
+                            toggleAction = delegate
+                                {
+                                    this.holdFire = !this.holdFire;
+                                    if (this.holdFire)
+                                    {
+                                        this.currentTargetInt = TargetInfo.Invalid;
+                                        this.burstWarmupTicksLeft = 0;
+                                    }
+                                },
+                            isActive = () => this.holdFire
+                        };
+            }
+
             yield break;
+        }
+
+        public override string GetInspectString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            string inspectString = base.GetInspectString();
+            if (!inspectString.NullOrEmpty())
+            {
+                stringBuilder.AppendLine(inspectString);
+            }
+
+            stringBuilder.AppendLine("GunInstalled".Translate() + ": " + this.Gun.Label);
+            if (this.GunCompEq.PrimaryVerb.verbProps.minRange > 0f)
+            {
+                stringBuilder.AppendLine(
+                    "MinimumRange".Translate() + ": " + this.GunCompEq.PrimaryVerb.verbProps.minRange.ToString("F0"));
+            }
+
+            if (this.burstCooldownTicksLeft > 0)
+            {
+                stringBuilder.AppendLine(
+                    "CanFireIn".Translate() + ": " + this.burstCooldownTicksLeft.TickstoSecondsString());
+            }
+
+            if (this.def.building.turretShellDef != null)
+            {
+                if (this.loaded)
+                {
+                    stringBuilder.AppendLine("ShellLoaded".Translate());
+                }
+                else
+                {
+                    stringBuilder.AppendLine("ShellNotLoaded".Translate());
+                }
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        public override void OrderAttack(TargetInfo targ)
+        {
+            if ((targ.Cell - this.Position).LengthHorizontal < this.GunCompEq.PrimaryVerb.verbProps.minRange)
+            {
+                Messages.Message("MessageTargetBelowMinimumRange".Translate(), this, MessageSound.RejectInput);
+                return;
+            }
+
+            if ((targ.Cell - this.Position).LengthHorizontal > this.GunCompEq.PrimaryVerb.verbProps.range)
+            {
+                Messages.Message("MessageTargetBeyondMaximumRange".Translate(), this, MessageSound.RejectInput);
+                return;
+            }
+
+            if (this.forcedTarget != targ)
+            {
+                this.forcedTarget = targ;
+                if (this.burstCooldownTicksLeft <= 0)
+                {
+                    this.TryStartShootSomething();
+                }
+            }
+        }
+
+        public override void SpawnSetup()
+        {
+            base.SpawnSetup();
+            this.powerComp = this.GetComp<CompPowerTrader>();
+            this.mannableComp = this.GetComp<CompMannable>();
+            this.currentTargetInt = TargetInfo.Invalid;
+            this.burstWarmupTicksLeft = 0;
+            this.burstCooldownTicksLeft = 0;
+        }
+
+        public override void Tick()
+        {
+            base.Tick();
+
+            if (!this.mountableComp.IsMounted)
+            {
+                return;
+            }
+
+            if (this.powerComp != null && !this.powerComp.PowerOn)
+            {
+                return;
+            }
+
+            if (this.mannableComp != null && !this.mannableComp.MannedNow)
+            {
+                return;
+            }
+
+            if (!this.CanSetForcedTarget && this.forcedTarget.IsValid)
+            {
+                this.ResetForcedTarget();
+            }
+
+            if (!this.CanToggleHoldFire)
+            {
+                this.holdFire = false;
+            }
+
+            this.GunCompEq.verbTracker.VerbsTick();
+            if (this.stunner.Stunned)
+            {
+                return;
+            }
+
+            if (this.GunCompEq.PrimaryVerb.state == VerbState.Bursting)
+            {
+                return;
+            }
+
+            if (this.WarmingUp)
+            {
+                this.burstWarmupTicksLeft--;
+                if (this.burstWarmupTicksLeft == 0)
+                {
+                    this.BeginBurst();
+                }
+            }
+            else
+            {
+                if (this.burstCooldownTicksLeft > 0)
+                {
+                    this.burstCooldownTicksLeft--;
+                }
+
+                if (this.burstCooldownTicksLeft == 0)
+                {
+                    this.TryStartShootSomething();
+                }
+            }
+
+            this.top.TurretTopTick();
+        }
+
+        protected void BeginBurst()
+        {
+            this.GunCompEq.PrimaryVerb.TryStartCastOn(this.CurrentTarget);
+        }
+
+        protected void BurstComplete()
+        {
+            if (this.def.building.turretBurstCooldownTicks >= 0)
+            {
+                this.burstCooldownTicksLeft = this.def.building.turretBurstCooldownTicks;
+            }
+            else
+            {
+                this.burstCooldownTicksLeft = this.GunCompEq.PrimaryVerb.verbProps.defaultCooldownTicks;
+            }
+
+            this.loaded = false;
+        }
+
+        protected TargetInfo TryFindNewTarget()
+        {
+            Thing thing = this.TargSearcher();
+            Faction faction = thing.Faction;
+            float range = this.GunCompEq.PrimaryVerb.verbProps.range;
+            float minRange = this.GunCompEq.PrimaryVerb.verbProps.minRange;
+            Building t;
+            if (Rand.Value < 0.5f && this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead
+                && faction.HostileTo(Faction.OfPlayer)
+                && Find.ListerBuildings.allBuildingsColonist.Where(
+                    delegate(Building x)
+                        {
+                            float num = x.Position.DistanceToSquared(this.Position);
+                            return num > minRange * minRange && num < range * range;
+                        }).TryRandomElement(out t))
+            {
+                return t;
+            }
+
+            TargetScanFlags targetScanFlags = TargetScanFlags.NeedThreat;
+            if (!this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead)
+            {
+                targetScanFlags |= TargetScanFlags.NeedLOSToAll;
+            }
+
+            if (this.GunCompEq.PrimaryVerb.verbProps.ai_IsIncendiary)
+            {
+                targetScanFlags |= TargetScanFlags.NeedNonBurning;
+            }
+
+            return AttackTargetFinder.BestShootTargetFromCurrentPosition(
+                thing,
+                this.IsValidTarget,
+                range,
+                minRange,
+                targetScanFlags);
+        }
+
+        protected void TryStartShootSomething()
+        {
+            if (this.forcedTarget.ThingDestroyed)
+            {
+                this.forcedTarget = null;
+            }
+
+            if (this.holdFire && this.CanToggleHoldFire)
+            {
+                return;
+            }
+
+            if (this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead
+                && Find.RoofGrid.Roofed(this.Position))
+            {
+                return;
+            }
+
+            bool isValid = this.currentTargetInt.IsValid;
+            if (this.forcedTarget.IsValid)
+            {
+                this.currentTargetInt = this.forcedTarget;
+            }
+            else
+            {
+                this.currentTargetInt = this.TryFindNewTarget();
+            }
+
+            if (!isValid && this.currentTargetInt.IsValid)
+            {
+                SoundDefOf.TurretAcquireTarget.PlayOneShot(this.Position);
+            }
+
+            if (this.currentTargetInt.IsValid)
+            {
+                if (this.def.building.turretBurstWarmupTicks > 0)
+                {
+                    this.burstWarmupTicksLeft = this.def.building.turretBurstWarmupTicks;
+                }
+                else
+                {
+                    this.BeginBurst();
+                }
+            }
+        }
+
+        private bool IsValidTarget(Thing t)
+        {
+            Pawn pawn = t as Pawn;
+            if (pawn != null)
+            {
+                if (this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead)
+                {
+                    RoofDef roofDef = Find.RoofGrid.RoofAt(t.Position);
+                    if (roofDef != null && roofDef.isThickRoof)
+                    {
+                        return false;
+                    }
+                }
+
+                if (this.mannableComp == null)
+                {
+                    return !GenAI.MachinesLike(this.Faction, pawn);
+                }
+
+                if (pawn.RaceProps.Animal && pawn.Faction == Faction.OfPlayer)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void ResetForcedTarget()
         {
-            forcedTarget = TargetInfo.Invalid;
-            if (burstCooldownTicksLeft <= 0)
+            this.forcedTarget = TargetInfo.Invalid;
+            if (this.burstCooldownTicksLeft <= 0)
             {
-                TryStartShootSomething();
+                this.TryStartShootSomething();
             }
+        }
+
+        private Thing TargSearcher()
+        {
+            if (this.mannableComp != null && this.mannableComp.MannedNow)
+            {
+                return this.mannableComp.ManningPawn;
+            }
+
+            return this;
         }
     }
 }
+
 #endif

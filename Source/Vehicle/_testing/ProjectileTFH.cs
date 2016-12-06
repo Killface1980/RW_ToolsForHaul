@@ -29,12 +29,14 @@ namespace ToolsForHaul
                         Destroy();
                         return;
                     }
+
                     if (Position.GetEdifice() == null || Position.GetEdifice().def.Fillage != FillCategory.Full)
                     {
                         RoofCollapserImmediate.DropRoofInCells(Position);
                     }
                 }
             }
+
             if (assignedTarget != null)
             {
                 Pawn pawn = assignedTarget as Pawn;
@@ -43,6 +45,7 @@ namespace ToolsForHaul
                     Impact(null);
                     return;
                 }
+
                 Impact(assignedTarget);
                 return;
             }
@@ -57,17 +60,20 @@ namespace ToolsForHaul
                     {
                         cellThingsFiltered.Add(pawn2);
                     }
+
                     Vehicle_Cart cart = thingList[i] as Vehicle_Cart;
                     if (cart != null)
                     {
                         cellThingsFiltered.Add(cart);
                     }
                 }
+
                 if (cellThingsFiltered.Count > 0)
                 {
                     Impact(cellThingsFiltered.RandomElement());
                     return;
                 }
+
                 cellThingsFiltered.Clear();
                 for (int j = 0; j < thingList.Count; j++)
                 {
@@ -77,11 +83,13 @@ namespace ToolsForHaul
                         cellThingsFiltered.Add(thing);
                     }
                 }
+
                 if (cellThingsFiltered.Count > 0)
                 {
                     Impact(cellThingsFiltered.RandomElement());
                     return;
                 }
+
                 Impact(null);
                 return;
             }

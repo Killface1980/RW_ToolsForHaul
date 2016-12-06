@@ -25,6 +25,7 @@ namespace ToolsForHaul
                     Log.ErrorOnce("Unable to reflect Pawn_RelationsTracker.pawn!", 0x12348765);
                 }
             }
+
             if ((bool)_IsBlueprint.GetValue(_this)) return true;
             return false;
         }
@@ -39,6 +40,7 @@ namespace ToolsForHaul
                     Log.ErrorOnce("Unable to reflect Pawn_RelationsTracker.pawn!", 0x12348765);
                 }
             }
+
             return (bool)_IsFrame.GetValue(_this);
         }
 
@@ -52,11 +54,12 @@ namespace ToolsForHaul
                     Log.ErrorOnce("Unable to reflect Pawn_RelationsTracker.pawn!", 0x12348765);
                 }
             }
+
             return (ThingCategory)_category.GetValue(_this);
         }
 
         // Verse.ThingDef
-        [Detour(typeof(ThingDef), bindingFlags = (BindingFlags.Instance | BindingFlags.Public))]
+        [Detour(typeof(ThingDef), bindingFlags = BindingFlags.Instance | BindingFlags.Public)]
         internal static bool CanHaveFaction(this ThingDef _this)
         {
             return true;
@@ -69,6 +72,7 @@ namespace ToolsForHaul
             {
                 return true;
             }
+
             switch (category)
             {
                 case ThingCategory.Pawn:
@@ -76,6 +80,7 @@ namespace ToolsForHaul
                 case ThingCategory.Building:
                     return true;
             }
+
             return false;
         }
 

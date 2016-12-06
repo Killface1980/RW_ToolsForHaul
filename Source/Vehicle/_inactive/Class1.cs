@@ -94,6 +94,7 @@ namespace RimWorld
             {
                 return "BrokenDown".Translate();
             }
+
             return null;
         }
     }

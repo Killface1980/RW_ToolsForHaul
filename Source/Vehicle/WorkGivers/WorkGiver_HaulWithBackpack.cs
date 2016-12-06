@@ -1,5 +1,4 @@
 ﻿//#define DEBUG
-
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -18,10 +17,17 @@ namespace ToolsForHaul.WorkGivers
             Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
             foreach (Thing thing in ListerHaulables.ThingsPotentiallyNeedingHauling())
             {
-                if (thing.def.thingCategories.Exists(category => backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)) && !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))))
-                    list.Add(thing);
-                //return ToolsForHaulUtility.Cart();
+                if (
+                    thing.def.thingCategories.Exists(
+                        category =>
+                            backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
+                                subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))
+                            && !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(
+                                subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)))) list.Add(thing);
+
+                // return ToolsForHaulUtility.Cart();
             }
+
             return list;
         }
 
@@ -31,13 +37,14 @@ namespace ToolsForHaul.WorkGivers
 
             Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
 
-            //Should skip pawn that don't have backpack.
+            // Should skip pawn that don't have backpack.
             if (backpack == null)
                 return true;
             if (backpack.MaxItem - backpack.slotsComp.slots.Count == 0)
             {
                 return true;
             }
+
             return false;
         }
 
@@ -52,6 +59,7 @@ namespace ToolsForHaul.WorkGivers
             {
                 return null;
             }
+
             Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
             if (backpack != null)
             {

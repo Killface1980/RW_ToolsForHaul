@@ -8,8 +8,13 @@ using Verse;
 using Verse.AI;
 using Verse.Sound;
 
-namespace ToolsForHaul.IncidentWorkers
+namespace ToolsForHaul.IncidentWorker
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
+    using IncidentWorker = RimWorld.IncidentWorker;
+
     public class IncidentWorker_WandererJoin : IncidentWorker
     {
         private const float RelationWithColonistWeight = 20f;
@@ -21,6 +26,7 @@ namespace ToolsForHaul.IncidentWorkers
             {
                 return false;
             }
+
             PawnKindDef pawnKindDef = new List<PawnKindDef>
             {
                 PawnKindDefOf.Villager
@@ -32,8 +38,6 @@ namespace ToolsForHaul.IncidentWorkers
             // vehicle generation
             // Vehicles for raiders
             // lowered probability for shield users as they are overpowered
-
-
             if (pawn.RaceProps.ToolUser)
             {
                 float value = Rand.Value;
@@ -54,6 +58,7 @@ namespace ToolsForHaul.IncidentWorkers
                     {
                         thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
                     }
+
                     GenSpawn.Spawn(thing, pawn.Position);
 
                     Thing fuel = ThingMaker.MakeThing(thing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.FirstOrDefault());
@@ -69,7 +74,7 @@ namespace ToolsForHaul.IncidentWorkers
                     pawn.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
                     SoundInfo info = SoundInfo.InWorld(thing);
-                    thing.TryGetComp<CompMountable>().sustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
+                    thing.TryGetComp<CompMountable>().SustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
                 }
             }
 

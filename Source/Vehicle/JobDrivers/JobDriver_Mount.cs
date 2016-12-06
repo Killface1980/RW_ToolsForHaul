@@ -6,16 +6,19 @@ using Verse.AI;
 
 namespace ToolsForHaul.JobDrivers
 {
+    using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.Components.Vehicles;
+
     public class JobDriver_Mount : JobDriver
     {
-        //Constants
+        // Constants
         private const TargetIndex MountableInd = TargetIndex.A;
 
         public override string GetReport()
         {
 
             string repString;
-            repString = "ReportMounting".Translate(TargetThingA.LabelCap);
+            repString = "ReportMounting".Translate(this.TargetThingA.LabelCap);
 
             return repString;
         }
@@ -23,44 +26,38 @@ namespace ToolsForHaul.JobDrivers
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ///
-            //Set fail conditions
+            // Set fail conditions
             ///
 
             this.FailOnDestroyedOrNull(MountableInd);
-            //Note we only fail on forbidden if the target doesn't start that way
-            //This helps haul-aside jobs on forbidden items
-            if (TargetThingA.IsForbidden(pawn.Faction))
-                this.FailOnForbidden(MountableInd);
 
-
+            // Note we only fail on forbidden if the target doesn't start that way
+            // This helps haul-aside jobs on forbidden items
+            if (this.TargetThingA.IsForbidden(this.pawn.Faction)) this.FailOnForbidden(MountableInd);
 
             ///
-            //Define Toil
+            // Define Toil
             ///
 
-
-
-
             ///
-            //Toils Start
+            // Toils Start
             ///
 
-            //Reserve thing to be stored and storage cell 
+            // Reserve thing to be stored and storage cell 
             yield return Toils_Reserve.Reserve(MountableInd);
 
-            //Mount on Target
+            // Mount on Target
             yield return Toils_Goto.GotoThing(MountableInd, PathEndMode.InteractionCell);
 
             Toil toilMountOn = new Toil();
             toilMountOn.initAction = () =>
-            {
-                Pawn actor = toilMountOn.actor;
-                Job curJob = actor.jobs.curJob;
-                TargetThingA.TryGetComp<CompMountable>().MountOn(actor);
-            };
+                {
+                    Pawn actor = toilMountOn.actor;
+                    Job curJob = actor.jobs.curJob;
+                    this.TargetThingA.TryGetComp<CompMountable>().MountOn(actor);
+                };
 
             yield return toilMountOn;
         }
-
     }
 }

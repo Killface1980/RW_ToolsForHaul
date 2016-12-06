@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using RimWorld;
+
+using ToolsForHaul.MapComponent_ToolsForHaul;
+
 using Verse;
 using Verse.AI;
-using static ToolsForHaul.MapComponent_ToolsForHaul;
 
 namespace ToolsForHaul
 {
@@ -53,6 +56,7 @@ namespace ToolsForHaul
                     searchRange = lengthHorizontalSquared;
                 }
             }
+
             return result;
         }
 
@@ -70,21 +74,25 @@ namespace ToolsForHaul
                 {
                     return true;
                 }
+
                 if (toolComp.Allows("Construction") && pawn.workSettings.WorkIsActive(WorkTypeDefOf.Construction) ||
-                    (pawn.workSettings.WorkIsActive(WorkTypeDefOf.Repair) ))
+                    pawn.workSettings.WorkIsActive(WorkTypeDefOf.Repair))
                 {
                     return true;
                 }
+
                 if (toolComp.Allows("Mining") && pawn.workSettings.WorkIsActive(WorkTypeDefOf.Mining))
                 {
                     return true;
                 }
+
                 if (toolComp.Allows("PlantCutting") && pawn.workSettings.WorkIsActive(WorkTypeDefOf.PlantCutting))
                 {
                     return true;
                 }
 
             }
+
             return false;
         }
 
@@ -101,11 +109,15 @@ namespace ToolsForHaul
             if (pawn.equipment.Primary != null)
             {
                 ThingWithComps leftover;
-                pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container,
+                pawn.equipment.TryTransferEquipmentToContainer(
+                    pawn.equipment.Primary,
+                    pawn.inventory.container,
                     out leftover);
             }
+
             // equip new required weapon
             pawn.equipment.AddEquipment(thing as ThingWithComps);
+
             // remove that equipment from inventory
             pawn.inventory.container.Remove(thing);
         }
@@ -155,8 +167,10 @@ namespace ToolsForHaul
         public Job TryReturnTool(Pawn pawn)
         {
             ThingWithComps tool;
+
             // drops primary equipment (weapon) as forbidden
             pawn.equipment.TryDropEquipment(pawn.equipment.Primary, out tool, pawn.Position);
+
             // making it non forbidden
             tool.SetForbidden(false);
 

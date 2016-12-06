@@ -29,10 +29,10 @@ namespace ToolsForHaul.StatWorkers
                         {
                             Vehicle_Cart vehicle_Cart = MapComponent_ToolsForHaul.currentVehicle[thisPawn] as Vehicle_Cart;
                             if (vehicle_Cart != null)
-                                if (vehicle_Cart.mountableComp.IsMounted && vehicle_Cart.mountableComp.Driver == thisPawn)
+                                if (vehicle_Cart.MountableComp.IsMounted && vehicle_Cart.MountableComp.Driver == thisPawn)
                                 {
                                     stringBuilder.AppendLine();
-                                    stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Cart.vehicleComp.VehicleSpeed);
+                                    stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Cart.VehicleComp.VehicleSpeed);
                                     return stringBuilder.ToString();
                                 }
 
@@ -68,7 +68,7 @@ namespace ToolsForHaul.StatWorkers
                             if (compSlotsBackpack.encumberPenalty > 0f)
                             {
                                 stringBuilder.AppendLine("CR_EncumberedBackpack".Translate() + ": -" + compSlotsBackpack.encumberPenalty.ToStringPercent());
-                                stringBuilder.AppendLine("CR_FinalModifierBackpack".Translate() + ": x" + GetStatFactor(thisPawn).ToStringPercent());
+                                stringBuilder.AppendLine("CR_FinalModifierBackpack".Translate() + ": x" + this.GetStatFactor(thisPawn).ToStringPercent());
                             }
                         }
                     }
@@ -89,15 +89,16 @@ namespace ToolsForHaul.StatWorkers
 
                 if (pawn.RaceProps.intelligence >= Intelligence.ToolUser)
 
-                    if (GetStatFactor(pawn) > 1.01f)
+                    if (this.GetStatFactor(pawn) > 1.01f)
                     {
-                        num = GetStatFactor(pawn);
+                        num = this.GetStatFactor(pawn);
                     }
                     else
                     {
-                        num *= GetStatFactor(pawn);
+                        num *= this.GetStatFactor(pawn);
                     }
             }
+
             return num;
 
         }
@@ -111,16 +112,17 @@ namespace ToolsForHaul.StatWorkers
                 Vehicle_Cart vehicleCart = MapComponent_ToolsForHaul.currentVehicle[thisPawn] as Vehicle_Cart;
                 if (vehicleCart != null)
                 {
-                    if (vehicleCart.mountableComp.IsMounted && !vehicleCart.mountableComp.Driver.RaceProps.Animal && vehicleCart.mountableComp.Driver == thisPawn)
+                    if (vehicleCart.MountableComp.IsMounted && !vehicleCart.MountableComp.Driver.RaceProps.Animal && vehicleCart.MountableComp.Driver == thisPawn)
                     {
-                        if (vehicleCart.vehicleComp.IsCurrentlyMotorized())
+                        if (vehicleCart.VehicleComp.IsCurrentlyMotorized())
                         {
-                            result = Mathf.Clamp(vehicleCart.vehicleComp.VehicleSpeed, 2f, 100f);
+                            result = Mathf.Clamp(vehicleCart.VehicleComp.VehicleSpeed, 2f, 100f);
                         }
                         else
                         {
-                            result = Mathf.Clamp(vehicleCart.vehicleComp.VehicleSpeed, 0.5f, 1f);
+                            result = Mathf.Clamp(vehicleCart.VehicleComp.VehicleSpeed, 0.5f, 1f);
                         }
+
                         return result;
                     }
                 }
@@ -138,6 +140,7 @@ namespace ToolsForHaul.StatWorkers
                         {
                             result = Mathf.Clamp(vehicleTank.vehicleComp.VehicleSpeed, 0.5f, 1f);
                         }
+
                         return result;
                     }
                 }
