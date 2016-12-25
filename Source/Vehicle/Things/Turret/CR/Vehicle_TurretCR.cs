@@ -303,7 +303,7 @@ namespace ToolsForHaul
                 Pawn worker = null;
                 Job jobNew = new Job(HaulJobDefOf.MakeMount);
                 Find.Reservations.ReleaseAllForTarget(this);
-                jobNew.maxNumToCarry = 1;
+                jobNew.count = 1;
                 jobNew.targetA = this;
                 jobNew.targetB = myPawn;
                 foreach (Pawn colonyPawn in Find.MapPawns.FreeColonistsSpawned)
@@ -402,7 +402,7 @@ namespace ToolsForHaul
             {
                 //foreach (Thing thing in GetContainer())
                 //{
-                //    thing.holder.owner = this;
+                //    thing.holdingContainer.owner = this;
                 //}
 
                 currentDriverSpeed = VehicleSpeed;
@@ -457,7 +457,7 @@ namespace ToolsForHaul
                     if (mountableComp.Driver.Faction != Faction.OfPlayer)
                         if (!fueledByAI)
                         {
-                            if (refuelableComp.FuelPercent < 0.550000011920929)
+                            if (refuelableComp.FuelPercentOfMax < 0.550000011920929)
                                 refuelableComp.Refuel(
                                     ThingMaker.MakeThing(refuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
                             else
@@ -510,7 +510,7 @@ namespace ToolsForHaul
             {
                 if (Find.TickManager.TicksGame > _tankSpillTick)
                 {
-                    if (refuelableComp.FuelPercent > _tankHitPos)
+                    if (refuelableComp.FuelPercentOfMax > _tankHitPos)
                     {
                         refuelableComp.ConsumeFuel(0.15f);
 

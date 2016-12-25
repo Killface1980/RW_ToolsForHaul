@@ -42,7 +42,7 @@ namespace ToolsForHaul.JoyGivers
             }
 
             Region reg;
-            if (!CellFinder.TryFindClosestRegionWith(pawn.Position.GetRegion(), TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), (Region r) => r.Room.PsychologicallyOutdoors && !r.IsForbiddenEntirely(pawn), 100, out reg))
+            if (!CellFinder.TryFindClosestRegionWith(pawn.Position.GetRegion(pawn.Map), TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), (Region r) => r.Room.PsychologicallyOutdoors && !r.IsForbiddenEntirely(pawn), 100, out reg))
             {
                 return null;
             }
@@ -61,7 +61,7 @@ namespace ToolsForHaul.JoyGivers
 
             Job job = new Job(this.def.jobDef, list[0])
             {
-                targetQueueA = new List<TargetInfo>(),
+                targetQueueA = new List<LocalTargetInfo>(),
                 targetB = t,
             };
 

@@ -41,7 +41,7 @@ namespace ToolsForHaul.JobGivers
             {
                 targetA = pawn2,
                 targetB = intVec,
-                maxNumToCarry = 1
+                count = 1
             };
         }
 

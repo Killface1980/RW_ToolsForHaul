@@ -36,9 +36,9 @@ namespace ToolsForHaul
 
         public CompSlotsToolbelt slotsComp => this.GetComp<CompSlotsToolbelt>();
 
-        public override void SpawnSetup()
+        public override void SpawnSetup(Map map)
         {
-            base.SpawnSetup();
+            base.SpawnSetup(map);
             this.MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.InventoryMaxItem));
         }
 

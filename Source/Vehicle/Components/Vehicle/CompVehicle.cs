@@ -84,8 +84,8 @@ namespace ToolsForHaul.Components
             base.PostPostApplyDamage(dinfo, totalDamageDealt);
             if (!this.parent.Spawned)
                 return;
-
-            if (dinfo.Def == DamageDefOf.Repair && this.tankLeaking)
+            // todo add repair
+            if ( this.tankLeaking)
             {
                 this.tankLeaking = false;
                 this._tankHitPos = 1f;
@@ -101,10 +101,10 @@ namespace ToolsForHaul.Components
             if (hitpointsPercent <= 0.35f)
             {
                 if (this.IsCurrentlyMotorized())
-                    MoteMakerTFH.ThrowMicroSparks(this.parent.DrawPos);
+                    MoteMakerTFH.ThrowMicroSparks(this.parent.DrawPos, this.parent.Map);
             }
 
-            if (dinfo.Def == DamageDefOf.Flame || dinfo.Def == DamageDefOf.Repair || dinfo.Def == DamageDefOf.Bomb)
+            if (dinfo.Def == DamageDefOf.Flame || dinfo.Def == DamageDefOf.Bomb)
             {
                 return;
             }
@@ -122,14 +122,14 @@ namespace ToolsForHaul.Components
                         this.tankHitCount += 1;
                         this._tankHitPos = Math.Min(this._tankHitPos, Rand.Value);
 
-                        int splash = (int)(refuelableComp.FuelPercent - this._tankHitPos * 20);
+                        int splash = (int)(refuelableComp.FuelPercentOfMax - this._tankHitPos * 20);
 
-                        FilthMaker.MakeFilth(this.parent.Position, this.fuelDefName, this.parent.LabelCap, splash);
+                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map,this.fuelDefName, this.parent.LabelCap, splash);
                     }
 
                     if (hitpointsPercent < 0.05f && Rand.Value > 0.5f)
                     {
-                        FireUtility.TryStartFireIn(this.parent.Position, 0.1f);
+                        FireUtility.TryStartFireIn(this.parent.Position,this.parent.Map, 0.1f);
                     }
 
                     return;
@@ -142,11 +142,11 @@ namespace ToolsForHaul.Components
                         if (!this.tankLeaking)
                         {
                             refuelableComp.ConsumeFuel(1f);
-                            FilthMaker.MakeFilth(this.parent.Position, this.fuelDefName, this.parent.LabelCap, 6);
+                            FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, this.fuelDefName, this.parent.LabelCap, 6);
                             makeHole = true;
                         }
 
-                        FireUtility.TryStartFireIn(this.parent.Position, 0.1f);
+                        FireUtility.TryStartFireIn(this.parent.Position, this.parent.Map, 0.1f);
                     }
                 }
 
@@ -156,9 +156,9 @@ namespace ToolsForHaul.Components
                     this.tankHitCount += 1;
                     this._tankHitPos = Math.Min(this._tankHitPos, Rand.Value);
 
-                    int splash = (int)(refuelableComp.FuelPercent - this._tankHitPos * 20);
+                    int splash = (int)(refuelableComp.FuelPercentOfMax - this._tankHitPos * 20);
 
-                    FilthMaker.MakeFilth(this.parent.Position, this.fuelDefName, this.parent.LabelCap, splash);
+                    FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, this.fuelDefName, this.parent.LabelCap, splash);
                 }
 
             }
@@ -227,7 +227,7 @@ namespace ToolsForHaul.Components
                     if (mountableComp.Driver.Faction != Faction.OfPlayer)
                         if (!this.fueledByAI)
                         {
-                            if (refuelableComp.FuelPercent < 0.550000011920929)
+                            if (refuelableComp.FuelPercentOfMax < 0.550000011920929)
                                 refuelableComp.Refuel(
                                     ThingMaker.MakeThing(
                                         refuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
@@ -238,8 +238,8 @@ namespace ToolsForHaul.Components
                 if (mountableComp.Driver.pather.Moving)
                 {
                     Vector3 pos = this.parent.DrawPos;
-                    if (Find.TerrainGrid.TerrainAt(pos.ToIntVec3()).takeFootprints
-                        || Find.SnowGrid.GetDepth(pos.ToIntVec3()) > 0.2f)
+                    if (this.parent.Map.terrainGrid.TerrainAt(pos.ToIntVec3()).takeFootprints
+                        || this.parent.Map.snowGrid.GetDepth(pos.ToIntVec3()) > 0.2f)
                     {
                         if (this.LeaveTrail())
                         {
@@ -249,7 +249,7 @@ namespace ToolsForHaul.Components
 
                             if ((loc - this._lastTireTrackPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
                             {
-                                MoteMakerTFH.PlaceTireTrack(loc, rot, pos);
+                                MoteMakerTFH.PlaceTireTrack(loc,this.parent.Map, rot, pos);
                                 this._lastTireTrackPlacePos = pos;
                             }
                         }
@@ -258,12 +258,14 @@ namespace ToolsForHaul.Components
                         {
                             MoteMakerTFH.ThrowDustPuff(
                                 pos + DustOffset,
+                                this.parent.Map,
                                 0.15f + Mathf.InverseLerp(0, 50, this.currentDriverSpeed) * 0.6f);
                         }
                         else
                         {
                             MoteMakerTFH.ThrowDustPuff(
                                 pos + DustOffset,
+                                this.parent.Map,
                                 0.15f + Mathf.InverseLerp(0, 50, this.VehicleSpeed) * 0.6f);
                         }
                     }
@@ -295,7 +297,7 @@ namespace ToolsForHaul.Components
                         this.tickCheck = Find.TickManager.TicksGame;
                     }
 
-                    if (this.parent.Position.InNoBuildEdgeArea() && this.despawnAtEdge && this.parent.Spawned
+                    if (this.parent.Position.InNoBuildEdgeArea(this.parent.Map) && this.despawnAtEdge && this.parent.Spawned
                         && (mountableComp.Driver.Faction != Faction.OfPlayer
                             || mountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee))
                     {
@@ -307,7 +309,7 @@ namespace ToolsForHaul.Components
                 // only fumes on vehicles with combustion and no animals driving
                 if (!this.MotorizedWithoutFuel() && !this.AnimalsCanDrive())
                 {
-                    MoteMakerTFH.ThrowSmoke(this.parent.DrawPos + FumesOffset, 0.05f + this.currentDriverSpeed * 0.01f);
+                    MoteMakerTFH.ThrowSmoke(this.parent.DrawPos + FumesOffset, this.parent.Map, 0.05f + this.currentDriverSpeed * 0.01f);
                 }
             }
 
@@ -315,11 +317,11 @@ namespace ToolsForHaul.Components
             {
                 if (Find.TickManager.TicksGame > this._tankSpillTick)
                 {
-                    if (refuelableComp.FuelPercent > this._tankHitPos)
+                    if (refuelableComp.FuelPercentOfMax > this._tankHitPos)
                     {
                         refuelableComp.ConsumeFuel(0.15f);
 
-                        FilthMaker.MakeFilth(this.parent.Position, this.fuelDefName, this.parent.LabelCap);
+                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map,this.fuelDefName, this.parent.LabelCap);
                         this._tankSpillTick = Find.TickManager.TicksGame + 15;
                     }
                 }

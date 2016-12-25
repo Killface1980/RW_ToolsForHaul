@@ -3,7 +3,9 @@ using Verse;
 
 namespace ToolsForHaul
 {
-    public class MapComponent_ToolsForHaul : MapComponent
+    using HugsLib.Core;
+    using HugsLib.Utils;
+    public class MapComponent_ToolsForHaul : UtilityWorldObject
     {
 
 
@@ -15,9 +17,9 @@ namespace ToolsForHaul
 
         public override void ExposeData()
         {
-            Scribe_Collections.LookDictionary(ref previousPawnWeapons, "previousPawnWeapons", LookMode.MapReference, LookMode.MapReference);
-            Scribe_Collections.LookDictionary(ref currentVehicle, "currentVehicle", LookMode.MapReference, LookMode.MapReference);
-            Scribe_Collections.LookList(ref AutoInventory, "AutoInventory", LookMode.DefReference);
+            Scribe_Collections.LookDictionary(ref previousPawnWeapons, "previousPawnWeapons", LookMode.Reference, LookMode.Reference);
+            Scribe_Collections.LookDictionary(ref currentVehicle, "currentVehicle", LookMode.Reference, LookMode.Reference);
+            Scribe_Collections.LookList(ref AutoInventory, "AutoInventory", LookMode.Reference);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace ToolsForHaul.Detoured
             {
                 foreach (Thing slot in backpack.slotsComp.slots)
                 {
-                    GenThing.TryDropAndSetForbidden(slot, pos, ThingPlaceMode.Near, out dropThing, forbid);
+                    GenThing.TryDropAndSetForbidden(slot, pos,ap.Map, ThingPlaceMode.Near, out dropThing, forbid);
                 }
             }
 
@@ -26,22 +26,22 @@ namespace ToolsForHaul.Detoured
                 resultingAp = null;
                 return false;
             }
-
-            _this.WornApparel.Remove(ap);
-            ap.wearer = null;
-            Thing thing = null;
-            bool flag = GenThing.TryDropAndSetForbidden(ap, pos, ThingPlaceMode.Near, out thing, forbid);
-            resultingAp = thing as Apparel;
-            _this.ApparelChanged();
-            if (flag && _this.pawn.outfits != null)
+            if (_this.pawn.MapHeld == null)
             {
-                _this.pawn.outfits.forcedHandler.SetForced(ap, false);
+                Log.Warning(_this.pawn.LabelCap + " tried to drop apparel but his MapHeld is null.");
+                resultingAp = null;
+                return false;
             }
+            ap.Notify_Stripped(_this.pawn);
+            _this.Remove(ap);
+            Thing thing = null;
+            bool result = GenThing.TryDropAndSetForbidden(ap, pos, _this.pawn.MapHeld, ThingPlaceMode.Near, out thing, forbid);
+            resultingAp = (thing as Apparel);
 
 #if CR
             Combat_Realism.CR_Utility.TryUpdateInventory(_this.pawn);     // Apparel was dropped, update inventory
 #endif
-            return flag;
+            return result;
         }
 
         private static void ApparelChanged(this Pawn_ApparelTracker _this)

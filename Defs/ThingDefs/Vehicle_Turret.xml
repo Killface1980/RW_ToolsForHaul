@@ -68,7 +68,7 @@
     <label>CombatATV</label>
     <thingClass>ToolsForHaul.Vehicle_TurretGun</thingClass>
     <graphicData>
-      <texPath>Things/Pawn/VehicleCombatATV/CombatATV</texPath>
+      <texPath>Things/Vehicles/VehicleCombatATV/CombatATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
       <damageData>
@@ -132,7 +132,7 @@
     </comps>
     <pathCost>50</pathCost>
     <description>An improvised vehicle turret that automatically fires at nearby enemies. Explodes when damaged. Its hacked-together AI brain isn't very smart, and can't be directly controlled, so beware of friendly fire.</description>
-    <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
+    <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
@@ -196,7 +196,7 @@
     <specialDisplayRadius>25.9</specialDisplayRadius>
     <building>
       <turretGunDef>Gun_VehicleTurretImprovised</turretGunDef>
-      <turretBurstCooldownTicks>120</turretBurstCooldownTicks>
+      <turretBurstCooldownTime>120</turretBurstCooldownTime>
       <turretTopgraphicPath>Things/Building/Security/TurretImprovised_Top</turretTopgraphicPath>
     </building>
     <researchPrerequisites>
@@ -231,7 +231,6 @@
     <canBeSpawningInventory>false</canBeSpawningInventory>
     <tradeability>Never</tradeability>
     <destroyOnDrop>true</destroyOnDrop>
-    <canMakeOnMapGen>false</canMakeOnMapGen>
     <statBases>
       <!-- CR
       <AimEfficiency>0.35</AimEfficiency>
@@ -258,7 +257,7 @@
         <verbClass>Combat_Realism.Verb_ShootCR</verbClass>
         <hasStandardCommand>true</hasStandardCommand>
         <projectileDef>Bullet_556x45mmNATO_FMJ</projectileDef>
-        <warmupTicks>90</warmupTicks>
+        <turretBurstWarmupTime>90</turretBurstWarmupTime>
         <range>27</range>
         <ticksBetweenBurstShots>5</ticksBetweenBurstShots>
         <burstShotCount>10</burstShotCount>
@@ -272,7 +271,7 @@
         <verbClass>Verb_Shoot</verbClass>
         <hasStandardCommand>true</hasStandardCommand>
         <projectileDef>Bullet_VehicleTurretImprovised</projectileDef>
-        <warmupTicks>90</warmupTicks>
+        <warmupTime>1.5</warmupTime>
         <range>25.9</range>
         <ticksBetweenBurstShots>8</ticksBetweenBurstShots>
         <burstShotCount>8</burstShotCount>

@@ -39,7 +39,7 @@ namespace ToolsForHaul
 
             return new Job(DefDatabase<JobDef>.GetNamed("TakeToWheelChair"), patient, wheelChair)
             {
-                maxNumToCarry = 1
+                count = 1
             };
         }
     }

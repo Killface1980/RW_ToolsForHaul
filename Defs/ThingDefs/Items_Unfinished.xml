@@ -12,7 +12,6 @@
     <altitudeLayer>Item</altitudeLayer>
     <useHitPoints>true</useHitPoints>
     <isUnfinishedThing>true</isUnfinishedThing>
-    <canMakeOnMapGen>false</canMakeOnMapGen>
     <selectable>true</selectable>
     <tradeability>Never</tradeability>
     <drawerType>RealtimeOnly</drawerType>
@@ -41,7 +40,7 @@
     <defName>UnfinishedWheelChair</defName>
     <label>Unfinished wheel chair</label>
     <graphicData>
-      <texPath>Things/Pawn/VehicleSmackWay/SmackWay</texPath>
+      <texPath>Things/Vehicles/VehicleSmackWay/SmackWay</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(2,2)</drawSize>
     </graphicData>
@@ -56,7 +55,7 @@
     <defName>UnfinishedCart</defName>
     <label>Unfinished cart</label>
     <graphicData>
-      <texPath>Things/Pawn/VehicleCart/Cart</texPath>
+      <texPath>Things/Vehicles/VehicleCart/Cart</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
     </graphicData>
@@ -71,7 +70,7 @@
     <defName>UnfinishedATV</defName>
     <label>Unfinished ATV</label>
     <graphicData>
-      <texPath>Things/Pawn/VehicleATV/ATV</texPath>
+      <texPath>Things/Vehicles/VehicleATV/ATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
     </graphicData>
@@ -84,7 +83,7 @@
     <defName>UnfinishedTruck</defName>
     <label>Unfinished truck</label>
     <graphicData>
-      <texPath>Things/Pawn/VehicleTruck/Truck</texPath>
+      <texPath>Things/Vehicles/VehicleTruck/Truck</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
     </graphicData>
@@ -97,7 +96,7 @@
     <defName>UnfinishedSpeeder</defName>
     <label>Unfinished speeder</label>
     <graphicData>
-      <texPath>Things/Pawn/VehicleSpeeder/Speeder</texPath>
+      <texPath>Things/Vehicles/VehicleSpeeder/Speeder</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
     </graphicData>

@@ -35,7 +35,7 @@ namespace ToolsForHaul
 
 
             // Backpack is full.
-            this.FailOn(() =>{ return pawn.inventory.container.Count < backpack.MaxItem ? false : true; });
+            this.FailOn(() =>{ return pawn.inventory.innerContainer.Count < backpack.MaxItem ? false : true; });
 
             this.FailOn(() => { return pawn == backpack.wearer ? false : true; });
 
@@ -82,15 +82,15 @@ namespace ToolsForHaul
                 Toil toilPutInInventory = new Toil();
                 toilPutInInventory.initAction = () =>
                 {
-                    if (pawn.inventory.container.Count < backpack.MaxItem
-                        && backpack.wearer.inventory.container.TotalStackCount < backpack.MaxStack)
+                    if (pawn.inventory.innerContainer.Count < backpack.MaxItem
+                        && backpack.wearer.inventory.innerContainer.TotalStackCount < backpack.MaxStack)
                     {
                         if (CurJob.targetA.Thing.TryGetComp<CompForbiddable>() != null && CurJob.targetA.Thing.TryGetComp<CompForbiddable>().Forbidden)
                             CurJob.targetA.Thing.TryGetComp<CompForbiddable>().Forbidden = false;
-                        if (pawn.inventory.container.TryAdd(CurJob.targetA.Thing, CurJob.maxNumToCarry))
+                        if (pawn.inventory.innerContainer.TryAdd(CurJob.targetA.Thing, CurJob.count))
                         {
-                            CurJob.targetA.Thing.holder = pawn.inventory.GetContainer();
-                            CurJob.targetA.Thing.holder.owner = pawn.inventory;
+                            CurJob.targetA.Thing.holdingContainer = pawn.inventory.GetContainer();
+                            CurJob.targetA.Thing.holdingContainer.owner = pawn.inventory;
                             backpack.numOfSavedItems++;
                         }
                     }

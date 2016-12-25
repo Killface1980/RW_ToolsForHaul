@@ -74,7 +74,7 @@ namespace ToolsForHaul
                     }
                 }
 
-                // using (IEnumerator<Thing> enumerator = pawn.inventory.container.GetEnumerator())
+                // using (IEnumerator<Thing> enumerator = pawn.inventory.innerContainer.GetEnumerator())
                 // {
                 // while (enumerator.MoveNext())
                 // {
@@ -99,9 +99,9 @@ namespace ToolsForHaul
 
                     toolbelt.slotsComp.SwapEquipment(thingWithComps);
 
-                    // pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container, out dummy);
+                    // pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.innerContainer, out dummy);
                     // pawn.equipment.AddEquipment(thingWithComps);
-                    // pawn.inventory.container.Remove(thingWithComps);
+                    // pawn.inventory.innerContainer.Remove(thingWithComps);
                 }
 
                 // else
@@ -121,7 +121,10 @@ namespace ToolsForHaul
         /// <param name="pawn"></param>
         /// <param name="worktype"></param>
         /// <returns></returns>
-        public static Thing GetRightVehicle(Pawn pawn, WorkTypeDef worktype, Thing t = null)
+        public static Thing GetRightVehicle(
+            Pawn pawn,
+            WorkTypeDef worktype = null,
+            Thing t = null)
         {
             Thing cart = null;
             if (worktype.Equals(WorkTypeDefOf.Hunting))
@@ -159,7 +162,7 @@ namespace ToolsForHaul
                 }
             }
 
-            if (worktype.Equals(WorkTypeDefOf.Hauling))
+            if (worktype==DefDatabase<WorkTypeDef>.GetNamed("Hauling"))
             {
                 IOrderedEnumerable<Thing> orderedEnumerable2 =
                       ToolsForHaulUtility.Cart.OrderByDescending(x => (x as Vehicle_Cart).MaxItem).ThenBy(x=>pawn.Position.DistanceToSquared(x.Position));

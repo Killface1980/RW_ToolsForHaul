@@ -13,17 +13,16 @@ namespace ToolsForHaul.Alerts
 
     using Verse;
 
-    public class Alert_TankIsLeaking : Alert_High
+    public class Alert_TankIsLeaking : Alert_Critical
     {
         public Alert_TankIsLeaking()
         {
-            this.baseLabel = "VehicleTankLeaking".Translate();
-            this.baseExplanation = "VehicleTankLeaking".Translate();
+            this.defaultLabel = "VehicleTankLeaking".Translate();
+            this.defaultExplanation = "VehicleTankLeaking".Translate();
         }
 
-        public override AlertReport Report
+        public override AlertReport GetReport()
         {
-            get
             {
                 foreach (Thing thing in ToolsForHaulUtility.Cart)
                 {
@@ -46,5 +45,6 @@ namespace ToolsForHaul.Alerts
                 return false;
             }
         }
+
     }
 }

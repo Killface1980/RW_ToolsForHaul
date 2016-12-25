@@ -99,11 +99,7 @@
   </JobDef>
 -->
   
-  <JobDef>
-    <defName>ApplyMedicine</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_ApplyMedicine</driverClass>
-    <reportString>Treating TargetA.</reportString>
-  </JobDef>
+
   
   <!--============= Item hauling ===============-->
   <JobDef>

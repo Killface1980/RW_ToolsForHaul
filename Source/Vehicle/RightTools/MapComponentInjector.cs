@@ -13,14 +13,14 @@ namespace ToolsForHaul
 
         public void FixedUpdate()
         {
-            if (Current.ProgramState != ProgramState.MapPlaying)
+            if (Current.ProgramState != ProgramState.Playing)
             {
                 return;
             }
 
-            if (Find.Map.components.FindAll(c => c.GetType() == toolsForHaul).Count == 0)
+            if (Find.VisibleMap.components.FindAll(c => c.GetType() == toolsForHaul).Count == 0)
             {
-                Find.Map.components.Add((MapComponent)Activator.CreateInstance(toolsForHaul));
+                Find.VisibleMap.components.Add((MapComponent)Activator.CreateInstance(toolsForHaul));
 
                 Log.Message("ToolsForHaul :: Added TFH to the map.");
             }

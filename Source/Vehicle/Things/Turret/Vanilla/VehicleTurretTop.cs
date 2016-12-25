@@ -54,7 +54,7 @@ namespace ToolsForHaul
 
         public void TurretTopTick()
         {
-            TargetInfo currentTarget = this.parentTurret.CurrentTarget;
+            LocalTargetInfo currentTarget = this.parentTurret.CurrentTarget;
             if (currentTarget.IsValid)
             {
                 float curRotation = (currentTarget.Cell.ToVector3Shifted() - this.parentTurret.DrawPos).AngleFlat();

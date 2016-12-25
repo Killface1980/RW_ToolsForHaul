@@ -68,7 +68,7 @@ namespace ToolsForHaul.JobDrivers
                             Thing haulThing = curJob.GetTarget(MountableInd).Thing;
 
                             IntVec3 destLoc = actor.jobs.curJob.GetTarget(TargetIndex.B).Cell;
-                            if (!destLoc.IsValidStorageFor(haulThing)) return true;
+                            if (!destLoc.IsValidStorageFor(actor.Map,haulThing)) return true;
                         }
 
                         return false;

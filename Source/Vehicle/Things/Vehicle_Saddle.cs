@@ -76,8 +76,8 @@ namespace ToolsForHaul
             mountableComp.Driver.jobs.StartJob(jobNew, JobCondition.Incompletable);
 
             storage.TryAdd(pawn);
-            pawn.holder = GetContainer();
-            pawn.holder.owner = this;
+            pawn.holdingContainer = GetContainer();
+            pawn.holdingContainer.owner = this;
             pawn.jobs.StartJob(new Job(JobDefOf.WaitCombat));
         }
 
@@ -87,7 +87,7 @@ namespace ToolsForHaul
 
             if (storage.Contains(pawn))
             {
-                pawn.holder = null;
+                pawn.holdingContainer = null;
                 pawn.jobs.StopAll();
                 Thing dummy;
                 storage.TryDrop(pawn, Position, ThingPlaceMode.Near, out dummy);
@@ -103,7 +103,7 @@ namespace ToolsForHaul
                 Pawn crew = (Pawn)thing;
                 if (crew == null) continue;
 
-                crew.holder = null;
+                crew.holdingContainer = null;
                 crew.jobs?.StopAll();
                 Thing dummy;
                 storage.TryDrop(crew, Position, ThingPlaceMode.Near, out dummy);
@@ -198,7 +198,7 @@ namespace ToolsForHaul
                 fmoBoard.action = () =>
                     {
                         Job jobNew = new Job(HaulJobDefOf.Board, this);
-                        myPawn.drafter.TakeOrderedJob(jobNew);
+                        myPawn.jobs.TryTakeOrderedJob(jobNew);
                     };
                 if (storage.Count(x => x is Pawn) >= 1)
                 {

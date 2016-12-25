@@ -56,8 +56,8 @@
                         if (this.parent.TryGetComp<CompAxles>().HasAxles())
                             if (!this.breakSoundPlayed)
                             {
-                                SoundDef.Named("VehicleATV_Ambience_Break").PlayOneShot(mountableComp.Driver.Position);
-                                MoteMakerTFH.ThrowDustPuff(this.parent.DrawPos, 0.8f);
+                                SoundDef.Named("VehicleATV_Ambience_Break").PlayOneShot(new TargetInfo(mountableComp.Driver.Position, this.parent.Map, false)); ;
+                                MoteMakerTFH.ThrowDustPuff(this.parent.DrawPos, this.parent.Map, 0.8f);
                                 this.breakSoundPlayed = true;
                             }
                     }
@@ -149,7 +149,7 @@
         {
             if (this.HasAxles())
             {
-                string text = "Things/Pawn/" + this.parent.def.defName + "/Wheel";
+                string text = "Things/Vehicles/" + this.parent.def.defName + "/Wheel";
                 this.graphic_Wheel_Single = new Graphic_Single();
                 this.graphic_Wheel_Single =
                     GraphicDatabase.Get<Graphic_Single>(

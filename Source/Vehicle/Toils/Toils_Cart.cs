@@ -92,7 +92,7 @@ namespace ToolsForHaul.Toils
                     // Find Valid Storage
                     foreach (IntVec3 cell in GenRadial.RadialCellsAround(vehicleCart.Position, NearbyCell, false))
                     {
-                        if (cell.IsValidStorageFor(vehicleCart)
+                        if (cell.IsValidStorageFor(actor.Map,vehicleCart )
                             && actor.CanReserveAndReach(cell, PathEndMode.ClosestTouch, actor.NormalMaxDanger()))
                         {
                             storeCell = cell;
@@ -107,7 +107,7 @@ namespace ToolsForHaul.Toils
                         // Regionwise Flood-fill cellFinder
                         int regionInd = 0;
                         List<Region> regions = new List<Region>();
-                        regions.Add(vehicleCart.Position.GetRegion());
+                        regions.Add(vehicleCart.Position.GetRegion(actor.Map));
 #if DEBUG
                     stringBuilder.AppendLine(actor.LabelCap + " Report");
 #endif
@@ -129,9 +129,9 @@ namespace ToolsForHaul.Toils
                                 foreach (IntVec3 cell in regions[regionInd].Cells)
                                 {
                                     // Find best cell for placing cart
-                                    if (cell.GetEdifice() == null && cell.GetZone() == null && cell.Standable()
+                                    if (cell.GetEdifice(actor.Map) == null && cell.GetZone(actor.Map) == null && cell.Standable(actor.Map)
                                         && !GenAdj.CellsAdjacentCardinal(cell, Rot4.North, IntVec2.One)
-                                            .Any(cardinal => cardinal.GetEdifice() is Building_Door)
+                                            .Any(cardinal => cardinal.GetEdifice(actor.Map) is Building_Door)
                                         && actor.CanReserveAndReach(
                                             cell,
                                             PathEndMode.ClosestTouch,

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using RimWorld;
 using ToolsForHaul.JobDefs;
 using ToolsForHaul.Utilities;
@@ -8,14 +9,22 @@ using Verse.AI;
 
 namespace ToolsForHaul.JobGivers
 {
-    public class JobGiver_Kidnap : ThinkNode_JobGiver
+    public class _JobGiver_Kidnap : ThinkNode_JobGiver
     {
         public const float LordStateChangeSearchRadius = 8f;
 
         private const float VictimSearchRadius = 20f;
 
+          [Detour(typeof(RimWorld.JobDriver_Kidnap), bindingFlags = (BindingFlags.Instance | BindingFlags.NonPublic))]
         protected override Job TryGiveJob(Pawn pawn)
         {
+            IntVec3 intVec;
+            if (!RCellFinder.TryFindBestExitSpot(pawn, out intVec))
+            {
+                return null;
+            }
+
+
             List<Thing> steelVehicle = new List<Thing>();
             foreach (Vehicle_Cart vehicle_Cart in ToolsForHaulUtility.Cart)
             {
@@ -62,11 +71,7 @@ namespace ToolsForHaul.JobGivers
             }
 
 
-            IntVec3 intVec;
-            if (!RCellFinder.TryFindBestExitSpot(pawn, out intVec))
-            {
-                return null;
-            }
+
 
             Pawn pawn2;
             KidnapAIUtility.TryFindGoodKidnapVictim(pawn, 20f, out pawn2);
@@ -79,7 +84,7 @@ namespace ToolsForHaul.JobGivers
             {
                 targetA = pawn2,
                 targetB = intVec,
-                maxNumToCarry = 1
+                count = 1
             };
         }
     }

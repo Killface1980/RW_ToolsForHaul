@@ -21,7 +21,7 @@ namespace ToolsForHaul.Designators
 
         public override AcceptanceReport CanDesignateCell(IntVec3 loc)
         {
-            Pawn pawn = loc.GetThingList().Find(t => t is Pawn) as Pawn;
+            Pawn pawn = loc.GetThingList(Map).Find(t => t is Pawn) as Pawn;
             if (pawn == null)
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotPawn".Translate());
             if (pawn.Faction != Faction.OfPlayer)
@@ -39,7 +39,7 @@ namespace ToolsForHaul.Designators
 
         public override void DesignateSingleCell(IntVec3 c)
         {
-            List<Thing> thingList = c.GetThingList();
+            List<Thing> thingList = c.GetThingList(Map);
             foreach (Thing thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
@@ -54,7 +54,7 @@ namespace ToolsForHaul.Designators
                 if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !alreadyMounted)
                 {
                     Job jobNew = new Job(HaulJobDefOf.Mount);
-                    Find.Reservations.ReleaseAllForTarget(this.vehicle);
+                    Map.reservationManager.ReleaseAllForTarget(this.vehicle);
                     jobNew.targetA = this.vehicle;
                     pawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                     break;
@@ -64,11 +64,11 @@ namespace ToolsForHaul.Designators
                 {
                     Pawn worker = null;
                     Job jobNew = new Job(HaulJobDefOf.MakeMount);
-                    Find.Reservations.ReleaseAllForTarget(this.vehicle);
-                    jobNew.maxNumToCarry = 1;
+                    Map.reservationManager.ReleaseAllForTarget(this.vehicle);
+                    jobNew.count = 1;
                     jobNew.targetA = this.vehicle;
                     jobNew.targetB = pawn;
-                    foreach (Pawn colonyPawn in Find.MapPawns.FreeColonistsSpawned)
+                    foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
                         if (colonyPawn.CurJob.def != jobNew.def && (worker == null || (worker.Position - pawn.Position).LengthHorizontal > (colonyPawn.Position - pawn.Position).LengthHorizontal))
                             worker = colonyPawn;
                     if (worker == null)
@@ -82,7 +82,7 @@ namespace ToolsForHaul.Designators
                 }
             }
 
-            DesignatorManager.Deselect();
+            Find.DesignatorManager.Deselect();
         }
     }
 }

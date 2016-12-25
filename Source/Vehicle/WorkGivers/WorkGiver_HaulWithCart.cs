@@ -14,13 +14,13 @@ namespace ToolsForHaul.WorkGivers
         {
 
             // return ToolsForHaulUtility.Cart();
-            return ListerHaulables.ThingsPotentiallyNeedingHauling();
+            return pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling();
         }
 
         public override bool ShouldSkip(Pawn pawn)
         {
             Trace.DebugWriteHaulingPawn(pawn);
-            if (RightTools.GetRightVehicle(pawn, WorkTypeDefOf.Hauling) == null)
+            if (RightTools.GetRightVehicle(pawn, DefDatabase<WorkTypeDef>.GetNamed("Hauling")) == null)
                 return true;
 
             if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
@@ -53,7 +53,7 @@ namespace ToolsForHaul.WorkGivers
 
             if (cart == null)
             {
-                cart = RightTools.GetRightVehicle(pawn, WorkTypeDefOf.Hauling, t) as Vehicle_Cart;
+                cart = RightTools.GetRightVehicle(pawn, DefDatabase<WorkTypeDef>.GetNamed("Hauling"), t) as Vehicle_Cart;
 
                 if (cart == null)
                     return null;
@@ -73,20 +73,20 @@ namespace ToolsForHaul.WorkGivers
                 return null;
             }
 
-            if (ListerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.Storage.Count == 0)
+            if (cart.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.Storage.Count == 0)
             {
                 JobFailReason.Is("NoHaulable".Translate());
                 return null;
             }
 
-            if (Find.SlotGroupManager.AllGroupsListInPriorityOrder.Count == 0)
+            if (cart.Map.slotGroupManager.AllGroupsListInPriorityOrder.Count == 0)
             {
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
                 return null;
             }
 
             if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableVehicle(pawn, cart))
-                return ToolsForHaulUtility.HaulWithTools(pawn, cart, t);
+                return ToolsForHaulUtility.HaulWithTools(pawn,pawn.Map, cart, t);
             JobFailReason.Is(ToolsForHaulUtility.NoAvailableCart);
             return null;
         }

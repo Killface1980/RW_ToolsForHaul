@@ -218,6 +218,7 @@ namespace ToolsForHaul.Gizmos
                                                                                     SlotsBackpackComp.slots.TryDrop(
                                                                                         currentThing,
                                                                                         wearer.Position,
+                                                    wearer.Map,
                                                                                         ThingPlaceMode.Near,
                                                                                         out resultThing);
                                                                                 })
@@ -235,27 +236,7 @@ namespace ToolsForHaul.Gizmos
                                             "Equip".Translate(currentThing.LabelCap),
                                             () => { SlotsBackpackComp.SwapEquipment(currentThing as ThingWithComps); }));
 
-                                // Medicine
-                                if (currentThing.def.IsMedicine)
-                                {
-                                    if (wearer.workSettings != null
-                                        && wearer.workSettings.WorkIsActive(WorkTypeDefOf.Doctor))
-                                        options.Add(
-                                            new FloatMenuOption(
-                                                "TreatPatientWithMedicine".Translate(),
-                                                () =>
-                                                    {
-                                                        Designator_ApplyMedicine designator =
-                                                            new Designator_ApplyMedicine();
-                                                        designator.SlotsBackpackComp = SlotsBackpackComp;
-                                                        designator.medicine = currentThing;
-                                                        designator.doctor = wearer;
-                                                        designator.icon = currentThing.def.uiIcon;
-                                                        designator.activateSound = SoundDef.Named("Click");
 
-                                                        DesignatorManager.Select(designator);
-                                                    }));
-                                }
 
                                 // Food
                                 if (
@@ -272,15 +253,16 @@ namespace ToolsForHaul.Gizmos
                                                     SlotsBackpackComp.slots.TryDrop(
                                                         currentThing,
                                                         wearer.Position,
+                                                    wearer.Map,
                                                         ThingPlaceMode.Direct,
                                                         currentThing.def.ingestible.maxNumToIngestAtOnce,
                                                         out dummy);
 
                                                     Job jobNew = new Job(JobDefOf.Ingest, dummy);
-                                                    jobNew.maxNumToCarry =
+                                                    jobNew.count =
                                                         currentThing.def.ingestible.maxNumToIngestAtOnce;
                                                     jobNew.ignoreForbidden = true;
-                                                    wearer.drafter.TakeOrderedJob(jobNew);
+                                                    wearer.jobs.TryTakeOrderedJob(jobNew);
                                                 }));
                                 }
 
@@ -295,14 +277,15 @@ namespace ToolsForHaul.Gizmos
                                                     SlotsBackpackComp.slots.TryDrop(
                                                         currentThing,
                                                         wearer.Position,
+                                                    wearer.Map,
                                                         ThingPlaceMode.Direct,
                                                         currentThing.def.ingestible.maxNumToIngestAtOnce,
                                                         out dummy);
 
                                                     Job jobNew = new Job(JobDefOf.Ingest, dummy);
-                                                    jobNew.maxNumToCarry = dummy.def.ingestible.maxNumToIngestAtOnce;
+                                                    jobNew.count = dummy.def.ingestible.maxNumToIngestAtOnce;
                                                     jobNew.ignoreForbidden = true;
-                                                    wearer.drafter.TakeOrderedJob(jobNew);
+                                                    wearer.jobs.TryTakeOrderedJob(jobNew);
                                                 }));
 
                                 Find.WindowStack.Add(new FloatMenu(options, currentThing.LabelCap));

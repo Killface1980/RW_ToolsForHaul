@@ -48,6 +48,10 @@
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HugsLib">
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\818773962\Assemblies\HugsLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\UnityEngine.dll</HintPath>
@@ -93,7 +97,6 @@
     <Compile Include="Things\Turret\Vanilla\VehicleTurretTop.cs" />
     <Compile Include="Things\Turret\Vanilla\Vehicle_Turret.cs" />
     <Compile Include="Things\Turret\Vanilla\Vehicle_TurretGun.cs" />
-    <Compile Include="WorkGivers\WorkGiver_FixBrokenDownBuilding.cs" />
     <Compile Include="WorkGivers\WorkGiver_Repair.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
     <Compile Include="_inactive\Class2.cs" />
@@ -109,7 +112,7 @@
     <Compile Include="Components\Vehicle\CompProperties_Vehicle.cs" />
     <Compile Include="Components\Vehicle\CompVehicle.cs" />
     <Compile Include="Things\Apparel_Backpack.cs" />
-    <Compile Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
+    <None Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
     <Compile Include="_inactive\ModHelperDef.cs" />
     <Compile Include="Things\IncendiaryFuel.cs" />
@@ -121,10 +124,7 @@
     <Compile Include="Components\Equipment\CompSlotsBackpack.cs" />
     <Compile Include="Components\Equipment\CompEquipmentGizmoProvider.cs" />
     <Compile Include="Designators\Designator_PutInBackpackSlot.cs" />
-    <Compile Include="JobGivers\JobGiver_ExitMapBest.cs" />
-    <Compile Include="JobGivers\JobGiver_ExitMapRandom.cs" />
     <Compile Include="JobGivers\JobGiver_Kidnap.cs" />
-    <Compile Include="JobGivers\JobGiver_ExitMapPanic.cs" />
     <Compile Include="Detours\_ThinkNode_JobGiver.cs" />
     <Compile Include="RightTools\RightTools.cs" />
     <Compile Include="Components\MapComponent_ToolsForHaul.cs" />
@@ -141,7 +141,6 @@
     <None Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
     <Compile Include="Components\Vehicle\CompMountable.cs" />
-    <Compile Include="Designators\Designator_ApplyMedicine.cs" />
     <Compile Include="Designators\Designator_Mount.cs" />
     <None Include="Designators\Designator_PutInInventory.cs" />
     <Compile Include="Gizmos\Gizmo_BackpackEquipment.cs" />
@@ -149,7 +148,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ITabs\ITab_Vehicle_Storage.cs" />
-    <Compile Include="JobDrivers\JobDriver_ApplyMedicine.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithCart.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -168,6 +166,9 @@
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\About\About.xml">
+      <Link>Defs\About.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\EffecterDefs\Effecter_Misc.xml">
       <Link>Defs\EffecterDefs\Effecter_Misc.xml</Link>
     </Content>
@@ -220,6 +221,7 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Mote_Special.xml">
       <Link>Defs\ThingDefs\Mote_Special.xml</Link>
@@ -237,6 +239,7 @@
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers.xml">
       <Link>Defs\WorkGivers.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Languages\English\Keyed\Designators.xml">
       <Link>Languages\English\Designators.xml</Link>

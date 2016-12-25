@@ -30,7 +30,7 @@ namespace ToolsForHaul.WorkGivers
             Thing t2 = this.FindBestFuel(pawn, t);
             return new Job(JobDefOf.Refuel, t, t2)
             {
-                maxNumToCarry = t.TryGetComp<CompRefuelable>().GetFuelCountToFullyRefuel()
+                count = t.TryGetComp<CompRefuelable>().GetFuelCountToFullyRefuel()
             };
         }
 
@@ -76,7 +76,7 @@ namespace ToolsForHaul.WorkGivers
             ThingFilter filter = refuelable.TryGetComp<CompRefuelable>().Props.fuelFilter;
             Predicate<Thing> predicate = (Thing x) => !x.IsForbidden(pawn) && pawn.CanReserve(x, 1) && filter.Allows(x);
             Predicate<Thing> validator = predicate;
-            return GenClosest.ClosestThingReachable(pawn.Position, filter.BestThingRequest, PathEndMode.ClosestTouch, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, validator, null, -1, false);
+            return GenClosest.ClosestThingReachable(pawn.Position,pawn.Map, filter.BestThingRequest, PathEndMode.ClosestTouch, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, validator, null, -1, false);
         }
     }
 }

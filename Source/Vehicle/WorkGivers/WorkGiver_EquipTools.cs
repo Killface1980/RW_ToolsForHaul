@@ -79,10 +79,10 @@ namespace ToolsForHaul.WorkGivers
             {
                 Job jobNew = new Job(HaulJobDefOf.PutInToolbeltSlot);
                 jobNew.targetQueueA = new List<TargetInfo>();
-                jobNew.numToBringList = new List<int>();
+                jobNew.countQueue = new List<int>();
                 jobNew.targetB = toolbelt;
                 jobNew.targetQueueA.Add(thing);
-                jobNew.numToBringList.Add(thing.def.stackLimit);
+                jobNew.countQueue.Add(thing.def.stackLimit);
                 pawn.Reserve(thing);
 
                 return jobNew;

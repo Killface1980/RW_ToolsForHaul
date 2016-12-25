@@ -21,17 +21,20 @@
     {
         public override bool TryExecute(IncidentParms parms)
         {
+            Map map = (Map)parms.target;
             if (!this.TryResolveParms(parms))
             {
                 return false;
             }
-
-            List<Pawn> list = this.SpawnPawns(parms);
+            if (parms.faction.HostileTo(Faction.OfPlayer))
+            {
+                return false;
+            }
+            List<Pawn> list = base.SpawnPawns(parms);
             if (list.Count == 0)
             {
                 return false;
             }
-
             for (int i = 0; i < list.Count; i++)
             {
                 if (list[i].needs != null && list[i].needs.food != null)
@@ -39,7 +42,6 @@
                     list[i].needs.food.CurLevel = list[i].needs.food.MaxLevel;
                 }
             }
-
             TraderKindDef traderKindDef = null;
             foreach (Pawn current in list)
             {
@@ -55,7 +57,7 @@
                 Thing thing = null;
                 if (current.RaceProps.Animal)
                 {
-                    if (current.kindDef.carrier)
+                    if (current.RaceProps.packAnimal)
                     {
                         thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCart"));
                         spawnCart = true;
@@ -77,46 +79,41 @@
 
                 if (spawnCart)
                 {
-                    GenSpawn.Spawn(thing, current.Position);
+                    GenSpawn.Spawn(thing, current.Position, map);
 
                     Job job = new Job(HaulJobDefOf.Mount);
-                    Find.Reservations.ReleaseAllForTarget(thing);
+                    map.reservationManager.ReleaseAllForTarget(thing);
                     job.targetA = thing;
                     current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
-                    SoundInfo info = SoundInfo.InWorld(thing);
+                    SoundInfo info = SoundInfo.InMap(thing);
                     thing.TryGetComp<CompMountable>().SustainerAmbient =
                         thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
                 }
             }
-
-            Find.LetterStack.ReceiveLetter(
-                "LetterLabelTraderCaravanArrival".Translate(parms.faction.Name, traderKindDef.label).CapitalizeFirst(),
-                "LetterTraderCaravanArrival".Translate(parms.faction.Name, traderKindDef.label).CapitalizeFirst(),
-                LetterType.Good,
-                list[0],
-                null);
+            string label = "LetterLabelTraderCaravanArrival".Translate(new object[]
+            {
+        parms.faction.Name,
+        traderKindDef.label
+            }).CapitalizeFirst();
+            string text = "LetterTraderCaravanArrival".Translate(new object[]
+            {
+        parms.faction.Name,
+        traderKindDef.label
+            }).CapitalizeFirst();
+            PawnRelationUtility.Notify_PawnsSeenByPlayer(list, ref label, ref text, "LetterRelatedPawnsNeutralGroup".Translate(), true);
+            Find.LetterStack.ReceiveLetter(label, text, LetterType.Good, list[0], null);
             IntVec3 chillSpot;
             RCellFinder.TryFindRandomSpotJustOutsideColony(list[0], out chillSpot);
             LordJob_TradeWithColony lordJob = new LordJob_TradeWithColony(parms.faction, chillSpot);
-            LordMaker.MakeNewLord(parms.faction, lordJob, list);
+            LordMaker.MakeNewLord(parms.faction, lordJob, map, list);
             return true;
+
         }
 
-        protected override bool FactionCanBeGroupSource(Faction f, bool desperate = false)
+        protected override bool FactionCanBeGroupSource(Faction f, Map map, bool desperate = false)
         {
-            return base.FactionCanBeGroupSource(f, desperate) && f.def.caravanTraderKinds.Any();
-        }
-
-        protected override bool TryResolveParms(IncidentParms parms)
-        {
-            if (!base.TryResolveParms(parms))
-            {
-                return false;
-            }
-
-            parms.traderCaravan = true;
-            return true;
+            return base.FactionCanBeGroupSource(f, map, desperate) && f.def.caravanTraderKinds.Any();
         }
     }
 }

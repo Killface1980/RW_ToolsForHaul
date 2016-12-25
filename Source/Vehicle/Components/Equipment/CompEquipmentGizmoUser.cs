@@ -45,7 +45,7 @@ namespace ToolsForHaul.Components
             }
         }
         */
-        public override IEnumerable<Command> CompGetGizmosExtra()
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Command current in base.CompGetGizmosExtra())
             {

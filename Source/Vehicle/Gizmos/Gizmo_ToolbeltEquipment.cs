@@ -216,6 +216,7 @@ namespace ToolsForHaul.Gizmos
                                                                                     SlotsToolbeltComp.slots.TryDrop(
                                                                                         currentThing,
                                                                                         wearer.Position,
+                                                                                        wearer.Map,
                                                                                         ThingPlaceMode.Near,
                                                                                         out resultThing);
                                                                                 })
@@ -248,15 +249,16 @@ namespace ToolsForHaul.Gizmos
                                                     SlotsToolbeltComp.slots.TryDrop(
                                                         currentThing,
                                                         wearer.Position,
+                                                                                        wearer.Map,
                                                         ThingPlaceMode.Direct,
                                                         currentThing.def.ingestible.maxNumToIngestAtOnce,
                                                         out dummy);
 
                                                     Job jobNew = new Job(JobDefOf.Ingest, dummy);
-                                                    jobNew.maxNumToCarry =
+                                                    jobNew.count =
                                                         currentThing.def.ingestible.maxNumToIngestAtOnce;
                                                     jobNew.ignoreForbidden = true;
-                                                    wearer.drafter.TakeOrderedJob(jobNew);
+                                                    wearer.jobs.TryTakeOrderedJob(jobNew);
                                                 }));
                                 }
 
@@ -271,14 +273,15 @@ namespace ToolsForHaul.Gizmos
                                                     SlotsToolbeltComp.slots.TryDrop(
                                                         currentThing,
                                                         wearer.Position,
+                                                    wearer.Map,
                                                         ThingPlaceMode.Direct,
                                                         currentThing.def.ingestible.maxNumToIngestAtOnce,
                                                         out dummy);
 
                                                     Job jobNew = new Job(JobDefOf.Ingest, dummy);
-                                                    jobNew.maxNumToCarry = dummy.def.ingestible.maxNumToIngestAtOnce;
+                                                    jobNew.count = dummy.def.ingestible.maxNumToIngestAtOnce;
                                                     jobNew.ignoreForbidden = true;
-                                                    wearer.drafter.TakeOrderedJob(jobNew);
+                                                    wearer.jobs.TryTakeOrderedJob(jobNew);
                                                 }));
 
                                 Find.WindowStack.Add(new FloatMenu(options, currentThing.LabelCap));

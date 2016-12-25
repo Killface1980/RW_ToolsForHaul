@@ -51,7 +51,7 @@ namespace ToolsForHaul
             if (t2 != null)
                 return new Job(DefDatabase<JobDef>.GetNamed("TakeToWheelChair"), patient, t2)
                 {
-                    maxNumToCarry = 1
+                    count = 1
                 };
             return null;
         }

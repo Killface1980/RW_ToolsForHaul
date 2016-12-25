@@ -15,7 +15,7 @@ namespace ToolsForHaul.WorkGivers
         {
             List<Thing> list = new List<Thing>();
             Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
-            foreach (Thing thing in ListerHaulables.ThingsPotentiallyNeedingHauling())
+            foreach (Thing thing in pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling())
             {
                 if (
                     thing.def.thingCategories.Exists(
@@ -77,7 +77,7 @@ namespace ToolsForHaul.WorkGivers
                 else
                 {
 
-                    return ToolsForHaulUtility.HaulWithTools(pawn);
+                    return ToolsForHaulUtility.HaulWithTools(pawn, pawn.Map);
                 }
             }
 

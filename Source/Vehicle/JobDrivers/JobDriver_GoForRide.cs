@@ -61,7 +61,7 @@ namespace ToolsForHaul.JobDrivers
                 {
                     if (this.CurJob.targetQueueA.Count > 0)
                     {
-                        TargetInfo targetA = this.CurJob.targetQueueA[0];
+                        LocalTargetInfo targetA = this.CurJob.targetQueueA[0];
                         this.CurJob.targetQueueA.RemoveAt(0);
                         this.CurJob.targetA = targetA;
                         this.JumpToToil(toil);

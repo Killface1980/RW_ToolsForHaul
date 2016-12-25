@@ -24,7 +24,7 @@ namespace ToolsForHaul.JobDrivers
             if (this.pawn.jobs.curJob.targetB != null)
             {
                 destLoc = this.pawn.jobs.curJob.targetB.Cell;
-                destGroup = destLoc.GetSlotGroup();
+                destGroup = destLoc.GetSlotGroup(Map);
             }
 
             this.FailOn(() => !this.pawn.CanReserveAndReach(this.TargetThingA, PathEndMode.ClosestTouch, Danger.Some));

@@ -22,15 +22,15 @@ namespace ToolsForHaul
     using ToolsForHaul.Components.Vehicles;
 
     [StaticConstructorOnStartup]
-    public class Vehicle_Turret : Building_Turret, IThingContainerOwner, IAttackTarget
+    public class Vehicle_Turret : Building_Turret, IAttackTarget
     {
         #region Tank
 
         protected StunHandler stunner;
 
-        protected TargetInfo forcedTarget = TargetInfo.Invalid;
+        protected LocalTargetInfo forcedTarget = LocalTargetInfo.Invalid;
 
-        public override TargetInfo CurrentTarget { get; }
+        public override LocalTargetInfo CurrentTarget { get; }
 
         public override Verb AttackVerb { get; }
 
@@ -46,7 +46,7 @@ namespace ToolsForHaul
         public bool instantiated;
 
         // RimWorld.Building_TurretGun
-        public override void OrderAttack(TargetInfo targ)
+        public override void OrderAttack(LocalTargetInfo targ)
         {
         }
 
@@ -136,11 +136,6 @@ namespace ToolsForHaul
 
         public Vehicle_Turret()
         {
-            // Inventory Initialize. It should be moved in constructor
-            this.storage = new ThingContainer(this);
-            this.allowances = new ThingFilter();
-            this.allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
-            this.allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
             this.stunner = new StunHandler(this);
         }
 
@@ -153,9 +148,9 @@ namespace ToolsForHaul
         HeadLights flooder;
 #endif
 
-        public override void SpawnSetup()
+        public override void  SpawnSetup(Map map)
         {
-            base.SpawnSetup();
+            base.SpawnSetup(map);
 
             ToolsForHaulUtility.CartTurret.Add(this);
 
@@ -163,7 +158,7 @@ namespace ToolsForHaul
                 LongEventHandler.ExecuteWhenFinished(
                     delegate
                         {
-                            SoundInfo info = SoundInfo.InWorld(this);
+                            SoundInfo info = SoundInfo.InMap(this);
                             this.mountableComp.SustainerAmbient =
                                 this.vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
                         });
@@ -290,14 +285,22 @@ namespace ToolsForHaul
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
         {
             // do nothing if not of colony
-            if (this.Faction != Faction.OfPlayer) yield break;
+            if (this.Faction != Faction.OfPlayer)
+            {
+                yield break;
+            }
 
-            foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn)) yield return fmo;
+            foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn))
+            {
+                yield return fmo;
+            }
+
+            Map map = myPawn.Map;
 
             Action action_Mount = () =>
                 {
                     Job jobNew = new Job(HaulJobDefOf.Mount);
-                    Find.Reservations.ReleaseAllForTarget(this);
+                    map.reservationManager.ReleaseAllForTarget(this);
                     jobNew.targetA = this;
                     myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
@@ -311,7 +314,7 @@ namespace ToolsForHaul
 
             Action action_Dismount = () =>
                 {
-                    if (!myPawn.Position.InBounds())
+                    if (!myPawn.Position.InBounds(map))
                     {
                         this.mountableComp.DismountAt(myPawn.Position);
                         return;
@@ -328,11 +331,11 @@ namespace ToolsForHaul
                 {
                     Pawn worker = null;
                     Job jobNew = new Job(HaulJobDefOf.MakeMount);
-                    Find.Reservations.ReleaseAllForTarget(this);
-                    jobNew.maxNumToCarry = 1;
+                    map.reservationManager.ReleaseAllForTarget(this);
+                    jobNew.count = 1;
                     jobNew.targetA = this;
                     jobNew.targetB = myPawn;
-                    foreach (Pawn colonyPawn in Find.MapPawns.FreeColonistsSpawned)
+                    foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
                         if (colonyPawn.CurJob.def != jobNew.def
                             && (worker == null
                                 || (worker.Position - myPawn.Position).LengthHorizontal
@@ -346,9 +349,9 @@ namespace ToolsForHaul
 
             Action action_Deconstruct = () =>
                 {
-                    Find.Reservations.ReleaseAllForTarget(this);
-                    Find.Reservations.Reserve(myPawn, this);
-                    Find.DesignationManager.AddDesignation(new Designation(this, DesignationDefOf.Deconstruct));
+                    map.reservationManager.ReleaseAllForTarget(this);
+                    map.reservationManager.Reserve(myPawn, this);
+                    map.designationManager.AddDesignation(new Designation(this, DesignationDefOf.Deconstruct));
                     Job job = new Job(JobDefOf.Deconstruct, this);
                     myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
                 };
@@ -381,7 +384,7 @@ namespace ToolsForHaul
                 this.storage.ClearAndDestroyContents();
             }
 
-            this.storage.TryDropAll(this.Position, ThingPlaceMode.Near);
+            this.storage.TryDropAll(this.Position, Map, ThingPlaceMode.Near);
 
             base.Destroy(mode);
         }
@@ -413,11 +416,6 @@ namespace ToolsForHaul
         {
             if (!this.instantiated)
             {
-                foreach (Thing thing in this.GetContainer())
-                {
-                    thing.holder.owner = this;
-                }
-
                 this.vehicleComp.currentDriverSpeed = this.vehicleComp.VehicleSpeed;
                 this.instantiated = true;
             }
@@ -469,7 +467,7 @@ namespace ToolsForHaul
                     if (this.mountableComp.Driver.Faction != Faction.OfPlayer)
                         if (!this.fueledByAI)
                         {
-                            if (this.refuelableComp.FuelPercent < 0.550000011920929)
+                            if (this.refuelableComp.FuelPercentOfMax < 0.550000011920929)
                                 this.refuelableComp.Refuel(
                                     ThingMaker.MakeThing(
                                         this.refuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
@@ -507,7 +505,7 @@ namespace ToolsForHaul
                         this.tickCheck = Find.TickManager.TicksGame;
                     }
 
-                    if (this.Position.InNoBuildEdgeArea() && this.vehicleComp.despawnAtEdge && this.Spawned
+                    if (this.Position.InNoBuildEdgeArea(Map) && this.vehicleComp.despawnAtEdge && this.Spawned
                         && (this.mountableComp.Driver.Faction != Faction.OfPlayer
                             || this.mountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee)) this.DeSpawn();
                 }
@@ -522,11 +520,11 @@ namespace ToolsForHaul
             {
                 if (Find.TickManager.TicksGame > this._tankSpillTick)
                 {
-                    if (this.refuelableComp.FuelPercent > this._tankHitPos)
+                    if (this.refuelableComp.FuelPercentOfMax > this._tankHitPos)
                     {
                         this.refuelableComp.ConsumeFuel(0.15f);
 
-                        FilthMaker.MakeFilth(this.Position, this.fuelDefName, this.LabelCap);
+                        FilthMaker.MakeFilth(this.Position, Map,this.fuelDefName, this.LabelCap);
                         this._tankSpillTick = Find.TickManager.TicksGame + 15;
                     }
                 }
@@ -588,10 +586,6 @@ namespace ToolsForHaul
         }
 
         #endregion
-
-        public IEnumerable<Pawn> AssigningCandidates => Find.MapPawns.FreeColonists;
-
-        public int MaxAssignedPawnsCount => 2;
     }
 }
 #endif

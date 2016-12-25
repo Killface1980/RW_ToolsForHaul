@@ -81,10 +81,7 @@ namespace ToolsForHaul
                         RightTools.EquipRigthTool(pawn, StatDefOf.MiningSpeed);
                     }
 
-                    if (job.def == JobDefOf.TendPatient)
-                    {
-                        RightTools.EquipRigthTool(pawn, StatDefOf.BaseHealingQuality);
-                    }
+
 
 
                 }
@@ -95,13 +92,13 @@ namespace ToolsForHaul
             return result;
         }
 
-        private static Job GetVehicle(Pawn pawn, Job job, WorkTypeDef worktag)
+        private static Job GetVehicle(Pawn pawn, Job job, WorkTypeDef workType)
         {
             if (!ToolsForHaulUtility.IsDriver(pawn))
             {
                 if (ToolsForHaulUtility.Cart.Count > 0 || ToolsForHaulUtility.CartTurret.Count > 0)
                 {
-                    Thing vehicle = RightTools.GetRightVehicle(pawn, worktag);
+                    Thing vehicle = RightTools.GetRightVehicle(pawn,  workType);
                     if (vehicle != null)
                     {
                         job = new Job(HaulJobDefOf.Mount)
@@ -113,7 +110,7 @@ namespace ToolsForHaul
             }
             else
             {
-                if (!ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, RightTools.GetRightVehicle(pawn, worktag)))
+                if (!ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, RightTools.GetRightVehicle(pawn,  workType)))
                 {
                     job = ToolsForHaulUtility.DismountInBase(pawn, MapComponent_ToolsForHaul.currentVehicle[pawn]);
                 }

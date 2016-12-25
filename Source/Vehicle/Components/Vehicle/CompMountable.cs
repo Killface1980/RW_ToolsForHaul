@@ -73,9 +73,9 @@ using Combat_Realism;
                 if (this.Driver == null) return this.parent.DrawPos;
 
                 // Out of bound or Preventing cart from stucking door
-                if (!position.InBounds()) return this.Driver.DrawPos;
+                if (!position.InBounds(this.parent.Map)) return this.Driver.DrawPos;
 
-                if (!position.ToIntVec3().Walkable()) return this.Driver.DrawPos;
+                if (!position.ToIntVec3().Walkable(this.parent.Map)) return this.Driver.DrawPos;
 
                 return position;
             }
@@ -133,10 +133,10 @@ using Combat_Realism;
                     {
                         action_Order = () =>
                             {
-                                Find.Reservations.ReleaseAllForTarget(this.parent);
-                                Find.Reservations.Reserve(myPawn, this.parent);
+                                this.parent.Map.reservationManager.ReleaseAllForTarget(this.parent);
+                                this.parent.Map.reservationManager.Reserve(myPawn, this.parent);
                                 Job jobNew = new Job(HaulJobDefOf.Mount, this.parent);
-                                myPawn.drafter.TakeOrderedJob(jobNew);
+                                myPawn.jobs.TryTakeOrderedJob(jobNew);
                             };
                         verb = TxtMountOn;
                         yield return new FloatMenuOption(verb.Translate(this.parent.LabelShort), action_Order);
@@ -159,7 +159,7 @@ using Combat_Realism;
             }
         }
 
-        public override IEnumerable<Command> CompGetGizmosExtra()
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Command compCom in base.CompGetGizmosExtra()) yield return compCom;
 
@@ -206,7 +206,7 @@ using Combat_Realism;
                     || this.Driver.MentalStateDef == MentalStateDefOf.WanderPsychotic
                     || (this.parent.IsForbidden(Faction.OfPlayer) && this.Driver.Faction == Faction.OfPlayer))
                 {
-                    if (!this.Driver.Position.InBounds())
+                    if (!this.Driver.Position.InBounds(this.parent.Map))
                     {
                         this.DismountAt(this.Driver.Position);
                         return;
@@ -232,7 +232,7 @@ using Combat_Realism;
                                 || this.Driver.CurJob.def == JobDefOf.UseArtifact
                                 || this.Driver.CurJob.def == JobDefOf.DoBill
                                 || this.Driver.CurJob.def == JobDefOf.Research
-                                || this.Driver.CurJob.def == JobDefOf.OperateDeepDrill
+                             //   || this.Driver.CurJob.def == JobDefOf.OperateDeepDrill
                                 || this.Driver.CurJob.def == JobDefOf.Repair
                                 || this.Driver.CurJob.def == JobDefOf.FixBrokenDownBuilding
                                 || this.Driver.CurJob.def == JobDefOf.UseCommsConsole
@@ -248,8 +248,8 @@ using Combat_Realism;
                                 || this.Driver.CurJob.def == JobDefOf.Ingest
                                 || this.Driver.CurJob.def == JobDefOf.SocialRelax
                                 || this.Driver.CurJob.def == JobDefOf.Refuel
-                                || this.Driver.CurJob.def == JobDefOf.FillFermentingBarrel
-                                || this.Driver.CurJob.def == JobDefOf.TakeBeerOutOfFermentingBarrel
+                            //    || this.Driver.CurJob.def == JobDefOf.FillFermentingBarrel
+                            //    || this.Driver.CurJob.def == JobDefOf.TakeBeerOutOfFermentingBarrel
                                 || this.Driver.CurJob.def == JobDefOf.TakeWoundedPrisonerToBed
                                 || this.Driver.CurJob.def == JobDefOf.TakeToBedToOperate
                                 || this.Driver.CurJob.def == JobDefOf.EscortPrisonerToBed
@@ -264,12 +264,13 @@ using Combat_Realism;
                                 || this.Driver.CurJob.def == JobDefOf.Slaughter
                                 || this.Driver.CurJob.def == JobDefOf.Milk || this.Driver.CurJob.def == JobDefOf.Shear
                                 || this.Driver.CurJob.def == JobDefOf.Train || this.Driver.CurJob.def == JobDefOf.Mate
-                                || this.Driver.health.NeedsMedicalRest || this.Driver.health.PrefersMedicalRest)
-                            && this.Driver.Position.Roofed())
+                            //    || this.Driver.health.NeedsMedicalRest || this.Driver.health.PrefersMedicalRest
+                            )
+                            && this.Driver.Position.Roofed(Driver.Map))
                         {
                             this.parent.Position = this.Position.ToIntVec3();
                             this.parent.Rotation = this.Driver.Rotation;
-                            if (!this.Driver.Position.InBounds())
+                            if (!this.Driver.Position.InBounds(this.parent.Map))
                             {
                                 this.DismountAt(this.Driver.Position);
                                 return;
@@ -290,7 +291,7 @@ using Combat_Realism;
                         CompRefuelable refuelableComp = this.parent.TryGetComp<CompRefuelable>();
                         Job jobNew = ToolsForHaulUtility.DismountInBase(
                             this.Driver,
-                            MapComponent_ToolsForHaul.currentVehicle[this.Driver]);
+                           MapComponent_ToolsForHaul.currentVehicle[this.Driver]);
                         float hitPointsPercent = this.parent.HitPoints / this.parent.MaxHitPoints;
 
                         if (this.Driver.Faction == Faction.OfPlayer)
@@ -313,13 +314,13 @@ using Combat_Realism;
                 }
 
                 if (Find.TickManager.TicksGame - this.tickLastDoorCheck >= 96
-                    && (this.Driver.Position.GetEdifice() is Building_Door
-                        || this.parent.Position.GetEdifice() is Building_Door))
+                    && (this.Driver.Position.GetEdifice(this.parent.Map) is Building_Door
+                        || this.parent.Position.GetEdifice(this.parent.Map) is Building_Door))
                 {
                     this.lastPassedDoor =
-                        (this.Driver.Position.GetEdifice() is Building_Door
-                             ? this.Driver.Position.GetEdifice()
-                             : this.parent.Position.GetEdifice()) as Building_Door;
+                        (this.Driver.Position.GetEdifice(this.parent.Map) is Building_Door
+                             ? this.Driver.Position.GetEdifice(this.parent.Map)
+                             : this.parent.Position.GetEdifice(this.parent.Map)) as Building_Door;
                     this.lastPassedDoor?.StartManualOpenBy(this.Driver);
                     this.tickLastDoorCheck = Find.TickManager.TicksGame;
                 }
@@ -369,7 +370,7 @@ using Combat_Realism;
             this.Driver.RaceProps.makesFootprints = true;
 
             // if (Find.Reservations.IsReserved(parent, Driver.Faction))
-            Find.Reservations.ReleaseAllForTarget(this.parent);
+           this.parent.Map.reservationManager.ReleaseAllForTarget(this.parent);
             if (this.Driver.Faction != Faction.OfPlayer)
             {
                 this.parent.SetForbidden(true);
@@ -437,10 +438,6 @@ using Combat_Realism;
             if (this.Driver.RaceProps.Humanlike)
             {
                 this.Driver.RaceProps.makesFootprints = false;
-            }
-
-            if (pawn.RaceProps.Humanlike)
-            {
                 this.DriverComp = new CompDriver { Vehicle = this.parent as Building };
                 this.Driver?.AllComps?.Add(this.DriverComp);
                 this.DriverComp.parent = this.Driver;
@@ -457,7 +454,7 @@ using Combat_Realism;
 
                 if (vehicleCart.VehicleComp.IsCurrentlyMotorized())
                 {
-                    SoundInfo info = SoundInfo.InWorld(this.parent);
+                    SoundInfo info = SoundInfo.InMap(this.parent);
                     this.SustainerAmbient = vehicleCart.VehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
@@ -475,7 +472,7 @@ using Combat_Realism;
 
                 if (vehicleTurret.vehicleComp.IsCurrentlyMotorized())
                 {
-                    SoundInfo info = SoundInfo.InWorld(this.parent);
+                    SoundInfo info = SoundInfo.InMap(this.parent);
                     this.SustainerAmbient = vehicleTurret.vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
@@ -483,7 +480,7 @@ using Combat_Realism;
             }
         }
 
-        public override void PostDeSpawn()
+        public override void PostDeSpawn(Map map)
         {
             if (ToolsForHaulUtility.Cart.Contains(this.parent))
             {
@@ -508,7 +505,7 @@ using Combat_Realism;
                 this.SustainerAmbient.End();
             }
 
-            base.PostDeSpawn();
+            base.PostDeSpawn(map);
         }
 
         public override void PostExposeData()
@@ -565,7 +562,7 @@ using Combat_Realism;
                 LongEventHandler.ExecuteWhenFinished(
                     delegate
                         {
-                            SoundInfo info = SoundInfo.InWorld(this.parent);
+                            SoundInfo info = SoundInfo.InMap(this.parent);
                             this.SustainerAmbient = compVehicle.compProps.soundAmbient.TrySpawnSustainer(info);
                         });
             }

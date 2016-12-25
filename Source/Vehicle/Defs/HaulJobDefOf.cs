@@ -19,8 +19,6 @@ namespace ToolsForHaul.JobDefs
 
         public static readonly JobDef Mount = DefDatabase<JobDef>.GetNamed("Mount");
 
-        public static readonly JobDef ApplyMedicine = DefDatabase<JobDef>.GetNamed("ApplyMedicine");
-
         // public static readonly JobDef Board = DefDatabase<JobDef>.GetNamed("Board");
         public static readonly JobDef MakeMount = DefDatabase<JobDef>.GetNamed("MakeMount");
 

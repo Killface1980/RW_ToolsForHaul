@@ -111,7 +111,7 @@ namespace ToolsForHaul
                 ThingWithComps leftover;
                 pawn.equipment.TryTransferEquipmentToContainer(
                     pawn.equipment.Primary,
-                    pawn.inventory.container,
+                    pawn.inventory.innerContainer,
                     out leftover);
             }
 
@@ -119,7 +119,7 @@ namespace ToolsForHaul
             pawn.equipment.AddEquipment(thing as ThingWithComps);
 
             // remove that equipment from inventory
-            pawn.inventory.container.Remove(thing);
+            pawn.inventory.innerContainer.Remove(thing);
         }
 
         public Job TryEquipFreeTool(Pawn pawn)
@@ -143,7 +143,7 @@ namespace ToolsForHaul
                     {
                         previousPawnWeapons.Add(pawn, pawn.equipment.Primary);
                         ThingWithComps leftover;
-                        pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.container,
+                        pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.innerContainer,
                             out leftover);
                     }
 

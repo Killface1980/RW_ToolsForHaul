@@ -29,7 +29,7 @@ namespace ToolsForHaul
         {
             List<Thing> thingList = loc.GetThingList();
 
-                numOfContents = backpack.wearer.inventory.container.Count;
+                numOfContents = backpack.wearer.inventory.innerContainer.Count;
 
             int designationsTotalStackCount = 0;
             foreach (Designation designation in designations)
@@ -37,7 +37,7 @@ namespace ToolsForHaul
 
             // No Item space or no stack space
             if (designations.Count + numOfContents >= backpack.MaxItem
-                || designationsTotalStackCount + backpack.wearer.inventory.container.TotalStackCount >= backpack.MaxStack)
+                || designationsTotalStackCount + backpack.wearer.inventory.innerContainer.TotalStackCount >= backpack.MaxStack)
                 return new AcceptanceReport("BackpackIsFull".Translate());
 
 
@@ -61,7 +61,7 @@ namespace ToolsForHaul
         protected override void FinalizeDesignationSucceeded()
         {
             Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("PutInInventory"));
-            jobNew.maxNumToCarry = 1;
+            jobNew.count = 1;
             jobNew.targetB = backpack;
             jobNew.targetQueueA = new List<TargetInfo>();
 
@@ -74,11 +74,11 @@ namespace ToolsForHaul
             if (!jobNew.targetQueueA.NullOrEmpty())
 
                 // if (backpack.wearer.drafter.CanTakePlayerJob())
-                backpack.wearer.drafter.TakeOrderedJob(jobNew);
+                backpack.wearer.jobs.TryTakeOrderedJob(jobNew);
 
             // else
             // backpack.wearer.drafter.QueueJob(jobNew);
-            DesignatorManager.Deselect();
+            Find.DesignatorManager.Deselect();
         }
 
         public override void SelectedUpdate()

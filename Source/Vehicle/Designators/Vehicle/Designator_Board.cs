@@ -61,7 +61,7 @@ namespace Vehicle
                 }
             }
 
-            DesignatorManager.Deselect();
+            Find.DesignatorManager.Deselect();
         }
     }
 }

@@ -53,7 +53,7 @@
     <label>Vehicle ATV Frame</label>
     <description>vehicle ATV frame</description>
     <graphicData>
-      <texPath>Things/Pawn/VehicleATV/ATV</texPath>
+      <texPath>Things/Vehicles/VehicleATV/ATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
     </graphicData>

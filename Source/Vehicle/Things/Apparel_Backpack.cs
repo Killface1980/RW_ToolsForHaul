@@ -38,9 +38,9 @@ namespace ToolsForHaul
 
         public CompSlotsBackpack slotsComp => this.GetComp<CompSlotsBackpack>();
 
-        public override void SpawnSetup()
+        public override void SpawnSetup(Map map)
         {
-            base.SpawnSetup();
+            base.SpawnSetup(map);
             this.MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.InventoryMaxItem));
         }
 
@@ -81,8 +81,8 @@ namespace ToolsForHaul
             // Designator_PutInInventory designator = new Designator_PutInInventory();
             // designator.backpack = this;
             // designator.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconPutIn");
-            // designator.defaultLabel = DesignatorPutInInventoryDefaultLabel + "(" + wearer.inventory.container.Count + "/" + MaxItem + ")";
-            // designator.defaultDesc = DesignatorPutInInventoryDefaultDesc + wearer.inventory.container.Count + "/" + MaxItem;
+            // designator.defaultLabel = DesignatorPutInInventoryDefaultLabel + "(" + wearer.inventory.innerContainer.Count + "/" + MaxItem + ")";
+            // designator.defaultDesc = DesignatorPutInInventoryDefaultDesc + wearer.inventory.innerContainer.Count + "/" + MaxItem;
             // designator.hotKey = KeyBindingDef.Named("CommandPutInInventory");
             // designator.activateSound = SoundDef.Named("Click");
             // yield return designator;

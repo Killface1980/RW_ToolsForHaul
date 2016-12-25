@@ -46,12 +46,12 @@ namespace ToolsForHaul.Designators
                     Job jobNew = new Job(HaulJobDefOf.Board);
                     Find.Reservations.ReleaseAllForTarget(vehicle);
                     jobNew.targetA = vehicle;
-                    crew.drafter.TakeOrderedJob(jobNew);
+                    crew.jobs.TryTakeOrderedJob(jobNew);
                     break;
                 }
             }
 
-            DesignatorManager.Deselect();
+            Find.DesignatorManager.Deselect();
         }
     }
 }

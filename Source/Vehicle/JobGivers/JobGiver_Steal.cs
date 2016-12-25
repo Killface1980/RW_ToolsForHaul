@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using RimWorld;
 using ToolsForHaul.JobDefs;
 using ToolsForHaul.Utilities;
@@ -9,12 +10,13 @@ using Verse.AI;
 
 namespace ToolsForHaul.JobGivers
 {
-    public class JobGiver_Steal : ThinkNode_JobGiver
+    public class _JobGiver_Steal : ThinkNode_JobGiver
     {
         public const float ItemsSearchRadiusInitial = 7f;
 
         private const float ItemsSearchRadiusOngoing = 12f;
 
+          [Detour(typeof(RimWorld.JobGiver_Steal), bindingFlags = (BindingFlags.Instance | BindingFlags.NonPublic))]
         protected override Job TryGiveJob(Pawn pawn)
         {
             IntVec3 vec;
@@ -59,13 +61,13 @@ namespace ToolsForHaul.JobGivers
             }
 
             Thing thing;
-            if (StealAIUtility.TryFindBestItemToSteal(pawn.Position, ItemsSearchRadiusOngoing, out thing, pawn) && !GenAI.InDangerousCombat(pawn))
+            if (StealAIUtility.TryFindBestItemToSteal(pawn.Position, pawn.Map, ItemsSearchRadiusOngoing, out thing, pawn) && !GenAI.InDangerousCombat(pawn))
             {
                 return new Job(JobDefOf.Steal)
                 {
                     targetA = thing,
                     targetB = vec,
-                    maxNumToCarry = Mathf.Min(thing.stackCount, (int)(pawn.GetStatValue(StatDefOf.CarryingCapacity) / thing.def.VolumePerUnit))
+                    count = Mathf.Min(thing.stackCount, (int)(pawn.GetStatValue(StatDefOf.CarryingCapacity) / thing.def.VolumePerUnit))
                 };
             }
 

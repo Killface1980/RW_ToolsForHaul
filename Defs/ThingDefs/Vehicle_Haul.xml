@@ -96,7 +96,7 @@
     </thingCategories>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <graphicData>
-      <texPath>Things/Pawn/VehicleCart/Cart</texPath>
+      <texPath>Things/Vehicles/VehicleCart/Cart</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
       <damageData>
@@ -185,7 +185,7 @@
     </thingCategories>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <graphicData>
-      <texPath>Things/Pawn/VehicleTruck/Truck</texPath>
+      <texPath>Things/Vehicles/VehicleTruck/Truck</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
       <damageData>
@@ -281,7 +281,7 @@
     <defName>VehicleATV</defName>
     <label>ATV</label>
     <graphicData>
-      <texPath>Things/Pawn/VehicleATV/ATV</texPath>
+      <texPath>Things/Vehicles/VehicleATV/ATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
       <damageData>
@@ -346,7 +346,7 @@
     <pathCost>50</pathCost>
     <description>An ATV is what you drive when you want a concussion.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
-    <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
+    <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
@@ -414,7 +414,7 @@
     <defName>VehicleSpeeder</defName>
     <label>Speeder</label>
     <graphicData>
-      <texPath>Things/Pawn/VehicleSpeeder/Speeder</texPath>
+      <texPath>Things/Vehicles/VehicleSpeeder/Speeder</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
       <damageData>
@@ -425,7 +425,7 @@
     <repairEffect>Repair</repairEffect>
     <description>Keep out of reach of lightsabers.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
-    <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
+    <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
@@ -534,12 +534,12 @@
     <description>For those who have some disability to walk</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isBodyPartOrImplant>true</isBodyPartOrImplant>
-    <isAutoAttackableWorldObject>true</isAutoAttackableWorldObject>
+    <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
     <graphicData>
-      <texPath>Things/Pawn/VehicleSmackWay/SmackWay</texPath>
+      <texPath>Things/Vehicles/VehicleSmackWay/SmackWay</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <drawSize>(3,3)</drawSize>
       <damageData>
@@ -663,7 +663,7 @@
 			<li>Vehicles</li>
 		</thingCategories>
 		<graphicData>
-			<texPath>Things/Pawn/Vehicle/Saddle</texPath>
+			<texPath>Things/Vehicles/Vehicle/Saddle</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(2,2)</drawSize>
 	      <damageData>

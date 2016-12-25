@@ -18,14 +18,9 @@ namespace ToolsForHaul.IncidentWorker
     public class IncidentWorker_RaidEnemy : IncidentWorker_Raid
     {
 
-        protected override bool CanFireNowSub()
+        protected override bool FactionCanBeGroupSource(Faction f,Map map,  bool desperate = false)
         {
-            return base.CanFireNowSub() && GenTemperature.OutdoorTemp < 55.0 && GenTemperature.OutdoorTemp > -55.0;
-        }
-
-        protected override bool FactionCanBeGroupSource(Faction f, bool desperate = false)
-        {
-            return base.FactionCanBeGroupSource(f, desperate) && f.HostileTo(Faction.OfPlayer) && (desperate || GenDate.DaysPassed >= f.def.earliestRaidDays);
+            return base.FactionCanBeGroupSource(f,map, desperate) && f.HostileTo(Faction.OfPlayer) && (desperate || GenDate.DaysPassed >= f.def.earliestRaidDays);
         }
 
         protected override string GetLetterLabel(IncidentParms parms)
@@ -36,6 +31,7 @@ namespace ToolsForHaul.IncidentWorker
         public override bool TryExecute(IncidentParms parms)
         {
             {
+                Map map = (Map)parms.target;
                 // if (!base.TryExecute(parms))
                 this.ResolveRaidPoints(parms);
                 if (!this.TryResolveRaidFaction(parms))
@@ -46,29 +42,29 @@ namespace ToolsForHaul.IncidentWorker
                 this.ResolveRaidStrategy(parms);
                 this.ResolveRaidArriveMode(parms);
                 this.ResolveRaidSpawnCenter(parms);
-                PawnGroupMakerUtility.AdjustPointsForGroupArrivalParams(parms);
-                List<Pawn> list = PawnGroupMakerUtility.GenerateArrivingPawns(parms).ToList();
+                IncidentParmsUtility.AdjustPointsForGroupArrivalParams(parms);
+                PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(parms);
+                List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(PawnGroupKindDefOf.Normal, defaultPawnGroupMakerParms, true).ToList<Pawn>();
                 if (list.Count == 0)
                 {
                     Log.Error("Got no pawns spawning raid from parms " + parms);
                     return false;
                 }
 
-                TargetInfo letterLookTarget = TargetInfo.Invalid;
+                TargetInfo target = TargetInfo.Invalid;
                 if (parms.raidArrivalMode == PawnsArriveMode.CenterDrop || parms.raidArrivalMode == PawnsArriveMode.EdgeDrop)
                 {
-                    DropPodUtility.DropThingsNear(parms.spawnCenter, list.Cast<Thing>(), parms.raidPodOpenDelay, true, true);
-                    letterLookTarget = parms.spawnCenter;
+                    DropPodUtility.DropThingsNear(parms.spawnCenter, map, list.Cast<Thing>(), parms.raidPodOpenDelay, false, true, true);
+                    target = new TargetInfo(parms.spawnCenter, map, false);
                 }
                 else
                 {
                     foreach (Pawn current in list)
                     {
                         float value = Rand.Value;
-                        IntVec3 intVec = CellFinder.RandomClosewalkCellNear(parms.spawnCenter, 8);
-                        GenSpawn.Spawn(current, intVec);
-
-                        letterLookTarget = current;
+                        IntVec3 loc = CellFinder.RandomClosewalkCellNear(parms.spawnCenter, map, 8);
+                        GenSpawn.Spawn(current, loc, map);
+                        target = current;
 
                         // Vehicles for raiders
                         // lowered probability for shield users as they are overpowered
@@ -88,7 +84,7 @@ namespace ToolsForHaul.IncidentWorker
 
                             if (value >= 0.66f && !isShieldUser || isShieldUser && value > 0.9f)
                             {
-                                CellFinder.RandomClosewalkCellNear(current.Position, 5);
+                                CellFinder.RandomClosewalkCellNear(current.Position,current.Map, 5);
                                 Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
 
                                 if (value >= 0.9f && !isShieldUser)
@@ -96,17 +92,17 @@ namespace ToolsForHaul.IncidentWorker
                                     thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
                                 }
 
-                                GenSpawn.Spawn(thing, current.Position);
+                                GenSpawn.Spawn(thing, current.Position, current.Map);
 
                                 Job job = new Job(HaulJobDefOf.Mount);
-                                Find.Reservations.ReleaseAllForTarget(thing);
+                                thing.Map.reservationManager.ReleaseAllForTarget(thing);
                                 job.targetA = thing;
                                 current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
                                 int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
-                                thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, null, null));
+                                thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1, null, null));
 
-                                SoundInfo info = SoundInfo.InWorld(thing);
+                                SoundInfo info = SoundInfo.InMap(thing);
                                 thing.TryGetComp<CompMountable>().SustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
                             }
                         }
@@ -122,71 +118,73 @@ namespace ToolsForHaul.IncidentWorker
                     string str = (current2.equipment == null || current2.equipment.Primary == null) ? "unarmed" : current2.equipment.Primary.LabelCap;
                     stringBuilder.AppendLine(current2.KindLabel + " - " + str);
                 }
+                string letterLabel = this.GetLetterLabel(parms);
+                string letterText = this.GetLetterText(parms, list);
 
-                Find.LetterStack.ReceiveLetter(this.GetLetterLabel(parms), this.GetLetterText(parms, list), this.GetLetterType(), letterLookTarget, stringBuilder.ToString());
+                PawnRelationUtility.Notify_PawnsSeenByPlayer(list, ref letterLabel, ref letterText, this.GetRelatedPawnsInfoLetterText(parms), true);
+                Find.LetterStack.ReceiveLetter(letterLabel, letterText, this.GetLetterType(), target, stringBuilder.ToString());
                 if (this.GetLetterType() == LetterType.BadUrgent)
                 {
-                    TaleRecorder.RecordTale(TaleDefOf.RaidArrived);
+                    TaleRecorder.RecordTale(TaleDefOf.RaidArrived, new object[0]);
                 }
-
-                PawnRelationUtility.Notify_PawnsSeenByPlayer(list, this.GetRelatedPawnsInfoLetterText(parms), true);
-                Lord lord = LordMaker.MakeNewLord(parms.faction, parms.raidStrategy.Worker.MakeLordJob(ref parms), list);
-                AvoidGridMaker.RegenerateAvoidGridsFor(parms.faction);
+                Lord lord = LordMaker.MakeNewLord(parms.faction, parms.raidStrategy.Worker.MakeLordJob(parms, map), map, list);
+                AvoidGridMaker.RegenerateAvoidGridsFor(parms.faction, map);
                 LessonAutoActivator.TeachOpportunity(ConceptDefOf.EquippingWeapons, OpportunityType.Critical);
                 if (!PlayerKnowledgeDatabase.IsComplete(ConceptDefOf.PersonalShields))
                 {
                     for (int i = 0; i < list.Count; i++)
                     {
                         Pawn pawn = list[i];
-                        if (pawn.apparel.WornApparel.Any(ap => ap is PersonalShield))
+                        if (pawn.apparel.WornApparel.Any((Apparel ap) => ap is PersonalShield))
                         {
                             LessonAutoActivator.TeachOpportunity(ConceptDefOf.PersonalShields, OpportunityType.Critical);
                             break;
                         }
                     }
                 }
-
                 if (DebugViewSettings.drawStealDebug && parms.faction.HostileTo(Faction.OfPlayer))
                 {
-                    Log.Message(string.Concat("Market value threshold to start stealing: ", StealAIUtility.StartStealingMarketValueThreshold(lord), " (colony wealth = ", Find.StoryWatcher.watcherWealth.WealthTotal, ")"));
+                    Log.Message(string.Concat(new object[]
+                    {
+            "Market value threshold to start stealing: ",
+            StealAIUtility.StartStealingMarketValueThreshold(lord),
+            " (colony wealth = ",
+            map.wealthWatcher.WealthTotal,
+            ")"
+                    }));
                 }
+                return true;
             }
-
-            Find.TickManager.slower.SignalForceNormalSpeedShort();
-            Find.StoryWatcher.statsRecord.numRaidsEnemy++;
-
-            return true;
         }
 
         // RimWorld.IncidentWorker_RaidEnemy
         protected override bool TryResolveRaidFaction(IncidentParms parms)
         {
+            Map map = (Map)parms.target;
             if (parms.faction != null)
             {
                 return true;
             }
-
             float maxPoints = parms.points;
             if (maxPoints <= 0f)
             {
                 maxPoints = 999999f;
             }
-
             if (!(from f in Find.FactionManager.AllFactions
-                  where this.FactionCanBeGroupSource(f) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
-                  select f).TryRandomElementByWeight(f => f.def.raidCommonality, out parms.faction))
+                  where this.FactionCanBeGroupSource(f, map, false) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
+                  select f).TryRandomElementByWeight((Faction f) => f.def.raidCommonality, out parms.faction))
             {
                 if (!(from f in Find.FactionManager.AllFactions
-                      where this.FactionCanBeGroupSource(f, true) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
-                      select f).TryRandomElementByWeight(f => f.def.raidCommonality, out parms.faction))
+                      where this.FactionCanBeGroupSource(f, map, true) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
+                      select f).TryRandomElementByWeight((Faction f) => f.def.raidCommonality, out parms.faction))
                 {
                     Log.Error("IncidentWorker_RaidEnemy could not fire even though we thought we could: no faction could generate with " + maxPoints + " points.");
                     return false;
                 }
             }
-
             return true;
         }
+
 
 
         protected override void ResolveRaidStrategy(IncidentParms parms)
@@ -195,10 +193,10 @@ namespace ToolsForHaul.IncidentWorker
             {
                 return;
             }
-
+            Map map = (Map)parms.target;
             parms.raidStrategy = (from d in DefDatabase<RaidStrategyDef>.AllDefs
                                   where d.Worker.CanUseWith(parms)
-                                  select d).RandomElementByWeight(d => d.Worker.SelectionChance);
+                                  select d).RandomElementByWeight((RaidStrategyDef d) => d.Worker.SelectionChance(map));
         }
 
         // RimWorld.IncidentWorker_RaidEnemy

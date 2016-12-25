@@ -31,7 +31,7 @@ namespace ToolsForHaul.Designators
             Job jobNew = new Job(HaulJobDefOf.StandBy, c, 4800);
             driver.jobs.StartJob(jobNew, JobCondition.Incompletable);
 
-            DesignatorManager.Deselect();
+            Find.DesignatorManager.Deselect();
         }
     }
 }

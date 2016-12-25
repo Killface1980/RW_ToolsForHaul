@@ -109,7 +109,7 @@ namespace ToolsForHaul.ITabs
                       options.Add(new FloatMenuOption("DropThing".Translate(), () =>
                       {
                           Thing dummy;
-                          cart.Storage.TryDrop(thing, this.SelThing.Position, ThingPlaceMode.Near, out dummy);
+                          cart.Storage.TryDrop(thing, this.SelThing.Position,cart.Map, ThingPlaceMode.Near, out dummy);
                       }));
           
                       Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap));
@@ -124,7 +124,7 @@ namespace ToolsForHaul.ITabs
               }
 
               if (Widgets.ButtonText(new Rect(180f, 400f, 100f, 30f), "Drop All"))
-                  cart.Storage.TryDropAll(this.SelThing.Position, ThingPlaceMode.Near);
+                  cart.Storage.TryDropAll(this.SelThing.Position,cart.Map, ThingPlaceMode.Near);
           }
           
 

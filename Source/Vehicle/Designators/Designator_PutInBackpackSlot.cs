@@ -158,12 +158,12 @@ namespace ToolsForHaul.Designators
         // returning string text assigning false reason to AcceptanceReport
         public override AcceptanceReport CanDesignateCell(IntVec3 cell)
         {
-            if (!cell.InBounds() || cell.Fogged() || cell.ContainsStaticFire())
+            if (!cell.InBounds(Map) || cell.Fogged(Map) || cell.ContainsStaticFire(Map))
             {
                 return false;
             }
 
-            Thing firstItem = cell.GetFirstItem();
+            Thing firstItem = cell.GetFirstItem(this.Map);
             if (firstItem != null && this.CanDesignateThing(firstItem).Accepted)
             {
                 return true;
@@ -183,7 +183,7 @@ namespace ToolsForHaul.Designators
 
             foreach (Thing designation in this.SlotsBackpackComp.designatedThings)
             {
-                if (designation.def.category == ThingCategory.Item && !Find.Reservations.IsReserved(designation, Faction.OfPlayer))
+                if (designation.def.category == ThingCategory.Item && !designation.Map.reservationManager.IsReserved(designation, Faction.OfPlayer))
                     return true;
             }
 
@@ -234,13 +234,13 @@ namespace ToolsForHaul.Designators
 
         public override void DesignateSingleCell(IntVec3 cell)
         {
-            this.DesignateThing(cell.GetFirstItem());
+            this.DesignateThing(cell.GetFirstItem(Map));
         }
 
         public override void DesignateThing(Thing thing)
         {
             // throws puffs to indicate that thigns were selected
-            MoteMakerTFH.ThrowMetaPuffs(thing);
+            MoteMakerTFH.ThrowMetaPuffs(thing, thing.Map);
         }
 
         // called when designator successfuly selects at least one thing
@@ -251,8 +251,8 @@ namespace ToolsForHaul.Designators
 
             Job job = new Job(HaulJobDefOf.PutInBackpackSlot)
             {
-                targetQueueA = new List<TargetInfo>(),
-                numToBringList = new List<int>(),
+                targetQueueA = new List<LocalTargetInfo>(),
+                countQueue = new List<int>(),
                 targetB = this.SlotsBackpackComp.parent
             };
 
@@ -264,16 +264,16 @@ namespace ToolsForHaul.Designators
                 }
                 
                 job.targetQueueA.Add(thing);
-                job.numToBringList.Add(thing.def.stackLimit);
+                job.countQueue.Add(thing.def.stackLimit);
                 this.SlotsBackpackComp.owner.Reserve(thing);
             }
 
             this.SlotsBackpackComp.designatedThings.Clear();
 
-            if (!job.targetQueueA.NullOrEmpty()) this.SlotsBackpackComp.owner.drafter.TakeOrderedJob(job);
+            if (!job.targetQueueA.NullOrEmpty()) this.SlotsBackpackComp.owner.jobs.TryTakeOrderedJob(job);
 
             // remove active selection after click
-            DesignatorManager.Deselect();
+            Find.DesignatorManager.Deselect();
         }
 
         // draws selection brackets over designated things

@@ -26,7 +26,7 @@ namespace ToolsForHaul.JobDrivers
             if (this.pawn.jobs.curJob.targetB != null)
             {
                 destLoc = this.pawn.jobs.curJob.targetB.Cell;
-                destGroup = destLoc.GetSlotGroup();
+                destGroup = destLoc.GetSlotGroup(Map);
             }
 
             if (destGroup != null)

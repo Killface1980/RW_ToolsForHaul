@@ -8,13 +8,13 @@ namespace ToolsForHaul
     {
         private const float maxFireSize = 1.25f;
 
-        public override void SpawnSetup()
+        public override void SpawnSetup(Map map)
         {
-            base.SpawnSetup();
+            base.SpawnSetup(map);
 
             this.spawnTick = Find.TickManager.TicksGame;
 
-            List<Thing> list = new List<Thing>(this.Position.GetThingList());
+            List<Thing> list = new List<Thing>(this.Position.GetThingList(map));
             foreach (Thing thing in list)
             {
                 if (thing.HasAttachment(ThingDefOf.Fire))
@@ -38,7 +38,7 @@ namespace ToolsForHaul
 
         public override void Tick()
         {
-            if (this.Position.GetThingList().Any(x => x.def == ThingDefOf.FilthFireFoam))
+            if (this.Position.GetThingList(Map).Any(x => x.def == ThingDefOf.FilthFireFoam))
             {
                 if (!this.Destroyed) this.Destroy();
             }

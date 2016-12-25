@@ -17,7 +17,12 @@ namespace ToolsForHaul.Components
         public bool Spawned => this.parent.Spawned;
 
         // IThingContainerOwner requirement
-        public ThingContainer GetContainer()
+        public Map GetMap()
+        {
+            return this.parent.MapHeld;
+        }
+
+        public ThingContainer GetInnerContainer()
         {
             return this.slots;
         }
@@ -74,7 +79,7 @@ namespace ToolsForHaul.Components
             this.slots = new ThingContainer(this);
         }
 
-        // apply remaining damage and scatter things in slots, if holder is destroyed
+        // apply remaining damage and scatter things in slots, if holdingContainer is destroyed
         public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             if (this.parent.HitPoints < 0)
@@ -82,7 +87,7 @@ namespace ToolsForHaul.Components
                 foreach (Thing thing in this.slots)
                     thing.HitPoints -= (int)totalDamageDealt - this.parent.HitPoints;
 
-                this.slots.TryDropAll(this.parent.Position, ThingPlaceMode.Near);
+                this.slots.TryDropAll(this.parent.Position, this.parent.Map, ThingPlaceMode.Near);
             }
         }
 

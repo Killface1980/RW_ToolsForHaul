@@ -28,7 +28,7 @@ namespace ToolsForHaul
 
         protected int burstWarmupTicksLeft;
 
-        protected TargetInfo currentTargetInt = TargetInfo.Invalid;
+        protected LocalTargetInfo currentTargetInt = LocalTargetInfo.Invalid;
 
         protected CompMannable mannableComp;
 
@@ -47,7 +47,7 @@ namespace ToolsForHaul
 
         public override Verb AttackVerb => this.GunCompEq.verbTracker.PrimaryVerb;
 
-        public override TargetInfo CurrentTarget => this.currentTargetInt;
+        public override LocalTargetInfo CurrentTarget => this.currentTargetInt;
 
         public Thing Gun
         {
@@ -168,7 +168,7 @@ namespace ToolsForHaul
                                     this.holdFire = !this.holdFire;
                                     if (this.holdFire)
                                     {
-                                        this.currentTargetInt = TargetInfo.Invalid;
+                                        this.currentTargetInt = LocalTargetInfo.Invalid;
                                         this.burstWarmupTicksLeft = 0;
                                     }
                                 },
@@ -179,6 +179,7 @@ namespace ToolsForHaul
             yield break;
         }
 
+        // RimWorld.Building_TurretGun
         public override string GetInspectString()
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -187,20 +188,15 @@ namespace ToolsForHaul
             {
                 stringBuilder.AppendLine(inspectString);
             }
-
             stringBuilder.AppendLine("GunInstalled".Translate() + ": " + this.Gun.Label);
             if (this.GunCompEq.PrimaryVerb.verbProps.minRange > 0f)
             {
-                stringBuilder.AppendLine(
-                    "MinimumRange".Translate() + ": " + this.GunCompEq.PrimaryVerb.verbProps.minRange.ToString("F0"));
+                stringBuilder.AppendLine("MinimumRange".Translate() + ": " + this.GunCompEq.PrimaryVerb.verbProps.minRange.ToString("F0"));
             }
-
             if (this.burstCooldownTicksLeft > 0)
             {
-                stringBuilder.AppendLine(
-                    "CanFireIn".Translate() + ": " + this.burstCooldownTicksLeft.TickstoSecondsString());
+                stringBuilder.AppendLine("CanFireIn".Translate() + ": " + this.burstCooldownTicksLeft.TickstoSecondsString());
             }
-
             if (this.def.building.turretShellDef != null)
             {
                 if (this.loaded)
@@ -212,11 +208,10 @@ namespace ToolsForHaul
                     stringBuilder.AppendLine("ShellNotLoaded".Translate());
                 }
             }
-
             return stringBuilder.ToString();
         }
 
-        public override void OrderAttack(TargetInfo targ)
+        public override void OrderAttack(LocalTargetInfo targ)
         {
             if ((targ.Cell - this.Position).LengthHorizontal < this.GunCompEq.PrimaryVerb.verbProps.minRange)
             {
@@ -240,12 +235,12 @@ namespace ToolsForHaul
             }
         }
 
-        public override void SpawnSetup()
+        public override void SpawnSetup(Map map)
         {
-            base.SpawnSetup();
+            base.SpawnSetup(map);
             this.powerComp = this.GetComp<CompPowerTrader>();
             this.mannableComp = this.GetComp<CompMannable>();
-            this.currentTargetInt = TargetInfo.Invalid;
+            this.currentTargetInt = LocalTargetInfo.Invalid;
             this.burstWarmupTicksLeft = 0;
             this.burstCooldownTicksLeft = 0;
         }
@@ -319,21 +314,22 @@ namespace ToolsForHaul
             this.GunCompEq.PrimaryVerb.TryStartCastOn(this.CurrentTarget);
         }
 
+        // RimWorld.Building_TurretGun
         protected void BurstComplete()
         {
-            if (this.def.building.turretBurstCooldownTicks >= 0)
+            if (this.def.building.turretBurstCooldownTime >= 0f)
             {
-                this.burstCooldownTicksLeft = this.def.building.turretBurstCooldownTicks;
+                this.burstCooldownTicksLeft = this.def.building.turretBurstCooldownTime.SecondsToTicks();
             }
             else
             {
-                this.burstCooldownTicksLeft = this.GunCompEq.PrimaryVerb.verbProps.defaultCooldownTicks;
+                this.burstCooldownTicksLeft = this.GunCompEq.PrimaryVerb.verbProps.defaultCooldownTime.SecondsToTicks();
             }
-
             this.loaded = false;
         }
 
-        protected TargetInfo TryFindNewTarget()
+
+        protected LocalTargetInfo TryFindNewTarget()
         {
             Thing thing = this.TargSearcher();
             Faction faction = thing.Faction;
@@ -342,7 +338,7 @@ namespace ToolsForHaul
             Building t;
             if (Rand.Value < 0.5f && this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead
                 && faction.HostileTo(Faction.OfPlayer)
-                && Find.ListerBuildings.allBuildingsColonist.Where(
+                && Map.listerBuildings.allBuildingsColonist.Where(
                     delegate(Building x)
                         {
                             float num = x.Position.DistanceToSquared(this.Position);
@@ -371,24 +367,21 @@ namespace ToolsForHaul
                 targetScanFlags);
         }
 
+        // RimWorld.Building_TurretGun
         protected void TryStartShootSomething()
         {
             if (this.forcedTarget.ThingDestroyed)
             {
                 this.forcedTarget = null;
             }
-
             if (this.holdFire && this.CanToggleHoldFire)
             {
                 return;
             }
-
-            if (this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead
-                && Find.RoofGrid.Roofed(this.Position))
+            if (this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead && base.Map.roofGrid.Roofed(base.Position))
             {
                 return;
             }
-
             bool isValid = this.currentTargetInt.IsValid;
             if (this.forcedTarget.IsValid)
             {
@@ -398,17 +391,15 @@ namespace ToolsForHaul
             {
                 this.currentTargetInt = this.TryFindNewTarget();
             }
-
             if (!isValid && this.currentTargetInt.IsValid)
             {
-                SoundDefOf.TurretAcquireTarget.PlayOneShot(this.Position);
+                SoundDefOf.TurretAcquireTarget.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
             }
-
             if (this.currentTargetInt.IsValid)
             {
-                if (this.def.building.turretBurstWarmupTicks > 0)
+                if (this.def.building.turretBurstWarmupTime > 0f)
                 {
-                    this.burstWarmupTicksLeft = this.def.building.turretBurstWarmupTicks;
+                    this.burstWarmupTicksLeft = this.def.building.turretBurstWarmupTime.SecondsToTicks();
                 }
                 else
                 {
@@ -417,6 +408,7 @@ namespace ToolsForHaul
             }
         }
 
+        // RimWorld.Building_TurretGun
         private bool IsValidTarget(Thing t)
         {
             Pawn pawn = t as Pawn;
@@ -424,30 +416,27 @@ namespace ToolsForHaul
             {
                 if (this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead)
                 {
-                    RoofDef roofDef = Find.RoofGrid.RoofAt(t.Position);
+                    RoofDef roofDef = base.Map.roofGrid.RoofAt(t.Position);
                     if (roofDef != null && roofDef.isThickRoof)
                     {
                         return false;
                     }
                 }
-
                 if (this.mannableComp == null)
                 {
-                    return !GenAI.MachinesLike(this.Faction, pawn);
+                    return !GenAI.MachinesLike(base.Faction, pawn);
                 }
-
                 if (pawn.RaceProps.Animal && pawn.Faction == Faction.OfPlayer)
                 {
                     return false;
                 }
             }
-
             return true;
         }
 
         private void ResetForcedTarget()
         {
-            this.forcedTarget = TargetInfo.Invalid;
+            this.forcedTarget = LocalTargetInfo.Invalid;
             if (this.burstCooldownTicksLeft <= 0)
             {
                 this.TryStartShootSomething();

@@ -1,4 +1,6 @@
-﻿namespace ToolsForHaul
+﻿using RimWorld.Planet;
+
+namespace ToolsForHaul
 {
     using System;
     using System.Collections.Generic;
@@ -12,7 +14,6 @@ using ppumkin.LEDTechnology.Managers;
 
     using ToolsForHaul.Components;
     using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
     using ToolsForHaul.JobDefs;
     using ToolsForHaul.StatDefs;
     using ToolsForHaul.Utilities;
@@ -23,7 +24,7 @@ using ppumkin.LEDTechnology.Managers;
     using Verse.AI;
 
     [StaticConstructorOnStartup]
-    public class Vehicle_Cart : Building, IThingContainerOwner, IAttackTarget
+    public class Vehicle_Cart :  Building, IThingContainerOwner, IAttackTarget
     {
         #region Variables
 
@@ -49,7 +50,7 @@ using ppumkin.LEDTechnology.Managers;
         public CompVehicle VehicleComp => this.GetComp<CompVehicle>();
 
         public int MaxItem => this.MountableComp.IsMounted && this.MountableComp.Driver.RaceProps.Animal
-                                  ? Mathf.CeilToInt(this.MountableComp.Driver.BodySize * this.MaxItemPerBodySize)
+                                  ? Mathf.CeilToInt(this.MountableComp.Driver.BodySize * this.DefaultMaxItem)
                                   : this.DefaultMaxItem;
 
         public int MaxStack => this.MaxItem * 100;
@@ -58,8 +59,6 @@ using ppumkin.LEDTechnology.Managers;
         private ThingContainer storage;
 
         private int DefaultMaxItem => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
-
-        public int MaxItemPerBodySize => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
 
         public float DesiredSpeed => this.GetStatValue(HaulStatDefOf.VehicleSpeed);
 
@@ -88,7 +87,12 @@ using ppumkin.LEDTechnology.Managers;
                    || this.VehicleComp.MotorizedWithoutFuel();
         }
 
-        public ThingContainer GetContainer()
+        public Map GetMap()
+        {
+            return base.MapHeld;
+        }
+
+        public ThingContainer GetInnerContainer()
         {
             return this.Storage;
         }
@@ -123,9 +127,9 @@ using ppumkin.LEDTechnology.Managers;
         HeadLights flooder;
 #endif
 
-        public override void SpawnSetup()
+        public override void SpawnSetup(Map map)
         {
-            base.SpawnSetup();
+            base.SpawnSetup(map);
 
             ToolsForHaulUtility.Cart.Add(this);
 
@@ -139,11 +143,23 @@ using ppumkin.LEDTechnology.Managers;
 
         public override void DeSpawn()
         {
-            if (ToolsForHaulUtility.Cart.Contains(this)) ToolsForHaulUtility.Cart.Remove(this);
+            if (ToolsForHaulUtility.Cart.Contains(this))
+            {
+                ToolsForHaulUtility.Cart.Remove(this);
+            }
 
-            if (this.MountableComp.SustainerAmbient != null) this.MountableComp.SustainerAmbient.End();
+            if (this.MountableComp.SustainerAmbient != null)
+            {
+                this.MountableComp.SustainerAmbient.End();
+            }
 
-            if (this.MountableComp.IsMounted) if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(this.MountableComp.Driver)) MapComponent_ToolsForHaul.currentVehicle.Remove(this.MountableComp.Driver);
+            if (this.MountableComp.IsMounted)
+            {
+                if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(this.MountableComp.Driver))
+                {
+                    MapComponent_ToolsForHaul.currentVehicle.Remove(this.MountableComp.Driver);
+                }
+            }
 
             base.DeSpawn();
 
@@ -232,14 +248,20 @@ using ppumkin.LEDTechnology.Managers;
             Action action_Deconstruct;
 
             // do nothing if not of colony
-            if (this.Faction != Faction.OfPlayer) yield break;
+            if (this.Faction != Faction.OfPlayer)
+            {
+                yield break;
+            }
 
-            foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn)) yield return fmo;
+            foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn))
+            {
+                yield return fmo;
+            }
 
             action_Mount = () =>
                 {
                     Job jobNew = new Job(HaulJobDefOf.Mount);
-                    Find.Reservations.ReleaseAllForTarget(this);
+                    myPawn.Map.reservationManager.ReleaseAllForTarget(this);
                     jobNew.targetA = this;
                     myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
@@ -255,7 +277,7 @@ using ppumkin.LEDTechnology.Managers;
 
             action_Dismount = () =>
                 {
-                    if (!myPawn.Position.InBounds())
+                    if (!myPawn.Position.InBounds(Map))
                     {
                         this.MountableComp.DismountAt(myPawn.Position);
                         return;
@@ -272,11 +294,11 @@ using ppumkin.LEDTechnology.Managers;
                 {
                     Pawn worker = null;
                     Job jobNew = new Job(HaulJobDefOf.MakeMount);
-                    Find.Reservations.ReleaseAllForTarget(this);
-                    jobNew.maxNumToCarry = 1;
+                    myPawn.Map.reservationManager.ReleaseAllForTarget(this);
+                    jobNew.count = 1;
                     jobNew.targetA = this;
                     jobNew.targetB = myPawn;
-                    foreach (Pawn colonyPawn in Find.MapPawns.FreeColonistsSpawned)
+                    foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
                         if (colonyPawn.CurJob.def != jobNew.def
                             && (worker == null
                                 || (worker.Position - myPawn.Position).LengthHorizontal
@@ -290,9 +312,9 @@ using ppumkin.LEDTechnology.Managers;
 
             action_Deconstruct = () =>
                 {
-                    Find.Reservations.ReleaseAllForTarget(this);
-                    Find.Reservations.Reserve(myPawn, this);
-                    Find.DesignationManager.AddDesignation(new Designation(this, DesignationDefOf.Deconstruct));
+                    myPawn.Map.reservationManager.ReleaseAllForTarget(this);
+                    myPawn.Map.reservationManager.Reserve(myPawn, this);
+                    myPawn.Map.designationManager.AddDesignation(new Designation(this, DesignationDefOf.Deconstruct));
                     Job job = new Job(JobDefOf.Deconstruct, this);
                     myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
                 };
@@ -347,7 +369,7 @@ using ppumkin.LEDTechnology.Managers;
                 this.Storage.ClearAndDestroyContents();
             }
 
-            this.Storage.TryDropAll(this.Position, ThingPlaceMode.Near);
+            this.Storage.TryDropAll(this.Position, this.Map, ThingPlaceMode.Near);
 
             base.Destroy(mode);
         }
@@ -362,9 +384,9 @@ using ppumkin.LEDTechnology.Managers;
         {
             if (!this.instantiated)
             {
-                foreach (Thing thing in this.GetContainer())
+                foreach (Thing thing in this.GetInnerContainer())
                 {
-                    thing.holder.owner = this;
+                    thing.holdingContainer.owner = this;
                 }
 
                 this.VehicleComp.currentDriverSpeed = this.VehicleComp.VehicleSpeed;
@@ -418,7 +440,7 @@ using ppumkin.LEDTechnology.Managers;
                     if (this.MountableComp.Driver.Faction != Faction.OfPlayer)
                         if (!this.FueledByAI)
                         {
-                            if (this.RefuelableComp.FuelPercent < 0.550000011920929)
+                            if (this.RefuelableComp.FuelPercentOfMax < 0.550000011920929)
                                 this.RefuelableComp.Refuel(
                                     ThingMaker.MakeThing(
                                         this.RefuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
@@ -451,14 +473,23 @@ using ppumkin.LEDTechnology.Managers;
                         }
 
                         if (this.BreakdownableComp != null && this.BreakdownableComp.BrokenDown
-                            || this.RefuelableComp != null && !this.RefuelableComp.HasFuel) this.VehicleComp.VehicleSpeed = 0.75f;
-                        else this.VehicleComp.VehicleSpeed = this.DesiredSpeed;
+                            || this.RefuelableComp != null && !this.RefuelableComp.HasFuel)
+                        {
+                            this.VehicleComp.VehicleSpeed = 0.75f;
+                        }
+                        else
+                        {
+                            this.VehicleComp.VehicleSpeed = this.DesiredSpeed;
+                        }
                         this.tickCheck = Find.TickManager.TicksGame;
                     }
 
-                    if (this.Position.InNoBuildEdgeArea() && this.VehicleComp.despawnAtEdge && this.Spawned
+                    if (this.Position.InNoBuildEdgeArea(this.Map) && this.VehicleComp.despawnAtEdge && this.Spawned
                         && (this.MountableComp.Driver.Faction != Faction.OfPlayer
-                            || this.MountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee)) this.DeSpawn();
+                            || this.MountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee))
+                    {
+                        this.DeSpawn();
+                    }
                 }
             }
 
@@ -471,26 +502,16 @@ using ppumkin.LEDTechnology.Managers;
             {
                 if (Find.TickManager.TicksGame > this._tankSpillTick)
                 {
-                    if (this.RefuelableComp.FuelPercent > this._tankHitPos)
+                    if (this.RefuelableComp.FuelPercentOfMax > this._tankHitPos)
                     {
                         this.RefuelableComp.ConsumeFuel(0.15f);
 
-                        FilthMaker.MakeFilth(this.Position, this.fuelDefName, this.LabelCap);
+                        FilthMaker.MakeFilth(this.Position, this.Map, this.fuelDefName, this.LabelCap);
                         this._tankSpillTick = Find.TickManager.TicksGame + 15;
                     }
                 }
             }
         }
-
-        private static readonly Vector3 TrailOffset = new Vector3(0f, 0f, -0.3f);
-
-        private static readonly Vector3 FumesOffset = new Vector3(-0.3f, 0f, 0f);
-
-        private static readonly Vector3 DustOffset = new Vector3(-0.3f, 0f, -0.3f);
-
-        private Vector3 _lastFootprintPlacePos;
-
-        private const float FootprintIntervalDist = 0.7f;
 
         private float _tankHitPos = 1f;
 
@@ -536,7 +557,7 @@ using ppumkin.LEDTechnology.Managers;
             if (this.VehicleComp.ShowsStorage())
             {
                 if (this.Storage.Any()
-                    || (this.MountableComp.IsMounted && this.MountableComp.Driver.kindDef.carrier
+                    || (this.MountableComp.IsMounted && this.MountableComp.Driver.RaceProps.packAnimal
                         && this.MountableComp.Driver.RaceProps.Animal))
                 {
                     Vector3 mountThingLoc = drawLoc;
@@ -553,10 +574,10 @@ using ppumkin.LEDTechnology.Managers;
                         mountThingOffset =
                             (-0.3f * this.def.interactionCellOffset.ToVector3()).RotatedBy(this.Rotation.AsAngle);
 
-                    if (this.MountableComp.Driver.kindDef.carrier && this.MountableComp.Driver.RaceProps.Animal)
+                    if (this.MountableComp.Driver.RaceProps.packAnimal && this.MountableComp.Driver.RaceProps.Animal)
                     {
-                        if (this.MountableComp.IsMounted && this.MountableComp.Driver.inventory.container.Count > 0)
-                            foreach (Thing mountThing in this.MountableComp.Driver.inventory.container)
+                        if (this.MountableComp.IsMounted && this.MountableComp.Driver.inventory.innerContainer.Count > 0)
+                            foreach (Thing mountThing in this.MountableComp.Driver.inventory.innerContainer)
                             {
                                 mountThing.Rotation = this.Rotation;
                                 mountThing.DrawAt(mountThingLoc + mountThingOffset);
@@ -594,7 +615,7 @@ using ppumkin.LEDTechnology.Managers;
 
         #endregion
 
-        public IEnumerable<Pawn> AssigningCandidates => Find.MapPawns.FreeColonists;
+        public IEnumerable<Pawn> AssigningCandidates => PawnsFinder.AllMaps_FreeColonists;
 
         public int MaxAssignedPawnsCount => 2;
 

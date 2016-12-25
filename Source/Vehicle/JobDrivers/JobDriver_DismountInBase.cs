@@ -29,7 +29,7 @@ namespace ToolsForHaul.JobDrivers
             if (this.pawn.jobs.curJob.targetB != null)
             {
                 destLoc = this.pawn.jobs.curJob.targetB.Cell;
-                destGroup = destLoc.GetSlotGroup();
+                destGroup = destLoc.GetSlotGroup(cart.Map);
             }
 
             if (destGroup != null)
@@ -58,7 +58,7 @@ namespace ToolsForHaul.JobDrivers
 
             ThingWithComps cart = this.TargetThingA as ThingWithComps;
 
-            if (ToolsForHaulUtility.FindStorageCell(this.pawn, cart) == IntVec3.Invalid)
+            if (ToolsForHaulUtility.FindStorageCell(this.pawn,  cart, pawn.Map) == IntVec3.Invalid)
             {
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceForCart);
             }

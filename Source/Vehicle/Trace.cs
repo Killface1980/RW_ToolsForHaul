@@ -38,7 +38,7 @@ namespace ToolsForHaul
             AppendLine(pawn.LabelCap + " Report: Cart " + ToolsForHaulUtility.Cart.Count + " Job: " + (pawn.CurJob != null ? pawn.CurJob.def.defName : "No Job")
                 + " Backpack: " + (ToolsForHaulUtility.TryGetBackpack(pawn) != null ? "True" : "False")
                 + " lastGivenWorkType: " + pawn.mindState.lastGivenWorkType);
-            foreach (Pawn other in Find.MapPawns.FreeColonistsSpawned)
+            foreach (Pawn other in PawnsFinder.AllMaps_FreeColonistsSpawned)
             {
                 // Vanilla haul or Haul with backpack
                 if (other.CurJob != null && (other.CurJob.def == JobDefOf.HaulToCell || other.CurJob.def == HaulJobDefOf.HaulWithBackpack))
@@ -59,7 +59,7 @@ namespace ToolsForHaul
                     state = string.Concat(state, "AvailableCart ");
                 if (ToolsForHaulUtility.AvailableAnimalCart(cart))
                     state = string.Concat(state, "AvailableAnimalCart ");
-                Pawn reserver = Find.Reservations.FirstReserverOf(cart, Faction.OfPlayer);
+                Pawn reserver = cart.Map.reservationManager.FirstReserverOf(cart, Faction.OfPlayer);
                 if (reserver != null)
                     state = string.Concat(state, reserver.LabelCap, " Job: ", reserver.CurJob.def.defName);
                 AppendLine(cart.LabelCap + "- " + driver + ": " + state);

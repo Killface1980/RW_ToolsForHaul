@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><DefPackage-SoundDef>
 
   <SoundDef>
-    <defName>VehicleATV_Ambience_Start</defName>  
+    <defName>VehicleATV_Ambience_Start</defName>
+    <context>MapOnly</context>
     <eventNames />  
     <subSounds>
       <li>
@@ -24,7 +25,8 @@
   </SoundDef>
 
   <SoundDef>
-    <defName>VehicleATV_Ambience_Stop</defName>  
+    <defName>VehicleATV_Ambience_Stop</defName>
+    <context>MapOnly</context>
     <eventNames />  
     <subSounds>
       <li>
@@ -48,6 +50,7 @@
 
   <SoundDef>
     <defName>VehicleATV_Ambience_Break</defName>
+    <context>MapOnly</context>
     <eventNames />
     <maxSimultaneous>1</maxSimultaneous>
     <subSounds>
@@ -120,7 +123,8 @@
   </SoundDef>
 
   <SoundDef>
-    <defName>VehicleATV_Ambience</defName>  
+    <defName>VehicleATV_Ambience</defName>
+    <context>MapOnly</context>
     <sustain>True</sustain>  
     <eventNames />  
     <priorityMode>PrioritizeNearest</priorityMode>  
@@ -152,6 +156,7 @@
 
   <SoundDef>
     <defName>VehicleTruck_Ambience</defName>
+    <context>MapOnly</context>
     <sustain>True</sustain>
     <eventNames />
     <priorityMode>PrioritizeNearest</priorityMode>
@@ -184,6 +189,7 @@
 
   <SoundDef>
     <defName>VehicleCombattATV_Ambience</defName>
+    <context>MapOnly</context>
     <sustain>True</sustain>
     <eventNames />
     <priorityMode>PrioritizeNearest</priorityMode>
@@ -215,6 +221,7 @@
 
   <SoundDef>
     <defName>VehicleSmackWay_Ambience</defName>
+    <context>MapOnly</context>
     <sustain>True</sustain>
     <eventNames />
     <priorityMode>PrioritizeNearest</priorityMode>
@@ -246,6 +253,7 @@
 
   <SoundDef>
     <defName>VehicleSpeeder_Ambience</defName>
+    <context>MapOnly</context>
     <sustain>True</sustain>
     <eventNames />
     <priorityMode>PrioritizeNearest</priorityMode>
