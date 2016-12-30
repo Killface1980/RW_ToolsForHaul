@@ -67,7 +67,7 @@ namespace ToolsForHaul.Components
         public float _tankHitPos = 1f;
         private int tankHitCount;
         private int _tankSpillTick = -5000;
-        public ThingDef fuelDefName = ThingDef.Named("Puddle_BioDiesel_Fuel");
+        public ThingDef fuelDefName = ThingDef.Named("FilthFuel");
         private Graphic_Shadow shadowGraphic;
         private int tickCheck = Find.TickManager.TicksGame;
         private readonly int tickCooldown = 60;

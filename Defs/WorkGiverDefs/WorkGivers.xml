@@ -92,7 +92,7 @@
     </requiredCapacities>
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
-  <!--
+
   <WorkGiverDef>
     <defName>EquipTools</defName>
     <giverClass>ToolsForHaul.WorkGivers.WorkGiver_EquipTools</giverClass>
@@ -104,13 +104,13 @@
       <li>Manipulation</li>
     </requiredCapacities>
   </WorkGiverDef>
-  -->
+
   
   <WorkGiverDef>
     <defName>HaulWithBackpack</defName>
     <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HaulWithBackpack</giverClass>
     <workType>Hauling</workType>
-    <priorityInType>7</priorityInType>
+    <priorityInType>43</priorityInType>
     <scanThings>true</scanThings>
     <verb>haul with backpack</verb>
     <gerund>hauling with backpack</gerund>
@@ -126,7 +126,7 @@
     <defName>HaulWithCart</defName>
     <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HaulWithCart</giverClass>
     <workType>Hauling</workType>
-    <priorityInType>9</priorityInType>
+    <priorityInType>49</priorityInType>
     <scanThings>true</scanThings>
     <verb>haul with cart</verb>
     <gerund>hauling with cart</gerund>

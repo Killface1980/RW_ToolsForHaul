@@ -374,7 +374,7 @@ using ppumkin.LEDTechnology.Managers;
             base.Destroy(mode);
         }
 
-        public ThingDef fuelDefName = ThingDef.Named("Puddle_BioDiesel_Fuel");
+        public ThingDef fuelDefName = ThingDef.Named("FilthFuel");
 
         #endregion
 

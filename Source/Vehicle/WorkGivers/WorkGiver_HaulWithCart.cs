@@ -33,7 +33,7 @@ namespace ToolsForHaul.WorkGivers
         {
             Vehicle_Cart cart = null;
 
-            if (!HaulAIUtility.PawnCanAutomaticallyHaulFast(pawn, t))
+            if (!HaulAIUtility.PawnCanAutomaticallyHaul(pawn, t))
             {
                 return null;
             }

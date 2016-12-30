@@ -150,7 +150,7 @@ namespace ToolsForHaul.StatWorkers
             CompSlotsBackpack compSlotsBackpack = apparelBackpack?.slotsComp;
             if (compSlotsBackpack != null)
             {
-                result = Mathf.Clamp(compSlotsBackpack.moveSpeedFactor - compSlotsBackpack.encumberPenalty, 0.1f, 1f);
+                result = Mathf.Clamp(compSlotsBackpack.moveSpeedFactor - compSlotsBackpack.encumberPenalty, 0.5f, 1f);
             }
 
 #if CR

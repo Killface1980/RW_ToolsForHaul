@@ -22,31 +22,6 @@
   
   <!--================== Fuel ==================-->
   
-  <ThingDef ParentName="ResourceBase">
-    <defName>Biodiesel</defName>
-    <label>Biodiesel</label>
-    <description>Biodiesel fuel.</description>
-    <graphicData>
-      <texPath>Coolant</texPath>
-
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <stackLimit>75</stackLimit>
-    <soundInteract>Metal_Drop</soundInteract>
-
-    <soundDrop>Metal_Drop</soundDrop>
-    <statBases>
-      <MaxHitPoints>100</MaxHitPoints>
-      <MarketValue>10</MarketValue>
-      <Flammability>0.3</Flammability>
-    </statBases>
-    <thingCategories>
-      <li>Manufactured</li>
-    </thingCategories>
-    <tradeTags>
-      <li>Exotic</li>
-    </tradeTags>
-  </ThingDef>
 
   <ThingDef ParentName="ResourceBase">
     <defName>VehicleATVFrame</defName>

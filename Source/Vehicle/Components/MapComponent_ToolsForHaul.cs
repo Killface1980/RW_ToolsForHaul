@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
 namespace ToolsForHaul
@@ -7,19 +8,56 @@ namespace ToolsForHaul
     using HugsLib.Utils;
     public class MapComponent_ToolsForHaul : UtilityWorldObject
     {
+        public struct Entry
+        {
+            public Pawn pawn;
+
+            public Thing tool;
+
+            public StatDef stat;
+
+            public float workStat;
+
+            public Entry(Pawn pawn, Thing tool, StatDef stat, float workStat)
+            {
+                this.pawn = pawn;
+                this.tool = tool;
+                this.stat = stat;
+                this.workStat = workStat;
+            }
+        }
+
+        private static List<Entry> _cachedToolEntries = new List<Entry>();
+
+        public static Dictionary<Pawn, ThingWithComps> PreviousPawnWeapon= new Dictionary<Pawn, ThingWithComps>();
 
 
-        public static Dictionary<Pawn, ThingWithComps> previousPawnWeapons = new Dictionary<Pawn, ThingWithComps>();
+          
         public static List<Thing> AutoInventory = new List<Thing>();
 
         public static Dictionary<Pawn, Thing> currentVehicle = new Dictionary<Pawn, Thing>();
 
+        public static List<Entry> CachedToolEntries
+        {
+            get
+            {
+                return _cachedToolEntries;
+            }
+
+            set
+            {
+                _cachedToolEntries = value;
+            }
+        }
 
         public override void ExposeData()
         {
-            Scribe_Collections.LookDictionary(ref previousPawnWeapons, "previousPawnWeapons", LookMode.Reference, LookMode.Reference);
+            Scribe_Collections.LookDictionary(ref PreviousPawnWeapon, "previousPawnWeapons", LookMode.Reference, LookMode.Reference);
             Scribe_Collections.LookDictionary(ref currentVehicle, "currentVehicle", LookMode.Reference, LookMode.Reference);
             Scribe_Collections.LookList(ref AutoInventory, "AutoInventory", LookMode.Reference);
+            Scribe_Collections.LookList(ref _cachedToolEntries, "_cachedToolEntries", LookMode.Reference);
         }
+
+
     }
 }

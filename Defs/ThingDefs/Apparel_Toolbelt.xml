@@ -18,20 +18,20 @@
   <ThingDef ParentName="ToolsForHaulToolbeltBase">
     <defName>Basic_Toolbelt</defName>
     <label>basic toolbelt</label>
-    <description>A toolbelt to keep your tools to yourself.</description>
+    <description>Basic toolbelt where your tools belong.</description>
     <graphicData>
       <texPath>Things/Apparel/Toolbelt/Toolbelt</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
-      <WorkToMake>8000</WorkToMake>
+      <WorkToMake>3000</WorkToMake>
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
       <InventoryMaxItem>2</InventoryMaxItem>
       <MarketValue>150</MarketValue>
     </statBases>
-    <costStuffCount>50</costStuffCount>
+    <costStuffCount>20</costStuffCount>
     <stuffCategories>
       <li>Leathery</li>
       <li>Fabric</li>
@@ -44,10 +44,6 @@
       <layers>
         <li>Middle</li>
       </layers>
-      <tags>
-        <li>Outlander</li>
-        <li>Spacer</li>
-      </tags>
       <defaultOutfitTags>
         <li>Worker</li>
       </defaultOutfitTags>
@@ -78,20 +74,20 @@
       </li>
     </comps>
     <equippedStatOffsets>
-      <WorkSpeedGlobal>0.3</WorkSpeedGlobal>
+      <WorkSpeedGlobal>0.15</WorkSpeedGlobal>
     </equippedStatOffsets>
   </ThingDef>
 
   <ThingDef ParentName="ToolsForHaulToolbeltBase">
     <defName>Professional_Toolbelt</defName>
     <label>professional toolbelt</label>
-    <description>An advanced toolbelt to keep your tools to yourself.</description>
+    <description>Professional toolbelt for all your needs</description>
     <graphicData>
-      <texPath>Things/Apparel/Toolbelt/ADVToolbelt</texPath>
+      <texPath>Things/Apparel/Toolbelt/ProfToolbelt</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
-      <WorkToMake>14000</WorkToMake>
+      <WorkToMake>6000</WorkToMake>
       <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
       <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
       <ArmorRating_Heat>0.03</ArmorRating_Heat>
@@ -99,7 +95,7 @@
       <MarketValue>500</MarketValue>
     </statBases>
     <tickerType>Normal</tickerType>
-    <costStuffCount>100</costStuffCount>
+    <costStuffCount>30</costStuffCount>
     <stuffCategories>
       <li>Leathery</li>
       <li>Fabric</li>
@@ -108,7 +104,7 @@
       <bodyPartGroups>
         <li>Shoulders</li>
       </bodyPartGroups>
-      <worngraphicPath>Things/Apparel/Toolbelt/ADVToolbelt</worngraphicPath>
+      <worngraphicPath>Things/Apparel/Toolbelt/ProfToolbelt</worngraphicPath>
       <layers>
         <li>Middle</li>
       </layers>
@@ -143,7 +139,7 @@
       </li>
     </comps>
     <equippedStatOffsets>
-      <WorkSpeedGlobal>0.3</WorkSpeedGlobal>
+      <WorkSpeedGlobal>0.25</WorkSpeedGlobal>
     </equippedStatOffsets>
   </ThingDef>
 

@@ -43,6 +43,7 @@ namespace ToolsForHaul.Designators
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft)
         {
+
             Rect gizmoRect = new Rect(topLeft.x, topLeft.y, this.Width, Height);
 
             Rect designatorRect = new Rect(gizmoRect.x, gizmoRect.y, Height, Height);

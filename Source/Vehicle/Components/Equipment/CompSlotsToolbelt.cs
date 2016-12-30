@@ -3,6 +3,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.Sound;
 
 namespace ToolsForHaul.Components
 {
@@ -113,7 +114,10 @@ namespace ToolsForHaul.Components
             this.slots.Remove(thing);
 
             // interrupt current jobs to prevent random errors
-            if (this.owner?.jobs.curJob != null) this.owner.jobs.EndCurrentJob(JobCondition.InterruptForced);
+            if (this.owner?.jobs.curJob != null)
+            {
+                this.owner.jobs.EndCurrentJob(JobCondition.InterruptForced);
+            }
         }
 
         public override void PostExposeData()

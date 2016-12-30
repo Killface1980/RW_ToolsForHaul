@@ -364,7 +364,7 @@ namespace ToolsForHaul
 
             base.Destroy(mode);
         }
-        private ThingDef fuelDefName = ThingDef.Named("Puddle_BioDiesel_Fuel");
+        private ThingDef fuelDefName = ThingDef.Named("FilthFuel");
 
         private int tankHitCount;
 

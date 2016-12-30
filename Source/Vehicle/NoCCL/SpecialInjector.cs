@@ -27,10 +27,12 @@ namespace ToolsForHaul
             Log.Error("This should never be called.");
             return false;
         }
+
+
     }
 
     [StaticConstructorOnStartup]
-    internal static class DetourInjector
+    public static class DetourInjector
     {
         private static Assembly Assembly => Assembly.GetAssembly(typeof(DetourInjector));
 
@@ -40,6 +42,25 @@ namespace ToolsForHaul
         static DetourInjector()
         {
             LongEventHandler.QueueLongEvent(Inject, "Initializing", true, null);
+        }
+
+        public static object GetHiddenValue(Type type, object instance, string fieldName, FieldInfo info)
+        {
+            if (info == null)
+            {
+                info = type.GetField(fieldName, universalFlags);
+            }
+
+            return info?.GetValue(instance);
+        }
+        public static void SetHiddenValue(object value, Type type, object instance, string fieldName, FieldInfo info)
+        {
+            if (info == null)
+            {
+                info = type.GetField(fieldName, universalFlags);
+            }
+
+            info?.SetValue(instance, value);
         }
 
         private static void Inject()
@@ -98,9 +119,9 @@ namespace ToolsForHaul
             }
 
 
-            GameObject initializer = new GameObject("TFHMapComponentInjector");
-            initializer.AddComponent<MapComponentInjector>();
-            Object.DontDestroyOnLoad(initializer);
+          //GameObject initializer = new GameObject("TFHMapComponentInjector");
+          //initializer.AddComponent<MapComponentInjector>();
+          //Object.DontDestroyOnLoad(initializer);
 
         }
     }

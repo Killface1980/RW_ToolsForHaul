@@ -389,7 +389,7 @@ namespace ToolsForHaul
             base.Destroy(mode);
         }
 
-        private ThingDef fuelDefName = ThingDef.Named("Puddle_BioDiesel_Fuel");
+        private ThingDef fuelDefName = ThingDef.Named("FilthFuel");
 
         /// <summary>
         /// PreApplyDamage from Building_Turret - not sure what the stunner does

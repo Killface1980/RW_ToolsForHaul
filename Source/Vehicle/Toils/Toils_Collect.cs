@@ -389,7 +389,7 @@ namespace ToolsForHaul.Toils
                     if (destLoc.GetStorable(actor.Map) == null)
                     {
                         actor.Map.designationManager.RemoveAllDesignationsOn(dropThing);
-                        backpack.slotsComp.slots.TryDrop(dropThing, destLoc, dropThing.Map, placeMode, out dummy);
+                        backpack.slotsComp.slots.TryDrop(dropThing, destLoc, actor.Map, placeMode, out dummy);
                     }
                 };
             return toil;
@@ -418,7 +418,7 @@ namespace ToolsForHaul.Toils
                     if (slotGroup != null && slotGroup.Settings.AllowedToAccept(dropThing))
                     {
                         actor.Map.designationManager.RemoveAllDesignationsOn(dropThing);
-                        carrier.Storage.TryDrop(dropThing, destLoc,dropThing.Map, placeMode, out dummy);
+                        carrier.Storage.TryDrop(dropThing, destLoc,actor.Map, placeMode, out dummy);
                     }
 
                     // Check cell queue is adjacent
@@ -428,7 +428,7 @@ namespace ToolsForHaul.Toils
                         if (destLoc.AdjacentTo8Way(cells[i].Cell) && cells[i].Cell.GetStorable(actor.Map) == null)
                         {
                             actor.Map.designationManager.RemoveAllDesignationsOn(carrier.Storage[i]);
-                            carrier.Storage.TryDrop(carrier.Storage[i], cells[i].Cell, dropThing.Map, ThingPlaceMode.Direct, out dummy);
+                            carrier.Storage.TryDrop(carrier.Storage[i], cells[i].Cell, actor.Map, ThingPlaceMode.Direct, out dummy);
                             cells.RemoveAt(i);
                             i--;
                         }
@@ -441,7 +441,7 @@ namespace ToolsForHaul.Toils
                             && adjCell.IsValidStorageFor(actor.Map, carrier.Storage.First()))
                         {
                             actor.Map.designationManager.RemoveAllDesignationsOn(carrier.Storage.First());
-                            carrier.Storage.TryDrop(carrier.Storage.First(), adjCell, dropThing.Map, ThingPlaceMode.Direct, out dummy);
+                            carrier.Storage.TryDrop(carrier.Storage.First(), adjCell, actor.Map, ThingPlaceMode.Direct, out dummy);
                         }
                     }
                 };

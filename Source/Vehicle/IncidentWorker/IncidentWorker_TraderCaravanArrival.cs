@@ -7,7 +7,6 @@
 
     using ToolsForHaul.Components;
     using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
     using ToolsForHaul.JobDefs;
 
     using UnityEngine;
@@ -19,6 +18,19 @@
 
     public class IncidentWorker_TraderCaravanArrival : IncidentWorker_NeutralGroup
     {
+        protected override PawnGroupKindDef PawnGroupKindDef
+        {
+            get
+            {
+                return PawnGroupKindDefOf.Trader;
+            }
+        }
+        protected override bool FactionCanBeGroupSource(Faction f, Map map, bool desperate = false)
+        {
+            return base.FactionCanBeGroupSource(f, map, desperate) && f.def.caravanTraderKinds.Any<TraderKindDef>();
+        }
+
+        // RimWorld.IncidentWorker_TraderCaravanArrival
         public override bool TryExecute(IncidentParms parms)
         {
             Map map = (Map)parms.target;
@@ -43,52 +55,51 @@
                 }
             }
             TraderKindDef traderKindDef = null;
-            foreach (Pawn current in list)
+            foreach (var current in list)
             {
-                bool spawnCart = false;
                 if (current.TraderKind != null)
                 {
                     traderKindDef = current.TraderKind;
-                    spawnCart = true;
-                }
 
-                float value = Rand.Value;
+                    float value = Rand.Value;
 
-                Thing thing = null;
-                if (current.RaceProps.Animal)
-                {
-                    if (current.RaceProps.packAnimal)
+                    Thing thing = null;
+                    if (current.RaceProps.Animal)
+                    {
+                        if (current.RaceProps.packAnimal)
+                        {
+                            thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCart"));
+                        }
+                    }
+                    else if (current.Faction.def.techLevel >= TechLevel.Industrial && value >= 0.75f)
+                    {
+                        thing = ThingMaker.MakeThing(ThingDef.Named("VehicleTruck"));
+                        Thing fuel =
+                            ThingMaker.MakeThing(
+                                thing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.FirstOrDefault());
+                        fuel.stackCount += Mathf.FloorToInt(5 + Rand.Value * 15f);
+                        thing.TryGetComp<CompRefuelable>().Refuel(fuel);
+                    }
+                    else
                     {
                         thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCart"));
-                        spawnCart = true;
                     }
-                }
-                else if (current.Faction.def.techLevel >= TechLevel.Industrial && value >= 0.75f)
-                {
-                    thing = ThingMaker.MakeThing(ThingDef.Named("VehicleTruck"));
-                    Thing fuel =
-                        ThingMaker.MakeThing(
-                            thing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.FirstOrDefault());
-                    fuel.stackCount += Mathf.FloorToInt(5 + Rand.Value * 15f);
-                    thing.TryGetComp<CompRefuelable>().Refuel(fuel);
-                }
-                else
-                {
-                    thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCart"));
-                }
 
-                if (spawnCart)
-                {
-                    GenSpawn.Spawn(thing, current.Position, map);
+                    if (thing != null)
+                    {
+                        GenSpawn.Spawn(thing, current.Position, map);
 
-                    Job job = new Job(HaulJobDefOf.Mount);
-                    map.reservationManager.ReleaseAllForTarget(thing);
-                    job.targetA = thing;
-                    current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
+                        Job job = new Job(HaulJobDefOf.Mount);
+                        map.reservationManager.ReleaseAllForTarget(thing);
+                        job.targetA = thing;
+                        current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
-                    SoundInfo info = SoundInfo.InMap(thing);
-                    thing.TryGetComp<CompMountable>().SustainerAmbient =
-                        thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
+                        SoundInfo info = SoundInfo.InMap(thing);
+                        thing.TryGetComp<CompMountable>().SustainerAmbient =
+                            thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
+                    }
+
+                    break;
                 }
             }
             string label = "LetterLabelTraderCaravanArrival".Translate(new object[]
@@ -108,12 +119,9 @@
             LordJob_TradeWithColony lordJob = new LordJob_TradeWithColony(parms.faction, chillSpot);
             LordMaker.MakeNewLord(parms.faction, lordJob, map, list);
             return true;
-
         }
 
-        protected override bool FactionCanBeGroupSource(Faction f, Map map, bool desperate = false)
-        {
-            return base.FactionCanBeGroupSource(f, map, desperate) && f.def.caravanTraderKinds.Any();
-        }
+
+
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using RimWorld;
 using ToolsForHaul.Utilities;
+using UnityEngine;
 using Verse;
+using static ToolsForHaul.MapComponent_ToolsForHaul;
 
 namespace ToolsForHaul
 {
@@ -19,9 +21,8 @@ namespace ToolsForHaul
 
         public static float GetMaxStat(ThingWithComps thing, StatDef def)
         {
-            bool flag = thing == null || thing.def.equippedStatOffsets == null;
             float result;
-            if (flag)
+            if (thing == null || thing.def.equippedStatOffsets == null)
             {
                 result = 0f;
             }
@@ -29,10 +30,14 @@ namespace ToolsForHaul
             {
                 foreach (StatModifier current in thing.def.equippedStatOffsets)
                 {
-                    bool flag2 = current.stat == def;
-                    if (flag2)
+                    if (current.stat == def)
                     {
                         result = current.value;
+                        // invert the score for harvest
+                        if (def == StatDefOf.HarvestFailChance)
+                        {
+                            result *= -1;
+                        }
                         return result;
                     }
                 }
@@ -50,52 +55,44 @@ namespace ToolsForHaul
         /// <param name="def"></param>
         public static void EquipRigthTool(Pawn pawn, StatDef def)
         {
+            if (pawn.story != null && pawn.story.WorkTagIsDisabled(WorkTags.Violent))
+                return;
+
             Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
 
-            bool flag = toolbelt != null;
-            if (flag)
+            if (toolbelt != null)
             {
                 ThingWithComps thingWithComps = pawn.equipment.Primary;
-                float stat = GetMaxStat(pawn.equipment.Primary, def);
+                float currentStat = GetMaxStat(thingWithComps, def);
 
-                foreach (ThingWithComps slot in toolbelt.slotsComp.slots)
+                foreach (Thing slot in toolbelt.slotsComp.slots)
                 {
-                    ThingWithComps thingWithComps2 = slot;
-                    bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
-                    if (!flag2)
+                    ThingWithComps thingWithComps2 = slot as ThingWithComps;
+                    if (thingWithComps2 != null)
                     {
-                        float maxStat = GetMaxStat(thingWithComps2, def);
-                        bool flag3 = stat < maxStat;
-                        if (flag3)
+                        if (thingWithComps2.def.IsRangedWeapon || thingWithComps2.def.IsMeleeWeapon)
                         {
-                            stat = maxStat;
-                            thingWithComps = thingWithComps2;
+                            float candidateStat = GetMaxStat(thingWithComps2, def);
+                            if (candidateStat > currentStat)
+                            {
+                                currentStat = candidateStat;
+                                thingWithComps = thingWithComps2;
+                            }
                         }
                     }
                 }
 
-                // using (IEnumerator<Thing> enumerator = pawn.inventory.innerContainer.GetEnumerator())
-                // {
-                // while (enumerator.MoveNext())
-                // {
-                // ThingWithComps thingWithComps2 = (ThingWithComps)enumerator.Current;
-                // bool flag2 = !thingWithComps2.def.IsRangedWeapon && !thingWithComps2.def.IsMeleeWeapon;
-                // if (!flag2)
-                // {
-                // float maxStat = GetMaxStat(thingWithComps2, def);
-                // bool flag3 = stat < maxStat;
-                // if (flag3)
-                // {
-                // stat = maxStat;
-                // thingWithComps = thingWithComps2;
-                // }
-                // }
-                // }
-                // }
                 bool unEquipped = thingWithComps != pawn.equipment.Primary;
                 if (unEquipped)
                 {
-                    if (!MapComponent_ToolsForHaul.previousPawnWeapons.ContainsKey(pawn)) MapComponent_ToolsForHaul.previousPawnWeapons.Add(pawn, pawn.equipment.Primary);
+                    if (!PreviousPawnWeapon.ContainsKey(pawn))
+                    {
+                        PreviousPawnWeapon.Add(pawn, pawn.equipment.Primary);
+                    }
+                    else
+                    {
+                        PreviousPawnWeapon[pawn] = pawn.equipment.Primary;
+                    }
 
                     toolbelt.slotsComp.SwapEquipment(thingWithComps);
 
@@ -162,11 +159,11 @@ namespace ToolsForHaul
                 }
             }
 
-            if (worktype==DefDatabase<WorkTypeDef>.GetNamed("Hauling"))
+            if (worktype == DefDatabase<WorkTypeDef>.GetNamed("Hauling"))
             {
                 IOrderedEnumerable<Thing> orderedEnumerable2 =
-                      ToolsForHaulUtility.Cart.OrderByDescending(x => (x as Vehicle_Cart).MaxItem).ThenBy(x=>pawn.Position.DistanceToSquared(x.Position));
-                
+                      ToolsForHaulUtility.Cart.OrderByDescending(x => (x as Vehicle_Cart).MaxItem).ThenBy(x => pawn.Position.DistanceToSquared(x.Position));
+
                 foreach (Thing thing in orderedEnumerable2)
                 {
                     Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;

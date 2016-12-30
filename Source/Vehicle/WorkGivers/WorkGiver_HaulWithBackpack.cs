@@ -39,7 +39,9 @@ namespace ToolsForHaul.WorkGivers
 
             // Should skip pawn that don't have backpack.
             if (backpack == null)
+            {
                 return true;
+            }
             if (backpack.MaxItem - backpack.slotsComp.slots.Count == 0)
             {
                 return true;
@@ -55,7 +57,7 @@ namespace ToolsForHaul.WorkGivers
                 return null;
             }
 
-            if (!HaulAIUtility.PawnCanAutomaticallyHaulFast(pawn, t))
+            if (!HaulAIUtility.PawnCanAutomaticallyHaul(pawn, t))
             {
                 return null;
             }

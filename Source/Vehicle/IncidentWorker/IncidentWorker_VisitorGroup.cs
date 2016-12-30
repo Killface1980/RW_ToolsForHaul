@@ -36,7 +36,7 @@ namespace ToolsForHaul.IncidentWorker
             LordJob_VisitColony lordJob = new LordJob_VisitColony(parms.faction, chillSpot);
             LordMaker.MakeNewLord(parms.faction, lordJob, map, list);
             bool flag = false;
-            if (Rand.Value < 0.8f)
+            if (Rand.Value < TraderChance)
             {
                 flag = this.TryConvertOnePawnToSmallTrader(list, parms.faction, map);
             }

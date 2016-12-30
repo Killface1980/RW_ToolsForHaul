@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using ToolsForHaul.JobDefs;
 using ToolsForHaul.Utilities;
@@ -14,23 +15,42 @@ namespace ToolsForHaul.WorkGivers
         {
             List<Thing> potentialWorkThingsGlobal = new List<Thing>();
 
-            foreach (Thing thing in Find.ListerThings.AllThings)
+            foreach (Thing thing in pawn.Map.listerThings.AllThings)
             {
                 float statfloat = 0;
-                if (!thing.def.IsWeapon) continue;
-                if (!pawn.CanReserveAndReach(thing, PathEndMode.ClosestTouch, Danger.Some)) continue;
+                if (!thing.def.IsWeapon)
+                {
+                    continue;
+                }
+                if (!HaulAIUtility.PawnCanAutomaticallyHaul(pawn, thing))
+                {
+                    continue;
+                }
+                bool grabNewTool = false;
                 foreach (KeyValuePair<StatDef, float> stat in pawn.GetWeightedWorkStats())
                 {
-                    statfloat += RightTools.GetMaxStat(thing as ThingWithComps, stat.Key);
+                    statfloat = RightTools.GetMaxStat(thing as ThingWithComps, stat.Key);
                     if (statfloat > 0)
                     {
-                        potentialWorkThingsGlobal.Add(thing);
+                        grabNewTool = true;
+                        // Should skip if already better tool in inventory
+                        foreach (var entry in MapComponent_ToolsForHaul.CachedToolEntries.Where(x => x.pawn != null && x.pawn == pawn))
+                        {
+                            if (entry.stat == stat.Key)
+                            {
+                                if (entry.workStat > statfloat)
+                                {
+                                    grabNewTool = false;
+                                }
+                            }
+                        }
                     }
                 }
-
+                if (grabNewTool)
+                {
+                    potentialWorkThingsGlobal.Add(thing);
+                }
             }
-
-
             return potentialWorkThingsGlobal;
         }
 
@@ -38,6 +58,10 @@ namespace ToolsForHaul.WorkGivers
         public override bool ShouldSkip(Pawn pawn)
         {
             Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
+
+            // Pacifists are incapable of using tools/weapons
+            if (pawn.story != null && pawn.story.WorkTagIsDisabled(WorkTags.Violent))
+                return true;
 
             // Should skip pawn that don't have a toolbelt.
             if (toolbelt == null) return true;
@@ -57,7 +81,7 @@ namespace ToolsForHaul.WorkGivers
             if (toolbelt == null)
                 return false;
 
-            if (!pawn.CanReserveAndReach(t, PathEndMode.ClosestTouch, Danger.Some))
+            if (!HaulAIUtility.PawnCanAutomaticallyHaul(pawn, t))
                 return false;
 
             if (toolbelt.slotsComp.slots.Contains(t.def))
@@ -78,7 +102,7 @@ namespace ToolsForHaul.WorkGivers
             if (toolbelt != null)
             {
                 Job jobNew = new Job(HaulJobDefOf.PutInToolbeltSlot);
-                jobNew.targetQueueA = new List<TargetInfo>();
+                jobNew.targetQueueA = new List<LocalTargetInfo>();
                 jobNew.countQueue = new List<int>();
                 jobNew.targetB = toolbelt;
                 jobNew.targetQueueA.Add(thing);
@@ -86,7 +110,6 @@ namespace ToolsForHaul.WorkGivers
                 pawn.Reserve(thing);
 
                 return jobNew;
-
             }
 
             JobFailReason.Is("NoToolbelt".Translate());

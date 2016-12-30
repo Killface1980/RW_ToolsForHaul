@@ -115,6 +115,7 @@ namespace ToolsForHaul
 
                 case "Construction":
                     yield return new KeyValuePair<StatDef, float>(StatDefOf.ConstructionSpeed, 1f);
+                    yield return new KeyValuePair<StatDef, float>(StatDefOf.SmoothingSpeed, 0.5f);
                     yield break;
 
                 case "Repair":

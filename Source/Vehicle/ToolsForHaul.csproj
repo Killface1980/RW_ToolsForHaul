@@ -31,8 +31,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -60,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Components\Vehicle\CompProperties_Mountable.cs" />
+    <Compile Include="Detours\_TendUtility.cs" />
     <Compile Include="MoteMakerTFH.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_TraderCaravanArrival.cs" />
     <Compile Include="MoteCounterTFH.cs" />
@@ -128,7 +128,7 @@
     <Compile Include="Detours\_ThinkNode_JobGiver.cs" />
     <Compile Include="RightTools\RightTools.cs" />
     <Compile Include="Components\MapComponent_ToolsForHaul.cs" />
-    <Compile Include="RightTools\MapComponentInjector.cs" />
+    <None Include="RightTools\MapComponentInjector.cs" />
     <Compile Include="NoCCL\SpecialInjector.cs" />
     <Compile Include="NoCCL\Detours.cs" />
     <Compile Include="StatsHelper.cs" />
@@ -138,7 +138,7 @@
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="Toils\Toils_Cart.cs" />
     <None Include="WorkGivers\Class1.cs" />
-    <None Include="WorkGivers\WorkGiver_EquipTools.cs" />
+    <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
     <Compile Include="Components\Vehicle\CompMountable.cs" />
     <Compile Include="Designators\Designator_Mount.cs" />
@@ -204,6 +204,9 @@
     <Content Include="..\..\Defs\StatDefs\Stats_Vehicle.xml">
       <Link>Defs\StatDefs\Stats_Vehicle.xml</Link>
     </Content>
+    <Content Include="..\..\Defs\ThingCategoryDefs\RA_ThingCategories.xml">
+      <Link>Defs\ThingDefs\RA_ThingCategories.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\ThingCategoryDefs\ThingCategories.xml">
       <Link>Defs\ThingCategories.xml</Link>
     </Content>
@@ -225,6 +228,12 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Mote_Special.xml">
       <Link>Defs\ThingDefs\Mote_Special.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\RA_Items_Base.xml">
+      <Link>Defs\ThingDefs\RA_Items_Base.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\RA_Weapons_Melee.xml">
+      <Link>Defs\ThingDefs\RA_Weapons_Melee.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Things_Special.xml">
       <Link>Defs\ThingDefs\Things_Special.xml</Link>

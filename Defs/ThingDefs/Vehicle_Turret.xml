@@ -94,7 +94,7 @@
           <min>300</min>
           <max>600</max>
         </wickTicks>
-        <postExplosionSpawnThingDef>Puddle_BioDiesel_Fuel</postExplosionSpawnThingDef>
+        <postExplosionSpawnThingDef>FilthFuel</postExplosionSpawnThingDef>
         <postExplosionSpawnChance>1</postExplosionSpawnChance>
         <postExplosionSpawnThingCount>3</postExplosionSpawnThingCount>
         <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
@@ -106,7 +106,7 @@
         <fuelCapacity>100.0</fuelCapacity>
         <fuelFilter>
           <thingDefs>
-            <li>Biodiesel</li>
+            <li>Chemfuel</li>
           </thingDefs>
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>

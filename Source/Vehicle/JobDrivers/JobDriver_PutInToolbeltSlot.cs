@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
@@ -47,7 +48,42 @@ namespace ToolsForHaul.JobDrivers
             {
                 initAction = () =>
                 {
-                    if (!toolbelt.slotsComp.slots.TryAdd(this.CurJob.targetA.Thing)) this.EndJobWith(JobCondition.Incompletable);
+                    if (!toolbelt.slotsComp.slots.TryAdd(this.CurJob.targetA.Thing))
+                    {
+                        this.EndJobWith(JobCondition.Incompletable);
+                    }
+                    else
+                    {
+                        float statfloat = 0;
+                        Thing thing = this.TargetThingA;
+                        // add stats to pawn inventory
+                        foreach (KeyValuePair<StatDef, float> stat in pawn.GetWeightedWorkStats())
+                        {
+                            statfloat = RightTools.GetMaxStat(thing as ThingWithComps, stat.Key);
+                            if (statfloat > 0)
+                            {
+                                MapComponent_ToolsForHaul.CachedToolEntries.Add(new MapComponent_ToolsForHaul.Entry(pawn, thing, stat.Key, statfloat));
+                            }
+                            for (int i = toolbelt.slotsComp.slots.Count - 1; i >= 0; i--)
+                            {
+                                var tool = toolbelt.slotsComp.slots[i];
+                                var checkstat = RightTools.GetMaxStat(tool as ThingWithComps, stat.Key);
+                                if (checkstat > 0 && checkstat < statfloat)
+                                {
+                                    Thing dropTool;
+                                    toolbelt.slotsComp.slots.TryDrop(tool, pawn.Position, pawn.Map, ThingPlaceMode.Near, out dropTool, null);
+                                    for (int j = MapComponent_ToolsForHaul.CachedToolEntries.Count - 1;
+                                        j >= 0;
+                                        j--)
+                                    {
+                                        var entry = MapComponent_ToolsForHaul.CachedToolEntries[j];
+                                        if (entry.tool == tool)
+                                            MapComponent_ToolsForHaul.CachedToolEntries.RemoveAt(j);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             };
             yield return pickUpThingIntoSlot;

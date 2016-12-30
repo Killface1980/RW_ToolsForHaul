@@ -93,13 +93,13 @@ namespace ToolsForHaul.Gizmos
 
             // Equipment slot
             Pawn wearer = this.toolbelt.wearer;
-            {
+
                 // Slots CompSlots
                 Rect gizmoRect = new Rect(topLeft.x, topLeft.y, this.Width, Height);
 
                 Widgets.DrawWindowBackground(gizmoRect);
                 this.DrawSlots(wearer, this.toolbelt.slotsComp, gizmoRect);
-            }
+            
 
             return new GizmoResult(GizmoState.Clear);
         }

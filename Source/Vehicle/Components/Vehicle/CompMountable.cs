@@ -566,7 +566,10 @@ using Combat_Realism;
                             this.SustainerAmbient = compVehicle.compProps.soundAmbient.TrySpawnSustainer(info);
                         });
             }
-
+            if (!MapComponent_ToolsForHaul.currentVehicle.ContainsKey(this.Driver))
+            {
+                MapComponent_ToolsForHaul.currentVehicle.Add(this.Driver, parent);
+            }
             if (this.Driver != null)
             {
                 if (this.Driver.RaceProps.Humanlike)

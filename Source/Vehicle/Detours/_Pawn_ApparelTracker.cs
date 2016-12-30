@@ -9,7 +9,7 @@ namespace ToolsForHaul.Detoured
         {
            // drop all toolbelt & backpack stuff so that it won't disappear
             Apparel_Backpack backpack = ap as Apparel_Backpack;
-
+            Apparel_Toolbelt toolbelt = ap as Apparel_Toolbelt;
             Thing dropThing = null;
             
             if (backpack?.slotsComp?.slots?.Count >= 1)
@@ -19,6 +19,26 @@ namespace ToolsForHaul.Detoured
                     GenThing.TryDropAndSetForbidden(slot, pos,ap.Map, ThingPlaceMode.Near, out dropThing, forbid);
                 }
             }
+
+            if (toolbelt?.slotsComp?.slots?.Count >= 1)
+            {
+                foreach (Thing slot in toolbelt.slotsComp.slots)
+                {
+                    GenThing.TryDropAndSetForbidden(slot, pos, ap.Map, ThingPlaceMode.Near, out dropThing, forbid);
+                }
+
+                for (int i = MapComponent_ToolsForHaul.CachedToolEntries.Count - 1;
+                    i >= 0;
+                    i--)
+                {
+                    var entry = MapComponent_ToolsForHaul.CachedToolEntries[i];
+                    if (entry.pawn == _this.pawn)
+                    {
+                        MapComponent_ToolsForHaul.CachedToolEntries.RemoveAt(i);
+                    }
+                }
+            }
+
 
             if (!_this.WornApparel.Contains(ap))
             {
@@ -36,6 +56,7 @@ namespace ToolsForHaul.Detoured
             _this.Remove(ap);
             Thing thing = null;
             bool result = GenThing.TryDropAndSetForbidden(ap, pos, _this.pawn.MapHeld, ThingPlaceMode.Near, out thing, forbid);
+
             resultingAp = (thing as Apparel);
 
 #if CR
