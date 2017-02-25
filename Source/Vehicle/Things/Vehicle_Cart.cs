@@ -130,6 +130,7 @@ using ppumkin.LEDTechnology.Managers;
         public override void SpawnSetup(Map map)
         {
             base.SpawnSetup(map);
+            LongEventHandler.ExecuteWhenFinished(AxlesComp.UpdateGraphics);
 
             ToolsForHaulUtility.Cart.Add(this);
 
@@ -319,18 +320,22 @@ using ppumkin.LEDTechnology.Managers;
                     myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
                 };
             bool alreadyMounted = false;
+            List<Thing> carts;
             if (!this.MountableComp.IsMounted)
             {
-                foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart)
+                carts = ToolsForHaulUtility.Cart;
+                foreach (Thing thing in carts)
                 {
+                    Vehicle_Cart cart = (Vehicle_Cart) thing;
                     if (cart.MountableComp.Driver == myPawn)
                     {
                         alreadyMounted = true;
                     }
                 }
-
-                foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret)
+                carts = ToolsForHaulUtility.CartTurret;
+                foreach (Thing thing in carts)
                 {
+                    Vehicle_Turret cart = (Vehicle_Turret) thing;
                     if (cart.mountableComp.Driver == myPawn)
                     {
                         alreadyMounted = true;

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using RimWorld;
 using ToolsForHaul.Utilities;
 using UnityEngine;
@@ -83,18 +84,25 @@ namespace ToolsForHaul
                 }
 
                 bool unEquipped = thingWithComps != pawn.equipment.Primary;
-                if (unEquipped)
+                if (unEquipped && thingWithComps != null)
                 {
-                    if (!PreviousPawnWeapon.ContainsKey(pawn))
+                    try
                     {
-                        PreviousPawnWeapon.Add(pawn, pawn.equipment.Primary);
+                        if (!PreviousPawnWeapon.ContainsKey(pawn))
+                        {
+                            PreviousPawnWeapon.Add(pawn, pawn.equipment.Primary);
+                        }
+                        else
+                        {
+                            PreviousPawnWeapon[pawn] = pawn.equipment.Primary;
+                        }
+                        toolbelt.slotsComp.SwapEquipment(thingWithComps);
                     }
-                    else
+                    catch (ArgumentNullException argumentNullException)
                     {
-                        PreviousPawnWeapon[pawn] = pawn.equipment.Primary;
+                        Debug.Log(argumentNullException);
                     }
 
-                    toolbelt.slotsComp.SwapEquipment(thingWithComps);
 
                     // pawn.equipment.TryTransferEquipmentToContainer(pawn.equipment.Primary, pawn.inventory.innerContainer, out dummy);
                     // pawn.equipment.AddEquipment(thingWithComps);

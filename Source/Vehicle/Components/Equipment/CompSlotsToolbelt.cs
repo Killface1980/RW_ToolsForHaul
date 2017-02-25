@@ -33,7 +33,7 @@ namespace ToolsForHaul.Components
         {
             base.CompTick();
 
- 
+
         }
 
 
@@ -112,6 +112,9 @@ namespace ToolsForHaul.Components
 
             // remove that equipment from slotter
             this.slots.Remove(thing);
+
+            if (thing.def.soundInteract != null)
+                thing.def.soundInteract.PlayOneShot(new TargetInfo(parent.Position, parent.MapHeld, false));
 
             // interrupt current jobs to prevent random errors
             if (this.owner?.jobs.curJob != null)

@@ -28,40 +28,55 @@ namespace Verse.AI
             Apparel_Toolbelt toolbelt = ToolsForHaulUtility.TryGetToolbelt(pawn);
             if (toolbelt != null)
             {
-                if (PreviousPawnWeapon.ContainsKey(pawn) && PreviousPawnWeapon[pawn] != null)
+                try
                 {
-                    Pawn wearer = toolbelt.wearer;
-                    ThingWithComps previousWeapon = PreviousPawnWeapon[pawn];
-                    if (previousWeapon != null && toolbelt.slotsComp.slots.Contains(previousWeapon))
+                    if (PreviousPawnWeapon.ContainsKey(pawn) && PreviousPawnWeapon[pawn] != null)
                     {
-                        for (int i = toolbelt.slotsComp.slots.Count-1; i >=0 ; i--)
+                        Pawn wearer = toolbelt.wearer;
+                        ThingWithComps previousWeapon = PreviousPawnWeapon[pawn];
+                        if (previousWeapon != null && toolbelt.slotsComp.slots.Contains(previousWeapon))
                         {
-                            var thing = toolbelt.slotsComp.slots[i];
-                            ThingWithComps item = (ThingWithComps)thing;
-                            if (item == previousWeapon)
+                            for (int i = toolbelt.slotsComp.slots.Count - 1; i >= 0; i--)
                             {
-                                if (wearer.equipment.Primary != null)
+                                var thing = toolbelt.slotsComp.slots[i];
+                                ThingWithComps item = (ThingWithComps) thing;
+                                if (item == previousWeapon)
                                 {
-                                    toolbelt.slotsComp.SwapEquipment(item);
+                                    if (wearer.equipment.Primary != null)
+                                    {
+                                        toolbelt.slotsComp.SwapEquipment(item);
+                                    }
+                                    else
+                                    {
+                                        wearer.equipment.AddEquipment(item);
+                                        toolbelt.slotsComp.slots.Remove(item);
+                                    }
+                                    break;
                                 }
-                                else
-                                {
-                                    wearer.equipment.AddEquipment(item);
-                                    toolbelt.slotsComp.slots.Remove(item);
-                                }
-                                break;
                             }
                         }
                     }
+                    PreviousPawnWeapon[pawn] = null;
+
                 }
-                PreviousPawnWeapon[pawn] = null;
+                catch (ArgumentNullException argumentNullException)
+                {
+                    Debug.Log(argumentNullException);
+                }
             }
 
             if (pawn.mindState.IsIdle)
             {
                 if (ToolsForHaulUtility.IsDriver(pawn))
                 {
-                    job = ToolsForHaulUtility.DismountInBase(pawn, currentVehicle[pawn]);
+                    try
+                    {
+                        job = ToolsForHaulUtility.DismountInBase(pawn, currentVehicle[pawn]);
+                    }
+                    catch (ArgumentNullException argumentNullException)
+                    {
+                        Debug.Log(argumentNullException);
+                    }
                 }
             }
 

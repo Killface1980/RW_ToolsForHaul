@@ -151,36 +151,9 @@ namespace ToolsForHaul
         public override void  SpawnSetup(Map map)
         {
             base.SpawnSetup(map);
+            LongEventHandler.ExecuteWhenFinished(axlesComp.UpdateGraphics);
 
             ToolsForHaulUtility.CartTurret.Add(this);
-
-            if (this.mountableComp.Driver != null && this.IsCurrentlyMotorized())
-                LongEventHandler.ExecuteWhenFinished(
-                    delegate
-                        {
-                            SoundInfo info = SoundInfo.InMap(this);
-                            this.mountableComp.SustainerAmbient =
-                                this.vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
-                        });
-
-            if (this.mountableComp.Driver != null)
-            {
-                this.mountableComp.Driver.RaceProps.makesFootprints = false;
-
-                if (this.mountableComp.Driver.RaceProps.Humanlike)
-                {
-                    this.mountableComp.DriverComp = new CompDriver { Vehicle = this };
-                    this.mountableComp.Driver.AllComps?.Add(this.mountableComp.DriverComp);
-                    this.mountableComp.DriverComp.parent = this.mountableComp.Driver;
-                }
-            }
-
-            if (this.allowances == null)
-            {
-                this.allowances = new ThingFilter();
-                this.allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
-                this.allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
-            }
         }
 
         public override void DeSpawn()

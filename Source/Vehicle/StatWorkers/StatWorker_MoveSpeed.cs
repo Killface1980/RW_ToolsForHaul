@@ -21,30 +21,28 @@ namespace ToolsForHaul.StatWorkers
             {
                 Pawn thisPawn = req.Thing as Pawn;
 
-                if (thisPawn != null)
+                if (thisPawn?.RaceProps.intelligence >= Intelligence.ToolUser)
                 {
-                    if (thisPawn.RaceProps.intelligence >= Intelligence.ToolUser)
+                    if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(thisPawn))
                     {
-                        if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(thisPawn))
-                        {
-                            Vehicle_Cart vehicle_Cart = MapComponent_ToolsForHaul.currentVehicle[thisPawn] as Vehicle_Cart;
-                            if (vehicle_Cart != null)
-                                if (vehicle_Cart.MountableComp.IsMounted && vehicle_Cart.MountableComp.Driver == thisPawn)
-                                {
-                                    stringBuilder.AppendLine();
-                                    stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Cart.VehicleComp.VehicleSpeed);
-                                    return stringBuilder.ToString();
-                                }
+                        Vehicle_Cart vehicle_Cart = MapComponent_ToolsForHaul.currentVehicle[thisPawn] as Vehicle_Cart;
+                        if (vehicle_Cart != null)
+                            if (vehicle_Cart.MountableComp.IsMounted && vehicle_Cart.MountableComp.Driver == thisPawn)
+                            {
+                                stringBuilder.AppendLine();
+                                stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Cart.VehicleComp.VehicleSpeed);
+                                return stringBuilder.ToString();
+                            }
 
-                            Vehicle_Turret vehicle_Turret = MapComponent_ToolsForHaul.currentVehicle[req.Thing as Pawn] as Vehicle_Turret;
-                            if (vehicle_Turret != null)
-                                if (vehicle_Turret.mountableComp.IsMounted && vehicle_Turret.mountableComp.Driver == thisPawn)
-                                {
-                                    stringBuilder.AppendLine();
-                                    stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Turret.vehicleComp.VehicleSpeed);
-                                    return stringBuilder.ToString();
-                                }
-                        }
+                        Vehicle_Turret vehicle_Turret = MapComponent_ToolsForHaul.currentVehicle[req.Thing as Pawn] as Vehicle_Turret;
+                        if (vehicle_Turret != null)
+                            if (vehicle_Turret.mountableComp.IsMounted && vehicle_Turret.mountableComp.Driver == thisPawn)
+                            {
+                                stringBuilder.AppendLine();
+                                stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Turret.vehicleComp.VehicleSpeed);
+                                return stringBuilder.ToString();
+                            }
+                    }
 
 #if CR
                         CompInventory compInventory = ThingCompUtility.TryGetComp<CompInventory>(req.Thing);
@@ -59,17 +57,16 @@ namespace ToolsForHaul.StatWorkers
                             }
                         }
 #endif
-                        CompSlotsBackpack compSlotsBackpack = ToolsForHaulUtility.TryGetBackpack(thisPawn).TryGetComp<CompSlotsBackpack>();
-                        if (compSlotsBackpack != null)
-                        {
+                    CompSlotsBackpack compSlotsBackpack = ToolsForHaulUtility.TryGetBackpack(thisPawn).TryGetComp<CompSlotsBackpack>();
+                    if (compSlotsBackpack != null)
+                    {
 
-                            stringBuilder.AppendLine();
-                            stringBuilder.AppendLine("CR_CarriedWeightBackpack".Translate() + ": x" + compSlotsBackpack.moveSpeedFactor.ToStringPercent());
-                            if (compSlotsBackpack.encumberPenalty > 0f)
-                            {
-                                stringBuilder.AppendLine("CR_EncumberedBackpack".Translate() + ": -" + compSlotsBackpack.encumberPenalty.ToStringPercent());
-                                stringBuilder.AppendLine("CR_FinalModifierBackpack".Translate() + ": x" + this.GetStatFactor(thisPawn).ToStringPercent());
-                            }
+                        stringBuilder.AppendLine();
+                        stringBuilder.AppendLine("CR_CarriedWeightBackpack".Translate() + ": x" + compSlotsBackpack.moveSpeedFactor.ToStringPercent());
+                        if (compSlotsBackpack.encumberPenalty > 0f)
+                        {
+                            stringBuilder.AppendLine("CR_EncumberedBackpack".Translate() + ": -" + compSlotsBackpack.encumberPenalty.ToStringPercent());
+                            stringBuilder.AppendLine("CR_FinalModifierBackpack".Translate() + ": x" + this.GetStatFactor(thisPawn).ToStringPercent());
                         }
                     }
                 }

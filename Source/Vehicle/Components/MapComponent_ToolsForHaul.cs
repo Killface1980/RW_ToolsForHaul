@@ -6,7 +6,7 @@ namespace ToolsForHaul
 {
     using HugsLib.Core;
     using HugsLib.Utils;
-    public class MapComponent_ToolsForHaul : UtilityWorldObject
+    public class MapComponent_ToolsForHaul : MapComponent
     {
         public struct Entry
         {
@@ -36,6 +36,13 @@ namespace ToolsForHaul
         public static List<Thing> AutoInventory = new List<Thing>();
 
         public static Dictionary<Pawn, Thing> currentVehicle = new Dictionary<Pawn, Thing>();
+
+        public MapComponent_ToolsForHaul(Map map) : base(map)
+        {
+            this.map = map;
+            MapComponentUtility.EnsureIsActive(this);
+
+        }
 
         public static List<Entry> CachedToolEntries
         {

@@ -71,7 +71,7 @@
             base.CompTick();
         }
 
-        public bool GetAxleLocations(Vector2 drawSize, int flip, out List<Vector3> axleVecs)
+        private bool GetAxleLocations(Vector2 drawSize, int flip, out List<Vector3> axleVecs)
         {
             axleVecs = new List<Vector3>();
             if (this.Props.axles.Count <= 0)
@@ -138,14 +138,7 @@
             }
         }
 
-        public override void PostSpawnSetup()
-        {
-            LongEventHandler.ExecuteWhenFinished(UpdateGraphics);
-
-            base.PostSpawnSetup();
-        }
-
-        private void UpdateGraphics()
+        public void UpdateGraphics()
         {
             if (this.HasAxles())
             {
