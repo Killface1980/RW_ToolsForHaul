@@ -29,26 +29,26 @@ namespace ToolsForHaul.WorkGivers
             return false;
         }
 
-        public override Job JobOnThing(Pawn pawn, Thing t)
+        public override Job JobOnThing(Pawn pawn, Thing t, bool forced)
         {
             Vehicle_Cart cart = null;
 
-            if (!HaulAIUtility.PawnCanAutomaticallyHaul(pawn, t))
+            if (!HaulAIUtility.PawnCanAutomaticallyHaul(pawn, t, forced))
             {
                 return null;
             }
 
             // Vehicle selection
-          if (ToolsForHaulUtility.IsDriver(pawn))
-          {
-              cart = ToolsForHaulUtility.GetCartByDriver(pawn);
-          
-              if (cart ==null)
-              {
+            if (ToolsForHaulUtility.IsDriver(pawn))
+            {
+                cart = ToolsForHaulUtility.GetCartByDriver(pawn);
+
+                if (cart == null)
+                {
                     // JobFailReason.Is("Can't haul with military vehicle");
-                   return ToolsForHaulUtility.DismountInBase(pawn, MapComponent_ToolsForHaul.currentVehicle[pawn]);
+                    return ToolsForHaulUtility.DismountInBase(pawn, GameComponent_ToolsForHaul.CurrentVehicle[pawn]);
                 }
-          }
+            }
 
 
             if (cart == null)
@@ -59,21 +59,20 @@ namespace ToolsForHaul.WorkGivers
                     return null;
             }
 
-           
 
             if (cart.IsBurning())
             {
                 JobFailReason.Is(ToolsForHaulUtility.BurningLowerTrans);
                 return null;
             }
-            
+
             if (!cart.allowances.Allows(t))
             {
                 JobFailReason.Is("Cart does not allow that thing");
                 return null;
             }
 
-            if (cart.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.Storage.Count == 0)
+            if (cart.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.innerContainer.Count == 0)
             {
                 JobFailReason.Is("NoHaulable".Translate());
                 return null;
@@ -86,7 +85,9 @@ namespace ToolsForHaul.WorkGivers
             }
 
             if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableVehicle(pawn, cart))
-                return ToolsForHaulUtility.HaulWithTools(pawn,pawn.Map, cart, t);
+            {
+                return ToolsForHaulUtility.HaulWithTools(pawn, pawn.Map, cart, t);
+            }
             JobFailReason.Is(ToolsForHaulUtility.NoAvailableCart);
             return null;
         }

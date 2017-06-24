@@ -24,7 +24,7 @@ using ppumkin.LEDTechnology.Managers;
     using Verse.AI;
 
     [StaticConstructorOnStartup]
-    public class Vehicle_Cart :  Building, IThingContainerOwner, IAttackTarget
+    public class Vehicle_Cart : Building_Storage, IThingHolder, IAttackTarget
     {
         #region Variables
 
@@ -55,8 +55,6 @@ using ppumkin.LEDTechnology.Managers;
 
         public int MaxStack => this.MaxItem * 100;
 
-        // mount and storage data
-        private ThingContainer storage;
 
         private int DefaultMaxItem => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
 
@@ -70,6 +68,27 @@ using ppumkin.LEDTechnology.Managers;
             return !this.MountableComp.IsMounted;
         }
 
+        Thing IAttackTarget.Thing
+        {
+            get
+            {
+                return this;
+            }
+        }
+
+
+
+        public LocalTargetInfo TargetCurrentlyAimingAt
+        {
+            get
+            {
+                return this.CurrentTarget;
+            }
+        }
+        public  LocalTargetInfo CurrentTarget
+        {
+            get;
+        }
         // TODO make vehicles break down & get repaired like buildings
         public override bool ClaimableBy(Faction faction)
         {
@@ -92,11 +111,6 @@ using ppumkin.LEDTechnology.Managers;
             return base.MapHeld;
         }
 
-        public ThingContainer GetInnerContainer()
-        {
-            return this.Storage;
-        }
-
         public IntVec3 GetPosition()
         {
             return this.Position;
@@ -112,7 +126,6 @@ using ppumkin.LEDTechnology.Managers;
         public Vehicle_Cart()
         {
             // Inventory Initialize. It should be moved in constructor
-            this.Storage = new ThingContainer(this);
             this.allowances = new ThingFilter();
             this.allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
             this.allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
@@ -127,11 +140,10 @@ using ppumkin.LEDTechnology.Managers;
         HeadLights flooder;
 #endif
 
-        public override void SpawnSetup(Map map)
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            base.SpawnSetup(map);
-            LongEventHandler.ExecuteWhenFinished(AxlesComp.UpdateGraphics);
-
+            base.SpawnSetup(map, respawningAfterLoad);
+            this.innerContainer = new ThingOwner<Thing>(this, false, LookMode.Deep);
             ToolsForHaulUtility.Cart.Add(this);
 
             if (this.allowances == null)
@@ -140,6 +152,8 @@ using ppumkin.LEDTechnology.Managers;
                 this.allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
                 this.allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
             }
+
+
         }
 
         public override void DeSpawn()
@@ -156,9 +170,9 @@ using ppumkin.LEDTechnology.Managers;
 
             if (this.MountableComp.IsMounted)
             {
-                if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(this.MountableComp.Driver))
+                if (GameComponent_ToolsForHaul.CurrentVehicle.ContainsKey(this.MountableComp.Driver))
                 {
-                    MapComponent_ToolsForHaul.currentVehicle.Remove(this.MountableComp.Driver);
+                    GameComponent_ToolsForHaul.CurrentVehicle.Remove(this.MountableComp.Driver);
                 }
             }
 
@@ -192,11 +206,11 @@ using ppumkin.LEDTechnology.Managers;
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.LookDeep(ref this.storage, "storage");
-            Scribe_Deep.LookDeep(ref this.allowances, "allowances");
-            Scribe_Values.LookValue(ref this.VehicleComp.tankLeaking, "tankLeaking");
-            Scribe_Values.LookValue(ref this._tankHitPos, "tankHitPos");
-            Scribe_Values.LookValue(ref this.MountableComp.lastDrawAsAngle, "lastDrawAsAngle");
+            Scribe_Deep.Look<ThingOwner<Thing>>(ref this.innerContainer, "innerContainer", new object[] { this });
+            Scribe_Deep.Look(ref this.allowances, "allowances");
+            Scribe_Values.Look(ref this.VehicleComp.tankLeaking, "tankLeaking");
+            Scribe_Values.Look(ref this._tankHitPos, "tankHitPos");
+            Scribe_Values.Look(ref this.MountableComp.lastDrawAsAngle, "lastDrawAsAngle");
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -271,7 +285,7 @@ using ppumkin.LEDTechnology.Managers;
                 {
                     Job jobNew = ToolsForHaulUtility.DismountInBase(
                         this.MountableComp.Driver,
-                        MapComponent_ToolsForHaul.currentVehicle[this.MountableComp.Driver]);
+                        GameComponent_ToolsForHaul.CurrentVehicle[this.MountableComp.Driver]);
 
                     myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
@@ -326,7 +340,7 @@ using ppumkin.LEDTechnology.Managers;
                 carts = ToolsForHaulUtility.Cart;
                 foreach (Thing thing in carts)
                 {
-                    Vehicle_Cart cart = (Vehicle_Cart) thing;
+                    Vehicle_Cart cart = (Vehicle_Cart)thing;
                     if (cart.MountableComp.Driver == myPawn)
                     {
                         alreadyMounted = true;
@@ -335,8 +349,8 @@ using ppumkin.LEDTechnology.Managers;
                 carts = ToolsForHaulUtility.CartTurret;
                 foreach (Thing thing in carts)
                 {
-                    Vehicle_Turret cart = (Vehicle_Turret) thing;
-                    if (cart.mountableComp.Driver == myPawn)
+                    Vehicle_Turret cart = (Vehicle_Turret)thing;
+                    if (cart.MountableComp.Driver == myPawn)
                     {
                         alreadyMounted = true;
                     }
@@ -368,13 +382,13 @@ using ppumkin.LEDTechnology.Managers;
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
-            if (mode == DestroyMode.Deconstruct) mode = DestroyMode.Kill;
-            else if (this.ExplosiveComp != null && this.ExplosiveComp.wickStarted)
-            {
-                this.Storage.ClearAndDestroyContents();
-            }
-
-            this.Storage.TryDropAll(this.Position, this.Map, ThingPlaceMode.Near);
+            if (mode == DestroyMode.Deconstruct) mode = DestroyMode.KillFinalize;
+        //  else if (this.ExplosiveComp != null && this.ExplosiveComp.wickStarted)
+        //  {
+        //      this.Storage.ClearAndDestroyContents();
+        //  }
+        //
+        //  this.Storage.TryDropAll(this.Position, this.Map, ThingPlaceMode.Near);
 
             base.Destroy(mode);
         }
@@ -389,10 +403,10 @@ using ppumkin.LEDTechnology.Managers;
         {
             if (!this.instantiated)
             {
-                foreach (Thing thing in this.GetInnerContainer())
-                {
-                    thing.holdingContainer.owner = this;
-                }
+                //foreach (Thing thing in this.GetInnerContainer())
+                //{
+                //    thing.holdingOwner.Owner = this;
+                //}
 
                 this.VehicleComp.currentDriverSpeed = this.VehicleComp.VehicleSpeed;
                 this.instantiated = true;
@@ -551,7 +565,7 @@ using ppumkin.LEDTechnology.Managers;
             }
         }
 
-        public override void DrawAt(Vector3 drawLoc)
+        public override void DrawAt(Vector3 drawLoc, bool flip)
         {
             if (!this.Spawned)
             {
@@ -561,7 +575,7 @@ using ppumkin.LEDTechnology.Managers;
 
             if (this.VehicleComp.ShowsStorage())
             {
-                if (this.Storage.Any()
+                if (this.innerContainer.Any()
                     || (this.MountableComp.IsMounted && this.MountableComp.Driver.RaceProps.packAnimal
                         && this.MountableComp.Driver.RaceProps.Animal))
                 {
@@ -588,9 +602,9 @@ using ppumkin.LEDTechnology.Managers;
                                 mountThing.DrawAt(mountThingLoc + mountThingOffset);
                             }
                     }
-                    else if (this.Storage.Count > 0)
+                    else if (this.innerContainer.Count > 0)
                     {
-                        foreach (Thing mountThing in this.Storage)
+                        foreach (Thing mountThing in this.innerContainer)
                         {
                             mountThing.Rotation = this.Rotation;
                             mountThing.DrawAt(mountThingLoc + mountThingOffset);
@@ -605,15 +619,18 @@ using ppumkin.LEDTechnology.Managers;
         public override string GetInspectString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append(base.GetInspectString());
-
+            string inspectString = base.GetInspectString();
+            if (!inspectString.NullOrEmpty())
+            {
+                stringBuilder.AppendLine(inspectString);
+            }
             string currentDriverString;
             if (this.MountableComp.Driver != null) currentDriverString = this.MountableComp.Driver.LabelCap;
             else currentDriverString = "NoDriver".Translate();
 
             stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
             if (this.VehicleComp.tankLeaking) stringBuilder.AppendLine("TankLeaking".Translate());
-            string text = this.Storage.ContentsString;
+            string text = this.innerContainer.ContentsString;
             stringBuilder.AppendLine(string.Concat(new object[] { "InStorage".Translate(), ": ", text }));
             return stringBuilder.ToString();
         }
@@ -624,18 +641,7 @@ using ppumkin.LEDTechnology.Managers;
 
         public int MaxAssignedPawnsCount => 2;
 
-        public ThingContainer Storage
-        {
-            get
-            {
-                return this.storage;
-            }
-
-            set
-            {
-                this.storage = value;
-            }
-        }
+        public ThingOwner<Thing> innerContainer;
 
         public bool FueledByAI
         {
@@ -648,6 +654,16 @@ using ppumkin.LEDTechnology.Managers;
             {
                 this.fueledByAI = value;
             }
+        }
+
+        public void GetChildHolders(List<IThingHolder> outChildren)
+        {
+            ThingOwnerUtility.AppendThingHoldersFromThings(outChildren, this.GetDirectlyHeldThings());
+        }
+
+        public ThingOwner GetDirectlyHeldThings()
+        {
+            return this.innerContainer;
         }
     }
 }

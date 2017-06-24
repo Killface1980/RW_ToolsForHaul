@@ -4,10 +4,20 @@ using Verse;
 
 namespace ToolsForHaul
 {
-    using HugsLib.Core;
-    using HugsLib.Utils;
-    public class MapComponent_ToolsForHaul : MapComponent
+
+    public class GameComponent_ToolsForHaul : GameComponent
     {
+
+        public GameComponent_ToolsForHaul()
+        {
+            //
+        }
+
+        public GameComponent_ToolsForHaul(Game game)
+        {
+            //
+        }
+
         public struct Entry
         {
             public Pawn pawn;
@@ -30,19 +40,10 @@ namespace ToolsForHaul
         private static List<Entry> _cachedToolEntries = new List<Entry>();
 
         public static Dictionary<Pawn, ThingWithComps> PreviousPawnWeapon= new Dictionary<Pawn, ThingWithComps>();
-
-
           
         public static List<Thing> AutoInventory = new List<Thing>();
 
-        public static Dictionary<Pawn, Thing> currentVehicle = new Dictionary<Pawn, Thing>();
-
-        public MapComponent_ToolsForHaul(Map map) : base(map)
-        {
-            this.map = map;
-            MapComponentUtility.EnsureIsActive(this);
-
-        }
+        public static Dictionary<Pawn, Thing> CurrentVehicle = new Dictionary<Pawn, Thing>();
 
         public static List<Entry> CachedToolEntries
         {
@@ -59,10 +60,10 @@ namespace ToolsForHaul
 
         public override void ExposeData()
         {
-            Scribe_Collections.LookDictionary(ref PreviousPawnWeapon, "previousPawnWeapons", LookMode.Reference, LookMode.Reference);
-            Scribe_Collections.LookDictionary(ref currentVehicle, "currentVehicle", LookMode.Reference, LookMode.Reference);
-            Scribe_Collections.LookList(ref AutoInventory, "AutoInventory", LookMode.Reference);
-            Scribe_Collections.LookList(ref _cachedToolEntries, "_cachedToolEntries", LookMode.Reference);
+            Scribe_Collections.Look(ref PreviousPawnWeapon, "previousPawnWeapons", LookMode.Reference, LookMode.Reference);
+            Scribe_Collections.Look(ref CurrentVehicle, "currentVehicle", LookMode.Reference, LookMode.Reference);
+            Scribe_Collections.Look(ref AutoInventory, "AutoInventory", LookMode.Reference);
+            Scribe_Collections.Look(ref _cachedToolEntries, "_cachedToolEntries", LookMode.Reference);
         }
 
 

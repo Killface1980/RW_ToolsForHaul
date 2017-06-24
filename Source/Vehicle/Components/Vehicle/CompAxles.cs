@@ -131,26 +131,32 @@
                         Graphics.DrawMesh(
                             MeshPool.plane10,
                             matrix,
-                            this.graphic_Wheel_Single.MatAt(this.parent.Rotation),
+                            graphic_Wheel_Single.MatAt(this.parent.Rotation),
                             0);
                     }
                 }
             }
         }
 
-        public void UpdateGraphics()
+        public override void Initialize(CompProperties props)
         {
+            base.Initialize(props);
+
             if (this.HasAxles())
             {
                 string text = "Things/Vehicles/" + this.parent.def.defName + "/Wheel";
-                this.graphic_Wheel_Single = new Graphic_Single();
-                this.graphic_Wheel_Single =
-                    GraphicDatabase.Get<Graphic_Single>(
-                        text,
-                        this.parent.def.graphic.Shader,
-                        this.parent.def.graphic.drawSize,
-                        this.parent.def.graphic.color,
-                        this.parent.def.graphic.colorTwo) as Graphic_Single;
+                LongEventHandler.ExecuteWhenFinished(
+                    delegate
+                        {
+                            graphic_Wheel_Single =
+                                GraphicDatabase.Get<Graphic_Single>(
+                                    text,
+                                    this.parent.def.graphic.Shader,
+                                    this.parent.def.graphic.drawSize,
+                                    this.parent.def.graphic.color,
+                                    this.parent.def.graphic.colorTwo) as Graphic_Single;
+                        });
+
             }
         }
     }

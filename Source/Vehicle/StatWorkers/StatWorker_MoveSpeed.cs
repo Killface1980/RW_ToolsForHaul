@@ -23,9 +23,9 @@ namespace ToolsForHaul.StatWorkers
 
                 if (thisPawn?.RaceProps.intelligence >= Intelligence.ToolUser)
                 {
-                    if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(thisPawn))
+                    if (GameComponent_ToolsForHaul.CurrentVehicle.ContainsKey(thisPawn))
                     {
-                        Vehicle_Cart vehicle_Cart = MapComponent_ToolsForHaul.currentVehicle[thisPawn] as Vehicle_Cart;
+                        Vehicle_Cart vehicle_Cart = GameComponent_ToolsForHaul.CurrentVehicle[thisPawn] as Vehicle_Cart;
                         if (vehicle_Cart != null)
                             if (vehicle_Cart.MountableComp.IsMounted && vehicle_Cart.MountableComp.Driver == thisPawn)
                             {
@@ -34,9 +34,9 @@ namespace ToolsForHaul.StatWorkers
                                 return stringBuilder.ToString();
                             }
 
-                        Vehicle_Turret vehicle_Turret = MapComponent_ToolsForHaul.currentVehicle[req.Thing as Pawn] as Vehicle_Turret;
+                        Vehicle_Turret vehicle_Turret = GameComponent_ToolsForHaul.CurrentVehicle[req.Thing as Pawn] as Vehicle_Turret;
                         if (vehicle_Turret != null)
-                            if (vehicle_Turret.mountableComp.IsMounted && vehicle_Turret.mountableComp.Driver == thisPawn)
+                            if (vehicle_Turret.MountableComp.IsMounted && vehicle_Turret.MountableComp.Driver == thisPawn)
                             {
                                 stringBuilder.AppendLine();
                                 stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Turret.vehicleComp.VehicleSpeed);
@@ -57,18 +57,6 @@ namespace ToolsForHaul.StatWorkers
                             }
                         }
 #endif
-                    CompSlotsBackpack compSlotsBackpack = ToolsForHaulUtility.TryGetBackpack(thisPawn).TryGetComp<CompSlotsBackpack>();
-                    if (compSlotsBackpack != null)
-                    {
-
-                        stringBuilder.AppendLine();
-                        stringBuilder.AppendLine("CR_CarriedWeightBackpack".Translate() + ": x" + compSlotsBackpack.moveSpeedFactor.ToStringPercent());
-                        if (compSlotsBackpack.encumberPenalty > 0f)
-                        {
-                            stringBuilder.AppendLine("CR_EncumberedBackpack".Translate() + ": -" + compSlotsBackpack.encumberPenalty.ToStringPercent());
-                            stringBuilder.AppendLine("CR_FinalModifierBackpack".Translate() + ": x" + this.GetStatFactor(thisPawn).ToStringPercent());
-                        }
-                    }
                 }
             }
 
@@ -104,9 +92,9 @@ namespace ToolsForHaul.StatWorkers
         {
             float result = 1f;
 
-            if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(thisPawn))
+            if (GameComponent_ToolsForHaul.CurrentVehicle.ContainsKey(thisPawn))
             {
-                Vehicle_Cart vehicleCart = MapComponent_ToolsForHaul.currentVehicle[thisPawn] as Vehicle_Cart;
+                Vehicle_Cart vehicleCart = GameComponent_ToolsForHaul.CurrentVehicle[thisPawn] as Vehicle_Cart;
                 if (vehicleCart != null)
                 {
                     if (vehicleCart.MountableComp.IsMounted && !vehicleCart.MountableComp.Driver.RaceProps.Animal && vehicleCart.MountableComp.Driver == thisPawn)
@@ -124,10 +112,10 @@ namespace ToolsForHaul.StatWorkers
                     }
                 }
 
-                Vehicle_Turret vehicleTank = MapComponent_ToolsForHaul.currentVehicle[thisPawn] as Vehicle_Turret;
+                Vehicle_Turret vehicleTank = GameComponent_ToolsForHaul.CurrentVehicle[thisPawn] as Vehicle_Turret;
                 if (vehicleTank != null)
                 {
-                    if (vehicleTank.mountableComp.IsMounted && !vehicleTank.mountableComp.Driver.RaceProps.Animal && vehicleTank.mountableComp.Driver == thisPawn)
+                    if (vehicleTank.MountableComp.IsMounted && !vehicleTank.MountableComp.Driver.RaceProps.Animal && vehicleTank.MountableComp.Driver == thisPawn)
                     {
                         if (vehicleTank.vehicleComp.IsCurrentlyMotorized())
                         {
@@ -141,13 +129,6 @@ namespace ToolsForHaul.StatWorkers
                         return result;
                     }
                 }
-            }
-
-            Apparel_Backpack apparelBackpack = ToolsForHaulUtility.TryGetBackpack(thisPawn);
-            CompSlotsBackpack compSlotsBackpack = apparelBackpack?.slotsComp;
-            if (compSlotsBackpack != null)
-            {
-                result = Mathf.Clamp(compSlotsBackpack.moveSpeedFactor - compSlotsBackpack.encumberPenalty, 0.5f, 1f);
             }
 
 #if CR

@@ -32,7 +32,7 @@ namespace ToolsForHaul.JobGivers
                     break;
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;
-                if (!vehicleTurret.IsBurning() && vehicleTurret.Position.InHorDistOf(pawn.Position, ItemsSearchRadiusOngoing) && !vehicleTurret.mountableComp.IsMounted && (float)vehicleTurret.HitPoints / vehicleTurret.MaxHitPoints > 0.2f && vehicleTurret.vehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicleTurret, PathEndMode.InteractionCell, Danger.Deadly))
+                if (!vehicleTurret.IsBurning() && vehicleTurret.Position.InHorDistOf(pawn.Position, ItemsSearchRadiusOngoing) && !vehicleTurret.MountableComp.IsMounted && (float)vehicleTurret.HitPoints / vehicleTurret.MaxHitPoints > 0.2f && vehicleTurret.vehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicleTurret, PathEndMode.InteractionCell, Danger.Deadly))
                 {
                     steelVehicle.Add(vehicleTurret);
                 }

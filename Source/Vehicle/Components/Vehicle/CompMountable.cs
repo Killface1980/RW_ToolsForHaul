@@ -232,7 +232,7 @@ using Combat_Realism;
                                 || this.Driver.CurJob.def == JobDefOf.UseArtifact
                                 || this.Driver.CurJob.def == JobDefOf.DoBill
                                 || this.Driver.CurJob.def == JobDefOf.Research
-                             //   || this.Driver.CurJob.def == JobDefOf.OperateDeepDrill
+                                //   || this.Driver.CurJob.def == JobDefOf.OperateDeepDrill
                                 || this.Driver.CurJob.def == JobDefOf.Repair
                                 || this.Driver.CurJob.def == JobDefOf.FixBrokenDownBuilding
                                 || this.Driver.CurJob.def == JobDefOf.UseCommsConsole
@@ -248,8 +248,8 @@ using Combat_Realism;
                                 || this.Driver.CurJob.def == JobDefOf.Ingest
                                 || this.Driver.CurJob.def == JobDefOf.SocialRelax
                                 || this.Driver.CurJob.def == JobDefOf.Refuel
-                            //    || this.Driver.CurJob.def == JobDefOf.FillFermentingBarrel
-                            //    || this.Driver.CurJob.def == JobDefOf.TakeBeerOutOfFermentingBarrel
+                                //    || this.Driver.CurJob.def == JobDefOf.FillFermentingBarrel
+                                //    || this.Driver.CurJob.def == JobDefOf.TakeBeerOutOfFermentingBarrel
                                 || this.Driver.CurJob.def == JobDefOf.TakeWoundedPrisonerToBed
                                 || this.Driver.CurJob.def == JobDefOf.TakeToBedToOperate
                                 || this.Driver.CurJob.def == JobDefOf.EscortPrisonerToBed
@@ -291,7 +291,7 @@ using Combat_Realism;
                         CompRefuelable refuelableComp = this.parent.TryGetComp<CompRefuelable>();
                         Job jobNew = ToolsForHaulUtility.DismountInBase(
                             this.Driver,
-                           MapComponent_ToolsForHaul.currentVehicle[this.Driver]);
+                           GameComponent_ToolsForHaul.CurrentVehicle[this.Driver]);
                         float hitPointsPercent = this.parent.HitPoints / this.parent.MaxHitPoints;
 
                         if (this.Driver.Faction == Faction.OfPlayer)
@@ -365,12 +365,12 @@ using Combat_Realism;
                 this.DriverComp.parent = null;
             }
 
-            MapComponent_ToolsForHaul.currentVehicle.Remove(this.Driver);
+            GameComponent_ToolsForHaul.CurrentVehicle.Remove(this.Driver);
 
             this.Driver.RaceProps.makesFootprints = true;
 
             // if (Find.Reservations.IsReserved(parent, Driver.Faction))
-           this.parent.Map.reservationManager.ReleaseAllForTarget(this.parent);
+            this.parent.Map.reservationManager.ReleaseAllForTarget(this.parent);
             if (this.Driver.Faction != Faction.OfPlayer)
             {
                 this.parent.SetForbidden(true);
@@ -422,18 +422,18 @@ using Combat_Realism;
             {
                 if (ToolsForHaulUtility.GetCartByDriver(pawn) != null)
                 {
-                    ToolsForHaulUtility.GetCartByDriver(pawn).MountableComp.Dismount();
+                    ToolsForHaulUtility.GetCartByDriver(pawn).TryGetComp<CompMountable>().Dismount();
                 }
 
                 if (ToolsForHaulUtility.GetTurretByDriver(pawn) != null)
                 {
-                    ToolsForHaulUtility.GetTurretByDriver(pawn).mountableComp.Dismount();
+                    ToolsForHaulUtility.GetTurretByDriver(pawn).MountableComp.Dismount();
                 }
             }
 
             this.Driver = pawn;
 
-            MapComponent_ToolsForHaul.currentVehicle.Add(pawn, this.parent);
+            GameComponent_ToolsForHaul.CurrentVehicle.Add(pawn, this.parent);
 
             if (this.Driver.RaceProps.Humanlike)
             {
@@ -494,9 +494,9 @@ using Combat_Realism;
 
             if (this.IsMounted)
             {
-                if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(this.Driver))
+                if (GameComponent_ToolsForHaul.CurrentVehicle.ContainsKey(this.Driver))
                 {
-                    MapComponent_ToolsForHaul.currentVehicle.Remove(this.Driver);
+                    GameComponent_ToolsForHaul.CurrentVehicle.Remove(this.Driver);
                 }
             }
 
@@ -511,9 +511,9 @@ using Combat_Realism;
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_References.LookReference(ref this.driver, "Driver");
-            Scribe_References.LookReference(ref this.lastPassedDoor, "lastPassedDoor");
-            Scribe_Values.LookValue(ref this.lastDrawAsAngle, "lastDrawAsAngle");
+            Scribe_References.Look(ref this.driver, "Driver");
+            Scribe_References.Look(ref this.lastPassedDoor, "lastPassedDoor");
+            Scribe_Values.Look(ref this.lastDrawAsAngle, "lastDrawAsAngle");
         }
 
         public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
@@ -553,11 +553,14 @@ using Combat_Realism;
         /// <summary>
         /// The post spawn setup.
         /// </summary>
-        public override void PostSpawnSetup()
+        public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            base.PostSpawnSetup();
+            base.PostSpawnSetup(respawningAfterLoad);
             CompVehicle compVehicle = this.parent.TryGetComp<CompVehicle>();
-            if (this.Driver != null && compVehicle.IsCurrentlyMotorized())
+
+            if (this.Driver == null) return;
+
+            if (compVehicle.IsCurrentlyMotorized())
             {
                 LongEventHandler.ExecuteWhenFinished(
                     delegate
@@ -566,20 +569,19 @@ using Combat_Realism;
                             this.SustainerAmbient = compVehicle.compProps.soundAmbient.TrySpawnSustainer(info);
                         });
             }
-            if (!MapComponent_ToolsForHaul.currentVehicle.ContainsKey(this.Driver))
+            if (!GameComponent_ToolsForHaul.CurrentVehicle.ContainsKey(this.Driver))
             {
-                MapComponent_ToolsForHaul.currentVehicle.Add(this.Driver, parent);
+                GameComponent_ToolsForHaul.CurrentVehicle.Add(this.Driver, parent);
             }
-            if (this.Driver != null)
+
+            if (this.Driver.RaceProps.Humanlike)
             {
-                if (this.Driver.RaceProps.Humanlike)
-                {
-                    this.Driver.RaceProps.makesFootprints = false;
-                    this.DriverComp = new CompDriver { Vehicle = this.parent };
-                    this.Driver.AllComps?.Add(this.DriverComp);
-                    this.DriverComp.parent = this.Driver;
-                }
+                this.Driver.RaceProps.makesFootprints = false;
+                this.DriverComp = new CompDriver { Vehicle = this.parent };
+                this.Driver.AllComps?.Add(this.DriverComp);
+                this.DriverComp.parent = this.Driver;
             }
+
         }
     }
 }

@@ -49,7 +49,7 @@ namespace ToolsForHaul.Designators
                     if (cart.MountableComp.Driver == pawn)
                         alreadyMounted = true;
                 foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret)
-                    if (cart.mountableComp.Driver == pawn)
+                    if (cart.MountableComp.Driver == pawn)
                         alreadyMounted = true;
                 if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !alreadyMounted)
                 {

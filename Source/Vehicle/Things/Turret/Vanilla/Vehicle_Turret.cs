@@ -21,8 +21,10 @@ namespace ToolsForHaul
     using ToolsForHaul.Components.Vehicle;
     using ToolsForHaul.Components.Vehicles;
 
+    using CompVehicle = ToolsForHaul.Components.CompVehicle;
+
     [StaticConstructorOnStartup]
-    public class Vehicle_Turret : Building_Turret, IAttackTarget
+    public class Vehicle_Turret : Building_Turret, IThingHolder, IAttackTargetSearcher, IAttackTarget
     {
         #region Tank
 
@@ -62,14 +64,14 @@ namespace ToolsForHaul
                 }
             }
 
-            return !this.mountableComp.IsMounted;
+            return !this.MountableComp.IsMounted;
             return false;
         }
 
         // TODO make vehicles break down & get repaired like buildings
         public override bool ClaimableBy(Faction faction)
         {
-            if (!this.mountableComp.IsMounted)
+            if (!this.MountableComp.IsMounted)
             {
                 return true;
             }
@@ -103,11 +105,11 @@ namespace ToolsForHaul
 
 
         // mount and storage data
-        public ThingContainer storage;
+        public ThingOwner<Thing> innerContainer;
 
-        public ThingContainer GetContainer()
+        public ThingOwner GetContainer()
         {
-            return this.storage;
+            return this.innerContainer;
         }
 
         public IntVec3 GetPosition()
@@ -118,7 +120,7 @@ namespace ToolsForHaul
         // slotGroupParent Interface
         public ThingFilter allowances;
 
-        public CompMountable mountableComp => this.GetComp<CompMountable>();
+        public CompMountable MountableComp => this.GetComp<CompMountable>();
 
         public CompRefuelable refuelableComp => this.GetComp<CompRefuelable>();
 
@@ -143,16 +145,23 @@ namespace ToolsForHaul
         {
         }
 
+        Thing IAttackTargetSearcher.Thing
+        {
+            get
+            {
+                return this;
+            }
+        }
         // public static ListerVehicles listerVehicles = new ListerVehicles();
 #if Headlights
         HeadLights flooder;
 #endif
 
-        public override void  SpawnSetup(Map map)
+        public override void  SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            base.SpawnSetup(map);
-            LongEventHandler.ExecuteWhenFinished(axlesComp.UpdateGraphics);
+            base.SpawnSetup(map, respawningAfterLoad);
 
+            this.innerContainer = new ThingOwner<Thing>(this, false, LookMode.Deep);
             ToolsForHaulUtility.CartTurret.Add(this);
         }
 
@@ -173,9 +182,9 @@ namespace ToolsForHaul
             // {
             if (ToolsForHaulUtility.CartTurret.Contains(this)) ToolsForHaulUtility.CartTurret.Remove(this);
 
-            if (this.mountableComp.IsMounted) if (MapComponent_ToolsForHaul.currentVehicle.ContainsKey(this.mountableComp.Driver)) MapComponent_ToolsForHaul.currentVehicle.Remove(this.mountableComp.Driver);
+            if (this.MountableComp.IsMounted) if (GameComponent_ToolsForHaul.CurrentVehicle.ContainsKey(this.MountableComp.Driver)) GameComponent_ToolsForHaul.CurrentVehicle.Remove(this.MountableComp.Driver);
 
-            if (this.mountableComp.SustainerAmbient != null) this.mountableComp.SustainerAmbient.End();
+            if (this.MountableComp.SustainerAmbient != null) this.MountableComp.SustainerAmbient.End();
             base.DeSpawn();
 
             // not working
@@ -206,12 +215,12 @@ namespace ToolsForHaul
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.LookDeep(ref this.storage, "storage");
-            Scribe_Deep.LookDeep(ref this.allowances, "allowances");
-            Scribe_Values.LookValue(ref this.vehicleComp.tankLeaking, "tankLeaking");
-            Scribe_Values.LookValue(ref this._tankHitPos, "tankHitPos");
+            Scribe_Deep.Look<ThingOwner<Thing>>(ref this.innerContainer, "innerContainer", new object[] { this });
+            Scribe_Deep.Look(ref this.allowances, "allowances");
+            Scribe_Values.Look(ref this.vehicleComp.tankLeaking, "tankLeaking");
+            Scribe_Values.Look(ref this._tankHitPos, "tankHitPos");
 
-            Scribe_Deep.LookDeep(ref this.stunner, "stunner", new object[] { this });
+            Scribe_Deep.Look(ref this.stunner, "stunner", new object[] { this });
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -280,7 +289,7 @@ namespace ToolsForHaul
 
             Action action_DismountInBase = () =>
                 {
-                    Job jobNew = ToolsForHaulUtility.DismountInBase(this.mountableComp.Driver, this);
+                    Job jobNew = ToolsForHaulUtility.DismountInBase(this.MountableComp.Driver, this);
 
                     myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
@@ -289,11 +298,11 @@ namespace ToolsForHaul
                 {
                     if (!myPawn.Position.InBounds(map))
                     {
-                        this.mountableComp.DismountAt(myPawn.Position);
+                        this.MountableComp.DismountAt(myPawn.Position);
                         return;
                     }
 
-                    this.mountableComp.DismountAt(
+                    this.MountableComp.DismountAt(
                         myPawn.Position - this.def.interactionCellOffset.RotatedBy(myPawn.Rotation));
                     myPawn.Position = myPawn.Position.RandomAdjacentCell8Way();
 
@@ -329,9 +338,9 @@ namespace ToolsForHaul
                     myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
                 };
             bool alreadyMounted = false;
-            if (!this.mountableComp.IsMounted)
+            if (!this.MountableComp.IsMounted)
             {
-                foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret) if (cart.mountableComp.Driver == myPawn) alreadyMounted = true;
+                foreach (Vehicle_Turret cart in ToolsForHaulUtility.CartTurret) if (cart.MountableComp.Driver == myPawn) alreadyMounted = true;
 
                 if (myPawn.Faction == Faction.OfPlayer && (myPawn.RaceProps.IsMechanoid || myPawn.RaceProps.Humanlike)
                     && !alreadyMounted && !this.IsForbidden(myPawn.Faction))
@@ -341,7 +350,7 @@ namespace ToolsForHaul
 
                 yield return new FloatMenuOption("Deconstruct".Translate(this.LabelShort), action_Deconstruct);
             }
-            else if (myPawn == this.mountableComp.Driver)
+            else if (myPawn == this.MountableComp.Driver)
             {
                 yield return new FloatMenuOption("Dismount".Translate(this.LabelShort), action_Dismount);
             }
@@ -351,13 +360,13 @@ namespace ToolsForHaul
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
-            if (mode == DestroyMode.Deconstruct) mode = DestroyMode.Kill;
-            else if (this.explosiveComp != null && this.explosiveComp.wickStarted)
-            {
-                this.storage.ClearAndDestroyContents();
-            }
-
-            this.storage.TryDropAll(this.Position, Map, ThingPlaceMode.Near);
+            if (mode == DestroyMode.Deconstruct) mode = DestroyMode.KillFinalize;
+        //  else if (this.explosiveComp != null && this.explosiveComp.wickStarted)
+        //  {
+        //      this.storage.ClearAndDestroyContents();
+        //  }
+        //
+        //  this.storage.TryDropAll(this.Position, Map, ThingPlaceMode.Near);
 
             base.Destroy(mode);
         }
@@ -433,11 +442,11 @@ namespace ToolsForHaul
             }
 #endif
 
-            if (this.mountableComp.IsMounted)
+            if (this.MountableComp.IsMounted)
             {
                 if (this.refuelableComp != null)
                 {
-                    if (this.mountableComp.Driver.Faction != Faction.OfPlayer)
+                    if (this.MountableComp.Driver.Faction != Faction.OfPlayer)
                         if (!this.fueledByAI)
                         {
                             if (this.refuelableComp.FuelPercentOfMax < 0.550000011920929)
@@ -448,10 +457,10 @@ namespace ToolsForHaul
                         }
                 }
 
-                if (this.mountableComp.Driver.pather.Moving)
+                if (this.MountableComp.Driver.pather.Moving)
                 {
                     // || mountableComp.Driver.drafter.pawn.pather.Moving)
-                    if (!this.mountableComp.Driver.stances.FullBodyBusy && this.axlesComp.HasAxles())
+                    if (!this.MountableComp.Driver.stances.FullBodyBusy && this.axlesComp.HasAxles())
                     {
                         this.axlesComp.wheelRotation += this.vehicleComp.currentDriverSpeed / 3f;
                         this.axlesComp.tick_time += 0.01f * this.vehicleComp.currentDriverSpeed / 5f;
@@ -460,16 +469,16 @@ namespace ToolsForHaul
 
                 if (Find.TickManager.TicksGame - this.tickCheck >= this.tickCooldown)
                 {
-                    if (this.mountableComp.Driver.pather.Moving)
+                    if (this.MountableComp.Driver.pather.Moving)
                     {
-                        if (!this.mountableComp.Driver.stances.FullBodyBusy)
+                        if (!this.MountableComp.Driver.stances.FullBodyBusy)
                         {
                             if (this.refuelableComp != null) this.refuelableComp.Notify_UsedThisTick();
                             this.damagetick -= 1;
 
                             if (this.axlesComp.HasAxles())
                                 this.vehicleComp.currentDriverSpeed =
-                                    ToolsForHaulUtility.GetMoveSpeed(this.mountableComp.Driver);
+                                    ToolsForHaulUtility.GetMoveSpeed(this.MountableComp.Driver);
                         }
 
                         if (this.breakdownableComp != null && this.breakdownableComp.BrokenDown
@@ -479,8 +488,8 @@ namespace ToolsForHaul
                     }
 
                     if (this.Position.InNoBuildEdgeArea(Map) && this.vehicleComp.despawnAtEdge && this.Spawned
-                        && (this.mountableComp.Driver.Faction != Faction.OfPlayer
-                            || this.mountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee)) this.DeSpawn();
+                        && (this.MountableComp.Driver.Faction != Faction.OfPlayer
+                            || this.MountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee)) this.DeSpawn();
                 }
             }
 
@@ -524,15 +533,15 @@ namespace ToolsForHaul
         {
             get
             {
-                if (!this.Spawned || !this.mountableComp.IsMounted || !this.instantiated)
+                if (!this.Spawned || !this.MountableComp.IsMounted || !this.instantiated)
                 {
                     return base.DrawPos;
                 }
 
-                float num = this.mountableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
-                num *= this.mountableComp.Driver.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
+                float num = this.MountableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
+                num *= this.MountableComp.Driver.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
                 Vector3 vector = new Vector3(0f, 0f, -num);
-                return this.mountableComp.Position + vector.RotatedBy(this.mountableComp.Driver.Rotation.AsAngle);
+                return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Driver.Rotation.AsAngle);
             }
         }
 
@@ -542,7 +551,7 @@ namespace ToolsForHaul
             stringBuilder.Append(base.GetInspectString());
 
             string currentDriverString;
-            if (this.mountableComp.Driver != null) currentDriverString = this.mountableComp.Driver.LabelCap;
+            if (this.MountableComp.Driver != null) currentDriverString = this.MountableComp.Driver.LabelCap;
             else currentDriverString = "NoDriver".Translate();
 
             stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
@@ -559,6 +568,16 @@ namespace ToolsForHaul
         }
 
         #endregion
+
+        public void GetChildHolders(List<IThingHolder> outChildren)
+        {
+            ThingOwnerUtility.AppendThingHoldersFromThings(outChildren, this.GetDirectlyHeldThings());
+        }
+
+        public ThingOwner GetDirectlyHeldThings()
+        {
+            return this.innerContainer;
+        }
     }
 }
 #endif

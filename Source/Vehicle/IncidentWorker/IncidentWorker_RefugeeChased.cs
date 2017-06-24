@@ -1,11 +1,9 @@
-﻿using RimWorld.Planet;
-using System;
-using System.Linq;
-using Verse;
-
-namespace ToolsForHaul.IncidentWorker
+﻿namespace ToolsForHaul.IncidentWorker
 {
+    using System.Linq;
+
     using RimWorld;
+    using RimWorld.Planet;
 
     using ToolsForHaul.Components;
     using ToolsForHaul.Components.Vehicle;
@@ -13,6 +11,7 @@ namespace ToolsForHaul.IncidentWorker
 
     using UnityEngine;
 
+    using Verse;
     using Verse.AI;
     using Verse.Sound;
 
@@ -28,12 +27,12 @@ namespace ToolsForHaul.IncidentWorker
         {
             Map map = (Map)parms.target;
             IntVec3 spawnSpot;
-            if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 c) => map.reachability.CanReachColony(c), map, out spawnSpot))
+            if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 c) => map.reachability.CanReachColony(c), map, CellFinder.EdgeRoadChance_Neutral, out spawnSpot))
             {
                 return false;
             }
             Faction faction = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Spacer);
-            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDefOf.SpaceRefugee, faction, PawnGenerationContext.NonPlayer, null, false, false, false, false, true, false, 20f, false, true, true, null, null, null, null, null, null);
+            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDefOf.SpaceRefugee, faction, PawnGenerationContext.NonPlayer, -1, false, false, false, false, true, false, 20f, false, true, true, false, false, null, null, null, null, null, null);
             Pawn refugee = PawnGenerator.GeneratePawn(request);
             refugee.relations.everSeenByPlayer = true;
             Faction enemyFac;
@@ -44,91 +43,84 @@ namespace ToolsForHaul.IncidentWorker
                 return false;
             }
             string text = "RefugeeChasedInitial".Translate(new object[]
-            {
-                refugee.Name.ToStringFull,
-                refugee.story.Title.ToLower(),
-                enemyFac.def.pawnsPlural,
-                enemyFac.Name,
-                refugee.ageTracker.AgeBiologicalYears
-            });
+                                                               {
+                                                                   refugee.Name.ToStringFull,
+                                                                   refugee.story.Title.ToLower(),
+                                                                   enemyFac.def.pawnsPlural,
+                                                                   enemyFac.Name,
+                                                                   refugee.ageTracker.AgeBiologicalYears
+                                                               });
             text = text.AdjustedFor(refugee);
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, refugee);
             DiaNode diaNode = new DiaNode(text);
             DiaOption diaOption = new DiaOption("RefugeeChasedInitial_Accept".Translate());
             diaOption.action = delegate
-            {
-                GenSpawn.Spawn(refugee, spawnSpot, map);
-                refugee.SetFaction(Faction.OfPlayer, null);
-
-                // Refugee stole vehicle?
-                float value = Rand.Value;
-                if (enemyFac.def.techLevel >= TechLevel.Industrial && value >= 0.33f)
                 {
-                    CellFinder.RandomClosewalkCellNear(spawnSpot,map, 5);
-                    Thing thing;
-                    if (value >= 0.8f)
-                    {
-                        thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
-                    }
-                    else
-                    {
-                        thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
-                    }
-
-                    GenSpawn.Spawn(thing, spawnSpot, map);
-
-                    Thing fuel = ThingMaker.MakeThing(thing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.FirstOrDefault());
-                    fuel.stackCount += Mathf.FloorToInt(5 + Rand.Value * 15f);
-                    thing.TryGetComp<CompRefuelable>().Refuel(fuel);
-                    int num2 = Mathf.FloorToInt(Rand.Value * 0.3f * thing.MaxHitPoints);
-                    thing.TakeDamage(new DamageInfo(DamageDefOf.Bullet, num2, -1f, null, null));
-                    thing.SetFaction(Faction.OfPlayer);
-
-                    Job job = new Job(HaulJobDefOf.Mount);
-                    map.reservationManager.ReleaseAllForTarget(thing);
-                    job.targetA = thing;
-                    refugee.jobs.StartJob(job, JobCondition.InterruptForced);
-
-                    SoundInfo info = SoundInfo.InMap(thing);
-                    thing.TryGetComp<CompMountable>().SustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
-                }
-
-
-
-
-                Find.CameraDriver.JumpTo(spawnSpot);
-                IncidentParms incidentParms = StorytellerUtility.DefaultParmsNow(Find.Storyteller.def, IncidentCategory.ThreatBig, map);
-                incidentParms.forced = true;
-                incidentParms.faction = enemyFac;
-                incidentParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
-                incidentParms.raidArrivalMode = PawnsArriveMode.EdgeWalkIn;
-                incidentParms.spawnCenter = spawnSpot;
-                incidentParms.points *= 1.35f;
-                QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDefOf.RaidEnemy, null, incidentParms), Find.TickManager.TicksGame + IncidentWorker_RefugeeChased.RaidDelay.RandomInRange);
-                Find.Storyteller.incidentQueue.Add(qi);
-            };
+                    GenSpawn.Spawn(refugee, spawnSpot, map);
+                    refugee.SetFaction(Faction.OfPlayer, null);
+                    CameraJumper.TryJump(refugee);
+                    IncidentParms incidentParms = StorytellerUtility.DefaultParmsNow(Find.Storyteller.def, IncidentCategory.ThreatBig, map);
+                    incidentParms.forced = true;
+                    incidentParms.faction = enemyFac;
+                    incidentParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
+                    incidentParms.raidArrivalMode = PawnsArriveMode.EdgeWalkIn;
+                    incidentParms.spawnCenter = spawnSpot;
+                    incidentParms.points *= 1.35f;
+                    QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDefOf.RaidEnemy, null, incidentParms), Find.TickManager.TicksGame + IncidentWorker_RefugeeChased.RaidDelay.RandomInRange);
+                    Find.Storyteller.incidentQueue.Add(qi);
+                };
             diaOption.resolveTree = true;
             diaNode.options.Add(diaOption);
             string text2 = "RefugeeChasedRejected".Translate(new object[]
-            {
-                refugee.NameStringShort
-            });
+                                                                 {
+                                                                     refugee.NameStringShort
+                                                                 });
             DiaNode diaNode2 = new DiaNode(text2);
             DiaOption diaOption2 = new DiaOption("OK".Translate());
             diaOption2.resolveTree = true;
             diaNode2.options.Add(diaOption2);
             DiaOption diaOption3 = new DiaOption("RefugeeChasedInitial_Reject".Translate());
             diaOption3.action = delegate
-            {
-                Find.WorldPawns.PassToWorld(refugee, PawnDiscardDecideMode.Decide);
-            };
+                {
+                    Find.WorldPawns.PassToWorld(refugee, PawnDiscardDecideMode.Decide);
+                };
             diaOption3.link = diaNode2;
             diaNode.options.Add(diaOption3);
-            Find.WindowStack.Add(new Dialog_NodeTree(diaNode, true, true));
+            string title = "RefugeeChasedTitle".Translate(new object[]
+                                                              {
+                                                                  map.info.parent.Label
+                                                              });
+
+            // Vehicle
+            if ( refugee.RaceProps.ToolUser)
+            {
+                float value = Rand.Value;
+
+                if (value >= 0.5f)
+                {
+                    CellFinder.RandomClosewalkCellNear(refugee.Position, refugee.Map, 5);
+                    Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
+
+                    {
+                        thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
+                    }
+
+                    GenSpawn.Spawn(thing, refugee.Position, refugee.Map);
+
+                    Job job = new Job(HaulJobDefOf.Mount);
+                    thing.Map.reservationManager.ReleaseAllForTarget(thing);
+                    job.targetA = thing;
+                    refugee.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
+
+                    int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
+                    thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1, null, null));
+
+                    SoundInfo info = SoundInfo.InMap(thing);
+                    thing.TryGetComp<CompMountable>().SustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
+                }
+            }
+            Find.WindowStack.Add(new Dialog_NodeTree(diaNode, true, true, title));
             return true;
         }
     }
 }
-
-
-

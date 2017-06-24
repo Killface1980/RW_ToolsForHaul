@@ -38,8 +38,6 @@ namespace ToolsForHaul.ITabs
         {
             float fieldHeight = 30.0f;
 
-
-            PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.PrisonerTab, KnowledgeAmount.FrameDisplayed);
             Text.Font = GameFont.Small;
             Rect innerRect1 = new Rect(0.0f, 0.0f, this.size.x, this.size.y).ContractedBy(10f);
             GUI.BeginGroup(innerRect1);
@@ -88,7 +86,7 @@ namespace ToolsForHaul.ITabs
           Vehicle_Cart cart = this.SelThing as Vehicle_Cart;
           if (cart != null)
           {
-              foreach (Thing thing in cart.Storage)
+              foreach (Thing thing in cart.innerContainer)
               {
                   if (thing.ThingID.IndexOf("Human_Corpse") > -1)
                       Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconHuman_Corpse"), 1.0f);
@@ -109,7 +107,7 @@ namespace ToolsForHaul.ITabs
                       options.Add(new FloatMenuOption("DropThing".Translate(), () =>
                       {
                           Thing dummy;
-                          cart.Storage.TryDrop(thing, this.SelThing.Position,cart.Map, ThingPlaceMode.Near, out dummy);
+                          cart.innerContainer.TryDrop(thing, this.SelThing.Position,cart.Map, ThingPlaceMode.Near, out dummy);
                       }));
           
                       Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap));
@@ -124,7 +122,7 @@ namespace ToolsForHaul.ITabs
               }
 
               if (Widgets.ButtonText(new Rect(180f, 400f, 100f, 30f), "Drop All"))
-                  cart.Storage.TryDropAll(this.SelThing.Position,cart.Map, ThingPlaceMode.Near);
+                  cart.innerContainer.TryDropAll(this.SelThing.Position,cart.Map, ThingPlaceMode.Near);
           }
           
 

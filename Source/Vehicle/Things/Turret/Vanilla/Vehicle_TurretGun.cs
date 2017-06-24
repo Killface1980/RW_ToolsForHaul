@@ -1,4 +1,6 @@
-﻿#if !CR
+﻿using System;
+
+#if !CR
 namespace ToolsForHaul
 {
     using System.Collections.Generic;
@@ -128,9 +130,9 @@ namespace ToolsForHaul
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.LookValue(ref this.burstCooldownTicksLeft, "burstCooldownTicksLeft", 0);
-            Scribe_Values.LookValue(ref this.loaded, "loaded", false);
-            Scribe_Values.LookValue(ref this.holdFire, "holdFire", false);
+            Scribe_Values.Look(ref this.burstCooldownTicksLeft, "burstCooldownTicksLeft", 0);
+            Scribe_Values.Look(ref this.loaded, "loaded", false);
+            Scribe_Values.Look(ref this.holdFire, "holdFire", false);
         }
 
         [DebuggerHidden]
@@ -195,7 +197,7 @@ namespace ToolsForHaul
             }
             if (this.burstCooldownTicksLeft > 0)
             {
-                stringBuilder.AppendLine("CanFireIn".Translate() + ": " + this.burstCooldownTicksLeft.TickstoSecondsString());
+                stringBuilder.AppendLine("CanFireIn".Translate() + ": " + this.burstCooldownTicksLeft.TicksToSecondsString());
             }
             if (this.def.building.turretShellDef != null)
             {
@@ -235,9 +237,9 @@ namespace ToolsForHaul
             }
         }
 
-        public override void SpawnSetup(Map map)
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            base.SpawnSetup(map);
+            base.SpawnSetup(map, respawningAfterLoad);
             this.powerComp = this.GetComp<CompPowerTrader>();
             this.mannableComp = this.GetComp<CompMannable>();
             this.currentTargetInt = LocalTargetInfo.Invalid;
@@ -249,7 +251,7 @@ namespace ToolsForHaul
         {
             base.Tick();
 
-            if (!this.mountableComp.IsMounted)
+            if (!this.MountableComp.IsMounted)
             {
                 return;
             }
@@ -331,8 +333,8 @@ namespace ToolsForHaul
 
         protected LocalTargetInfo TryFindNewTarget()
         {
-            Thing thing = this.TargSearcher();
-            Faction faction = thing.Faction;
+            IAttackTargetSearcher attackTargetSearcher = this.TargSearcher();
+            Faction faction = attackTargetSearcher.Thing.Faction;
             float range = this.GunCompEq.PrimaryVerb.verbProps.range;
             float minRange = this.GunCompEq.PrimaryVerb.verbProps.minRange;
             Building t;
@@ -359,12 +361,7 @@ namespace ToolsForHaul
                 targetScanFlags |= TargetScanFlags.NeedNonBurning;
             }
 
-            return AttackTargetFinder.BestShootTargetFromCurrentPosition(
-                thing,
-                this.IsValidTarget,
-                range,
-                minRange,
-                targetScanFlags);
+            return (Thing)AttackTargetFinder.BestShootTargetFromCurrentPosition(attackTargetSearcher, new Predicate<Thing>(this.IsValidTarget), range, minRange, targetScanFlags);
         }
 
         // RimWorld.Building_TurretGun
@@ -443,7 +440,7 @@ namespace ToolsForHaul
             }
         }
 
-        private Thing TargSearcher()
+        private IAttackTargetSearcher TargSearcher()
         {
             if (this.mannableComp != null && this.mannableComp.MannedNow)
             {

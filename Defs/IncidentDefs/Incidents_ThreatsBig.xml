@@ -5,7 +5,7 @@
   <IncidentDef>
     <defName>RaidEnemy</defName>
     <label>enemy raid</label>
-    <targetType>BaseMap</targetType>
+    <targetType>MapPlayerHome</targetType>
     <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_RaidEnemy</workerClass>
     <baseChance>7.4</baseChance>
     <category>ThreatBig</category>

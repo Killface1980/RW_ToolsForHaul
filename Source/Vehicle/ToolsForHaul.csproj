@@ -43,12 +43,16 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\818773962\Assemblies\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HugsLib">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\818773962\Assemblies\HugsLib.dll</HintPath>
+    <Reference Include="CompVehicle">
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\932008009\Assemblies\CompVehicle.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -59,19 +63,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Components\Vehicle\CompProperties_Mountable.cs" />
-    <Compile Include="Detours\_TendUtility.cs" />
+    <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_Raid_TFH.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_WandererJoin.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy.cs" />
     <Compile Include="MoteMakerTFH.cs" />
-    <Compile Include="IncidentWorker\IncidentWorker_TraderCaravanArrival.cs" />
     <Compile Include="MoteCounterTFH.cs" />
     <Compile Include="Defs\HaulStatDefOf.cs" />
     <Compile Include="Components\Vehicle\CompDriver.cs" />
-    <Compile Include="IncidentWorker\IncidentWorker_WandererJoin.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
-    <None Include="_JT\AreaFinder.cs" />
-    <None Include="_JT\GenClosest_JT.cs" />
-    <None Include="_JT\JobGiver_Work_JT.cs" />
-    <None Include="_JT\JobGiver_Haul_JT.cs" />
     <None Include="_testing\ProjectileTFH.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
@@ -80,30 +82,19 @@
     <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="Defs\HaulJobDefOf.cs" />
-    <Compile Include="Detours\_Pawn_ApparelTracker.cs" />
-    <Compile Include="Gizmos\Gizmo_ToolbeltEquipment.cs" />
-    <Compile Include="Components\Equipment\CompSlotsToolbelt.cs" />
-    <Compile Include="Designators\Designator_PutInToolbeltSlot.cs" />
-    <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
-    <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="JobGivers\JobGiver_Steal.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
-    <Compile Include="Things\Apparel_Toolbelt.cs" />
+    <Compile Include="RightTools.cs" />
     <Compile Include="Things\Textures.cs" />
-    <Compile Include="Things\Turret\CR\Vehicle_TurretCR.cs" />
-    <Compile Include="Things\Turret\CR\Vehicle_TurretGunCR.cs" />
-    <Compile Include="Things\Turret\CR\VehicleTurretTopCR.cs" />
     <Compile Include="Things\Turret\Command_VerbTarget.cs" />
     <Compile Include="Things\Turret\Vanilla\VehicleTurretTop.cs" />
     <Compile Include="Things\Turret\Vanilla\Vehicle_Turret.cs" />
     <Compile Include="Things\Turret\Vanilla\Vehicle_TurretGun.cs" />
-    <Compile Include="WorkGivers\WorkGiver_Repair.cs" />
+    <None Include="Toils\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
-    <Compile Include="_inactive\Class2.cs" />
-    <Compile Include="_inactive\Class3.cs" />
+    <None Include="CompInjectionSet.cs" />
+    <None Include="DefInjectionQualifier.cs" />
     <Compile Include="_inactive\_TESTING\HeadLights.cs" />
-    <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy.cs" />
-    <Compile Include="IncidentWorker\IncidentWorker_VisitorGroup.cs" />
     <Compile Include="Alerts\Alert_TankIsLeaking.cs" />
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
     <None Include="_inactive\Class1.cs" />
@@ -111,39 +102,25 @@
     <Compile Include="Components\Vehicle\CompProperties_Axle.cs" />
     <Compile Include="Components\Vehicle\CompProperties_Vehicle.cs" />
     <Compile Include="Components\Vehicle\CompVehicle.cs" />
-    <Compile Include="Things\Apparel_Backpack.cs" />
     <None Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
-    <Compile Include="_inactive\ModHelperDef.cs" />
+    <None Include="ModHelperDef.cs" />
     <Compile Include="Things\IncendiaryFuel.cs" />
     <None Include="_inactive\CompWeaponExtensions.cs" />
     <None Include="_inactive\RA_PawnRenderer.cs" />
     <None Include="_inactive\CompTool.cs" />
-    <Compile Include="JobDrivers\JobDriver_PutInBackpackSlot.cs" />
-    <Compile Include="Components\Equipment\CompEquipmentGizmoUser.cs" />
-    <Compile Include="Components\Equipment\CompSlotsBackpack.cs" />
-    <Compile Include="Components\Equipment\CompEquipmentGizmoProvider.cs" />
-    <Compile Include="Designators\Designator_PutInBackpackSlot.cs" />
     <Compile Include="JobGivers\JobGiver_Kidnap.cs" />
     <Compile Include="Detours\_ThinkNode_JobGiver.cs" />
-    <Compile Include="RightTools\RightTools.cs" />
     <Compile Include="Components\MapComponent_ToolsForHaul.cs" />
-    <None Include="RightTools\MapComponentInjector.cs" />
-    <Compile Include="NoCCL\SpecialInjector.cs" />
     <Compile Include="NoCCL\Detours.cs" />
-    <Compile Include="StatsHelper.cs" />
     <Compile Include="Utilities\ToolsForHaulUtility.cs" />
     <Compile Include="Trace.cs" />
     <Compile Include="JobDrivers\JobDriver_StandBy.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="Toils\Toils_Cart.cs" />
-    <None Include="WorkGivers\Class1.cs" />
-    <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
     <Compile Include="Components\Vehicle\CompMountable.cs" />
     <Compile Include="Designators\Designator_Mount.cs" />
-    <None Include="Designators\Designator_PutInInventory.cs" />
-    <Compile Include="Gizmos\Gizmo_BackpackEquipment.cs" />
     <Compile Include="ITabs\ITab_Pawn_VehicleGear.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -153,34 +130,30 @@
     </Compile>
     <None Include="JobDrivers\JobDriver_Board.cs" />
     <Compile Include="JobDrivers\JobDriver_DismountInBase.cs" />
-    <Compile Include="JobDrivers\JobDriver_HaulWithBackpack.cs" />
     <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
     <Compile Include="JobDrivers\JobDriver_Mount.cs" />
-    <None Include="JobDrivers\JobDriver_PutInInventory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Toils\Toils_Collect.cs" />
     <Compile Include="Things\Vehicle_Cart.cs" />
     <None Include="Designators\Designator_Board.cs" />
     <None Include="Designators\Designator_Move.cs" />
     <None Include="Things\Vehicle_Saddle.cs" />
-    <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\About\About.xml">
-      <Link>Defs\About.xml</Link>
+      <Link>About.xml</Link>
     </Content>
     <Content Include="..\..\Defs\EffecterDefs\Effecter_Misc.xml">
       <Link>Defs\EffecterDefs\Effecter_Misc.xml</Link>
     </Content>
     <Content Include="..\..\Defs\IncidentDefs\Incidents_ThreatsBig.xml">
-      <Link>Defs\IncidentDefs\Incidents_ThreatsBig.xml</Link>
+      <Link>Defs\NewFolder1\Incidents_ThreatsBig.xml</Link>
     </Content>
     <Content Include="..\..\Defs\IncidentDefs\Incidents_Various_Good.xml">
-      <Link>Defs\IncidentDefs\Incidents_Various_Good.xml</Link>
+      <Link>Defs\NewFolder1\Incidents_Various_Good.xml</Link>
     </Content>
     <Content Include="..\..\Defs\IncidentDefs\Incidents_Various_Neutral.xml">
-      <Link>Defs\IncidentDefs\Incidents_Various_Neutral.xml</Link>
-      <SubType>Designer</SubType>
+      <Link>Defs\NewFolder1\Incidents_Various_Neutral.xml</Link>
     </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
       <Link>Defs\JobDefs\Jobs_Misc.xml</Link>
@@ -209,14 +182,6 @@
     </Content>
     <Content Include="..\..\Defs\ThingCategoryDefs\ThingCategories.xml">
       <Link>Defs\ThingCategories.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\ThingDefs\Apparel_Backpack.xml">
-      <Link>Defs\ThingDefs\Apparel_Backpack.xml</Link>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="..\..\Defs\ThingDefs\Apparel_Toolbelt.xml">
-      <Link>Defs\ThingDefs\Apparel_Toolbelt.xml</Link>
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
       <Link>Defs\ThingDefs\Items_IRResources.xml</Link>

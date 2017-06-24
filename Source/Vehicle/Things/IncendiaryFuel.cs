@@ -8,10 +8,9 @@ namespace ToolsForHaul
     {
         private const float maxFireSize = 1.25f;
 
-        public override void SpawnSetup(Map map)
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            base.SpawnSetup(map);
-
+            base.SpawnSetup(map, respawningAfterLoad);
             this.spawnTick = Find.TickManager.TicksGame;
 
             List<Thing> list = new List<Thing>(this.Position.GetThingList(map));

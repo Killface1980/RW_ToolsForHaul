@@ -196,7 +196,7 @@
     <specialDisplayRadius>25.9</specialDisplayRadius>
     <building>
       <turretGunDef>Gun_VehicleTurretImprovised</turretGunDef>
-      <turretBurstCooldownTime>120</turretBurstCooldownTime>
+      <turretBurstCooldownTime>1</turretBurstCooldownTime>
       <turretTopgraphicPath>Things/Building/Security/TurretImprovised_Top</turretTopgraphicPath>
     </building>
     <researchPrerequisites>

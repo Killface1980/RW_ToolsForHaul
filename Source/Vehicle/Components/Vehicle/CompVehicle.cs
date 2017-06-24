@@ -168,9 +168,9 @@ namespace ToolsForHaul.Components
         {
             base.PostExposeData();
 
-            Scribe_Values.LookValue(ref this.tankLeaking, "tankLeaking");
-            Scribe_Values.LookValue(ref this._tankHitPos, "tankHitPos");
-            Scribe_Values.LookValue(ref this.despawnAtEdge, "despawnAtEdge");
+            Scribe_Values.Look(ref this.tankLeaking, "tankLeaking");
+            Scribe_Values.Look(ref this._tankHitPos, "tankHitPos");
+            Scribe_Values.Look(ref this.despawnAtEdge, "despawnAtEdge");
         }
 
         public override void CompTick()

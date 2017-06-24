@@ -22,6 +22,8 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <building>
+      <preventDeterioration>true</preventDeterioration>
+      <ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
       <ai_combatDangerous>true</ai_combatDangerous>
       <isEdifice>true</isEdifice>
       <repairable>true</repairable>
@@ -302,10 +304,9 @@
         <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.2</startWickHitPointsPercent>
-        <chanceNeverExplodeFromDamage>0.5</chanceNeverExplodeFromDamage>
         <wickTicks>
-          <min>300</min>
-          <max>600</max>
+          <min>100</min>
+          <max>300</max>
         </wickTicks>
         <postExplosionSpawnThingDef>FilthFuel</postExplosionSpawnThingDef>
         <postExplosionSpawnChance>1</postExplosionSpawnChance>

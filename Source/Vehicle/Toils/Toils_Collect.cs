@@ -49,23 +49,21 @@ namespace ToolsForHaul.Toils
                     }
 
                     Vehicle_Cart cart = toil.actor.jobs.curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
-                    Apparel_Backpack backpack = toil.actor.jobs.curJob.GetTarget(CarrierInd).Thing as Apparel_Backpack;
 
-                    if (cart == null && backpack == null)
+                    if (cart == null)
                     {
                         Log.Error(actor.LabelCap + " Report: Don't have Carrier");
                         toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                         return;
                     }
 
-                    int curItemCount = (cart != null ? cart.Storage.Count : backpack.slotsComp.slots.Count)
+                    int curItemCount = cart.innerContainer.Count
                                        + targetQueue.Count;
-                    int curItemStack = (cart != null
-                                            ? cart.Storage.TotalStackCount
-                                            : backpack.slotsComp.slots.TotalStackCount)
+                    int curItemStack = (cart.innerContainer.TotalStackCount
+                                            )
                                        + targetQueue.Sum(item => item.Thing.stackCount);
-                    int maxItem = cart != null ? cart.MaxItem : backpack.MaxItem;
-                    int maxStack = cart != null ? cart.MaxStack : backpack.MaxStack;
+                    int maxItem = cart.MaxItem;
+                    int maxStack = cart.MaxStack;
                     if (curItemCount >= maxItem || curItemStack >= maxStack) return;
 
                     // Check target's nearby
@@ -143,35 +141,6 @@ namespace ToolsForHaul.Toils
              return toil;
          }
          */
-        public static Toil CollectInBackpack(TargetIndex HaulableInd, Apparel_Backpack backpack)
-        {
-            Toil toil = new Toil();
-            toil.initAction = () =>
-                {
-                    Pawn actor = toil.actor;
-                    Job curJob = actor.jobs.curJob;
-                    Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
-
-                    // Collecting TargetIndex ind
-                    if (backpack.slotsComp.slots.TryAdd(haulThing))
-                    {
-                        haulThing.holdingContainer = backpack.slotsComp.GetInnerContainer();
-                        haulThing.holdingContainer.owner = backpack.slotsComp;
-                    }
-                };
-            toil.FailOn(
-                () =>
-                    {
-                        Pawn actor = toil.actor;
-                        Job curJob = actor.jobs.curJob;
-                        Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
-
-                        if (!backpack.slotsComp.slots.CanAcceptAnyOf(haulThing)) return true;
-
-                        return false;
-                    });
-            return toil;
-        }
 
         public static Toil CollectInCarrier(TargetIndex CarrierInd, TargetIndex HaulableInd)
         {
@@ -182,6 +151,9 @@ namespace ToolsForHaul.Toils
                     Job curJob = actor.jobs.curJob;
                     Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
                     Vehicle_Cart carrier = curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
+
+              //      ThingOwner thingOwner = haulThing.TryGetInnerInteractableThingOwner();
+
 
                     // Check haulThing is human_corpse. If other race has apparel, It need to change
                     actor.Map.designationManager.RemoveAllDesignationsOn(haulThing);
@@ -203,20 +175,23 @@ namespace ToolsForHaul.Toils
                     // }
                     // }
                     // Collecting TargetIndex ind
-                    if (carrier.Storage.TryAdd(haulThing))
+                    //if
                     {
-                        haulThing.holdingContainer = carrier.GetInnerContainer();
-                        haulThing.holdingContainer.owner = carrier;
+                        haulThing.DeSpawn();
+                        carrier.innerContainer.TryAdd(haulThing);
+                    }
+                    {
+                        //            haulThing.holdingOwner = carrier.innerContainer;
                     }
 
                     List<LocalTargetInfo> thingList = curJob.GetTargetQueue(HaulableInd);
                     for (int i = 0; i < thingList.Count; i++)
                         if (actor.Position.AdjacentTo8Way(thingList[i].Thing.Position))
                         {
-                            if (carrier.Storage.TryAdd(thingList[i].Thing))
+                            thingList[i].Thing.DeSpawn();
+                            carrier.innerContainer.TryAdd(thingList[i].Thing);
                             {
-                                thingList[i].Thing.holdingContainer = carrier.GetInnerContainer();
-                                thingList[i].Thing.holdingContainer.owner = carrier;
+                                //       thingList[i].Thing.holdingOwner = carrier.innerContainer;
                             }
 
                             thingList.RemoveAt(i);
@@ -231,11 +206,10 @@ namespace ToolsForHaul.Toils
                         Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
                         Vehicle_Cart carrier = curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
 
-                        if (!carrier.Storage.CanAcceptAnyOf(haulThing)
-                            && actor.Position.IsAdjacentTo8WayOrInside(
-                                haulThing.Position,
-                                haulThing.Rotation,
-                                haulThing.RotatedSize)) return true;
+                        if (!carrier.innerContainer.CanAcceptAnyOf(haulThing)
+                            && actor.Position.InHorDistOf(
+                                haulThing.Position, 1f))
+                            return true;
                         return false;
                     });
             toil.FailOnDestroyedOrNull(CarrierInd);
@@ -254,17 +228,18 @@ namespace ToolsForHaul.Toils
                     Pawn actor = toil.actor;
 
                     Vehicle_Cart cart = toil.actor.jobs.curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
-                    Apparel_Backpack backpack = toil.actor.jobs.curJob.GetTarget(CarrierInd).Thing as Apparel_Backpack;
-                    if (cart == null && backpack == null)
+                    if (cart == null)
                     {
                         Log.Error(actor.LabelCap + " Report: Don't have Carrier");
                         toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                     }
 
-                    ThingContainer container = cart != null ? cart.Storage : backpack.slotsComp.slots;
-                    if (container.Count == 0) return;
+                    if (cart.innerContainer.Count == 0)
+                    {
+                        return;
+                    }
 
-                    IntVec3 cell = ToolsForHaulUtility.FindStorageCell(actor, container.First(), actor.Map);
+                    IntVec3 cell = ToolsForHaulUtility.FindStorageCell(actor, cart.innerContainer.First(), actor.Map);
                     if (cell != IntVec3.Invalid)
                     {
                         toil.actor.jobs.curJob.SetTarget(StoreCellInd, cell);
@@ -358,42 +333,7 @@ namespace ToolsForHaul.Toils
                     return toil;
                 }
         */
-        public static Toil DropTheCarriedFromBackpackInCell(
-            TargetIndex StoreCellInd,
-            ThingPlaceMode placeMode,
-            Apparel_Backpack backpack)
-        {
-            Toil toil = new Toil();
-            toil.initAction = () =>
-                {
-                    Pawn actor = toil.actor;
-                    Job curJob = actor.jobs.curJob;
-                    if (backpack.slotsComp.slots.Count <= 0) return;
 
-                    // Check dropThing is last item that should not be dropped
-                    Thing dropThing = null;
-
-                    dropThing = backpack.slotsComp.slots.First();
-
-                    if (dropThing == null)
-                    {
-                        Log.Error(
-                            toil.actor + " tried to drop null thing in "
-                            + actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
-                        return;
-                    }
-
-                    IntVec3 destLoc = actor.jobs.curJob.GetTarget(StoreCellInd).Cell;
-                    Thing dummy;
-
-                    if (destLoc.GetStorable(actor.Map) == null)
-                    {
-                        actor.Map.designationManager.RemoveAllDesignationsOn(dropThing);
-                        backpack.slotsComp.slots.TryDrop(dropThing, destLoc, actor.Map, placeMode, out dummy);
-                    }
-                };
-            return toil;
-        }
 
         public static Toil DropTheCarriedInCell(
             TargetIndex StoreCellInd,
@@ -406,8 +346,11 @@ namespace ToolsForHaul.Toils
                     Pawn actor = toil.actor;
                     Job curJob = actor.jobs.curJob;
                     Vehicle_Cart carrier = actor.jobs.curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
-                    if (carrier.Storage.Count <= 0) return;
-                    toil.actor.jobs.curJob.SetTarget(TargetIndex.A, carrier.Storage.First());
+                    if (carrier.innerContainer.Count <= 0)
+                    {
+                        return;
+                    }
+                    toil.actor.jobs.curJob.SetTarget(TargetIndex.A, carrier.innerContainer.First());
                     Thing dropThing = toil.actor.jobs.curJob.targetA.Thing;
                     IntVec3 destLoc = actor.jobs.curJob.GetTarget(StoreCellInd).Cell;
                     Thing dummy;
@@ -418,30 +361,30 @@ namespace ToolsForHaul.Toils
                     if (slotGroup != null && slotGroup.Settings.AllowedToAccept(dropThing))
                     {
                         actor.Map.designationManager.RemoveAllDesignationsOn(dropThing);
-                        carrier.Storage.TryDrop(dropThing, destLoc,actor.Map, placeMode, out dummy);
+                        carrier.innerContainer.TryDrop(dropThing, destLoc, actor.Map, placeMode, out dummy);
                     }
 
                     // Check cell queue is adjacent
                     List<LocalTargetInfo> cells = curJob.GetTargetQueue(StoreCellInd);
-                    for (int i = 0; i < cells.Count && i < carrier.Storage.Count; i++)
+                    for (int i = 0; i < cells.Count && i < carrier.innerContainer.Count; i++)
                     {
                         if (destLoc.AdjacentTo8Way(cells[i].Cell) && cells[i].Cell.GetStorable(actor.Map) == null)
                         {
-                            actor.Map.designationManager.RemoveAllDesignationsOn(carrier.Storage[i]);
-                            carrier.Storage.TryDrop(carrier.Storage[i], cells[i].Cell, actor.Map, ThingPlaceMode.Direct, out dummy);
+                            actor.Map.designationManager.RemoveAllDesignationsOn(carrier.innerContainer[i]);
+                            carrier.innerContainer.TryDrop(carrier.innerContainer[i], cells[i].Cell, actor.Map, ThingPlaceMode.Direct, out dummy);
                             cells.RemoveAt(i);
                             i--;
                         }
                     }
 
                     // Check item queue is valid storage for adjacent cell
-                    foreach (IntVec3 adjCell in GenAdj.CellsAdjacent8Way(destLoc, Rot4.Random, new IntVec2() ))
+                    foreach (IntVec3 adjCell in GenAdj.CellsAdjacent8Way(destLoc, Rot4.Random, new IntVec2()))
                     {
-                        if (carrier.Storage.Count > 0 && adjCell.GetStorable(actor.Map) == null
-                            && adjCell.IsValidStorageFor(actor.Map, carrier.Storage.First()))
+                        if (carrier.innerContainer.Count > 0 && adjCell.GetStorable(actor.Map) == null
+                            && adjCell.IsValidStorageFor(actor.Map, carrier.innerContainer.First()))
                         {
-                            actor.Map.designationManager.RemoveAllDesignationsOn(carrier.Storage.First());
-                            carrier.Storage.TryDrop(carrier.Storage.First(), adjCell, actor.Map, ThingPlaceMode.Direct, out dummy);
+                            actor.Map.designationManager.RemoveAllDesignationsOn(carrier.innerContainer.First());
+                            carrier.innerContainer.TryDrop(carrier.innerContainer.First(), adjCell, actor.Map, ThingPlaceMode.Direct, out dummy);
                         }
                     }
                 };

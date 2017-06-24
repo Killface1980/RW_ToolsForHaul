@@ -7,7 +7,6 @@ using Verse.AI;
 namespace ToolsForHaul.WorkGivers
 {
     using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
 
     public class WorkGiver_Refuel : WorkGiver_Scanner
     {
@@ -15,17 +14,13 @@ namespace ToolsForHaul.WorkGivers
 
         public override PathEndMode PathEndMode => PathEndMode.Touch;
 
-        public override bool HasJobOnThing(Pawn pawn, Thing t)
+        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced)
         {
             return this.CanRefuel(pawn, t, true) && pawn.Faction == t.Faction;
         }
 
-        public override bool HasJobOnThingForced(Pawn pawn, Thing t)
-        {
-            return this.CanRefuel(pawn, t, false);
-        }
-
-        public override Job JobOnThing(Pawn pawn, Thing t)
+        // todo: patch with harmony, Postfix => vehicles fueled
+        public override Job JobOnThing(Pawn pawn, Thing t, bool forced)
         {
             Thing t2 = this.FindBestFuel(pawn, t);
             return new Job(JobDefOf.Refuel, t, t2)
@@ -70,13 +65,12 @@ namespace ToolsForHaul.WorkGivers
 
             return true;
         }
-
         private Thing FindBestFuel(Pawn pawn, Thing refuelable)
         {
             ThingFilter filter = refuelable.TryGetComp<CompRefuelable>().Props.fuelFilter;
             Predicate<Thing> predicate = (Thing x) => !x.IsForbidden(pawn) && pawn.CanReserve(x, 1) && filter.Allows(x);
             Predicate<Thing> validator = predicate;
-            return GenClosest.ClosestThingReachable(pawn.Position,pawn.Map, filter.BestThingRequest, PathEndMode.ClosestTouch, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, validator, null, -1, false);
+            return GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, filter.BestThingRequest, PathEndMode.ClosestTouch, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, validator, null, 0, -1, false, RegionType.Set_Passable, false);
         }
     }
 }
