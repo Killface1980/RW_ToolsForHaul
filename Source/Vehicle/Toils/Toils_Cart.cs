@@ -106,8 +106,7 @@ namespace ToolsForHaul.Toils
                     {
                         // Regionwise Flood-fill cellFinder
                         int regionInd = 0;
-                        List<Region> regions = new List<Region>();
-                        regions.Add(vehicleCart.Position.GetRegion(actor.Map));
+                        List<Region> regions = new List<Region> { vehicleCart.Position.GetRegion(actor.Map) };
 #if DEBUG
                     stringBuilder.AppendLine(actor.LabelCap + " Report");
 #endif

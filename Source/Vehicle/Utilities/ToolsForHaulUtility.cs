@@ -68,9 +68,17 @@ namespace ToolsForHaul.Utilities
 
         public static Job DismountInBase(Pawn pawn, Thing cart)
         {
-            Job job = new Job(HaulJobDefOf.DismountInBase);
-            job.targetA = cart;
-            job.targetB = FindStorageCell(pawn, cart, pawn.Map);
+            Job job = new Job(HaulJobDefOf.DismountInBase) { targetA = cart };
+
+            StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(cart.Position, cart);
+            IntVec3 storeCell;
+            if (!StoreUtility.TryFindBestBetterStoreCellFor(cart, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell, true))
+            {
+                Log.Message("DismountInBase NoEmptyPlaceLowerTrans");
+                JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
+                return null;
+            }
+            job.targetB = storeCell;
 
             if (job.targetB != IntVec3.Invalid)
             {
@@ -212,20 +220,9 @@ namespace ToolsForHaul.Utilities
             return 60 / movePerTick;
         }
 
-        public static Vehicle_Cart GetTurretByDriver(Pawn pawn)
-        {
-            foreach (Vehicle_Cart vehicleTurret in Cart)
-                if (vehicleTurret.MountableComp.Driver == pawn)
-                {
-                    return vehicleTurret;
-                }
-
-            return null;
-        }
-
         public static Job HaulWithTools(Pawn pawn, Vehicle_Cart cart = null, Thing haulThing = null)
         {
-            Trace.stopWatchStart();
+            Trace.StopWatchStart();
             bool forced = false;
             // Job Setting
             JobDef jobDef = null;
@@ -269,10 +266,9 @@ namespace ToolsForHaul.Utilities
                 pawn.LabelCap + " In HaulWithTools: " + jobDef.defName + "\n" + "MaxItem: " + maxItem
                 + " reservedMaxItem: " + reservedMaxItem);
 
-            bool ShouldDrop = true;
             Thing lastItem = null;
             //Drop remaining item
-            if (reservedMaxItem >= Math.Ceiling(maxItem * 0.5) && ShouldDrop)
+            if (reservedMaxItem >= Math.Ceiling(maxItem * 0.5) && shouldDrop)
             {
                 bool startDrop = false;
                 for (int i = 0; i < remainingItems.Count(); i++)
@@ -281,12 +277,21 @@ namespace ToolsForHaul.Utilities
                         if (remainingItems.ElementAt(i) == lastItem) startDrop = true;
                         else continue;
                     IntVec3 storageCell = FindStorageCell(pawn, remainingItems.ElementAt(i), pawn.Map, job.targetQueueB);
-                    if (storageCell == IntVec3.Invalid) break;
+                    if (storageCell == IntVec3.Invalid)
+                    {
+                        break;
+                    }
                     job.targetQueueB.Add(storageCell);
                 }
-                if (!job.targetQueueB.NullOrEmpty()) return job;
-                if (cart != null && job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())
+                if (!job.targetQueueB.NullOrEmpty())
+                {
+                    return job;
+                }
+                if (job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())
+                {
                     return DismountInBase(pawn, cart);
+                }
+                Log.Message("HaulWithTools Failes NoEmptyPlaceLowerTrans");
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
 #if DEBUG
                 Log.Message("No Job. Reason: " + ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
@@ -294,12 +299,12 @@ namespace ToolsForHaul.Utilities
                 return (Job)null;
             }
             // Collect item
-                Trace.AppendLine("Start Collect item");
+            Trace.AppendLine("Start Collect item");
 
             //ClosestThing_Global_Reachable Configuration
             Predicate<Thing> predicate = item
                 => !job.targetQueueA.Contains(item) && !FireUtility.IsBurning(item) //&& !deniedThings.Contains(item)
-                   && (cart != null && cart.allowances.Allows(item))
+                   && ( cart.allowances.Allows(item))
                    && pawn.CanReserveAndReach(item, PathEndMode.Touch, DangerUtility.NormalMaxDanger(pawn));
 
             IntVec3 searchPos;
@@ -333,6 +338,13 @@ namespace ToolsForHaul.Utilities
                     maxDistance,
                     predicate);
 
+                // Use haulThing
+                if (haulThing != null)
+                {
+                    closestHaulable = haulThing;
+                }
+
+
                 //Check it can be hauled
                 /*
                 if ((closestHaulable is UnfinishedThing && ((UnfinishedThing)closestHaulable).BoundBill != null)
@@ -347,20 +359,29 @@ namespace ToolsForHaul.Utilities
                 }
 
                 //Find StorageCell
-                IntVec3 storageCell = FindStorageCell(pawn, closestHaulable, pawn.Map, job.targetQueueB);
-                if (storageCell == IntVec3.Invalid)
+                StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(closestHaulable.Position, closestHaulable);
+                IntVec3 storeCell = IntVec3.Invalid;
+                if (!StoreUtility.TryFindBestBetterStoreCellFor(closestHaulable, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell, true))
                 {
+                Log.Message("HaulWithTools Find Storage NoEmptyPlaceLowerTrans");
+                    JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
                     break;
                 }
 
+                //  IntVec3 storageCell = FindStorageCell(pawn, closestHaulable, pawn.Map, job.targetQueueB);
+                //  if (storageCell == IntVec3.Invalid)
+                //  {
+                //      break;
+                //  }
+
                 //Add Queue & Reserve
                 job.targetQueueA.Add(closestHaulable);
-                job.targetQueueB.Add(storageCell);
+                job.targetQueueB.Add(storeCell);
                 reservedMaxItem++;
             }
 
             Trace.AppendLine("Elapsed Time");
-            Trace.stopWatchStop();
+            Trace.StopWatchStop();
 
             // Check job is valid
             if (!job.targetQueueA.NullOrEmpty() && reservedMaxItem + job.targetQueueA.Count > thresholdItem
@@ -371,7 +392,7 @@ namespace ToolsForHaul.Utilities
                 return job;
             }
 
-            if (cart != null && job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())
+            if (job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())
             {
                 Trace.AppendLine("In DismountInBase: ");
                 return DismountInBase(pawn, cart);
@@ -387,6 +408,7 @@ namespace ToolsForHaul.Utilities
             }
             else if (job.targetQueueB.NullOrEmpty())
             {
+                Log.Message("HaulWithTools NoEmptyPlaceLowerTrans");
                 JobFailReason.Is(NoEmptyPlaceLowerTrans);
             }
             Trace.AppendLine("No Job. Reason: " + JobFailReason.Reason);

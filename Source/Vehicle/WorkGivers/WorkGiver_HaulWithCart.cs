@@ -76,11 +76,20 @@ namespace ToolsForHaul.WorkGivers
                 return null;
             }
 
-            if (cart.Map.slotGroupManager.AllGroupsListInPriorityOrder.Count == 0)
+            StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(t.Position, t);
+            IntVec3 storeCell;
+            if (!StoreUtility.TryFindBestBetterStoreCellFor(t, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell, true))
             {
+                Log.Message("WorkGiver_HaulWithCart NoEmptyPlaceLowerTrans");
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
                 return null;
             }
+
+            // if (cart.Map.slotGroupManager.AllGroupsListInPriorityOrder.Count == 0)
+            // {
+            //     JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
+            //     return null;
+            // }
 
             if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableVehicle(pawn, cart))
             {

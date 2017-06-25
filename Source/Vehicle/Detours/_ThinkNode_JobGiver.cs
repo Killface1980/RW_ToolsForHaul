@@ -32,16 +32,14 @@ namespace Verse.AI
                     pawn.mindState.maxDistToSquadFlag = jobParams.maxDistToSquadFlag;
                 }
                 Job job = this.TryGiveJob(pawn);
+
                 if (job == null)
                 {
                     result = ThinkResult.NoJob;
-                }
-                else
-                {
 
+                    //Modded
                     if (pawn.mindState.IsIdle)
                     {
-                        //Modded
                         if (ToolsForHaulUtility.IsDriver(pawn))
                         {
                             try
@@ -52,10 +50,26 @@ namespace Verse.AI
                             {
                                 Debug.Log(argumentNullException);
                             }
+                            result = new ThinkResult(job, this, null);
+
                         }
                     }
-                    else if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Humanlike && pawn.RaceProps.IsFlesh)
+                }
+                else
+                {
+
+                    if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Humanlike && pawn.RaceProps.IsFlesh)
                     {
+                        if (job.def == JobDefOf.LayDown || job.def == JobDefOf.Arrest || job.def == JobDefOf.DeliverFood
+                            || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.EnterTransporter
+                            || job.def == JobDefOf.Ingest || job.def == JobDefOf.ManTurret
+                            || job.def == JobDefOf.Slaughter || job.def == JobDefOf.VisitSickPawn || job.def == JobDefOf.WaitWander || job.def == JobDefOf.DoBill)
+                        {
+                            if (ToolsForHaulUtility.IsDriver(pawn))
+                            {
+                                job = ToolsForHaulUtility.DismountInBase(pawn, CurrentVehicle[pawn]);
+                            }
+                        }
                         if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
                         {
                             if (ToolsForHaulUtility.Cart.Count > 0 || ToolsForHaulUtility.Cart.Count > 0)

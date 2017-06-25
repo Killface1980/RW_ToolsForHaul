@@ -92,7 +92,7 @@ namespace ToolsForHaul
 
         public bool IsCurrentlyMotorized()
         {
-            return (this.refuelableComp != null && this.refuelableComp.HasFuel)
+            return (this.RefuelableComp != null && this.RefuelableComp.HasFuel)
                    || this.VehicleComp.MotorizedWithoutFuel();
         }
 
@@ -121,13 +121,13 @@ namespace ToolsForHaul
 
         public CompMountable MountableComp => this.GetComp<CompMountable>();
 
-        public CompRefuelable refuelableComp => this.GetComp<CompRefuelable>();
+        public CompRefuelable RefuelableComp => this.GetComp<CompRefuelable>();
 
-        public CompExplosive explosiveComp => this.GetComp<CompExplosive>();
+        public CompExplosive ExplosiveComp => this.GetComp<CompExplosive>();
 
-        public CompBreakdownable breakdownableComp => this.GetComp<CompBreakdownable>();
+        public CompBreakdownable BreakdownableComp => this.GetComp<CompBreakdownable>();
 
-        public CompAxles axlesComp => this.GetComp<CompAxles>();
+        public CompAxles AxlesComp => this.GetComp<CompAxles>();
 
         public CompVehicle VehicleComp => this.GetComp<CompVehicle>();
 
@@ -241,7 +241,7 @@ namespace ToolsForHaul
 
             foreach (Gizmo baseGizmo in base.GetGizmos()) yield return baseGizmo;
 
-            if (this.explosiveComp != null)
+            if (this.ExplosiveComp != null)
             {
                 Command_Action command_Action = new Command_Action
                 {
@@ -249,7 +249,7 @@ namespace ToolsForHaul
                     defaultDesc = "CommandDetonateDesc".Translate(),
                     action = Command_Detonate
                 };
-                if (this.explosiveComp.wickStarted)
+                if (this.ExplosiveComp.wickStarted)
                 {
                     command_Action.Disable();
                 }
@@ -273,7 +273,7 @@ namespace ToolsForHaul
 
         private void Command_Detonate()
         {
-            this.explosiveComp.StartWick();
+            this.ExplosiveComp.StartWick();
         }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
@@ -456,15 +456,15 @@ namespace ToolsForHaul
 
             if (this.MountableComp.IsMounted)
             {
-                if (this.refuelableComp != null)
+                if (this.RefuelableComp != null)
                 {
                     if (this.MountableComp.Driver.Faction != Faction.OfPlayer)
                         if (!this.fueledByAI)
                         {
-                            if (this.refuelableComp.FuelPercentOfMax < 0.550000011920929)
-                                this.refuelableComp.Refuel(
+                            if (this.RefuelableComp.FuelPercentOfMax < 0.550000011920929)
+                                this.RefuelableComp.Refuel(
                                     ThingMaker.MakeThing(
-                                        this.refuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
+                                        this.RefuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
                             else this.fueledByAI = true;
                         }
                 }
@@ -472,10 +472,10 @@ namespace ToolsForHaul
                 if (this.MountableComp.Driver.pather.Moving)
                 {
                     // || mountableComp.Driver.drafter.pawn.pather.Moving)
-                    if (!this.MountableComp.Driver.stances.FullBodyBusy && this.axlesComp.HasAxles())
+                    if (!this.MountableComp.Driver.stances.FullBodyBusy && this.AxlesComp.HasAxles())
                     {
-                        this.axlesComp.wheelRotation += this.VehicleComp.currentDriverSpeed / 10f; // 3f
-                        this.axlesComp.tick_time += 0.01f * this.VehicleComp.currentDriverSpeed / 5f;
+                        this.AxlesComp.wheelRotation += this.VehicleComp.currentDriverSpeed / 10f; // 3f
+                        this.AxlesComp.tick_time += 0.01f * this.VehicleComp.currentDriverSpeed / 5f;
                     }
                 }
 
@@ -485,16 +485,16 @@ namespace ToolsForHaul
                     {
                         if (!this.MountableComp.Driver.stances.FullBodyBusy)
                         {
-                            if (this.refuelableComp != null) this.refuelableComp.Notify_UsedThisTick();
+                            if (this.RefuelableComp != null) this.RefuelableComp.Notify_UsedThisTick();
                             this.damagetick -= 1;
 
-                            if (this.axlesComp.HasAxles())
+                            if (this.AxlesComp.HasAxles())
                                 this.VehicleComp.currentDriverSpeed =
                                     ToolsForHaulUtility.GetMoveSpeed(this.MountableComp.Driver);
                         }
 
-                        if (this.breakdownableComp != null && this.breakdownableComp.BrokenDown
-                            || this.refuelableComp != null && !this.refuelableComp.HasFuel) this.VehicleComp.VehicleSpeed = 0.75f;
+                        if (this.BreakdownableComp != null && this.BreakdownableComp.BrokenDown
+                            || this.RefuelableComp != null && !this.RefuelableComp.HasFuel) this.VehicleComp.VehicleSpeed = 0.75f;
                         else this.VehicleComp.VehicleSpeed = this.DesiredSpeed;
                         this.tickCheck = Find.TickManager.TicksGame;
                     }
@@ -514,9 +514,9 @@ namespace ToolsForHaul
             {
                 if (Find.TickManager.TicksGame > this._tankSpillTick)
                 {
-                    if (this.refuelableComp.FuelPercentOfMax > this._tankHitPos)
+                    if (this.RefuelableComp.FuelPercentOfMax > this._tankHitPos)
                     {
-                        this.refuelableComp.ConsumeFuel(0.15f);
+                        this.RefuelableComp.ConsumeFuel(0.15f);
 
                         FilthMaker.MakeFilth(this.Position, Map, this.fuelDefName, this.LabelCap);
                         this._tankSpillTick = Find.TickManager.TicksGame + 15;

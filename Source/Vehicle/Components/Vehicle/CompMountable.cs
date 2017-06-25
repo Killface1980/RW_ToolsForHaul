@@ -266,9 +266,9 @@ using Combat_Realism;
                                 || this.Driver.CurJob.def == JobDefOf.Slaughter
                                 || this.Driver.CurJob.def == JobDefOf.Milk || this.Driver.CurJob.def == JobDefOf.Shear
                                 || this.Driver.CurJob.def == JobDefOf.Train || this.Driver.CurJob.def == JobDefOf.Mate
-                            //    || this.Driver.health.NeedsMedicalRest || this.Driver.health.PrefersMedicalRest
+                                || this.Driver.health.HasHediffsNeedingTend()
                             )
-                            && this.Driver.Position.Roofed(Driver.Map))
+                            && this.Driver.Position.Roofed(this.Driver.Map))
                         {
                             this.parent.Position = this.Position.ToIntVec3();
                             this.parent.Rotation = this.Driver.Rotation;
@@ -302,8 +302,6 @@ using Combat_Realism;
                             {
                                 if (hitPointsPercent < 0.65f
                                     || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
-                                    || ((this.parent as Vehicle_Cart) != null
-                                        && (this.parent as Vehicle_Cart).VehicleComp.tankLeaking)
                                     || ((this.parent as Vehicle_Cart) != null
                                         && (this.parent as Vehicle_Cart).VehicleComp.tankLeaking)
                                     || !refuelableComp.HasFuel)
@@ -348,9 +346,6 @@ using Combat_Realism;
             }
         }
 
-        /// <summary>
-        /// The dismount.
-        /// </summary>
         public void Dismount()
         {
 #if CR
@@ -381,20 +376,11 @@ using Combat_Realism;
 
             this.Driver = null;
 
-            if (this.SustainerAmbient != null)
-            {
-                this.SustainerAmbient.End();
-            }
+            this.SustainerAmbient?.End();
 
             // Find.ListerBuildings.Add(parent as Building);
         }
 
-        /// <summary>
-        /// The dismount at.
-        /// </summary>
-        /// <param name="dismountPos">
-        /// The dismount pos.
-        /// </param>
         public void DismountAt(IntVec3 dismountPos)
         {
             // if (Driver.Position.IsAdjacentTo8WayOrInside(dismountPos, Driver.Rotation, new IntVec2(1,1)))
@@ -427,13 +413,9 @@ using Combat_Realism;
             {
                 if (ToolsForHaulUtility.GetCartByDriver(pawn) != null)
                 {
-                    ToolsForHaulUtility.GetCartByDriver(pawn).TryGetComp<CompMountable>().Dismount();
+                    ToolsForHaulUtility.GetCartByDriver(pawn).MountableComp.Dismount();
                 }
 
-                if (ToolsForHaulUtility.GetTurretByDriver(pawn) != null)
-                {
-                    ToolsForHaulUtility.GetTurretByDriver(pawn).MountableComp.Dismount();
-                }
             }
 
             this.Driver = pawn;

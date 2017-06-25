@@ -30,8 +30,8 @@ namespace ToolsForHaul
             stopWatch.Reset();
         }
 
-        [Conditional("DEBUG")]public static void stopWatchStart() { stopWatch.Start(); }
-        [Conditional("DEBUG")]public static void stopWatchStop() { stopWatch.Stop(); }
+        [Conditional("DEBUG")]public static void StopWatchStart() { stopWatch.Start(); }
+        [Conditional("DEBUG")]public static void StopWatchStop() { stopWatch.Stop(); }
         [Conditional("DEBUG")]
         public static void DebugWriteHaulingPawn(Pawn pawn)
         {
