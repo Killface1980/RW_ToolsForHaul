@@ -80,20 +80,31 @@
   <!-- ============= Hauling ============= -->
 
   <WorkGiverDef>
-    <defName>Refuel</defName>
-    <label>refuel fuelable buildings</label>
-    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_Refuel</giverClass>
+    <defName>HaulCorpsesWithCart</defName>
+    <label>haul corpses with cart</label>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HaulCorpses_Vehicle</giverClass>
+    <workType>Hauling</workType>
+    <verb>haul with cart</verb>
+    <gerund>hauling</gerund>
+    <priorityInType>85</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  
+  <WorkGiverDef>
+    <defName>Refuel vehicle</defName>
+    <label>refuel motorized vehicles</label>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_Refuel_Vehicle</giverClass>
     <workType>Hauling</workType>
     <verb>refuel</verb>
     <gerund>refueling</gerund>
-    <priorityInType>60</priorityInType>
+    <priorityInType>86</priorityInType>
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
-
- 
 
   <!-- ============= Driver ============= -->
  
@@ -101,7 +112,7 @@
     <defName>HaulWithCart</defName>
     <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HaulWithCart</giverClass>
     <workType>Hauling</workType>
-    <priorityInType>49</priorityInType>
+    <priorityInType>15</priorityInType>
     <scanThings>true</scanThings>
     <verb>haul with cart</verb>
     <gerund>hauling with cart</gerund>

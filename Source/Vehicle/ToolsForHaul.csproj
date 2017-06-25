@@ -82,19 +82,20 @@
     <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
     <Compile Include="Defs\HaulJobDefOf.cs" />
-    <Compile Include="JobGivers\JobGiver_Steal.cs" />
+    <Compile Include="JobGivers\JobGiver_StealVehicle.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
-    <Compile Include="RightTools.cs" />
+    <Compile Include="RightVehicle.cs" />
     <Compile Include="Things\Textures.cs" />
     <Compile Include="Things\Turret\Command_VerbTarget.cs" />
-    <Compile Include="Things\Turret\Vanilla\VehicleTurretTop.cs" />
-    <Compile Include="Things\Turret\Vanilla\Vehicle_Turret.cs" />
-    <Compile Include="Things\Turret\Vanilla\Vehicle_TurretGun.cs" />
+    <Compile Include="Things\Turret\Vanilla\CartGunTop.cs" />
+    <Compile Include="Things\Vehicle_Cart.cs" />
+    <Compile Include="Things\Turret\Vanilla\Vehicle_CartGun.cs" />
     <None Include="Toils\Class1.cs" />
+    <Compile Include="WorkGivers\WorkGiver_HaulCorpses_Vehicle.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
-    <None Include="CompInjectionSet.cs" />
-    <None Include="DefInjectionQualifier.cs" />
-    <Compile Include="_inactive\_TESTING\HeadLights.cs" />
+    <Compile Include="_inactive\_TESTING\Class1.cs" />
+    <Compile Include="_inactive\_TESTING\Class2.cs" />
+    <None Include="_inactive\_TESTING\HeadLights.cs" />
     <Compile Include="Alerts\Alert_TankIsLeaking.cs" />
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
     <None Include="_inactive\Class1.cs" />
@@ -104,12 +105,11 @@
     <Compile Include="Components\Vehicle\CompVehicle.cs" />
     <None Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
-    <None Include="ModHelperDef.cs" />
     <Compile Include="Things\IncendiaryFuel.cs" />
     <None Include="_inactive\CompWeaponExtensions.cs" />
     <None Include="_inactive\RA_PawnRenderer.cs" />
     <None Include="_inactive\CompTool.cs" />
-    <Compile Include="JobGivers\JobGiver_Kidnap.cs" />
+    <None Include="JobGivers\JobGiver_Kidnap.cs" />
     <Compile Include="Detours\_ThinkNode_JobGiver.cs" />
     <Compile Include="Components\MapComponent_ToolsForHaul.cs" />
     <Compile Include="NoCCL\Detours.cs" />
@@ -134,7 +134,7 @@
     <Compile Include="JobDrivers\JobDriver_Mount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Toils\Toils_Collect.cs" />
-    <Compile Include="Things\Vehicle_Cart.cs" />
+    <None Include="Things\Vehicle_CartOLD.cs" />
     <None Include="Designators\Designator_Board.cs" />
     <None Include="Designators\Designator_Move.cs" />
     <None Include="Things\Vehicle_Saddle.cs" />
@@ -176,6 +176,7 @@
     </Content>
     <Content Include="..\..\Defs\StatDefs\Stats_Vehicle.xml">
       <Link>Defs\StatDefs\Stats_Vehicle.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingCategoryDefs\RA_ThingCategories.xml">
       <Link>Defs\ThingDefs\RA_ThingCategories.xml</Link>

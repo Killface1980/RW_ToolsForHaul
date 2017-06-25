@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <DutyDef>
+    <defName>Kidnap</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_StealVehicle" />
+        <li Class="JobGiver_Kidnap" />
+        <li Class="JobGiver_ExitMapBest">
+          <defaultLocomotion>Jog</defaultLocomotion>
+          <jobMaxDuration>200</jobMaxDuration>
+          <forceCanDig>true</forceCanDig>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>Steal</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_StealVehicle" />
+        <li Class="JobGiver_Steal" />
+        <li Class="JobGiver_ExitMapBest">
+          <defaultLocomotion>Jog</defaultLocomotion>
+          <jobMaxDuration>200</jobMaxDuration>
+          <forceCanDig>true</forceCanDig>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>PrisonerEscape</defName>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <thinkNode Class="ThinkNode_Tagger">
+      <tagToGive>Escaping</tagToGive>
+      <subNodes>
+        <!-- Take combat enhancing drugs -->
+        <li Class="JobGiver_TakeCombatEnhancingDrug" />
+
+        <li Class="ThinkNode_ConditionalHasDutyPawnTarget">
+          <subNodes>
+            <!-- Follow and defend leader -->
+            <li Class="JobGiver_AIFollowEscortee"/>
+            <li Class="JobGiver_AIDefendEscortee">
+              <targetAcquireRadius>15</targetAcquireRadius>
+              <targetKeepRadius>18</targetKeepRadius>
+              <needLOSToAcquireNonPawnTargets>true</needLOSToAcquireNonPawnTargets>
+            </li>
+            <li Class="JobGiver_WanderNearDutyLocation">
+              <wanderRadius>3</wanderRadius>
+            </li>
+          </subNodes>
+        </li>
+
+        <!-- Leader -->
+
+        <!-- Fight nearby enemies -->
+        <li Class="JobGiver_AIFightEnemies">
+          <targetAcquireRadius>14</targetAcquireRadius>
+          <targetKeepRadius>17</targetKeepRadius>
+          <needLOSToAcquireNonPawnTargets>true</needLOSToAcquireNonPawnTargets>
+        </li>
+
+        <!-- Escape -->
+        <li Class="JobGiver_GotoTravelDestination">
+          <locomotionUrgency>Jog</locomotionUrgency>
+          <jobMaxDuration>500</jobMaxDuration>
+        </li>
+        <li Class="JobGiver_WanderNearDutyLocation">
+          <wanderRadius>3</wanderRadius>
+        </li>
+      </subNodes>
+    </thinkNode>
+    <constantThinkNode Class="ThinkNode_Tagger">
+      <tagToGive>Escaping</tagToGive>
+      <subNodes>
+        <!-- Try to pick up nearby weapons -->
+        <li Class="JobGiver_PickUpOpportunisticWeapon" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_StealVehicle" />
+      </subNodes>
+    </constantThinkNode>
+    
+  </DutyDef>
+
+  <DutyDef>
+    <defName>PrisonerEscapeSapper</defName>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <thinkNode Class="ThinkNode_Tagger">
+      <tagToGive>Escaping</tagToGive>
+      <subNodes>
+        <!-- Take combat enhancing drugs -->
+        <li Class="JobGiver_TakeCombatEnhancingDrug" />
+
+        <!-- Fight nearby enemies -->
+        <li Class="JobGiver_AIFightEnemies">
+          <targetAcquireRadius>12</targetAcquireRadius>
+          <targetKeepRadius>15</targetKeepRadius>
+          <needLOSToAcquireNonPawnTargets>true</needLOSToAcquireNonPawnTargets>
+        </li>
+
+        <!-- Dig out of the colony to get to the exit point -->
+        <li Class="JobGiver_AISapper" />
+
+        <!-- Wait until the lord tells to exit the map -->
+        <li Class="JobGiver_WanderNearDutyLocation">
+          <wanderRadius>3</wanderRadius>
+        </li>
+      </subNodes>
+    </thinkNode>
+    <constantThinkNode Class="ThinkNode_Tagger">
+      <tagToGive>Escaping</tagToGive>
+      <subNodes>
+        <!-- Try to pick up nearby weapons -->
+        <li Class="JobGiver_PickUpOpportunisticWeapon">
+          <preferBuildingDestroyers>true</preferBuildingDestroyers>
+          <!-- prefer building destroyers (e.g. grenades) because I'm a sapper -->
+        </li>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_StealVehicle" />
+      </subNodes>
+    </constantThinkNode>
+  </DutyDef>
+
+
+</Defs>

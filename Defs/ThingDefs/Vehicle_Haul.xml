@@ -33,6 +33,7 @@
       <bed_humanlike>false</bed_humanlike>
       <isInert>true</isInert>
       <deconstructible>false</deconstructible>
+      <alwaysDeconstructible>false</alwaysDeconstructible>
       <isJoySource>true</isJoySource>
     </building>
     <damageMultipliers>

@@ -31,9 +31,14 @@ namespace ToolsForHaul.ITabs
             get
             {
                 Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
+                if (cart == null) return false;
 
-                // Vehicle_Turret vehicleTurret = Find.Selector.SelectedObjects.First() as Vehicle_Turret;
-                return cart != null; // || vehicleTurret != null;
+                if (cart != null)
+                {
+                    if (cart.Faction == null) return false;
+                    if (cart.Faction == Faction.OfPlayer) return true;
+                }
+                return false;
             }
         }
 

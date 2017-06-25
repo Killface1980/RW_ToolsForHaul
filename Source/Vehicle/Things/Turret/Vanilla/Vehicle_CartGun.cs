@@ -17,7 +17,7 @@ namespace ToolsForHaul
     using Verse.Sound;
 
     [StaticConstructorOnStartup]
-    public class Vehicle_TurretGun : Vehicle_Turret
+    public class Vehicle_CartGun : Vehicle_Cart
     {
         public static Material ForcedTargetLineMat = MaterialPool.MatFrom(
             GenDraw.LineTexPath,
@@ -36,15 +36,15 @@ namespace ToolsForHaul
 
         protected CompPowerTrader powerComp;
 
-        protected VehicleTurretTop top;
+        protected CartGunTop top;
 
         private Thing gunInt;
 
         private bool holdFire;
 
-        public Vehicle_TurretGun()
+        public Vehicle_CartGun()
         {
-            this.top = new VehicleTurretTop(this);
+            this.top = new CartGunTop(this);
         }
 
         public override Verb AttackVerb => this.GunCompEq.verbTracker.PrimaryVerb;
@@ -427,6 +427,11 @@ namespace ToolsForHaul
                 {
                     return false;
                 }
+            }
+
+            if (this.MountableComp.IsPrisonBreaking && t.Faction != Faction.OfPlayer)
+            {
+                return false;
             }
             return true;
         }

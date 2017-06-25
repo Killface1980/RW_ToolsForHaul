@@ -23,23 +23,14 @@ namespace ToolsForHaul.StatWorkers
 
                 if (thisPawn?.RaceProps.intelligence >= Intelligence.ToolUser)
                 {
-                    if (GameComponent_ToolsForHaul.CurrentVehicle.ContainsKey(thisPawn))
+                    if (GameComponentToolsForHaul.CurrentVehicle.ContainsKey(thisPawn))
                     {
-                        Vehicle_Cart vehicle_Cart = GameComponent_ToolsForHaul.CurrentVehicle[thisPawn] as Vehicle_Cart;
-                        if (vehicle_Cart != null)
-                            if (vehicle_Cart.MountableComp.IsMounted && vehicle_Cart.MountableComp.Driver == thisPawn)
+                        Vehicle_Cart vehicleCart = GameComponentToolsForHaul.CurrentVehicle[req.Thing as Pawn] as Vehicle_Cart;
+                        if (vehicleCart != null)
+                            if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Driver == thisPawn)
                             {
                                 stringBuilder.AppendLine();
-                                stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Cart.VehicleComp.VehicleSpeed);
-                                return stringBuilder.ToString();
-                            }
-
-                        Vehicle_Turret vehicle_Turret = GameComponent_ToolsForHaul.CurrentVehicle[req.Thing as Pawn] as Vehicle_Turret;
-                        if (vehicle_Turret != null)
-                            if (vehicle_Turret.MountableComp.IsMounted && vehicle_Turret.MountableComp.Driver == thisPawn)
-                            {
-                                stringBuilder.AppendLine();
-                                stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicle_Turret.vehicleComp.VehicleSpeed);
+                                stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicleCart.VehicleComp.VehicleSpeed);
                                 return stringBuilder.ToString();
                             }
                     }
@@ -92,38 +83,20 @@ namespace ToolsForHaul.StatWorkers
         {
             float result = 1f;
 
-            if (GameComponent_ToolsForHaul.CurrentVehicle.ContainsKey(thisPawn))
+            if (GameComponentToolsForHaul.CurrentVehicle.ContainsKey(thisPawn))
             {
-                Vehicle_Cart vehicleCart = GameComponent_ToolsForHaul.CurrentVehicle[thisPawn] as Vehicle_Cart;
-                if (vehicleCart != null)
-                {
-                    if (vehicleCart.MountableComp.IsMounted && !vehicleCart.MountableComp.Driver.RaceProps.Animal && vehicleCart.MountableComp.Driver == thisPawn)
-                    {
-                        if (vehicleCart.VehicleComp.IsCurrentlyMotorized())
-                        {
-                            result = Mathf.Clamp(vehicleCart.VehicleComp.VehicleSpeed, 2f, 100f);
-                        }
-                        else
-                        {
-                            result = Mathf.Clamp(vehicleCart.VehicleComp.VehicleSpeed, 0.5f, 1f);
-                        }
-
-                        return result;
-                    }
-                }
-
-                Vehicle_Turret vehicleTank = GameComponent_ToolsForHaul.CurrentVehicle[thisPawn] as Vehicle_Turret;
+                Vehicle_Cart vehicleTank = GameComponentToolsForHaul.CurrentVehicle[thisPawn] as Vehicle_Cart;
                 if (vehicleTank != null)
                 {
                     if (vehicleTank.MountableComp.IsMounted && !vehicleTank.MountableComp.Driver.RaceProps.Animal && vehicleTank.MountableComp.Driver == thisPawn)
                     {
-                        if (vehicleTank.vehicleComp.IsCurrentlyMotorized())
+                        if (vehicleTank.VehicleComp.IsCurrentlyMotorized())
                         {
-                            result = Mathf.Clamp(vehicleTank.vehicleComp.VehicleSpeed, 2f, 100f);
+                            result = Mathf.Clamp(vehicleTank.VehicleComp.VehicleSpeed, 2f, 100f);
                         }
                         else
                         {
-                            result = Mathf.Clamp(vehicleTank.vehicleComp.VehicleSpeed, 0.5f, 1f);
+                            result = Mathf.Clamp(vehicleTank.VehicleComp.VehicleSpeed, 0.5f, 1f);
                         }
 
                         return result;

@@ -12,6 +12,8 @@ using Random = UnityEngine.Random;
 
 namespace ToolsForHaul.Components
 {
+    using ppumkin.LEDTechnology.Managers;
+
     using ToolsForHaul.Components.Vehicle;
     using ToolsForHaul.Components.Vehicles;
 
@@ -78,6 +80,7 @@ namespace ToolsForHaul.Components
         private static readonly Vector3 DustOffset = new Vector3(-0.3f, 0f, -0.3f);
         private static readonly Vector3 FumesOffset = new Vector3(-0.3f, 0f, 0f);
 
+      //  private HeadLights flooder;
 
         public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
@@ -178,7 +181,7 @@ namespace ToolsForHaul.Components
 
 #if Headlights
             {
-                if (Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell - Rotation.FacingCell) < 0.4f)
+                if ( this.parent.Map.glo Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell - Rotation.FacingCell) < 0.4f)
                 {
                     // TODO Add headlights to xml & move the flooder initialization to mountableComp
                     if (mountableComp.Driver != null && !compVehicles.AnimalsCanDrive() && flooder == null)
@@ -277,7 +280,10 @@ namespace ToolsForHaul.Components
                     {
                         if (!mountableComp.Driver.stances.FullBodyBusy)
                         {
-                            if (refuelableComp != null) refuelableComp.Notify_UsedThisTick();
+                            if (refuelableComp != null)
+                            {
+                                refuelableComp.Notify_UsedThisTick();
+                            }
 
                             if (axlesComp.HasAxles())
                             {

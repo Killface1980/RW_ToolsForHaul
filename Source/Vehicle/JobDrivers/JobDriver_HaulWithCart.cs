@@ -6,6 +6,8 @@ using Verse.AI;
 
 namespace ToolsForHaul.JobDrivers
 {
+    using ToolsForHaul.Components.Vehicle;
+
     public class JobDriver_HaulWithCart : JobDriver
     {
         // Constants
@@ -15,17 +17,17 @@ namespace ToolsForHaul.JobDrivers
 
         public override string GetReport()
         {
-            Thing hauledThing = this.TargetThingA;
-            if (this.TargetThingA == null)  // Haul Cart
-                hauledThing = this.CurJob.targetC.Thing;
-            this.FailOn(() => !this.pawn.CanReach(hauledThing, PathEndMode.ClosestTouch, Danger.Some));
+            Thing hauledThing = null;
+            hauledThing = TargetThingA;
+            if (TargetThingA == null)  //Haul Cart
+                hauledThing = CurJob.targetC.Thing;
             IntVec3 destLoc = IntVec3.Invalid;
             string destName = null;
             SlotGroup destGroup = null;
 
-            if (this.pawn.jobs.curJob.targetB != null)
+            if (pawn.jobs.curJob.targetB != null)
             {
-                destLoc = this.pawn.jobs.curJob.targetB.Cell;
+                destLoc = pawn.jobs.curJob.targetB.Cell;
                 destGroup = destLoc.GetSlotGroup(Map);
             }
 
@@ -43,107 +45,75 @@ namespace ToolsForHaul.JobDrivers
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-      //    this.FailOnDestroyedNullOrForbidden(TargetIndex.A);
-      //    this.FailOnDestroyedNullOrForbidden(TargetIndex.B);
-      //    this.FailOnDestroyedNullOrForbidden(TargetIndex.C);
-
-            this.FailOn(() => !this.pawn.RaceProps.IsFlesh || !this.pawn.RaceProps.Humanlike);
-
-        //  yield return Toils_Reserve.Reserve(TargetIndex.A, 1, -1, null);
-        //  yield return Toils_Reserve.ReserveQueue(TargetIndex.A, 1, -1, null);
-        //  yield return Toils_Reserve.Reserve(TargetIndex.B, 1, -1, null);
-        //  yield return Toils_Reserve.ReserveQueue(TargetIndex.B, 1, -1, null);
-        //  yield return Toils_Reserve.Reserve(TargetIndex.C, 1, -1, null);
-        //  yield return Toils_Reserve.ReserveQueue(TargetIndex.C, 1, -1, null);
-
             Vehicle_Cart cart = this.CurJob.GetTarget(CartInd).Thing as Vehicle_Cart;
 
             ///
-            // Set fail conditions
+            //Set fail conditions
             ///
 
-            // Note we only fail on forbidden if the target doesn't start that way
-            // This helps haul-aside jobs on forbidden items
-            if (!this.TargetThingA.IsForbidden(this.pawn.Faction)) this.FailOnForbidden(CartInd);
+            this.FailOnDestroyedNullOrForbidden(CartInd);
+            //Note we only fail on forbidden if the target doesn't start that way
+            //This helps haul-aside jobs on forbidden items
+            if (!TargetThingA.IsForbidden(pawn.Faction))
+                this.FailOnForbidden(CartInd);
 
 
             ///
-            // Define Toil
+            //Define Toil
             ///
 
             Toil findStoreCellForCart = Toils_Cart.FindStoreCellForCart(CartInd);
-            Toil checkCartEmpty = Toils_Jump.JumpIf(findStoreCellForCart, () => cart.innerContainer.Count <= 0);
-
-            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(
-                findStoreCellForCart,
-                () => this.CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
-            Toil checkHaulableEmpty = Toils_Jump.JumpIf(
-                checkStoreCellEmpty,
-                () => this.CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
+            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(findStoreCellForCart, () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
+            Toil checkHaulableEmpty = Toils_Jump.JumpIf(checkStoreCellEmpty, () => CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
 
             ///
-            // Toils Start
+            //Toils Start
             ///
 
-            // Reserve thing to be stored and storage cell 
-       //   yield return Toils_Reserve.Reserve(CartInd);
-       //   yield return Toils_Reserve.ReserveQueue(HaulableInd);
-       //   yield return Toils_Reserve.ReserveQueue(StoreCellInd);
+            //Reserve thing to be stored and storage cell 
+            yield return Toils_Reserve.Reserve(CartInd);
+            yield return Toils_Reserve.ReserveQueue(HaulableInd);
+            yield return Toils_Reserve.ReserveQueue(StoreCellInd);
 
-            // JumpIf already mounted
-            yield return Toils_Jump.JumpIf(
-                checkHaulableEmpty,
-                () =>
-                    {
-                        if (cart.MountableComp.Driver == this.pawn)
-                        {
-                            return true;
-                        }
-                        return false;
-                    });
+            //JumpIf already mounted
+            yield return Toils_Jump.JumpIf(checkHaulableEmpty, () => { return (cart.GetComp<CompMountable>().Driver == pawn) ? true : false; });
 
-            // Mount on Target
-            yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch);
+            //Mount on Target
+            yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch)
+                .FailOnDestroyedNullOrForbidden(CartInd);
             yield return Toils_Cart.MountOn(CartInd);
 
-            // JumpIf checkStoreCellEmpty
+            //JumpIf checkStoreCellEmpty
             yield return checkHaulableEmpty;
+
+            //Collect TargetQueue
             {
-                // Collect TargetQueue
                 Toil extractA = Toils_Collect.Extract(HaulableInd);
                 yield return extractA;
 
-                Toil gotoThing =
-                    Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch);
-
-
-
-                yield return gotoThing;
+                yield return Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch)
+                    .FailOnDestroyedNullOrForbidden(HaulableInd);
 
                 yield return Toils_Collect.CollectInCarrier(CartInd, HaulableInd);
 
-                yield return Toils_Collect.CheckDuplicates(gotoThing, CartInd, HaulableInd);
+                yield return Toils_Collect.CheckDuplicates(extractA, CartInd, HaulableInd);
 
                 yield return Toils_Jump.JumpIfHaveTargetInQueue(HaulableInd, extractA);
             }
 
-            // JumpIf findStoreCellForCart
+            //JumpIf findStoreCellForCart
             yield return checkStoreCellEmpty;
-            {
-                // Drop TargetQueue
-                yield return checkCartEmpty;
 
+            //Drop TargetQueue
+            {
                 Toil extractB = Toils_Collect.Extract(StoreCellInd);
                 yield return extractB;
 
-                Toil gotoCell = Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch);
-                yield return gotoCell;
+                yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch);
 
                 yield return Toils_Collect.DropTheCarriedInCell(StoreCellInd, ThingPlaceMode.Direct, CartInd);
 
-                yield return Toils_Jump.JumpIfHaveTargetInQueue(StoreCellInd, checkCartEmpty);
-
-                yield return Toils_Collect.CheckNeedStorageCell(gotoCell, CartInd, StoreCellInd);
+                yield return Toils_Jump.JumpIfHaveTargetInQueue(StoreCellInd, extractB);
             }
 
             yield return findStoreCellForCart;

@@ -16,6 +16,8 @@ using Verse;
 //using RimWorld.SquadAI;  // RimWorld specific functions for squad brains 
 namespace ToolsForHaul.ITabs
 {
+    using System.Linq;
+
     using ToolsForHaul.Components.Vehicle;
     using ToolsForHaul.Components.Vehicles;
 
@@ -32,7 +34,21 @@ namespace ToolsForHaul.ITabs
             this.size = new Vector2(300f, 450f);
         }
 
-        public override bool IsVisible => true;
+        public override bool IsVisible
+        {
+            get
+            {
+                Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
+                if (cart == null) return false;
+
+                if (cart != null)
+                {
+                    if (cart.Faction == null) return false;
+                    if (cart.Faction == Faction.OfPlayer) return true;
+                }
+                return false;
+            }
+        }
 
         protected override void FillTab()
         {
@@ -82,49 +98,49 @@ namespace ToolsForHaul.ITabs
             thingLabelRect.y = storageRect.y;
             thingButtonRect.y = storageRect.y;
 
-          
-          Vehicle_Cart cart = this.SelThing as Vehicle_Cart;
-          if (cart != null)
-          {
-              foreach (Thing thing in cart.innerContainer)
-              {
-                  if (thing.ThingID.IndexOf("Human_Corpse") > -1)
-                      Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconHuman_Corpse"), 1.0f);
-                  else if (thing.ThingID.IndexOf("Corpse") > -1)
-                  {
+
+            Vehicle_Cart cart = this.SelThing as Vehicle_Cart;
+            if (cart != null)
+            {
+                foreach (Thing thing in cart.innerContainer)
+                {
+                    if (thing.ThingID.IndexOf("Human_Corpse") > -1)
+                        Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconHuman_Corpse"), 1.0f);
+                    else if (thing.ThingID.IndexOf("Corpse") > -1)
+                    {
                         Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconAnimal_Corpse"), 1.0f);
                     }
                     else
-                      Widgets.ThingIcon(thingIconRect, thing);
-                  Widgets.Label(thingLabelRect, thing.LabelCap);
-                  if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
-                  {
-                      List<FloatMenuOption> options = new List<FloatMenuOption>();
-                      options.Add(new FloatMenuOption("ThingInfo".Translate(), () =>
-                      {
-                          Find.WindowStack.Add(new Dialog_InfoCard(thing));
-                      }));
-                      options.Add(new FloatMenuOption("DropThing".Translate(), () =>
-                      {
-                          Thing dummy;
-                          cart.innerContainer.TryDrop(thing, this.SelThing.Position,cart.Map, ThingPlaceMode.Near, out dummy);
-                      }));
-          
-                      Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap));
-                  }
+                        Widgets.ThingIcon(thingIconRect, thing);
+                    Widgets.Label(thingLabelRect, thing.LabelCap);
+                    if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
+                    {
+                        List<FloatMenuOption> options = new List<FloatMenuOption>();
+                        options.Add(new FloatMenuOption("ThingInfo".Translate(), () =>
+                        {
+                            Find.WindowStack.Add(new Dialog_InfoCard(thing));
+                        }));
+                        options.Add(new FloatMenuOption("DropThing".Translate(), () =>
+                        {
+                            Thing dummy;
+                            cart.innerContainer.TryDrop(thing, this.SelThing.Position, cart.Map, ThingPlaceMode.Near, out dummy);
+                        }));
 
-                  if (Mouse.IsOver(thingLabelRect))
-                      GUI.DrawTexture(thingLabelRect, TexUI.HighlightTex);
-                  
-                  TooltipHandler.TipRegion(thingLabelRect, thing.def.LabelCap);
-                  thingIconRect.y += fieldHeight;
-                  thingLabelRect.y += fieldHeight;
-              }
+                        Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap));
+                    }
 
-              if (Widgets.ButtonText(new Rect(180f, 400f, 100f, 30f), "Drop All"))
-                  cart.innerContainer.TryDropAll(this.SelThing.Position,cart.Map, ThingPlaceMode.Near);
-          }
-          
+                    if (Mouse.IsOver(thingLabelRect))
+                        GUI.DrawTexture(thingLabelRect, TexUI.HighlightTex);
+
+                    TooltipHandler.TipRegion(thingLabelRect, thing.def.LabelCap);
+                    thingIconRect.y += fieldHeight;
+                    thingLabelRect.y += fieldHeight;
+                }
+
+                if (Widgets.ButtonText(new Rect(180f, 400f, 100f, 30f), "Drop All"))
+                    cart.innerContainer.TryDropAll(this.SelThing.Position, cart.Map, ThingPlaceMode.Near);
+            }
+
 
 
 

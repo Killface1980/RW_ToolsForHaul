@@ -57,6 +57,8 @@ using Combat_Realism;
 
         private int tickLastDoorCheck = Find.TickManager.TicksGame;
 
+        public bool IsPrisonBreaking;
+
         public Vector3 InteractionOffset => this.parent.def.interactionCellOffset.ToVector3().RotatedBy(this.lastDrawAsAngle);
 
         public bool IsMounted => this.Driver != null;
@@ -291,7 +293,7 @@ using Combat_Realism;
                         CompRefuelable refuelableComp = this.parent.TryGetComp<CompRefuelable>();
                         Job jobNew = ToolsForHaulUtility.DismountInBase(
                             this.Driver,
-                           GameComponent_ToolsForHaul.CurrentVehicle[this.Driver]);
+                           GameComponentToolsForHaul.CurrentVehicle[this.Driver]);
                         float hitPointsPercent = this.parent.HitPoints / this.parent.MaxHitPoints;
 
                         if (this.Driver.Faction == Faction.OfPlayer)
@@ -302,8 +304,8 @@ using Combat_Realism;
                                     || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
                                     || ((this.parent as Vehicle_Cart) != null
                                         && (this.parent as Vehicle_Cart).VehicleComp.tankLeaking)
-                                    || ((this.parent as Vehicle_Turret) != null
-                                        && (this.parent as Vehicle_Turret).vehicleComp.tankLeaking)
+                                    || ((this.parent as Vehicle_Cart) != null
+                                        && (this.parent as Vehicle_Cart).VehicleComp.tankLeaking)
                                     || !refuelableComp.HasFuel)
                                 {
                                     this.Driver.jobs.StartJob(jobNew, JobCondition.InterruptForced);
@@ -365,7 +367,7 @@ using Combat_Realism;
                 this.DriverComp.parent = null;
             }
 
-            GameComponent_ToolsForHaul.CurrentVehicle.Remove(this.Driver);
+            GameComponentToolsForHaul.CurrentVehicle.Remove(this.Driver);
 
             this.Driver.RaceProps.makesFootprints = true;
 
@@ -408,7 +410,10 @@ using Combat_Realism;
 
         public void MountOn(Pawn pawn)
         {
-            if (this.Driver != null) return;
+            if (this.Driver != null)
+            {
+                return;
+            }
 #if CR
             Building_Reloadable turret = (parent as Building_Reloadable);
             if (turret != null)
@@ -433,7 +438,7 @@ using Combat_Realism;
 
             this.Driver = pawn;
 
-            GameComponent_ToolsForHaul.CurrentVehicle.Add(pawn, this.parent);
+            GameComponentToolsForHaul.CurrentVehicle.Add(pawn, this.parent);
 
             if (this.Driver.RaceProps.Humanlike)
             {
@@ -447,9 +452,9 @@ using Combat_Realism;
             if (vehicleCart != null)
             {
                 // Set faction of vehicle to whoever mounts it
-                if (vehicleCart.Faction != this.Driver.Faction && vehicleCart.ClaimableBy(this.Driver.Faction))
+                if (vehicleCart.Faction != this.driver.Faction)
                 {
-                    this.parent.SetFaction(this.Driver.Faction);
+                    vehicleCart.SetFaction(this.driver.Faction, null);
                 }
 
                 if (vehicleCart.VehicleComp.IsCurrentlyMotorized())
@@ -458,23 +463,7 @@ using Combat_Realism;
                     this.SustainerAmbient = vehicleCart.VehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
                 }
 
-                return;
-            }
-
-            Vehicle_Turret vehicleTurret = this.parent as Vehicle_Turret;
-            if (vehicleTurret != null)
-            {
-                // Set faction of vehicle to whoever mounts it
-                if (vehicleTurret.Faction != this.Driver.Faction && vehicleTurret.ClaimableBy(this.Driver.Faction))
-                {
-                    this.parent.SetFaction(this.Driver.Faction);
-                }
-
-                if (vehicleTurret.vehicleComp.IsCurrentlyMotorized())
-                {
-                    SoundInfo info = SoundInfo.InMap(this.parent);
-                    this.SustainerAmbient = vehicleTurret.vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
-                }
+                this.IsPrisonBreaking = PrisonBreakUtility.IsPrisonBreaking(pawn);
 
                 return;
             }
@@ -487,16 +476,16 @@ using Combat_Realism;
                 ToolsForHaulUtility.Cart.Remove(this.parent);
             }
 
-            if (ToolsForHaulUtility.CartTurret.Contains(this.parent))
+            if (ToolsForHaulUtility.Cart.Contains(this.parent))
             {
-                ToolsForHaulUtility.CartTurret.Remove(this.parent);
+                ToolsForHaulUtility.Cart.Remove(this.parent);
             }
 
             if (this.IsMounted)
             {
-                if (GameComponent_ToolsForHaul.CurrentVehicle.ContainsKey(this.Driver))
+                if (GameComponentToolsForHaul.CurrentVehicle.ContainsKey(this.Driver))
                 {
-                    GameComponent_ToolsForHaul.CurrentVehicle.Remove(this.Driver);
+                    GameComponentToolsForHaul.CurrentVehicle.Remove(this.Driver);
                 }
             }
 
@@ -569,9 +558,9 @@ using Combat_Realism;
                             this.SustainerAmbient = compVehicle.compProps.soundAmbient.TrySpawnSustainer(info);
                         });
             }
-            if (!GameComponent_ToolsForHaul.CurrentVehicle.ContainsKey(this.Driver))
+            if (!GameComponentToolsForHaul.CurrentVehicle.ContainsKey(this.Driver))
             {
-                GameComponent_ToolsForHaul.CurrentVehicle.Add(this.Driver, parent);
+                GameComponentToolsForHaul.CurrentVehicle.Add(this.Driver, parent);
             }
 
             if (this.Driver.RaceProps.Humanlike)

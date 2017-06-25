@@ -5,15 +5,15 @@ using Verse;
 namespace ToolsForHaul
 {
 
-    public class GameComponent_ToolsForHaul : GameComponent
+    public class GameComponentToolsForHaul : GameComponent
     {
 
-        public GameComponent_ToolsForHaul()
+        public GameComponentToolsForHaul()
         {
             //
         }
 
-        public GameComponent_ToolsForHaul(Game game)
+        public GameComponentToolsForHaul(Game game)
         {
             //
         }

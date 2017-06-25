@@ -5,7 +5,7 @@ using Verse;
 
 namespace ToolsForHaul
 {
-    public class VehicleTurretTop
+    public class CartGunTop
     {
         private const float IdleTurnDegreesPerTick = 0.26f;
 
@@ -15,7 +15,7 @@ namespace ToolsForHaul
 
         private const int IdleTurnIntervalMax = 350;
 
-        private Vehicle_Turret parentTurret;
+        private Vehicle_Cart parentCart;
 
         private float curRotationInt;
 
@@ -47,17 +47,17 @@ namespace ToolsForHaul
             }
         }
 
-        public VehicleTurretTop(Vehicle_Turret ParentTurret)
+        public CartGunTop(Vehicle_Cart parentCart)
         {
-            this.parentTurret = ParentTurret;
+            this.parentCart = parentCart;
         }
 
         public void TurretTopTick()
         {
-            LocalTargetInfo currentTarget = this.parentTurret.CurrentTarget;
+            LocalTargetInfo currentTarget = this.parentCart.CurrentTarget;
             if (currentTarget.IsValid)
             {
-                float curRotation = (currentTarget.Cell.ToVector3Shifted() - this.parentTurret.DrawPos).AngleFlat();
+                float curRotation = (currentTarget.Cell.ToVector3Shifted() - this.parentCart.DrawPos).AngleFlat();
                 this.CurRotation = curRotation;
                 this.ticksUntilIdleTurn = Rand.RangeInclusive(IdleTurnIntervalMin, IdleTurnIntervalMax);
             }
@@ -100,8 +100,8 @@ namespace ToolsForHaul
         public void DrawTurret()
         {
             Matrix4x4 matrix = default(Matrix4x4);
-            matrix.SetTRS(this.parentTurret.DrawPos + Altitudes.AltIncVect, this.CurRotation.ToQuat(), Vector3.one);
-            Graphics.DrawMesh(MeshPool.plane20, matrix, this.parentTurret.def.building.turretTopMat, 0);
+            matrix.SetTRS(this.parentCart.DrawPos + Altitudes.AltIncVect, this.CurRotation.ToQuat(), Vector3.one);
+            Graphics.DrawMesh(MeshPool.plane20, matrix, this.parentCart.def.building.turretTopMat, 0);
         }
     }
 }

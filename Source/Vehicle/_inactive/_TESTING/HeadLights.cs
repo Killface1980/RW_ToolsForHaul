@@ -1,5 +1,4 @@
-﻿#if Headlinghts
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ppumkin.LEDTechnology;
 using ppumkin.LEDTechnology.GlowFlooders;
@@ -27,7 +26,7 @@ namespace ToolsForHaul
         int angleModulus;
 
 
-        public HeadLights(IntVec3 position, Rot4 orientation, Vehicle_Cart vehicleCart)
+        public HeadLights(IntVec3 position, Rot4 orientation, Vehicle_Turret vehicleCart)
         {
             
             Position = position;
@@ -350,4 +349,3 @@ namespace ToolsForHaul
 // distance++;
 
 // } while (distance < targetDistance);
-#endif

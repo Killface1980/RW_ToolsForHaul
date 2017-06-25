@@ -8,7 +8,9 @@ namespace ToolsForHaul.WorkGivers
 {
     using ToolsForHaul.Components.Vehicle;
 
-    public class WorkGiver_Refuel : WorkGiver_Scanner
+    using CompVehicle = ToolsForHaul.Components.CompVehicle;
+
+    public class WorkGiver_Refuel_Vehicle : WorkGiver_Scanner
     {
         public override ThingRequest PotentialWorkThingRequest => ThingRequest.ForGroup(ThingRequestGroup.Refuelable);
 
@@ -19,7 +21,6 @@ namespace ToolsForHaul.WorkGivers
             return this.CanRefuel(pawn, t, true) && pawn.Faction == t.Faction;
         }
 
-        // todo: patch with harmony, Postfix => vehicles fueled
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced)
         {
             Thing t2 = this.FindBestFuel(pawn, t);
@@ -31,6 +32,9 @@ namespace ToolsForHaul.WorkGivers
 
         private bool CanRefuel(Pawn pawn, Thing t, bool mustBeAutoRefuelable)
         {
+            var cart = t as Vehicle_Cart;
+            if (cart == null) return false;
+
             CompRefuelable compRefuelable = t.TryGetComp<CompRefuelable>();
             if (compRefuelable == null || compRefuelable.IsFull)
             {

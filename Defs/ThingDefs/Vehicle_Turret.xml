@@ -66,7 +66,7 @@
   <ThingDef ParentName="VehicleBase">
     <defName>VehicleCombatATV</defName>
     <label>CombatATV</label>
-    <thingClass>ToolsForHaul.Vehicle_TurretGun</thingClass>
+    <thingClass>ToolsForHaul.Vehicle_CartGun</thingClass>
     <graphicData>
       <texPath>Things/Vehicles/VehicleCombatATV/CombatATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
@@ -81,6 +81,7 @@
       <MaxHitPoints>250</MaxHitPoints>
       <Flammability>1.0</Flammability>
       <Beauty>10</Beauty>
+      <VehicleMaxItem>3</VehicleMaxItem>
       <VehicleSpeed>12</VehicleSpeed>
     </statBases>
     <comps>
@@ -138,6 +139,7 @@
     </thingCategories>
     <size>(1,1)</size>
     <inspectorTabs>
+      <li>ToolsForHaul.ITabs.Itab_Pawn_Vehicle_Storage</li>
       <li>ToolsForHaul.ITabs.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     <CostList>

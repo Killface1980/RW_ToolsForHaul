@@ -33,12 +33,12 @@ namespace ToolsForHaul.Alerts
                     }
                 }
 
-                foreach (Thing thing in ToolsForHaulUtility.CartTurret)
+                foreach (Thing thing in ToolsForHaulUtility.Cart)
                 {
-                    Vehicle_Turret vehicleTurret = (Vehicle_Turret)thing;
-                    if (vehicleTurret.Faction == Faction.OfPlayer && vehicleTurret.vehicleComp.tankLeaking)
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart.Faction == Faction.OfPlayer && vehicleCart.VehicleComp.tankLeaking)
                     {
-                        return vehicleTurret;
+                        return vehicleCart;
                     }
                 }
 

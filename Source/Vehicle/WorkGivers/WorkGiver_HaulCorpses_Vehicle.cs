@@ -1,19 +1,18 @@
-﻿using System.Collections.Generic;
-using RimWorld;
-using ToolsForHaul.Utilities;
+﻿using System;
+using System.Collections.Generic;
 using Verse;
 using Verse.AI;
 
 namespace ToolsForHaul.WorkGivers
 {
-    public class WorkGiver_HaulWithCart : WorkGiver_Scanner
+    using RimWorld;
+
+    using ToolsForHaul.Utilities;
+
+    public class WorkGiver_HaulCorpses_Vehicle : WorkGiver_Haul
     {
-
-
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-
-            // return ToolsForHaulUtility.Cart();
             return pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling();
         }
 
@@ -26,11 +25,21 @@ namespace ToolsForHaul.WorkGivers
             if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                 return true;
 
+            return pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0;
             return false;
         }
 
-        public override Job JobOnThing(Pawn pawn, Thing t, bool forced)
+        public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
+            if (!(t is Corpse))
+            {
+                return null;
+            }
+            if (!HaulAIUtility.PawnCanAutomaticallyHaulFast(pawn, t, forced))
+            {
+                return null;
+            }
+
             Vehicle_Cart cart = null;
 
             if (!HaulAIUtility.PawnCanAutomaticallyHaul(pawn, t, forced))
@@ -87,9 +96,8 @@ namespace ToolsForHaul.WorkGivers
                 return ToolsForHaulUtility.HaulWithTools(pawn, cart, t);
             }
             JobFailReason.Is(ToolsForHaulUtility.NoAvailableCart);
+
             return null;
         }
-
     }
-
 }

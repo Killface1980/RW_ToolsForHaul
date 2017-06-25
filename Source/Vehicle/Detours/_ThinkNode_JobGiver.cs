@@ -8,15 +8,16 @@ using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using static ToolsForHaul.GameComponent_ToolsForHaul;
+using static ToolsForHaul.GameComponentToolsForHaul;
 
 namespace Verse.AI
 {
     public abstract class _ThinkNode_JobGiver : ThinkNode
     {
+
         protected abstract Job TryGiveJob(Pawn pawn);
 
-          [Detour(typeof(ThinkNode_JobGiver), bindingFlags = BindingFlags.Instance | BindingFlags.Public)]
+        [Detour(typeof(ThinkNode_JobGiver), bindingFlags = BindingFlags.Instance | BindingFlags.Public)]
         public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
         {
             ThinkResult result;
@@ -37,6 +38,7 @@ namespace Verse.AI
                 }
                 else
                 {
+
                     if (pawn.mindState.IsIdle)
                     {
                         //Modded
@@ -52,6 +54,19 @@ namespace Verse.AI
                             }
                         }
                     }
+                    else if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Humanlike && pawn.RaceProps.IsFlesh)
+                    {
+                        if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
+                        {
+                            if (ToolsForHaulUtility.Cart.Count > 0 || ToolsForHaulUtility.Cart.Count > 0)
+                            {
+                                Thing vehicle = RightVehicle.GetRightVehicle(pawn, WorkTypeDefOf.Construction);
+                                if (vehicle != null && pawn.Position.DistanceToSquared(vehicle.Position) < pawn.Position.DistanceToSquared(job.targetA.Cell))
+                                    job = GetVehicle(pawn, job, WorkTypeDefOf.Construction);
+                            }
+                        }
+                    }
+
 
                     result = new ThinkResult(job, this, null);
                 }
@@ -60,61 +75,6 @@ namespace Verse.AI
             {
                 pawn.mindState.maxDistToSquadFlag = -1f;
             }
-
-            // Modded 
-
-
-            return result;
-        }
-
-        public  ThinkResult TryIssueJobPackage(Pawn pawn)
-        {
-            Job job = this.TryGiveJob(pawn);
-            bool jobNull = job == null;
-            ThinkResult result;
-
-            if (pawn.mindState.IsIdle)
-            {
-                if (ToolsForHaulUtility.IsDriver(pawn))
-                {
-                    try
-                    {
-                        job = ToolsForHaulUtility.DismountInBase(pawn, CurrentVehicle[pawn]);
-                    }
-                    catch (ArgumentNullException argumentNullException)
-                    {
-                        Debug.Log(argumentNullException);
-                    }
-                }
-            }
-
-
-
-
-            if (jobNull)
-            {
-                result = ThinkResult.NoJob;
-            }
-            else
-            {
-                if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Humanlike && pawn.RaceProps.IsFlesh)
-                {
-
-
-                    if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
-                    {
-                        if (ToolsForHaulUtility.Cart.Count > 0 || ToolsForHaulUtility.CartTurret.Count > 0)
-                        {
-                            Thing vehicle = RightTools.GetRightVehicle(pawn, WorkTypeDefOf.Construction);
-                            if (vehicle != null && pawn.Position.DistanceToSquared(vehicle.Position) < pawn.Position.DistanceToSquared(job.targetA.Cell))
-                                job = GetVehicle(pawn, job, WorkTypeDefOf.Construction);
-                        }
-                    }
-                }
-
-                result = new ThinkResult(job, this);
-            }
-
             return result;
         }
 
@@ -122,9 +82,9 @@ namespace Verse.AI
         {
             if (!ToolsForHaulUtility.IsDriver(pawn))
             {
-                if (ToolsForHaulUtility.Cart.Count > 0 || ToolsForHaulUtility.CartTurret.Count > 0)
+                if (ToolsForHaulUtility.Cart.Count > 0 || ToolsForHaulUtility.Cart.Count > 0)
                 {
-                    Thing vehicle = RightTools.GetRightVehicle(pawn, workType);
+                    Thing vehicle = RightVehicle.GetRightVehicle(pawn, workType);
                     if (vehicle != null)
                     {
                         job = new Job(HaulJobDefOf.Mount)
@@ -136,7 +96,7 @@ namespace Verse.AI
             }
             else
             {
-                if (!ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, RightTools.GetRightVehicle(pawn, workType)))
+                if (!ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, RightVehicle.GetRightVehicle(pawn, workType)))
                 {
                     job = ToolsForHaulUtility.DismountInBase(pawn, CurrentVehicle[pawn]);
                 }

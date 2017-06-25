@@ -100,7 +100,10 @@
             this.bodyLoc = this.parent.DrawPos;
 
             // Vertical
-            if (this.parent.Rotation.AsInt % 2 == 0) this.wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
+            if (this.parent.Rotation.AsInt % 2 == 0)
+            {
+                this.wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
+            }
 
             // horizontal
             if (this.HasAxles() && this.parent.Rotation.AsInt % 2 == 1)

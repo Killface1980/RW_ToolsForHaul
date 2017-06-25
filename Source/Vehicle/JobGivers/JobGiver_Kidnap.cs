@@ -43,23 +43,6 @@ namespace ToolsForHaul.JobGivers
                 }
             }
 
-            foreach (Vehicle_Turret vehicle_Cart in ToolsForHaulUtility.CartTurret)
-            {
-                if (vehicle_Cart.MountableComp.IsMounted && !vehicle_Cart.MountableComp.Driver.RaceProps.Animal && vehicle_Cart.MountableComp.Driver.ThingID == pawn.ThingID)
-                {
-                    vehicle_Cart.vehicleComp.despawnAtEdge = true;
-                    break;
-                }
-
-                if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
-                    break;
-
-                if (!vehicle_Cart.IsBurning() && vehicle_Cart.Position.InHorDistOf(pawn.Position, 20f) && !vehicle_Cart.MountableComp.IsMounted && (float)vehicle_Cart.HitPoints / vehicle_Cart.MaxHitPoints > 0.2f && vehicle_Cart.vehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed) && pawn.CanReserveAndReach(vehicle_Cart, PathEndMode.InteractionCell, Danger.Deadly))
-                {
-                    steelVehicle.Add(vehicle_Cart);
-                }
-            }
-
             if (steelVehicle.Any())
             {
                 IOrderedEnumerable<Thing> orderedEnumerable = steelVehicle.OrderBy(x => x.Position.DistanceToSquared(pawn.Position));

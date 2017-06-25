@@ -4,14 +4,14 @@ using RimWorld;
 using ToolsForHaul.Utilities;
 using UnityEngine;
 using Verse;
-using static ToolsForHaul.GameComponent_ToolsForHaul;
+using static ToolsForHaul.GameComponentToolsForHaul;
 
 namespace ToolsForHaul
 {
     [StaticConstructorOnStartup]
-    public static class RightTools
+    public static class RightVehicle
     {
-        static RightTools()
+        static RightVehicle()
         {
             PreLoad();
         }
@@ -37,15 +37,15 @@ namespace ToolsForHaul
             {
                 bool skip = false;
                 IOrderedEnumerable<Thing> orderedEnumerable =
-                    ToolsForHaulUtility.CartTurret.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
+                    ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
                 foreach (Thing thing in orderedEnumerable)
                 {
-                    Vehicle_Turret vehicleTurret = (Vehicle_Turret)thing;
-                    if (vehicleTurret == null) continue;
-                    if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleTurret)) continue;
-                    if (!vehicleTurret.vehicleComp.IsCurrentlyMotorized()) continue;
-                    if (vehicleTurret.vehicleComp.tankLeaking) continue;
-                    cart = vehicleTurret;
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart == null) continue;
+                    if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
+                    if (!vehicleCart.VehicleComp.IsCurrentlyMotorized()) continue;
+                    if (vehicleCart.VehicleComp.tankLeaking) continue;
+                    cart = vehicleCart;
                     skip = true;
                     break;
                 }
