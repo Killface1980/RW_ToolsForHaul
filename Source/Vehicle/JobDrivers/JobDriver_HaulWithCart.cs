@@ -55,7 +55,9 @@ namespace ToolsForHaul.JobDrivers
             //Note we only fail on forbidden if the target doesn't start that way
             //This helps haul-aside jobs on forbidden items
             if (!TargetThingA.IsForbidden(pawn.Faction))
+            {
                 this.FailOnForbidden(CartInd);
+            }
 
 
             ///
@@ -76,11 +78,9 @@ namespace ToolsForHaul.JobDrivers
             yield return Toils_Reserve.ReserveQueue(StoreCellInd);
 
             //JumpIf already mounted
-            yield return Toils_Jump.JumpIf(checkHaulableEmpty,
-                () =>
-                    {
-                        return (cart.GetComp<CompMountable>().Driver == pawn) ? true : false;
-                    });
+            yield return Toils_Jump.JumpIf(
+                checkHaulableEmpty,
+                () => { return (cart.GetComp<CompMountable>().Driver == pawn) ? true : false; });
 
             //Mount on Target
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch)

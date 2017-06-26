@@ -1,4 +1,5 @@
-﻿//#define DEBUG
+﻿#define LOGGING
+
 namespace ToolsForHaul.Utilities
 {
     using System;
@@ -14,6 +15,7 @@ namespace ToolsForHaul.Utilities
 
     using Verse;
     using Verse.AI;
+
 
     public static class ToolsForHaulUtility
     {
@@ -268,14 +270,23 @@ namespace ToolsForHaul.Utilities
 
             Thing lastItem = null;
             //Drop remaining item
-            if (reservedMaxItem >= Math.Ceiling(maxItem * 0.5) && shouldDrop)
+            //    if (reservedMaxItem >= Math.Ceiling(maxItem * 0.5) && shouldDrop)
+            if (shouldDrop)
             {
                 bool startDrop = false;
                 for (int i = 0; i < remainingItems.Count(); i++)
                 {
-                    if (startDrop == false)
-                        if (remainingItems.ElementAt(i) == lastItem) startDrop = true;
-                        else continue;
+                    // if (startDrop == false)
+                    // {
+                    //     if (remainingItems.ElementAt(i) == lastItem)
+                    //     {
+                    //         startDrop = true;
+                    //     }
+                    //     else
+                    //     {
+                    //         continue;
+                    //     }
+                    // }
                     IntVec3 storageCell = FindStorageCell(pawn, remainingItems.ElementAt(i), pawn.Map, job.targetQueueB);
                     if (storageCell == IntVec3.Invalid)
                     {
@@ -283,6 +294,7 @@ namespace ToolsForHaul.Utilities
                     }
                     job.targetQueueB.Add(storageCell);
                 }
+
                 if (!job.targetQueueB.NullOrEmpty())
                 {
                     return job;
@@ -304,7 +316,7 @@ namespace ToolsForHaul.Utilities
             //ClosestThing_Global_Reachable Configuration
             Predicate<Thing> predicate = item
                 => !job.targetQueueA.Contains(item) && !FireUtility.IsBurning(item) //&& !deniedThings.Contains(item)
-                   && ( cart.allowances.Allows(item))
+                   && (cart.allowances.Allows(item))
                    && pawn.CanReserveAndReach(item, PathEndMode.Touch, DangerUtility.NormalMaxDanger(pawn));
 
             IntVec3 searchPos;
@@ -338,13 +350,6 @@ namespace ToolsForHaul.Utilities
                     maxDistance,
                     predicate);
 
-                // Use haulThing
-                if (haulThing != null)
-                {
-                    closestHaulable = haulThing;
-                }
-
-
                 //Check it can be hauled
                 /*
                 if ((closestHaulable is UnfinishedThing && ((UnfinishedThing)closestHaulable).BoundBill != null)
@@ -363,7 +368,7 @@ namespace ToolsForHaul.Utilities
                 IntVec3 storeCell = IntVec3.Invalid;
                 if (!StoreUtility.TryFindBestBetterStoreCellFor(closestHaulable, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell, true))
                 {
-                Log.Message("HaulWithTools Find Storage NoEmptyPlaceLowerTrans");
+                    Log.Message("HaulWithTools Find Storage NoEmptyPlaceLowerTrans");
                     JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
                     break;
                 }

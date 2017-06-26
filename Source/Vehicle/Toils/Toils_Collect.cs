@@ -177,8 +177,8 @@ namespace ToolsForHaul.Toils
                     // Collecting TargetIndex ind
                     //if
                     {
-                        haulThing.DeSpawn();
-                        carrier.innerContainer.TryAdd(haulThing);
+//                        haulThing.DeSpawn();
+                        haulThing.holdingOwner.TryTransferToContainer(haulThing, carrier.innerContainer);// carrier.innerContainer.TryAdd(haulThing);
                     }
                     {
                         //            haulThing.holdingOwner = carrier.innerContainer;
@@ -188,8 +188,11 @@ namespace ToolsForHaul.Toils
                     for (int i = 0; i < thingList.Count; i++)
                         if (actor.Position.AdjacentTo8Way(thingList[i].Thing.Position))
                         {
-                            thingList[i].Thing.DeSpawn();
-                            carrier.innerContainer.TryAdd(thingList[i].Thing);
+                            //     thingList[i].Thing.DeSpawn();
+
+                            thingList[i].Thing.holdingOwner
+                                .TryTransferToContainer(thingList[i].Thing, carrier.innerContainer);
+                      //      carrier.innerContainer.TryAdd(thingList[i].Thing);
                             {
                                 //       thingList[i].Thing.holdingOwner = carrier.innerContainer;
                             }
