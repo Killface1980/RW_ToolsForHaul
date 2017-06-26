@@ -152,7 +152,7 @@ namespace ToolsForHaul.Toils
                     Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
                     Vehicle_Cart carrier = curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
 
-              //      ThingOwner thingOwner = haulThing.TryGetInnerInteractableThingOwner();
+                    //      ThingOwner thingOwner = haulThing.TryGetInnerInteractableThingOwner();
 
 
                     // Check haulThing is human_corpse. If other race has apparel, It need to change
@@ -177,8 +177,8 @@ namespace ToolsForHaul.Toils
                     // Collecting TargetIndex ind
                     //if
                     {
-//                        haulThing.DeSpawn();
-                        haulThing.holdingOwner.TryTransferToContainer(haulThing, carrier.innerContainer);// carrier.innerContainer.TryAdd(haulThing);
+                        //                        haulThing.DeSpawn();
+                        haulThing.holdingOwner.TryTransferToContainer(haulThing, carrier.innerContainer, haulThing.stackCount);// carrier.innerContainer.TryAdd(haulThing);
                     }
                     {
                         //            haulThing.holdingOwner = carrier.innerContainer;
@@ -191,8 +191,8 @@ namespace ToolsForHaul.Toils
                             //     thingList[i].Thing.DeSpawn();
 
                             thingList[i].Thing.holdingOwner
-                                .TryTransferToContainer(thingList[i].Thing, carrier.innerContainer);
-                      //      carrier.innerContainer.TryAdd(thingList[i].Thing);
+                                .TryTransferToContainer(thingList[i].Thing, carrier.innerContainer, thingList[i].Thing.stackCount);
+                            //      carrier.innerContainer.TryAdd(thingList[i].Thing);
                             {
                                 //       thingList[i].Thing.holdingOwner = carrier.innerContainer;
                             }

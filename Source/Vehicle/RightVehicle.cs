@@ -35,7 +35,6 @@ namespace ToolsForHaul
             Thing cart = null;
             if (worktype.Equals(WorkTypeDefOf.Hunting))
             {
-                bool skip = false;
                 IOrderedEnumerable<Thing> orderedEnumerable =
                     ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
                 foreach (Thing thing in orderedEnumerable)
@@ -45,26 +44,9 @@ namespace ToolsForHaul
                     if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
                     if (!vehicleCart.VehicleComp.IsCurrentlyMotorized()) continue;
                     if (vehicleCart.VehicleComp.tankLeaking) continue;
+                    if (vehicleCart.ExplosiveComp.wickStarted) continue;
                     cart = vehicleCart;
-                    skip = true;
                     break;
-                }
-
-                if (!skip)
-                {
-                    IOrderedEnumerable<Thing> orderedEnumerable2 =
-                          ToolsForHaulUtility.Cart.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
-                    foreach (Thing thing in orderedEnumerable2)
-                    {
-                        Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
-                        if (vehicleCart == null)
-                            continue;
-                        if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
-                        if (!vehicleCart.VehicleComp.IsCurrentlyMotorized()) continue;
-                        if (vehicleCart.VehicleComp.tankLeaking) continue;
-                        cart = vehicleCart;
-                        break;
-                    }
                 }
             }
 
@@ -80,6 +62,7 @@ namespace ToolsForHaul
                         continue;
                     if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
                     if (vehicleCart.VehicleComp.tankLeaking) continue;
+                    if (vehicleCart.ExplosiveComp.wickStarted) continue;
                     cart = vehicleCart;
                     break;
                 }
@@ -97,6 +80,7 @@ namespace ToolsForHaul
                     if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
                     if (!vehicleCart.VehicleComp.IsCurrentlyMotorized()) continue;
                     if (vehicleCart.VehicleComp.tankLeaking) continue;
+                    if (vehicleCart.ExplosiveComp.wickStarted) continue;
                     cart = vehicleCart;
                     break;
                 }

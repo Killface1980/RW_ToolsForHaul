@@ -1,11 +1,10 @@
-﻿#if !CR
-using System;
+﻿using System;
 using UnityEngine;
 using Verse;
 
 namespace ToolsForHaul
 {
-    public class CartGunTop
+    public class Vehicle_CartGunTop
     {
         private const float IdleTurnDegreesPerTick = 0.26f;
 
@@ -47,12 +46,12 @@ namespace ToolsForHaul
             }
         }
 
-        public CartGunTop(Vehicle_Cart parentCart)
+        public Vehicle_CartGunTop(Vehicle_Cart parentCart)
         {
             this.parentCart = parentCart;
         }
 
-        public void TurretTopTick()
+        public void CartTopTick()
         {
             LocalTargetInfo currentTarget = this.parentCart.CurrentTarget;
             if (currentTarget.IsValid)
@@ -94,10 +93,11 @@ namespace ToolsForHaul
                 {
                     this.ticksUntilIdleTurn = Rand.RangeInclusive(IdleTurnIntervalMin, IdleTurnIntervalMax);
                 }
+
             }
         }
 
-        public void DrawTurret()
+        public void DrawLightTurret()
         {
             Matrix4x4 matrix = default(Matrix4x4);
             matrix.SetTRS(this.parentCart.DrawPos + Altitudes.AltIncVect, this.CurRotation.ToQuat(), Vector3.one);
@@ -105,4 +105,3 @@ namespace ToolsForHaul
         }
     }
 }
-#endif

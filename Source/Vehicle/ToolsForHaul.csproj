@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Components\Vehicle\CompProperties_Mountable.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_Raid_TFH.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
@@ -86,10 +87,10 @@
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="RightVehicle.cs" />
     <Compile Include="Things\Textures.cs" />
-    <Compile Include="Things\Turret\Command_VerbTarget.cs" />
-    <Compile Include="Things\Turret\Vanilla\CartGunTop.cs" />
+    <Compile Include="Command_VerbTarget.cs" />
+    <Compile Include="Things\Vehicle_CartGunTop.cs" />
     <Compile Include="Things\Vehicle_Cart.cs" />
-    <Compile Include="Things\Turret\Vanilla\Vehicle_CartGun.cs" />
+    <Compile Include="Things\Vehicle_CartGun.cs" />
     <None Include="Toils\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_Vehicle.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />

@@ -36,7 +36,7 @@ namespace ToolsForHaul
 
         protected CompPowerTrader powerComp;
 
-        protected CartGunTop top;
+        protected Vehicle_CartGunTop top;
 
         private Thing gunInt;
 
@@ -44,7 +44,7 @@ namespace ToolsForHaul
 
         public Vehicle_CartGun()
         {
-            this.top = new CartGunTop(this);
+            this.top = new Vehicle_CartGunTop(this);
         }
 
         public override Verb AttackVerb => this.GunCompEq.verbTracker.PrimaryVerb;
@@ -84,7 +84,7 @@ namespace ToolsForHaul
 
         public override void Draw()
         {
-            this.top.DrawTurret();
+            this.top.DrawLightTurret();
             base.Draw();
         }
 
@@ -308,7 +308,7 @@ namespace ToolsForHaul
                 }
             }
 
-            this.top.TurretTopTick();
+            this.top.CartTopTick();
         }
 
         protected void BeginBurst()
