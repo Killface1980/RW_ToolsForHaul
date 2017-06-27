@@ -64,7 +64,7 @@ namespace ToolsForHaul
 
             this.mountableComp.Driver.jobs.StartJob(jobNew, JobCondition.Incompletable);
 
-            // TODO Mount this pawn on this saddle Jecrell!!!
+
             this.innerContainer.TryTransferToContainer(pawn, this.innerContainer, pawn.stackCount, true);
           //this.innerContainer.TryAdd(pawn);
           //pawn.holdingOwner = this.GetContainer();
@@ -140,9 +140,42 @@ namespace ToolsForHaul
 
             if (mountableComp.IsMounted && this.innerContainer.Count(x => x is Pawn) < maxNumBoarding)
             {
+                Designator_Board designatorBoard =
+                    new Designator_Board
+                        {
+                            vehicle = this,
+                            defaultLabel = "CommandRideLabel".Translate(),
+                            defaultDesc = "CommandRideDesc".Translate(),
+                            icon = ContentFinder<Texture2D>.Get("UI/Commands/IconBoard"),
+                            activateSound = SoundDef.Named("Click")
+                        };
 
+
+                yield return designatorBoard;
             }
-      
+            if (mountableComp.IsMounted && this.innerContainer.Count(x => x is Pawn) >= maxNumBoarding)
+            {
+                Command_Action commandUnboardAll = new Command_Action();
+
+                commandUnboardAll.defaultLabel = "CommandGetOffLabel".Translate();
+                commandUnboardAll.defaultDesc = "CommandGetOffDesc".Translate();
+                commandUnboardAll.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnboardAll");
+                commandUnboardAll.activateSound = SoundDef.Named("Click");
+                commandUnboardAll.action = () => { this.UnboardAll(); };
+
+                yield return commandUnboardAll;
+
+                // Designator_Move designator = new Designator_Move();
+                //
+                // designator.driver = this.mountableComp.Driver;
+                // designator.defaultLabel = "CommandMoveLabel".Translate();
+                // designator.defaultDesc = "CommandMoveDesc".Translate();
+                // designator.icon = ContentFinder<Texture2D>.Get("UI/Commands/ReleaseAnimals");
+                // designator.activateSound = SoundDef.Named("Click");
+                // designator.hotKey = KeyBindingDefOf.Misc1;
+                //
+                // yield return designator;
+            }
         }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)

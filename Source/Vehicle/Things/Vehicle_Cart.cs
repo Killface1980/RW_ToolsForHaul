@@ -442,9 +442,13 @@ namespace ToolsForHaul
             bool alreadyMounted = false;
             if (!this.MountableComp.IsMounted)
             {
+                foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart) if (cart.MountableComp.Driver == myPawn) alreadyMounted = true;
 
-                
-
+                if (myPawn.Faction == Faction.OfPlayer && (myPawn.RaceProps.IsMechanoid || myPawn.RaceProps.Humanlike)
+                    && !alreadyMounted && !this.IsForbidden(myPawn.Faction))
+                {
+                    yield return new FloatMenuOption("Mount".Translate(this.LabelShort), action_Mount);
+                }
 
                 yield return new FloatMenuOption("Deconstruct".Translate(this.LabelShort), action_Deconstruct);
             }
