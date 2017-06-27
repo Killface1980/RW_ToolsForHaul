@@ -9,7 +9,6 @@ using Verse.AI;
 namespace ToolsForHaul.JobDrivers
 {
     using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
 
     public class JobDriver_DismountInBase : JobDriver
     {
@@ -58,7 +57,7 @@ namespace ToolsForHaul.JobDrivers
 
             ThingWithComps cart = this.TargetThingA as ThingWithComps;
 
-            if (ToolsForHaulUtility.FindStorageCell(this.pawn,  cart, pawn.Map) == IntVec3.Invalid)
+            if (ToolsForHaulUtility.FindStorageCell(this.pawn,  cart) == IntVec3.Invalid)
             {
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceForCart);
             }

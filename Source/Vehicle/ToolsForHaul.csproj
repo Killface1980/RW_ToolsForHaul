@@ -64,6 +64,8 @@
   <ItemGroup>
     <None Include="Components\Vehicle\CompProperties_Mountable.cs" />
     <Compile Include="Class1.cs" />
+    <None Include="Components\Vehicle\CompDriver - Kopieren.cs" />
+    <Compile Include="Components\Strings.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_Raid_TFH.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
@@ -86,6 +88,8 @@
     <Compile Include="JobGivers\JobGiver_StealVehicle.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="RightVehicle.cs" />
+    <None Include="Things\SpotlightStuff.cs" />
+    <Compile Include="Things\Saddle\Class1.cs" />
     <Compile Include="Things\Textures.cs" />
     <Compile Include="Command_VerbTarget.cs" />
     <Compile Include="Things\Vehicle_CartGunTop.cs" />
@@ -94,8 +98,8 @@
     <None Include="Toils\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_Vehicle.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
-    <Compile Include="_inactive\_TESTING\Class1.cs" />
-    <Compile Include="_inactive\_TESTING\Class2.cs" />
+    <None Include="_inactive\_TESTING\Class1.cs" />
+    <None Include="_inactive\_TESTING\Class2.cs" />
     <None Include="_inactive\_TESTING\HeadLights.cs" />
     <Compile Include="Alerts\Alert_TankIsLeaking.cs" />
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
@@ -129,7 +133,7 @@
     <Compile Include="JobDrivers\JobDriver_HaulWithCart.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="JobDrivers\JobDriver_Board.cs" />
+    <Compile Include="JobDrivers\JobDriver_Board.cs" />
     <Compile Include="JobDrivers\JobDriver_DismountInBase.cs" />
     <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
     <Compile Include="JobDrivers\JobDriver_Mount.cs" />
@@ -138,7 +142,7 @@
     <None Include="Things\Vehicle_CartOLD.cs" />
     <None Include="Designators\Designator_Board.cs" />
     <None Include="Designators\Designator_Move.cs" />
-    <None Include="Things\Vehicle_Saddle.cs" />
+    <Compile Include="Things\Saddle\Vehicle_Saddle.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\About\About.xml">
@@ -209,6 +213,9 @@
       <Link>Defs\ThingDefs\Vehicle_Haul.xml</Link>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="..\..\Defs\ThingDefs\Vehicle_Saddle.xml">
+      <Link>Defs\ThingDefs\Vehicle_Saddle.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Turret.xml">
       <Link>Defs\ThingDefs\Vehicle_Turret.xml</Link>
       <SubType>Designer</SubType>
@@ -231,11 +238,10 @@
     </Content>
     <Content Include="..\..\Languages\English\Keyed\Misc_Gameplay.xml">
       <Link>Languages\English\Misc_Gameplay.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="_inactive\_TESTING\TFHGlowFlood\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

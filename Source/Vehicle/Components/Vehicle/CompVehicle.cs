@@ -12,10 +12,7 @@ using Random = UnityEngine.Random;
 
 namespace ToolsForHaul.Components
 {
-    using ppumkin.LEDTechnology.Managers;
-
     using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
 
     public class CompVehicle : ThingComp
     {

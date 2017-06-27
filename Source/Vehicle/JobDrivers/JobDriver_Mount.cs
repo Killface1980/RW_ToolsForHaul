@@ -7,7 +7,6 @@ using Verse.AI;
 namespace ToolsForHaul.JobDrivers
 {
     using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
 
     public class JobDriver_Mount : JobDriver
     {
@@ -53,7 +52,6 @@ namespace ToolsForHaul.JobDrivers
             toilMountOn.initAction = () =>
                 {
                     Pawn actor = toilMountOn.actor;
-                    Job curJob = actor.jobs.curJob;
                     this.TargetThingA.TryGetComp<CompMountable>().MountOn(actor);
                 };
 

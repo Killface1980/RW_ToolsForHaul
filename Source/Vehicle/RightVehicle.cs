@@ -45,6 +45,8 @@ namespace ToolsForHaul
                     if (!vehicleCart.VehicleComp.IsCurrentlyMotorized()) continue;
                     if (vehicleCart.VehicleComp.tankLeaking) continue;
                     if (vehicleCart.ExplosiveComp.wickStarted) continue;
+                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                    
                     cart = vehicleCart;
                     break;
                 }
@@ -63,6 +65,7 @@ namespace ToolsForHaul
                     if (!ToolsForHaulUtility.AvailableVehicle(pawn, vehicleCart)) continue;
                     if (vehicleCart.VehicleComp.tankLeaking) continue;
                     if (vehicleCart.ExplosiveComp.wickStarted) continue;
+                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
                     cart = vehicleCart;
                     break;
                 }
@@ -81,6 +84,7 @@ namespace ToolsForHaul
                     if (!vehicleCart.VehicleComp.IsCurrentlyMotorized()) continue;
                     if (vehicleCart.VehicleComp.tankLeaking) continue;
                     if (vehicleCart.ExplosiveComp.wickStarted) continue;
+                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
                     cart = vehicleCart;
                     break;
                 }

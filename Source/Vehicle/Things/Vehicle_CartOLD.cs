@@ -1,4 +1,4 @@
-﻿using RimWorld.Planet;
+using RimWorld.Planet;
 
 namespace ToolsForHaul
 {

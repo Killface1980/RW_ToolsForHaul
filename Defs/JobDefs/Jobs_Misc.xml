@@ -72,13 +72,11 @@
     <reportString>Mount on TargetB.</reportString>
   </JobDef>
   
-  <!--
   <JobDef>
     <defName>Board</defName>
-    <driverClass>ToolsForHaul.JobDriver_Board</driverClass>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_Board</driverClass>
     <reportString>Board on TargetA.</reportString>
   </JobDef>
-  -->
   
   <JobDef>
     <defName>StandBy</defName>

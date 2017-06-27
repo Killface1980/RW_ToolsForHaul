@@ -95,7 +95,7 @@ namespace ToolsForHaul.Utilities
             return null;
         }
 
-        public static IntVec3 FindStorageCell(Pawn pawn, Thing haulable, Map map, List<LocalTargetInfo> targetQueue = null)
+        public static IntVec3 FindStorageCell(Pawn pawn, Thing haulable, List<LocalTargetInfo> targetQueue = null)
         {
             // Find closest cell in queue.
             if (!targetQueue.NullOrEmpty())
@@ -104,7 +104,7 @@ namespace ToolsForHaul.Utilities
                 {
                     foreach (IntVec3 adjCell in GenAdjFast.AdjacentCells8Way(target))
                     {
-                        if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(map, haulable))
+                        if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(pawn.Map, haulable))
                         {
                             if (pawn.CanReserveAndReach(adjCell, PathEndMode.ClosestTouch, Danger.Some))
                             {
@@ -123,7 +123,7 @@ namespace ToolsForHaul.Utilities
                         */
             // Vanilla code is not worked item on container.
             StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(haulable.Position, haulable);
-            foreach (SlotGroup slotGroup in map.slotGroupManager.AllGroupsListInPriorityOrder)
+            foreach (SlotGroup slotGroup in pawn.Map.slotGroupManager.AllGroupsListInPriorityOrder)
             {
                 if (slotGroup.Settings.Priority < currentPriority) break;
                 {
@@ -131,7 +131,7 @@ namespace ToolsForHaul.Utilities
                     {
                         if ((!targetQueue.NullOrEmpty() && !targetQueue.Contains(cell)) || targetQueue.NullOrEmpty())
                         {
-                            if (cell.GetStorable(map) == null)
+                            if (cell.GetStorable(pawn.Map) == null)
                             {
                                 if (slotGroup.Settings.AllowedToAccept(haulable) && pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Deadly))
                                 {
@@ -247,6 +247,8 @@ namespace ToolsForHaul.Utilities
                 jobDef = HaulJobDefOf.HaulWithCart;
             }
 
+            List<KeyValuePair<LocalTargetInfo, float>> dummyQueueA = new List<KeyValuePair<LocalTargetInfo, float>>();
+
             targetC = cart;
 
             maxItem = cart.MaxItem;
@@ -287,7 +289,7 @@ namespace ToolsForHaul.Utilities
                     //         continue;
                     //     }
                     // }
-                    IntVec3 storageCell = FindStorageCell(pawn, remainingItems.ElementAt(i), pawn.Map, job.targetQueueB);
+                    IntVec3 storageCell = FindStorageCell(pawn, remainingItems.ElementAt(i), job.targetQueueB);
                     if (storageCell == IntVec3.Invalid)
                     {
                         break;
@@ -362,28 +364,17 @@ namespace ToolsForHaul.Utilities
                 {
                     break;
                 }
-
                 //Find StorageCell
-                StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(closestHaulable.Position, closestHaulable);
-                IntVec3 storeCell = IntVec3.Invalid;
-                if (!StoreUtility.TryFindBestBetterStoreCellFor(closestHaulable, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell, true))
-                {
-                    Log.Message("HaulWithTools Find Storage NoEmptyPlaceLowerTrans");
-                    JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
-                    break;
-                }
-
-                //  IntVec3 storageCell = FindStorageCell(pawn, closestHaulable, pawn.Map, job.targetQueueB);
-                //  if (storageCell == IntVec3.Invalid)
-                //  {
-                //      break;
-                //  }
+                IntVec3 storageCell = FindStorageCell(pawn, closestHaulable, job.targetQueueB);
+                if (storageCell == IntVec3.Invalid) break;
 
                 //Add Queue & Reserve
                 job.targetQueueA.Add(closestHaulable);
-                job.targetQueueB.Add(storeCell);
+                job.targetQueueB.Add(storageCell);
                 reservedMaxItem++;
             }
+
+
 
             Trace.AppendLine("Elapsed Time");
             Trace.StopWatchStop();

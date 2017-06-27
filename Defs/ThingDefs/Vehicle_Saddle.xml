@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ThingDefs>
+  <ThingDef Name="BaseThingWithComponents" Abstract="True">
+    <thingClass>ThingWithComponents</thingClass>
+    <category>Item</category>
+    <selectable>true</selectable>
+    <tickerType>Normal</tickerType>
+    <altitudeLayer>Waist</altitudeLayer>
+    <useHitPoints>True</useHitPoints>
+    <hasTooltip>true</hasTooltip>
+    <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+  </ThingDef>
+
+
+  <!-- ============================ Vehicle ========================== -->
+
+  <ThingDef ParentName="BaseThingWithComponents" Name="BaseVehicle" Abstract="True">
+    <statBases>
+      <Flammability>1.0</Flammability>
+    </statBases>
+    <alwaysHaulable>false</alwaysHaulable>
+    <!-- <designateHaulable>false</designateHaulable> -->
+    <comps>
+      <li>
+        <compClass>CompForbiddable</compClass>
+      </li>
+      <li>
+        <compClass>ToolsForHaul.Components.Vehicle.CompMountable</compClass>
+      </li>
+    </comps>
+  </ThingDef>
 
   <ThingDef ParentName="BaseVehicle">
     <defName>VehicleSaddle</defName>
@@ -14,7 +43,7 @@
       <li>Vehicles</li>
     </thingCategories>
     <graphicData>
-      <texPath>Things/Pawn/Vehicle/Saddle</texPath>
+      <texPath>Things/Vehicles/VehicleSaddle/Saddle</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(2,2)</drawSize>
     </graphicData>

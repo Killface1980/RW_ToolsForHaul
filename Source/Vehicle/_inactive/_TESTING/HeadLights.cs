@@ -26,7 +26,7 @@ namespace ToolsForHaul
         int angleModulus;
 
 
-        public HeadLights(IntVec3 position, Rot4 orientation, Vehicle_Turret vehicleCart)
+        public HeadLights(IntVec3 position, Rot4 orientation, Vehicle_Cart vehicleCart)
         {
             
             Position = position;
@@ -43,7 +43,7 @@ namespace ToolsForHaul
             Color = new Color32(210, 210, 140, 0);
 
 
-            innerArray = Find.EdificeGrid.InnerArray;
+            innerArray =  Find.EdificeGrid.InnerArray;
 
             targetDistance = 20;
             angleModulus = 4;  // 0 is 90 and the higher you go the more narrow the angle. //angle 45 is every two tiles? - actually its 90 because left side is 0->45 and then right is 45<-0

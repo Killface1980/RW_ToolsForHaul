@@ -23,24 +23,8 @@ namespace ToolsForHaul.Components.Vehicle
     using Verse.AI;
     using Verse.Sound;
 
-#if CR
-using Combat_Realism;
-#endif
-
     public class CompMountable : ThingComp
     {
-        private const string TxtCommandDismountDesc = "CommandDismountDesc";
-
-        private const string TxtCommandDismountLabel = "CommandDismountLabel";
-
-        private const string TxtCommandMountDesc = "CommandMountDesc";
-
-        private const string TxtCommandMountLabel = "CommandMountLabel";
-
-        private const string TxtDismount = "Dismount";
-
-        private const string TxtMountOn = "MountOn";
-
         private Pawn driver;
 
         private CompDriver driverComp;
@@ -122,7 +106,7 @@ using Combat_Realism;
             }
         }
 
-        public IEnumerable<FloatMenuOption> CompGetFloatMenuOptionsForExtra(Pawn myPawn)
+        public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {
             // order to drive
             Action action_Order;
@@ -131,31 +115,25 @@ using Combat_Realism;
             {
                 if (!this.IsMounted)
                 {
-                    if (!this.parent.IsForbidden(Faction.OfPlayer))
+                    if (this.parent.Faction == Faction.OfPlayer && ((this.parent as Pawn).RaceProps.IsMechanoid || (this.parent as Pawn).RaceProps.Humanlike)
+                         && !this.parent.IsForbidden(this.parent.Faction))
                     {
                         action_Order = () =>
                             {
                                 this.parent.Map.reservationManager.ReleaseAllForTarget(this.parent);
-                                this.parent.Map.reservationManager.Reserve(myPawn, this.parent);
+                                this.parent.Map.reservationManager.Reserve(selPawn, this.parent);
                                 Job jobNew = new Job(HaulJobDefOf.Mount, this.parent);
-                                myPawn.jobs.TryTakeOrderedJob(jobNew);
+                                selPawn.jobs.TryTakeOrderedJob(jobNew);
                             };
-                        verb = TxtMountOn;
-                        yield return new FloatMenuOption(verb.Translate(this.parent.LabelShort), action_Order);
-                    }
-                    else if (this.IsMounted && myPawn == this.Driver)
-                    {
-                        // && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
-                        action_Order = () => { this.Dismount(); };
-                        verb = TxtDismount;
+                        verb = Strings.TxtMountOn;
                         yield return new FloatMenuOption(verb.Translate(this.parent.LabelShort), action_Order);
                     }
                 }
-                else if (this.IsMounted && myPawn == this.Driver)
+                else if (this.IsMounted && selPawn == this.Driver)
                 {
                     // && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
                     action_Order = () => { this.Dismount(); };
-                    verb = TxtDismount;
+                    verb = Strings.TxtDismount;
                     yield return new FloatMenuOption(verb.Translate(this.parent.LabelShort), action_Order);
                 }
             }
@@ -163,31 +141,32 @@ using Combat_Realism;
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            foreach (Command compCom in base.CompGetGizmosExtra()) yield return compCom;
-
-            if (this.parent.Faction != Faction.OfPlayer) yield break;
-
-            Command_Action com = new Command_Action();
-
-            if (this.IsMounted)
+            foreach (Command compCom in base.CompGetGizmosExtra())
             {
-                com.defaultLabel = TxtCommandDismountLabel.Translate();
-                com.defaultDesc = TxtCommandDismountDesc.Translate();
-                com.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnmount");
-                com.activateSound = SoundDef.Named("Click");
-                com.action = Dismount;
+                yield return compCom;
+            }
 
-                yield return com;
+            //  if (this.parent.Faction != Faction.OfPlayer)
+            //  {
+            //      yield break;
+            //  }
+
+            if (this.IsMounted && this.parent.Faction == Faction.OfPlayer)
+            {
+
             }
             else
             {
-                Designator_Mount designator = new Designator_Mount();
+                Designator_Mount designator =
+                    new Designator_Mount
+                    {
+                        vehicle = this.parent,
+                        defaultLabel = Strings.TxtCommandMountLabel.Translate(),
+                        defaultDesc = Strings.TxtCommandMountDesc.Translate(),
+                        icon = ContentFinder<Texture2D>.Get("UI/Commands/IconMount"),
+                        activateSound = SoundDef.Named("Click")
+                    };
 
-                designator.vehicle = this.parent;
-                designator.defaultLabel = TxtCommandMountLabel.Translate();
-                designator.defaultDesc = TxtCommandMountDesc.Translate();
-                designator.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconMount");
-                designator.activateSound = SoundDef.Named("Click");
 
                 yield return designator;
             }
@@ -220,7 +199,6 @@ using Combat_Realism;
                     return;
                 }
 
-                CompVehicle vehicleComp = this.parent.TryGetComp<CompVehicle>();
 
                 if (Find.TickManager.TicksGame - this.tickCheck >= this.tickCooldown)
                 {
@@ -266,8 +244,7 @@ using Combat_Realism;
                                 || this.Driver.CurJob.def == JobDefOf.Slaughter
                                 || this.Driver.CurJob.def == JobDefOf.Milk || this.Driver.CurJob.def == JobDefOf.Shear
                                 || this.Driver.CurJob.def == JobDefOf.Train || this.Driver.CurJob.def == JobDefOf.Mate
-                                || this.Driver.health.HasHediffsNeedingTend()
-                            )
+                                || this.Driver.health.HasHediffsNeedingTend())
                             && this.Driver.Position.Roofed(this.Driver.Map))
                         {
                             this.parent.Position = this.Position.ToIntVec3();
@@ -287,8 +264,9 @@ using Combat_Realism;
                     this.tickCheck = Find.TickManager.TicksGame;
                     this.tickCooldown = Rand.RangeInclusive(60, 180);
 
+                    CompVehicle vehicleComp = this.parent.TryGetComp<CompVehicle>();
                     // bring vehicles home
-                    if (!vehicleComp.MotorizedWithoutFuel())
+                    if (vehicleComp != null && !vehicleComp.MotorizedWithoutFuel())
                     {
                         CompRefuelable refuelableComp = this.parent.TryGetComp<CompRefuelable>();
                         Job jobNew = ToolsForHaulUtility.DismountInBase(
@@ -355,7 +333,7 @@ using Combat_Realism;
                 turret.dontReload = false;
             }
 #endif
-            if (this.Driver.RaceProps.Humanlike)
+        //    if (this.Driver.RaceProps.Humanlike)
             {
                 this.Driver.AllComps?.Remove(this.DriverComp);
                 this.DriverComp.Vehicle = null;
@@ -400,13 +378,6 @@ using Combat_Realism;
             {
                 return;
             }
-#if CR
-            Building_Reloadable turret = (parent as Building_Reloadable);
-            if (turret != null)
-            {
-                turret.dontReload = true;
-            }
-#endif
 
             // Check to make pawns not mount two vehicles at once
             if (ToolsForHaulUtility.IsDriver(pawn))
@@ -425,10 +396,13 @@ using Combat_Realism;
             if (this.Driver.RaceProps.Humanlike)
             {
                 this.Driver.RaceProps.makesFootprints = false;
-                this.DriverComp = new CompDriver { Vehicle = this.parent as Building };
-                this.Driver?.AllComps?.Add(this.DriverComp);
-                this.DriverComp.parent = this.Driver;
             }
+            this.DriverComp = new CompDriver
+            {
+                Vehicle = this.parent
+            };
+            this.Driver?.AllComps?.Add(this.DriverComp);
+            this.DriverComp.parent = this.Driver;
 
             Vehicle_Cart vehicleCart = this.parent as Vehicle_Cart;
             if (vehicleCart != null)
@@ -529,7 +503,10 @@ using Combat_Realism;
             base.PostSpawnSetup(respawningAfterLoad);
             CompVehicle compVehicle = this.parent.TryGetComp<CompVehicle>();
 
-            if (this.Driver == null) return;
+            if (this.Driver == null)
+            {
+                return;
+            }
 
             if (compVehicle.IsCurrentlyMotorized())
             {

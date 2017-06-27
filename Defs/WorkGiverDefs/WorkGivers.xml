@@ -93,7 +93,7 @@
   </WorkGiverDef>
   
   <WorkGiverDef>
-    <defName>Refuel vehicle</defName>
+    <defName>RefuelVehicle</defName>
     <label>refuel motorized vehicles</label>
     <giverClass>ToolsForHaul.WorkGivers.WorkGiver_Refuel_Vehicle</giverClass>
     <workType>Hauling</workType>

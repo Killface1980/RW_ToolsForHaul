@@ -7,6 +7,8 @@ using Verse.AI;
 
 namespace ToolsForHaul.Toils
 {
+    using System;
+
     public static class Toils_Collect
     {
         private const int NearbyCell = 30;
@@ -242,7 +244,7 @@ namespace ToolsForHaul.Toils
                         return;
                     }
 
-                    IntVec3 cell = ToolsForHaulUtility.FindStorageCell(actor, cart.innerContainer.First(), actor.Map);
+                    IntVec3 cell = ToolsForHaulUtility.FindStorageCell(actor, cart.innerContainer.First());
                     if (cell != IntVec3.Invalid)
                     {
                         toil.actor.jobs.curJob.SetTarget(StoreCellInd, cell);
@@ -395,6 +397,8 @@ namespace ToolsForHaul.Toils
             return toil;
         }
 
+
+
         // OLD
         /*
         public static Toil DropAllInCell(TargetIndex StoreCellInd, ThingPlaceMode placeMode)
@@ -411,6 +415,9 @@ namespace ToolsForHaul.Toils
             return toil;
         }
         */
+
+
+
         #endregion
     }
 }
