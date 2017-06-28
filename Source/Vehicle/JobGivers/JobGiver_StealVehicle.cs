@@ -24,22 +24,23 @@ namespace ToolsForHaul.JobGivers
                 return null;
             }
 
-
-            List<Thing> steelVehicle = new List<Thing>();
-            foreach (Vehicle_Cart vehicleTurret in ToolsForHaulUtility.Cart)
+            List<Thing> steelVehicle = ToolsForHaulUtility.AvailableVehiclesForSteeling(pawn);
+            foreach (var thing in steelVehicle)
             {
+                var cart = (Vehicle_Cart)thing;
+
                 if (ToolsForHaulUtility.IsDriver(pawn))
                     break;
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;
-                if (!vehicleTurret.IsBurning()
-                    && vehicleTurret.Position.InHorDistOf(pawn.Position, ItemsSearchRadiusOngoing)
-                    && !vehicleTurret.MountableComp.IsMounted
-                    && (float)vehicleTurret.HitPoints / vehicleTurret.MaxHitPoints > 0.2f
-                    && vehicleTurret.VehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed)
-                    && pawn.CanReserveAndReach(vehicleTurret, PathEndMode.InteractionCell, Danger.Deadly))
+                if (!cart.IsBurning()
+                    && cart.Position.InHorDistOf(pawn.Position, ItemsSearchRadiusOngoing)
+                    && !cart.MountableComp.IsMounted
+                    && (float)cart.HitPoints / cart.MaxHitPoints > 0.2f
+                    && cart.VehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed)
+                    && pawn.CanReserveAndReach(cart, PathEndMode.InteractionCell, Danger.Deadly))
                 {
-                    steelVehicle.Add(vehicleTurret);
+                    steelVehicle.Add(cart);
                 }
 
             }

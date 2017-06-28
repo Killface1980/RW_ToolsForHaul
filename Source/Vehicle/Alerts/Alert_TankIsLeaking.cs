@@ -7,6 +7,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace ToolsForHaul.Alerts
 {
+    using System.Collections.Generic;
+
     using RimWorld;
 
     using ToolsForHaul.Utilities;
@@ -23,28 +25,26 @@ namespace ToolsForHaul.Alerts
 
         public override AlertReport GetReport()
         {
+            List<Map> maps = Find.Maps;
+            foreach (Map currentMap in maps)
             {
-                foreach (Thing thing in ToolsForHaulUtility.Cart)
+                List<Thing> list = currentMap.listerThings.AllThings.FindAll(
+                    (Thing aV) => (aV is Vehicle_Cart) && aV.Faction == Faction.OfPlayer);
+
+                foreach (Thing thing in list)
                 {
-                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
-                    if (vehicleCart.Faction == Faction.OfPlayer && vehicleCart.VehicleComp.tankLeaking)
+                    Vehicle_Cart cart = thing as Vehicle_Cart;
+                    if (cart?.VehicleComp != null)
                     {
-                        return vehicleCart;
+                        if (cart.VehicleComp.tankLeaking)
+                        {
+                            return cart;
+                        }
                     }
                 }
-
-                foreach (Thing thing in ToolsForHaulUtility.Cart)
-                {
-                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
-                    if (vehicleCart.Faction == Faction.OfPlayer && vehicleCart.VehicleComp.tankLeaking)
-                    {
-                        return vehicleCart;
-                    }
-                }
-
-                return false;
             }
-        }
 
+            return false;
+        }
     }
 }

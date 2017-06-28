@@ -19,8 +19,10 @@ namespace ToolsForHaul.WorkGivers
 
         public override bool ShouldSkip(Pawn pawn)
         {
+            List<Thing> availabeVehicles = ToolsForHaulUtility.AvailableVehicles(pawn);
+
             Trace.DebugWriteHaulingPawn(pawn);
-            if (RightVehicle.GetRightVehicle(pawn, DefDatabase<WorkTypeDef>.GetNamed("Hauling")) == null)
+            if (RightVehicle.GetRightVehicle(pawn, availabeVehicles, DefDatabase<WorkTypeDef>.GetNamed("Hauling")) == null)
                 return true;
 
             if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
@@ -46,13 +48,16 @@ namespace ToolsForHaul.WorkGivers
                 if (cart == null)
                 {
                     // JobFailReason.Is("Can't haul with military vehicle");
-                    return ToolsForHaulUtility.DismountInBase(pawn, GameComponentToolsForHaul.CurrentVehicle[pawn]);
+                    return ToolsForHaulUtility.DismountAtParkingLot(pawn, GameComponentToolsForHaul.CurrentDrivers[pawn]);
                 }
             }
 
             if (cart == null)
             {
-                cart = RightVehicle.GetRightVehicle(pawn, DefDatabase<WorkTypeDef>.GetNamed("Hauling"), t) as Vehicle_Cart;
+                List<Thing> availableVehicles = ToolsForHaulUtility.AvailableVehicles(pawn);
+                if (availableVehicles.Count == 0) return null;
+
+                cart = RightVehicle.GetRightVehicle(pawn, availableVehicles, DefDatabase<WorkTypeDef>.GetNamed("Hauling"), t) as Vehicle_Cart;
 
                 if (cart == null)
                     return null;
@@ -80,7 +85,7 @@ namespace ToolsForHaul.WorkGivers
             IntVec3 storeCell;
             if (!StoreUtility.TryFindBestBetterStoreCellFor(t, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell, true))
             {
-                Log.Message("WorkGiver_HaulWithCart NoEmptyPlaceLowerTrans");
+                Log.Message("WorkGiver_HaulWithCart " + ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
                 return null;
             }
@@ -91,7 +96,7 @@ namespace ToolsForHaul.WorkGivers
             //     return null;
             // }
 
-            if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableVehicle(pawn, cart))
+            if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.IsVehicleAvailable(pawn, cart))
             {
                 return ToolsForHaulUtility.HaulWithTools(pawn, cart, t);
             }

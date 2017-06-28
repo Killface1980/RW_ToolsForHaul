@@ -19,7 +19,12 @@ namespace ToolsForHaul.WorkGivers
         public override bool ShouldSkip(Pawn pawn)
         {
             Trace.DebugWriteHaulingPawn(pawn);
-            if (RightVehicle.GetRightVehicle(pawn, DefDatabase<WorkTypeDef>.GetNamed("Hauling")) == null)
+
+            List<Thing> availableVehicles = ToolsForHaulUtility.AvailableVehicles(pawn);
+
+            if (availableVehicles.Count == 0) return true;
+
+            if (RightVehicle.GetRightVehicle(pawn, availableVehicles, DefDatabase<WorkTypeDef>.GetNamed("Hauling")) == null)
                 return true;
 
             if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
@@ -55,13 +60,15 @@ namespace ToolsForHaul.WorkGivers
                 if (cart == null)
                 {
                     // JobFailReason.Is("Can't haul with military vehicle");
-                    return ToolsForHaulUtility.DismountInBase(pawn, GameComponentToolsForHaul.CurrentVehicle[pawn]);
+                    return ToolsForHaulUtility.DismountAtParkingLot(pawn, cart);
                 }
             }
 
             if (cart == null)
             {
-                cart = RightVehicle.GetRightVehicle(pawn, DefDatabase<WorkTypeDef>.GetNamed("Hauling"), t) as Vehicle_Cart;
+                List<Thing> availableVehicles = ToolsForHaulUtility.AvailableVehicles(pawn);
+
+                cart = RightVehicle.GetRightVehicle(pawn, availableVehicles, DefDatabase<WorkTypeDef>.GetNamed("Hauling"), t) as Vehicle_Cart;
 
                 if (cart == null)
                     return null;
@@ -94,7 +101,7 @@ namespace ToolsForHaul.WorkGivers
                 return null;
             }
 
-            if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.AvailableVehicle(pawn, cart))
+            if (ToolsForHaulUtility.AvailableAnimalCart(cart) || ToolsForHaulUtility.IsVehicleAvailable(pawn, cart))
             {
                 return ToolsForHaulUtility.HaulWithTools(pawn, cart, t);
             }

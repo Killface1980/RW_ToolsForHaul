@@ -105,13 +105,20 @@ namespace ToolsForHaul.ITabs
                 foreach (Thing thing in cart.innerContainer)
                 {
                     if (thing.ThingID.IndexOf("Human_Corpse") > -1)
+                    {
                         Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconHuman_Corpse"), 1.0f);
+                    }
                     else if (thing.ThingID.IndexOf("Corpse") > -1)
                     {
-                        Widgets.DrawTextureFitted(thingIconRect, ContentFinder<Texture2D>.Get("Things/Pawn/IconAnimal_Corpse"), 1.0f);
+                        Widgets.DrawTextureFitted(
+                            thingIconRect,
+                            ContentFinder<Texture2D>.Get("Things/Pawn/IconAnimal_Corpse"),
+                            1.0f);
                     }
                     else
+                    {
                         Widgets.ThingIcon(thingIconRect, thing);
+                    }
                     Widgets.Label(thingLabelRect, thing.LabelCap);
                     if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
                     {

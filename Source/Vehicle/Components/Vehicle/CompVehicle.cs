@@ -84,16 +84,6 @@ namespace ToolsForHaul.Components
             base.PostPostApplyDamage(dinfo, totalDamageDealt);
             if (!this.parent.Spawned)
                 return;
-            // todo add repair
-            if ( this.tankLeaking)
-            {
-                this.tankLeaking = false;
-                this._tankHitPos = 1f;
-
-                // if (breakdownableComp.BrokenDown)
-                // breakdownableComp.Notify_Repaired();
-                return;
-            }
 
             float hitpointsPercent = (float)this.parent.HitPoints / this.parent.MaxHitPoints;
 

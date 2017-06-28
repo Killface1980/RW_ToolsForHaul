@@ -44,11 +44,8 @@ namespace ToolsForHaul.Designators
             {
                 Pawn pawn = thing as Pawn;
 
-                bool alreadyMounted = false;
-                foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart)
-                    if (cart.MountableComp.Driver == pawn)
-                        alreadyMounted = true;
-                if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !alreadyMounted)
+
+                if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !ToolsForHaulUtility.IsDriver(pawn))
                 {
                     Job jobNew = new Job(HaulJobDefOf.Mount);
                     Map.reservationManager.ReleaseAllForTarget(this.vehicle);
@@ -57,7 +54,7 @@ namespace ToolsForHaul.Designators
                     break;
                 }
 
-                if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal) && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !alreadyMounted)
+                if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal) && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && ToolsForHaulUtility.IsDriver(pawn))
                 {
                     Pawn worker = null;
                     Job jobNew = new Job(HaulJobDefOf.MakeMount);

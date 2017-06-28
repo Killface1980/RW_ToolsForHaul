@@ -4,6 +4,7 @@
   <!-- Mountable -->
   <MountOn>Mount {0}</MountOn>
   <Dismount>Dismount {0}</Dismount>
+  <DismountAtParkingLot>Dismount {0} at parking lot</DismountAtParkingLot>
   <DropIt>Drop it</DropIt>
   
   <!-- Vehicle -->

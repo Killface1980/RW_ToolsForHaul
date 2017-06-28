@@ -54,8 +54,8 @@
   </JobDef>
   
   <JobDef>
-    <defName>DismountInBase</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_DismountInBase</driverClass>
+    <defName>DismountAtParkingLot</defName>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_DismountAtParkingLot</driverClass>
     <reportString>Dismount TargetA.</reportString>
   </JobDef>
   

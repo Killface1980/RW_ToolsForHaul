@@ -43,7 +43,7 @@ namespace ToolsForHaul
           
         public static List<Thing> AutoInventory = new List<Thing>();
 
-        public static Dictionary<Pawn, Thing> CurrentVehicle = new Dictionary<Pawn, Thing>();
+        public static Dictionary<Pawn, Vehicle_Cart> CurrentDrivers = new Dictionary<Pawn, Vehicle_Cart>();
 
         public static List<Entry> CachedToolEntries
         {
@@ -61,7 +61,7 @@ namespace ToolsForHaul
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref PreviousPawnWeapon, "previousPawnWeapons", LookMode.Reference, LookMode.Reference);
-            Scribe_Collections.Look(ref CurrentVehicle, "currentVehicle", LookMode.Reference, LookMode.Reference);
+            Scribe_Collections.Look(ref CurrentDrivers, "currentVehicle", LookMode.Reference, LookMode.Reference);
             Scribe_Collections.Look(ref AutoInventory, "AutoInventory", LookMode.Reference);
             Scribe_Collections.Look(ref _cachedToolEntries, "_cachedToolEntries", LookMode.Reference);
         }

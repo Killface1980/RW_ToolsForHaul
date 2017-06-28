@@ -23,31 +23,19 @@ namespace ToolsForHaul.StatWorkers
 
                 if (thisPawn?.RaceProps.intelligence >= Intelligence.ToolUser)
                 {
-                    if (GameComponentToolsForHaul.CurrentVehicle.ContainsKey(thisPawn))
+                    if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(thisPawn))
                     {
-                        Vehicle_Cart vehicleCart = GameComponentToolsForHaul.CurrentVehicle[req.Thing as Pawn] as Vehicle_Cart;
+                        Vehicle_Cart vehicleCart = GameComponentToolsForHaul.CurrentDrivers[(Pawn)req.Thing] as Vehicle_Cart;
                         if (vehicleCart != null)
+                        {
                             if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Driver == thisPawn)
                             {
                                 stringBuilder.AppendLine();
                                 stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicleCart.VehicleComp.VehicleSpeed);
                                 return stringBuilder.ToString();
                             }
-                    }
-
-#if CR
-                        CompInventory compInventory = ThingCompUtility.TryGetComp<CompInventory>(req.Thing);
-                        if (compInventory != null)
-                        {
-                            stringBuilder.AppendLine();
-                            stringBuilder.AppendLine(Translator.Translate("CR_CarriedWeight") + ": x" + GenText.ToStringPercent(compInventory.moveSpeedFactor));
-                            if (compInventory.encumberPenalty > 0f)
-                            {
-                                stringBuilder.AppendLine(Translator.Translate("CR_Encumbered") + ": -" + GenText.ToStringPercent(compInventory.encumberPenalty));
-                                stringBuilder.AppendLine(Translator.Translate("CR_FinalModifier") + ": x" + GenText.ToStringPercent(this.GetStatFactor(thisPawn)));
-                            }
                         }
-#endif
+                    }
                 }
             }
 
@@ -83,9 +71,9 @@ namespace ToolsForHaul.StatWorkers
         {
             float result = 1f;
 
-            if (GameComponentToolsForHaul.CurrentVehicle.ContainsKey(thisPawn))
+            if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(thisPawn))
             {
-                Vehicle_Cart vehicleTank = GameComponentToolsForHaul.CurrentVehicle[thisPawn] as Vehicle_Cart;
+                Vehicle_Cart vehicleTank = GameComponentToolsForHaul.CurrentDrivers[thisPawn] as Vehicle_Cart;
                 if (vehicleTank != null)
                 {
                     if (vehicleTank.MountableComp.IsMounted && !vehicleTank.MountableComp.Driver.RaceProps.Animal && vehicleTank.MountableComp.Driver == thisPawn)

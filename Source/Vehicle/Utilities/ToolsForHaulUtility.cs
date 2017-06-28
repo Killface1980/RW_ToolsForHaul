@@ -21,28 +21,17 @@ namespace ToolsForHaul.Utilities
     {
         private const double ValidDistance = 30;
 
-        public static readonly string BurningLowerTrans;
+        public static readonly string BurningLowerTrans = "BurningLower".Translate();
 
-        public static readonly string NoAvailableCart;
+        public static readonly string NoAvailableCart = "NoAvailableCart".Translate();
 
-        public static readonly string NoEmptyPlaceForCart;
+        public static readonly string NoEmptyPlaceForCart = "NoEmptyPlaceForCart".Translate();
 
-        public static readonly string NoEmptyPlaceLowerTrans;
+        public static readonly string NoEmptyPlaceLowerTrans = "NoEmptyPlaceLower".Translate();
 
-        public static readonly string TooLittleHaulable;
-
-        public static List<Thing> Cart = new List<Thing>();
+        public static readonly string TooLittleHaulable = "TooLittleHaulable".Translate();
 
         private const int NearbyCell = 10;
-
-        static ToolsForHaulUtility()
-        {
-            TooLittleHaulable = "TooLittleHaulable".Translate();
-            NoEmptyPlaceForCart = "NoEmptyPlaceForCart".Translate();
-            NoEmptyPlaceLowerTrans = "NoEmptyPlaceLower".Translate();
-            NoAvailableCart = "NoAvailableCart".Translate();
-            BurningLowerTrans = "BurningLower".Translate();
-        }
 
         public static bool AvailableAnimalCart(ThingWithComps cart)
         {
@@ -54,7 +43,7 @@ namespace ToolsForHaul.Utilities
                    && Driver.needs.rest.CurCategory < RestCategory.VeryTired && !HealthAIUtility.ShouldBeTendedNow(Driver);
         }
 
-        public static bool AvailableVehicle(Pawn pawn, ThingWithComps cart)
+        public static bool IsVehicleAvailable(Pawn pawn, ThingWithComps cart)
         {
             if (cart.Faction != Faction.OfPlayer) return false;
             if (cart.IsForbidden(pawn.Faction)) return false;
@@ -68,23 +57,20 @@ namespace ToolsForHaul.Utilities
             return false;
         }
 
-        public static Job DismountInBase(Pawn pawn, Thing cart)
-        {
-            Job job = new Job(HaulJobDefOf.DismountInBase) { targetA = cart };
 
-            StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(cart.Position, cart);
-            IntVec3 storeCell;
-            if (!StoreUtility.TryFindBestBetterStoreCellFor(cart, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell, true))
-            {
-                Log.Message("DismountInBase NoEmptyPlaceLowerTrans");
-                JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
-                return null;
-            }
-            job.targetB = storeCell;
+
+        public static Job DismountAtParkingLot(Pawn pawn, Vehicle_Cart cart)
+        {
+            Job job = new Job(HaulJobDefOf.DismountAtParkingLot) { targetA = cart };
+
+            IntVec3 parkingSpace = IntVec3.Invalid;
+            FindParkingSpace(pawn, cart.Position, out parkingSpace);
+
+            job.targetB = parkingSpace;
 
             if (job.targetB != IntVec3.Invalid)
             {
-                Trace.AppendLine("DismountInBase Job is issued");
+                Trace.AppendLine("DismountAtParkingLot Job is issued");
                 Trace.LogMessage();
                 return job;
             }
@@ -93,6 +79,37 @@ namespace ToolsForHaul.Utilities
             Trace.AppendLine("No Job. Reason: " + JobFailReason.Reason);
             Trace.LogMessage();
             return null;
+        }
+
+        public static bool FindParkingSpace(Pawn pawn, IntVec3 searchPos, out IntVec3 parkingSpace)
+        {
+            List<IntVec3> parkingLot = new List<IntVec3>();
+            foreach (IntVec3 cell in pawn.Map.AllCells)
+            {
+                Zone zone = pawn.Map.zoneManager.ZoneAt(cell);
+                if (zone is Zone_ParkingLot)
+                {
+                    if (pawn.Map.thingGrid.ThingsAt(cell)
+                        .Any(
+                            current => current.def.passability == Traversability.PassThroughOnly
+                                       || current.def.passability == Traversability.Impassable))
+                    {
+                        continue;
+                    }
+                  if (!pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, pawn.NormalMaxDanger()))
+                      continue;
+
+                    parkingLot.Add(cell);
+                }
+            }
+            if (parkingLot.Count > 0)
+            {
+                IOrderedEnumerable<IntVec3> orderedEnumerable = parkingLot.OrderBy(x => x.DistanceTo(searchPos));
+                parkingSpace = orderedEnumerable.First();
+                return true;
+            }
+            parkingSpace = IntVec3.Invalid;
+            return false;
         }
 
         public static IntVec3 FindStorageCell(Pawn pawn, Thing haulable, List<LocalTargetInfo> targetQueue = null)
@@ -147,8 +164,11 @@ namespace ToolsForHaul.Utilities
 
         public static Vehicle_Cart FindWheelChair(Pawn patient, Pawn pawn)
         {
-            foreach (Vehicle_Cart vehicle in Cart)
+            List<Thing> availableVehicles = AvailableVehicles(pawn);
+
+            foreach (Thing thing in availableVehicles)
             {
+                Vehicle_Cart vehicle = (Vehicle_Cart)thing;
                 if (vehicle.VehicleComp.IsMedical() && vehicle.MountableComp.Driver == null
                     && pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Some)
                     && vehicle.Faction == pawn.Faction)
@@ -162,10 +182,29 @@ namespace ToolsForHaul.Utilities
             return null;
         }
 
+        public static List<Thing> AvailableVehicles(Pawn pawn)
+        {
+            List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
+                (Thing aV) => (aV is Vehicle_Cart) && !aV.IsForbidden(pawn.Faction)
+                              && ((!aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV)) // Unmounted
+                                  || aV.TryGetComp<CompMountable>().Driver == pawn)); // or Driver is pawn himself
+            return availableVehicles;
+        }
+
+        public static List<Thing> AvailableVehiclesForSteeling(Pawn pawn)
+        {
+            List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
+                (Thing aV) => (aV is Vehicle_Cart) && !aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV)); // Unmounted
+            return availableVehicles;
+        }
+
         public static Vehicle_Cart GetCartByDriver(Pawn pawn)
         {
-            foreach (Vehicle_Cart vehicle in Cart)
+
+            List<Thing> availableVehicles = AvailableVehicles(pawn);
+            foreach (var thing in availableVehicles)
             {
+                var vehicle = (Vehicle_Cart)thing;
                 if (vehicle.MountableComp.Driver == pawn)
                 {
                     return vehicle;
@@ -247,7 +286,7 @@ namespace ToolsForHaul.Utilities
                 jobDef = HaulJobDefOf.HaulWithCart;
             }
 
-            List<KeyValuePair<LocalTargetInfo, float>> dummyQueueA = new List<KeyValuePair<LocalTargetInfo, float>>();
+            Zone zone = pawn.Map.zoneManager.ZoneAt(cart.Position);
 
             targetC = cart;
 
@@ -301,9 +340,10 @@ namespace ToolsForHaul.Utilities
                 {
                     return job;
                 }
-                if (job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())
+
+                if (job.def == HaulJobDefOf.HaulWithCart && !(zone is Zone_ParkingLot))
                 {
-                    return DismountInBase(pawn, cart);
+                    return DismountAtParkingLot(pawn, cart);
                 }
                 Log.Message("HaulWithTools Failes NoEmptyPlaceLowerTrans");
                 JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
@@ -388,10 +428,10 @@ namespace ToolsForHaul.Utilities
                 return job;
             }
 
-            if (job.def == HaulJobDefOf.HaulWithCart && !cart.IsInValidStorage())
+            if (job.def == HaulJobDefOf.HaulWithCart && !(zone is Zone_ParkingLot))
             {
-                Trace.AppendLine("In DismountInBase: ");
-                return DismountInBase(pawn, cart);
+                Trace.AppendLine("In DismountAtParkingLot: ");
+                return DismountAtParkingLot(pawn, cart);
             }
 
             if (job.targetQueueA.NullOrEmpty())
@@ -414,13 +454,25 @@ namespace ToolsForHaul.Utilities
 
         public static bool IsDriver(Pawn pawn)
         {
-            foreach (Vehicle_Cart vehicle in Cart) if (vehicle.MountableComp.Driver == pawn) return true;
+            List<Thing> availableVehicles = AvailableVehicles(pawn);
+            foreach (Vehicle_Cart vehicle in availableVehicles)
+            {
+                if (vehicle.MountableComp.Driver == pawn)
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
         public static bool IsDriverOfThisVehicle(Pawn pawn, Thing vehicleReq)
         {
-            foreach (Vehicle_Cart vehicleTurret in Cart) if (vehicleTurret.MountableComp.Driver == pawn && vehicleTurret == vehicleReq) return true;
+            List<Thing> availableVehicles = AvailableVehicles(pawn);
+            foreach (var thing in availableVehicles)
+            {
+                var vehicleTurret = (Vehicle_Cart)thing;
+                if (vehicleTurret.MountableComp.Driver == pawn && vehicleTurret == vehicleReq) return true;
+            }
             return false;
         }
 

@@ -7,14 +7,19 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace ToolsForHaul.Components.Vehicles
 {
+    using System;
     using System.Collections.Generic;
 
+    using RimWorld;
+
     using ToolsForHaul.Components.Vehicle;
+    using ToolsForHaul.JobDefs;
     using ToolsForHaul.Utilities;
 
     using UnityEngine;
 
     using Verse;
+    using Verse.AI;
 
     public class CompDriver : ThingComp
     {
@@ -45,6 +50,48 @@ namespace ToolsForHaul.Components.Vehicles
             absorbed = false;
         }
 
+        // IMPORTANT: THE parent IS THE PAWN, NOT THE VEHICLE!!!!!!!
+        public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
+        {
+            if (selPawn.Faction != Faction.OfPlayer)
+            {
+                yield break;
+            }
+
+            Vehicle_Cart cart = ToolsForHaulUtility.GetCartByDriver(selPawn);
+            if (cart == null)
+                yield break;
+
+            Action action_DismountInBase = () =>
+                {
+                    Job jobNew = ToolsForHaulUtility.DismountAtParkingLot(selPawn, cart);
+
+                    selPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                };
+
+            Action action_Dismount = () =>
+                {
+                    if (!selPawn.Position.InBounds(selPawn.Map))
+                    {
+                        cart.MountableComp.DismountAt(selPawn.Position);
+                        return;
+                    }
+
+                    cart.MountableComp.DismountAt(
+                        selPawn.Position - this.parent.def.interactionCellOffset.RotatedBy(selPawn.Rotation));
+                    selPawn.Position = selPawn.Position.RandomAdjacentCell8Way();
+
+                    // mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
+                };
+
+        //    if (cart.MountableComp.IsMounted && selPawn == cart.MountableComp.Driver)
+            {
+                // && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
+                yield return new FloatMenuOption("Dismount".Translate(this.parent.LabelShort), action_Dismount);
+                yield return new FloatMenuOption("DismountAtParkingLot".Translate(this.parent.LabelShort), action_DismountInBase);
+            }
+        }
+
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo c in base.CompGetGizmosExtra())
@@ -59,11 +106,12 @@ namespace ToolsForHaul.Components.Vehicles
                 activateSound = SoundDef.Named("Click"),
                 action = ToolsForHaulUtility.GetCartByDriver(this.parent as Pawn).MountableComp.Dismount
             };
-            var pawn = parent as Pawn;
 
-            if (pawn != null)
+            var saddle = parent as Vehicle_Saddle;
+
+            if (saddle != null)
             {
-                if (pawn.RaceProps.Animal)
+                if (saddle.mountableComp.Driver.RaceProps.Animal)
                 {
                     Designator_Board designatorBoard =
                         new Designator_Board

@@ -108,33 +108,37 @@ namespace ToolsForHaul.Components.Vehicle
 
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {
-            // order to drive
-            Action action_Order;
-            string verb;
-            if (this.parent.Faction == Faction.OfPlayer)
+            if (this.parent.Faction != Faction.OfPlayer)
             {
-                if (!this.IsMounted)
+                yield break;
+            }
+
+            Action action_Mount = () =>
                 {
-                    if (this.parent.Faction == Faction.OfPlayer && ((this.parent as Pawn).RaceProps.IsMechanoid || (this.parent as Pawn).RaceProps.Humanlike)
-                         && !this.parent.IsForbidden(this.parent.Faction))
+                    Job jobNew = new Job(HaulJobDefOf.Mount);
+                    selPawn.Map.reservationManager.ReleaseAllForTarget(this.parent);
+                    selPawn.Map.reservationManager.Reserve(selPawn, this.parent);
+                    jobNew.targetA = this.parent;
+                    selPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                };
+
+            Action action_DismountInBase = () =>
+                {
+                    Job jobNew = ToolsForHaulUtility.DismountAtParkingLot(selPawn, this.parent as Vehicle_Cart);
+
+                    selPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                };
+
+            if (!this.IsMounted)
+            {
+                if (!this.parent.IsForbidden(Faction.OfPlayer))
+                {
+                    if (selPawn.Faction == Faction.OfPlayer && (selPawn.RaceProps.IsMechanoid || selPawn.RaceProps.Humanlike)
+                        && !ToolsForHaulUtility.IsDriverOfThisVehicle(selPawn, this.parent))
                     {
-                        action_Order = () =>
-                            {
-                                this.parent.Map.reservationManager.ReleaseAllForTarget(this.parent);
-                                this.parent.Map.reservationManager.Reserve(selPawn, this.parent);
-                                Job jobNew = new Job(HaulJobDefOf.Mount, this.parent);
-                                selPawn.jobs.TryTakeOrderedJob(jobNew);
-                            };
-                        verb = Strings.TxtMountOn;
-                        yield return new FloatMenuOption(verb.Translate(this.parent.LabelShort), action_Order);
+                        yield return new FloatMenuOption("MountOn".Translate(this.parent.LabelShort), action_Mount);
+                        yield return new FloatMenuOption("DismountAtParkingLot".Translate(this.parent.LabelShort), action_DismountInBase);
                     }
-                }
-                else if (this.IsMounted && selPawn == this.Driver)
-                {
-                    // && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
-                    action_Order = () => { this.Dismount(); };
-                    verb = Strings.TxtDismount;
-                    yield return new FloatMenuOption(verb.Translate(this.parent.LabelShort), action_Order);
                 }
             }
         }
@@ -146,30 +150,22 @@ namespace ToolsForHaul.Components.Vehicle
                 yield return compCom;
             }
 
-            //  if (this.parent.Faction != Faction.OfPlayer)
-            //  {
-            //      yield break;
-            //  }
-
-            if (this.IsMounted && this.parent.Faction == Faction.OfPlayer)
+            if (this.parent.Faction != Faction.OfPlayer)
             {
-
+                yield break;
             }
-            else
-            {
-                Designator_Mount designator =
-                    new Designator_Mount
-                    {
-                        vehicle = this.parent,
-                        defaultLabel = Strings.TxtCommandMountLabel.Translate(),
-                        defaultDesc = Strings.TxtCommandMountDesc.Translate(),
-                        icon = ContentFinder<Texture2D>.Get("UI/Commands/IconMount"),
-                        activateSound = SoundDef.Named("Click")
-                    };
 
+            Designator_Mount designator =
+                new Designator_Mount
+                {
+                    vehicle = this.parent,
+                    defaultLabel = Strings.TxtCommandMountLabel.Translate(),
+                    defaultDesc = Strings.TxtCommandMountDesc.Translate(),
+                    icon = ContentFinder<Texture2D>.Get("UI/Commands/IconMount"),
+                    activateSound = SoundDef.Named("Click")
+                };
 
-                yield return designator;
-            }
+            yield return designator;
         }
 
         public override void CompTick()
@@ -184,7 +180,7 @@ namespace ToolsForHaul.Components.Vehicle
                 }
 
                 if (this.Driver.Dead || this.Driver.Downed || this.Driver.health.InPainShock
-                    || this.Driver.MentalStateDef == MentalStateDefOf.WanderPsychotic
+                    || this.Driver.InMentalState
                     || (this.parent.IsForbidden(Faction.OfPlayer) && this.Driver.Faction == Faction.OfPlayer))
                 {
                     if (!this.Driver.Position.InBounds(this.parent.Map))
@@ -198,7 +194,6 @@ namespace ToolsForHaul.Components.Vehicle
                     this.Driver.Position = this.Driver.Position.RandomAdjacentCell8Way();
                     return;
                 }
-
 
                 if (Find.TickManager.TicksGame - this.tickCheck >= this.tickCooldown)
                 {
@@ -269,9 +264,9 @@ namespace ToolsForHaul.Components.Vehicle
                     if (vehicleComp != null && !vehicleComp.MotorizedWithoutFuel())
                     {
                         CompRefuelable refuelableComp = this.parent.TryGetComp<CompRefuelable>();
-                        Job jobNew = ToolsForHaulUtility.DismountInBase(
+                        Job jobNew = ToolsForHaulUtility.DismountAtParkingLot(
                             this.Driver,
-                           GameComponentToolsForHaul.CurrentVehicle[this.Driver]);
+                           GameComponentToolsForHaul.CurrentDrivers[this.Driver]);
                         float hitPointsPercent = this.parent.HitPoints / this.parent.MaxHitPoints;
 
                         if (this.Driver.Faction == Faction.OfPlayer)
@@ -333,14 +328,14 @@ namespace ToolsForHaul.Components.Vehicle
                 turret.dontReload = false;
             }
 #endif
-        //    if (this.Driver.RaceProps.Humanlike)
+            //    if (this.Driver.RaceProps.Humanlike)
             {
                 this.Driver.AllComps?.Remove(this.DriverComp);
                 this.DriverComp.Vehicle = null;
                 this.DriverComp.parent = null;
             }
 
-            GameComponentToolsForHaul.CurrentVehicle.Remove(this.Driver);
+            GameComponentToolsForHaul.CurrentDrivers.Remove(this.Driver);
 
             this.Driver.RaceProps.makesFootprints = true;
 
@@ -391,10 +386,10 @@ namespace ToolsForHaul.Components.Vehicle
 
             this.Driver = pawn;
 
-            GameComponentToolsForHaul.CurrentVehicle.Add(pawn, this.parent);
 
             if (this.Driver.RaceProps.Humanlike)
             {
+                GameComponentToolsForHaul.CurrentDrivers.Add(pawn, this.parent as Vehicle_Cart);
                 this.Driver.RaceProps.makesFootprints = false;
             }
             this.DriverComp = new CompDriver
@@ -427,28 +422,15 @@ namespace ToolsForHaul.Components.Vehicle
 
         public override void PostDeSpawn(Map map)
         {
-            if (ToolsForHaulUtility.Cart.Contains(this.parent))
-            {
-                ToolsForHaulUtility.Cart.Remove(this.parent);
-            }
-
-            if (ToolsForHaulUtility.Cart.Contains(this.parent))
-            {
-                ToolsForHaulUtility.Cart.Remove(this.parent);
-            }
-
             if (this.IsMounted)
             {
-                if (GameComponentToolsForHaul.CurrentVehicle.ContainsKey(this.Driver))
+                if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(this.Driver))
                 {
-                    GameComponentToolsForHaul.CurrentVehicle.Remove(this.Driver);
+                    GameComponentToolsForHaul.CurrentDrivers.Remove(this.Driver);
                 }
             }
 
-            if (this.SustainerAmbient != null)
-            {
-                this.SustainerAmbient.End();
-            }
+            this.SustainerAmbient?.End();
 
             base.PostDeSpawn(map);
         }
@@ -517,13 +499,13 @@ namespace ToolsForHaul.Components.Vehicle
                             this.SustainerAmbient = compVehicle.compProps.soundAmbient.TrySpawnSustainer(info);
                         });
             }
-            if (!GameComponentToolsForHaul.CurrentVehicle.ContainsKey(this.Driver))
-            {
-                GameComponentToolsForHaul.CurrentVehicle.Add(this.Driver, parent);
-            }
 
             if (this.Driver.RaceProps.Humanlike)
             {
+                if (!GameComponentToolsForHaul.CurrentDrivers.ContainsKey(this.Driver))
+                {
+                    GameComponentToolsForHaul.CurrentDrivers.Add(this.Driver, parent as Vehicle_Cart);
+                }
                 this.Driver.RaceProps.makesFootprints = false;
                 this.DriverComp = new CompDriver { Vehicle = this.parent };
                 this.Driver.AllComps?.Add(this.DriverComp);

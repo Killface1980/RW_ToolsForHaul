@@ -10,29 +10,29 @@ namespace ToolsForHaul.JobDrivers
 {
     using ToolsForHaul.Components.Vehicle;
 
-    public class JobDriver_DismountInBase : JobDriver
+    public class JobDriver_DismountAtParkingLot : JobDriver
     {
         // Constants
         private const TargetIndex CartInd = TargetIndex.A;
-        private const TargetIndex StoreCellInd = TargetIndex.B;
+        private const TargetIndex ParkingLotCellInd = TargetIndex.B;
 
         public override string GetReport()
         {
             ThingWithComps cart = this.TargetThingA as ThingWithComps;
 
-            IntVec3 destLoc = new IntVec3(-1000, -1000, -1000);
+            IntVec3 destLoc = IntVec3.Invalid;
             string destName = null;
-            SlotGroup destGroup = null;
+            Zone destZone = null;
 
 
             if (this.pawn.jobs.curJob.targetB != null)
             {
                 destLoc = this.pawn.jobs.curJob.targetB.Cell;
-                destGroup = destLoc.GetSlotGroup(cart.Map);
+                destZone = destLoc.GetZone(cart.Map);
             }
 
-            if (destGroup != null)
-                destName = destGroup.parent.SlotYielderLabel();
+            if (destZone != null)
+                destName = destZone.label;
 
             string repString;
             if (destName != null)
@@ -51,27 +51,30 @@ namespace ToolsForHaul.JobDrivers
 
             this.FailOnDestroyedOrNull(CartInd);
 
+          //  this.FailOnDestroyedNullOrForbidden(ParkingLotCellInd);
+
             // Note we only fail on forbidden if the target doesn't start that way
             // This helps haul-aside jobs on forbidden items
-            if (!this.TargetThingA.IsForbidden(this.pawn.Faction)) this.FailOnForbidden(CartInd);
-
-            ThingWithComps cart = this.TargetThingA as ThingWithComps;
-
-            if (ToolsForHaulUtility.FindStorageCell(this.pawn,  cart) == IntVec3.Invalid)
+            if (!this.TargetThingA.IsForbidden(this.pawn.Faction))
             {
-                JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceForCart);
+                this.FailOnForbidden(CartInd);
             }
 
-            if (cart.TryGetComp<CompMountable>().Driver != null)
-            {
-                this.FailOnSomeonePhysicallyInteracting(CartInd);
-            }
+            Vehicle_Cart cart = this.TargetThingA as Vehicle_Cart;
+
+         // IntVec3 parkingSpace = IntVec3.Invalid;
+         // if (!ToolsForHaulUtility.FindParkingSpace(this.pawn.Map, cart.Position, out parkingSpace))
+         // {
+         //     JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceForCart);
+         // }
+
+
 
             ///
             // Define Toil
             ///
 
-            Toil toilGoToCell = Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch);
+            Toil toilGoToCell = Toils_Goto.GotoCell(ParkingLotCellInd, PathEndMode.ClosestTouch);
 
             ///
             // Toils Start
@@ -79,13 +82,12 @@ namespace ToolsForHaul.JobDrivers
 
             // Reserve thing to be stored and storage cell 
             yield return Toils_Reserve.Reserve(CartInd);
-            yield return Toils_Reserve.Reserve(StoreCellInd);
+            yield return Toils_Reserve.Reserve(ParkingLotCellInd);
 
             // JumpIf already mounted
-            yield return
-                Toils_Jump.JumpIf(
-                    toilGoToCell,
-                    () => { return cart.TryGetComp<CompMountable>().Driver == this.pawn ? true : false; });
+            yield return Toils_Jump.JumpIf(
+                toilGoToCell,
+                () => { return cart.MountableComp.Driver == this.pawn ? true : false; });
 
             // Mount on Target
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch).FailOnDestroyedOrNull(CartInd);
@@ -94,7 +96,7 @@ namespace ToolsForHaul.JobDrivers
             // Dismount
             yield return toilGoToCell;
 
-            yield return Toils_Cart.DismountAt(CartInd, StoreCellInd);
+            yield return Toils_Cart.DismountAt(CartInd, ParkingLotCellInd);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace ToolsForHaul
 {
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Text;
 
@@ -28,8 +29,11 @@ namespace ToolsForHaul
         [Conditional("LOGGING")]
         public static void DebugWriteHaulingPawn(Pawn pawn)
         {
-            foreach (Vehicle_Cart cart in ToolsForHaulUtility.Cart)
+            List<Thing> availableVehicles = ToolsForHaulUtility.AvailableVehicles(pawn);
+
+            foreach (var thing in availableVehicles)
             {
+                var cart = (Vehicle_Cart)thing;
                 string driver = cart.MountableComp.IsMounted ? cart.MountableComp.Driver.LabelCap : "No Driver";
                 string state = string.Empty;
                 if (cart.IsForbidden(pawn.Faction))
@@ -42,7 +46,7 @@ namespace ToolsForHaul
                     state = string.Concat(state, "CanReserveAndReach ");
                 }
 
-                if (ToolsForHaulUtility.AvailableVehicle(pawn, cart))
+                if (ToolsForHaulUtility.IsVehicleAvailable(pawn, cart))
                 {
                     state = string.Concat(state, "AvailableCart ");
                 }

@@ -5,6 +5,8 @@ using System.Text;
 
 namespace ToolsForHaul.Components
 {
+    using Verse;
+
     public static class Strings
     {
         public const string TxtCommandDismountDesc = "CommandDismountDesc";
@@ -15,7 +17,7 @@ namespace ToolsForHaul.Components
 
         public const string TxtCommandMountLabel = "CommandMountLabel";
 
-        public const string TxtDismount = "Dismount";
+        public static readonly string TxtDismount = "Dismount".Translate();
 
         public const string TxtMountOn = "MountOn";
     }

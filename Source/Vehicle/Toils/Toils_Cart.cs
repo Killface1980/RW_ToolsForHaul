@@ -11,6 +11,7 @@ namespace ToolsForHaul.Toils
 {
     using ToolsForHaul.Components.Vehicle;
     using ToolsForHaul.Components.Vehicles;
+    using ToolsForHaul.Utilities;
 
     public static class Toils_Cart
     {
@@ -57,14 +58,14 @@ namespace ToolsForHaul.Toils
             toil.initAction = () =>
             {
                 Pawn actor = toil.GetActor();
-                ThingWithComps cart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as ThingWithComps;
+                Vehicle_Cart cart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as Vehicle_Cart;
                 if (cart == null)
                 {
                     Log.Error(actor.LabelCap + " Report: Cart is invalid.");
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
 
-                cart.TryGetComp<CompMountable>().DismountAt(toil.actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
+                cart.MountableComp.DismountAt(toil.actor.jobs.curJob.GetTarget(StoreCellInd).Cell);
             };
             return toil;
         }
@@ -163,6 +164,49 @@ namespace ToolsForHaul.Toils
 
                             regionInd++;
                         }
+                    }
+
+                    // Log.Message(stringBuilder.ToString());
+                    /*
+                    //Home Area
+                    if (storeCell == IntVec3.Invalid)
+                        foreach (IntVec3 cell in Find.AreaHome.ActiveCells.Where(cell => (cell.GetZone() == null || cell.IsValidStorageFor(cart)) && cell.Standable() && cell.GetEdifice() == null))
+                            if (cell.DistanceToSquared(cart.Position) < NearbyCell)
+                                storeCell = cell;
+                    */
+                    actor.Reserve(storeCell);
+                    toil.actor.jobs.curJob.targetB = storeCell != invalid && storeCell != IntVec3.Invalid
+                                                         ? storeCell
+                                                         : vehicleCart.Position;
+                };
+            return toil;
+        }
+
+        public static Toil FindParkingSpaceForCartForCart(TargetIndex CartInd)
+        {
+            const int NearbyCell = 8;
+            const int RegionCellOffset = 16;
+            IntVec3 invalid = new IntVec3(0, 0, 0);
+#if DEBUG
+            StringBuilder stringBuilder = new StringBuilder();
+#endif
+            Toil toil = new Toil();
+            toil.initAction = () =>
+                {
+                    IntVec3 storeCell = IntVec3.Invalid;
+                    Pawn actor = toil.GetActor();
+                    Vehicle_Cart vehicleCart = toil.actor.jobs.curJob.GetTarget(CartInd).Thing as Vehicle_Cart;
+                    if (vehicleCart == null)
+                    {
+                        Log.Error(actor.LabelCap + " Report: Cart is invalid.");
+                        toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
+                    }
+
+                    // Find Valid Storage
+                    if (!ToolsForHaulUtility.FindParkingSpace(actor, actor.Position, out storeCell))
+                    {
+                        Log.Error(actor.LabelCap + " Report: No parking space for cart.");
+                        toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                     }
 
                     // Log.Message(stringBuilder.ToString());

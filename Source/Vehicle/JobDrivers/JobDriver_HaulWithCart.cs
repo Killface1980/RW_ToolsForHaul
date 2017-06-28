@@ -59,14 +59,19 @@ namespace ToolsForHaul.JobDrivers
                 this.FailOnForbidden(CartInd);
             }
 
-
             ///
             //Define Toil
             ///
 
             Toil findStoreCellForCart = Toils_Cart.FindStoreCellForCart(CartInd);
-            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(findStoreCellForCart, () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
-            Toil checkHaulableEmpty = Toils_Jump.JumpIf(checkStoreCellEmpty, () => CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
+            Toil findParkingSpaceForCart = Toils_Cart.FindParkingSpaceForCartForCart(CartInd);
+
+            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(
+                findStoreCellForCart,
+                () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
+            Toil checkHaulableEmpty = Toils_Jump.JumpIf(
+                checkStoreCellEmpty,
+                () => CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
 
             ///
             //Toils Start
@@ -91,19 +96,18 @@ namespace ToolsForHaul.JobDrivers
             yield return checkHaulableEmpty;
 
             //Collect TargetQueue
-            {
-                Toil extractA = Toils_Collect.Extract(HaulableInd);
-                yield return extractA;
 
-                yield return Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch)
-                    .FailOnDestroyedNullOrForbidden(HaulableInd);
+            Toil extractA = Toils_Collect.Extract(HaulableInd);
+            yield return extractA;
 
-                yield return Toils_Collect.CollectInCarrier(CartInd, HaulableInd);
+            yield return Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch)
+                .FailOnDestroyedNullOrForbidden(HaulableInd);
 
-                yield return Toils_Collect.CheckDuplicates(extractA, CartInd, HaulableInd);
+            yield return Toils_Collect.CollectInCarrier(CartInd, HaulableInd);
 
-                yield return Toils_Jump.JumpIfHaveTargetInQueue(HaulableInd, extractA);
-            }
+            yield return Toils_Collect.CheckDuplicates(extractA, CartInd, HaulableInd);
+
+            yield return Toils_Jump.JumpIfHaveTargetInQueue(HaulableInd, extractA);
 
             //JumpIf findStoreCellForCart
             yield return checkStoreCellEmpty;
@@ -120,11 +124,11 @@ namespace ToolsForHaul.JobDrivers
                 yield return Toils_Jump.JumpIfHaveTargetInQueue(StoreCellInd, extractB);
             }
 
-            yield return findStoreCellForCart;
+            yield return findParkingSpaceForCart;
 
             yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.OnCell);
 
-            yield return Toils_Cart.DismountAt(CartInd, StoreCellInd);
+            yield return Toils_Cart.DismountAt(CartInd ,StoreCellInd);
         }
     }
 }

@@ -51,10 +51,6 @@
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CompVehicle">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\932008009\Assemblies\CompVehicle.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\UnityEngine.dll</HintPath>
@@ -62,10 +58,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Components\Vehicle\CompProperties_Mountable.cs" />
-    <Compile Include="Class1.cs" />
-    <None Include="Components\Vehicle\CompDriver - Kopieren.cs" />
+    <Compile Include="Zone_ParkingLot.cs" />
+    <None Include="SpotlightTurret.cs" />
     <Compile Include="Components\Strings.cs" />
+    <Compile Include="Designators\Designator_ZoneAddParkingLot.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_Raid_TFH.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RefugeeChased.cs" />
@@ -77,7 +73,6 @@
     <Compile Include="Components\Vehicle\CompDriver.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
-    <None Include="_testing\ProjectileTFH.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />
@@ -89,7 +84,7 @@
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <Compile Include="RightVehicle.cs" />
     <None Include="Things\SpotlightStuff.cs" />
-    <Compile Include="Things\Saddle\Class1.cs" />
+    <Compile Include="Things\Saddle\Designator_Board.cs" />
     <Compile Include="Things\Textures.cs" />
     <Compile Include="Command_VerbTarget.cs" />
     <Compile Include="Things\Vehicle_CartGunTop.cs" />
@@ -116,7 +111,7 @@
     <None Include="_inactive\CompTool.cs" />
     <None Include="JobGivers\JobGiver_Kidnap.cs" />
     <Compile Include="Detours\_ThinkNode_JobGiver.cs" />
-    <Compile Include="Components\MapComponent_ToolsForHaul.cs" />
+    <Compile Include="Components\GameComponentToolsForHaul.cs" />
     <Compile Include="NoCCL\Detours.cs" />
     <Compile Include="Utilities\ToolsForHaulUtility.cs" />
     <Compile Include="Trace.cs" />
@@ -134,7 +129,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="JobDrivers\JobDriver_Board.cs" />
-    <Compile Include="JobDrivers\JobDriver_DismountInBase.cs" />
+    <Compile Include="JobDrivers\JobDriver_DismountAtParkingLot.cs" />
     <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
     <Compile Include="JobDrivers\JobDriver_Mount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -147,6 +142,9 @@
   <ItemGroup>
     <Content Include="..\..\About\About.xml">
       <Link>About.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\DesignationDefs\Designations.xml">
+      <Link>Defs\DesignationDefs\Designations.xml</Link>
     </Content>
     <Content Include="..\..\Defs\EffecterDefs\Effecter_Misc.xml">
       <Link>Defs\EffecterDefs\Effecter_Misc.xml</Link>
@@ -168,9 +166,6 @@
     </Content>
     <Content Include="..\..\Defs\KeyBindingDefs\KeyBindings.xml">
       <Link>Defs\KeyBindingDefs\KeyBindings.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\ModHelperDefs\ModHelper.xml">
-      <Link>Defs\ModHelperDefs\ModHelper.xml</Link>
     </Content>
     <Content Include="..\..\Defs\SoundDefs\Vehicle_Sustainers_Ambiences.xml">
       <Link>Defs\SoundDefs\Vehicle_Sustainers_Ambiences.xml</Link>
@@ -199,12 +194,6 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Mote_Special.xml">
       <Link>Defs\ThingDefs\Mote_Special.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\ThingDefs\RA_Items_Base.xml">
-      <Link>Defs\ThingDefs\RA_Items_Base.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\ThingDefs\RA_Weapons_Melee.xml">
-      <Link>Defs\ThingDefs\RA_Weapons_Melee.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Things_Special.xml">
       <Link>Defs\ThingDefs\Things_Special.xml</Link>
@@ -239,6 +228,9 @@
     <Content Include="..\..\Languages\English\Keyed\Misc_Gameplay.xml">
       <Link>Languages\English\Misc_Gameplay.xml</Link>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Patches\Patches_Core.xml">
+      <Link>Patches_Core.xml</Link>
     </Content>
   </ItemGroup>
   <ItemGroup />
