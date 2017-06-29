@@ -27,8 +27,6 @@ namespace ToolsForHaul.Components
     {
         private Pawn driver;
 
-        private CompDriver driverComp;
-
         public float lastDrawAsAngle;
 
         private Building_Door lastPassedDoor;
@@ -93,18 +91,6 @@ namespace ToolsForHaul.Components
             }
         }
 
-        public CompDriver DriverComp
-        {
-            get
-            {
-                return this.driverComp;
-            }
-
-            set
-            {
-                this.driverComp = value;
-            }
-        }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
@@ -123,6 +109,11 @@ namespace ToolsForHaul.Components
 
         public override void CompTick()
         {
+            if (this.driver == null)
+            {
+                return;
+            }
+
             base.CompTick();
             if (!this.IsMounted)
             {
@@ -273,12 +264,10 @@ namespace ToolsForHaul.Components
 
         public void Dismount()
         {
-            {
-                // if (this.Driver.RaceProps.Humanlike)
-                this.Driver.AllComps?.Remove(this.DriverComp);
-                this.DriverComp.Vehicle = null;
-                this.DriverComp.parent = null;
-            }
+            var cart = this.parent as Vehicle_Cart;
+            this.Driver.AllComps?.Remove(cart.DriverComp);
+            cart.DriverComp.Vehicle = null;
+            cart.DriverComp.parent = null;
 
             GameComponentToolsForHaul.CurrentDrivers.Remove(this.Driver);
 
@@ -330,6 +319,7 @@ namespace ToolsForHaul.Components
             }
 
             this.Driver = pawn;
+            Vehicle_Cart vehicleCart = this.parent as Vehicle_Cart;
 
 
             if (this.Driver.RaceProps.Humanlike)
@@ -338,14 +328,13 @@ namespace ToolsForHaul.Components
                 this.Driver.RaceProps.makesFootprints = false;
             }
 
-            this.DriverComp = new CompDriver
+            vehicleCart.DriverComp = new CompDriver
             {
                 Vehicle = this.parent
             };
-            this.Driver?.AllComps?.Add(this.DriverComp);
-            this.DriverComp.parent = this.Driver;
+            this.Driver?.AllComps?.Add(vehicleCart.DriverComp);
+            vehicleCart.DriverComp.parent = this.Driver;
 
-            Vehicle_Cart vehicleCart = this.parent as Vehicle_Cart;
             if (vehicleCart != null)
             {
                 // Set faction of vehicle to whoever mounts it
@@ -427,20 +416,21 @@ namespace ToolsForHaul.Components
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            CompVehicle compVehicle = this.parent.TryGetComp<CompVehicle>();
+
+            var cart = this.parent as Vehicle_Cart;
 
             if (this.Driver == null)
             {
                 return;
             }
 
-            if (compVehicle.IsCurrentlyMotorized())
+            if (cart.VehicleComp.IsCurrentlyMotorized())
             {
                 LongEventHandler.ExecuteWhenFinished(
                     delegate
                         {
                             SoundInfo info = SoundInfo.InMap(this.parent);
-                            this.SustainerAmbient = compVehicle.compProps.soundAmbient.TrySpawnSustainer(info);
+                            this.SustainerAmbient = cart.VehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
                         });
             }
 
@@ -450,11 +440,14 @@ namespace ToolsForHaul.Components
                 {
                     GameComponentToolsForHaul.CurrentDrivers.Add(this.Driver, this.parent as Vehicle_Cart);
                 }
+                if (this.Driver.RaceProps.Humanlike)
+                {
+                    this.Driver.RaceProps.makesFootprints = false;
 
-                this.Driver.RaceProps.makesFootprints = false;
-                this.DriverComp = new CompDriver { Vehicle = this.parent };
-                this.Driver.AllComps?.Add(this.DriverComp);
-                this.DriverComp.parent = this.Driver;
+                }
+            //  cart.DriverComp = new CompDriver { Vehicle = this.parent };
+            // Driver.AllComps?.Add(cart.DriverComp);
+            //  cart.DriverComp.parent = this.Driver;
             }
 
         }

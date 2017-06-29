@@ -145,6 +145,19 @@
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
+  </WorkGiverDef> 
+  
+  <WorkGiverDef>
+    <defName>ReturnCart</defName>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_Haul_ReturnCart</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>5</priorityInType>
+    <scanThings>true</scanThings>
+    <verb>return cart</verb>
+    <gerund>returning cart</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
   </WorkGiverDef>
   
 </WorkGivers>

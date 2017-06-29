@@ -17,7 +17,7 @@
         public Designator_ZoneAddParkingLot()
         {
             this.zoneTypeToPlace = typeof(Zone_ParkingLot);
-            this.defaultLabel = "ParkingLot".Translate();
+            this.defaultLabel = "ParkingLotZone".Translate();
             this.defaultDesc = Static.ParkingLotDesc;
             this.icon = Static.TexParkingLot;
             this.tutorTag = "ZoneAdd_ParkingLot";

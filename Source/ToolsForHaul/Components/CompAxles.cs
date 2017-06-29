@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
 
+    using ToolsForHaul.Vehicles;
+
     using UnityEngine;
 
     using Verse;
@@ -30,6 +32,11 @@
 
         public override void CompTick()
         {
+            if ((this.parent as Vehicle_Cart).MountableComp.Driver == null)
+            {
+                return;
+            }
+
             CompMountable mountableComp = this.parent.TryGetComp<CompMountable>();
             CompVehicle vehicleComp = this.parent.TryGetComp<CompVehicle>();
 

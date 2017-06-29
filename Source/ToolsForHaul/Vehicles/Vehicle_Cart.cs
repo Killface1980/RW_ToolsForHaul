@@ -123,6 +123,21 @@
 
         public CompVehicle VehicleComp => this.GetComp<CompVehicle>();
 
+        public CompDriver DriverComp
+        {
+            get
+            {
+                return this.driverComp;
+            }
+
+            set
+            {
+                this.driverComp = value;
+            }
+        }
+        private CompDriver driverComp;
+
+
         public int MaxItem => this.MountableComp.IsMounted && this.MountableComp.Driver.RaceProps.Animal
                                   ? Mathf.CeilToInt(this.MountableComp.Driver.BodySize * this.DefaultMaxItem)
                                   : this.DefaultMaxItem;
@@ -381,17 +396,17 @@
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
         {
-            foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn))
-            {
-                yield return fmo;
-            }
-
             // do nothing if not of colony
             if (this.Faction != Faction.OfPlayer)
             {
-                FloatMenuOption failer = new FloatMenuOption("NotPlayerFaction".Translate(this.LabelShort), null, MenuOptionPriority.Default, null, null, 0f, null, null);
+                FloatMenuOption failer = new FloatMenuOption("NotPlayerFaction".Translate(this.LabelCap), null, MenuOptionPriority.Default, null, null, 0f, null, null);
                 yield return failer;
                 yield break;
+            }
+
+            foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn))
+            {
+                yield return fmo;
             }
 
             Map map = myPawn.Map;
@@ -470,6 +485,8 @@
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
+            this.MountableComp.Driver?.AllComps?.Remove(this.DriverComp);
+
             // PowerOffLight();
             if (mode == DestroyMode.Deconstruct) mode = DestroyMode.KillFinalize;
 

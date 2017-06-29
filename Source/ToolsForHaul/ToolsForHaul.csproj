@@ -61,6 +61,7 @@
     <Compile Include="Static.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithAnimalCart.cs" />
+    <Compile Include="WorkGivers\WorkGiver_Haul_ReturnCart.cs" />
     <Compile Include="Zone_ParkingLot.cs" />
     <None Include="SpotlightTurret.cs" />
     <Compile Include="Designators\Designator_ZoneAddParkingLot.cs" />
