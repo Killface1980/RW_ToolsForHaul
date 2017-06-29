@@ -1,21 +1,22 @@
-﻿using System.Collections.Generic;
-using RimWorld;
-using Verse;
-
-namespace ToolsForHaul
+﻿namespace ToolsForHaul.Components
 {
+    using System.Collections.Generic;
+
+    using RimWorld;
+
+    using ToolsForHaul.Vehicles;
+
+    using Verse;
 
     public class GameComponentToolsForHaul : GameComponent
     {
 
         public GameComponentToolsForHaul()
         {
-            //
         }
 
         public GameComponentToolsForHaul(Game game)
         {
-            //
         }
 
         public struct Entry

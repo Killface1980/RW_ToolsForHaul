@@ -9,6 +9,7 @@ namespace ToolsForHaul
     using RimWorld;
 
     using ToolsForHaul.Utilities;
+    using ToolsForHaul.Vehicles;
 
     using Verse;
     using Verse.AI;
@@ -29,7 +30,7 @@ namespace ToolsForHaul
         [Conditional("LOGGING")]
         public static void DebugWriteHaulingPawn(Pawn pawn)
         {
-            List<Thing> availableVehicles = ToolsForHaulUtility.AvailableVehicles(pawn);
+            List<Thing> availableVehicles = TFH_Utility.AvailableVehicles(pawn);
 
             foreach (var thing in availableVehicles)
             {
@@ -46,12 +47,12 @@ namespace ToolsForHaul
                     state = string.Concat(state, "CanReserveAndReach ");
                 }
 
-                if (ToolsForHaulUtility.IsVehicleAvailable(pawn, cart))
+                if (TFH_Utility.IsVehicleAvailable(pawn, cart))
                 {
                     state = string.Concat(state, "AvailableCart ");
                 }
 
-                if (ToolsForHaulUtility.AvailableAnimalCart(cart))
+                if (TFH_Utility.AvailableAnimalCart(cart))
                 {
                     state = string.Concat(state, "AvailableAnimalCart ");
                 }

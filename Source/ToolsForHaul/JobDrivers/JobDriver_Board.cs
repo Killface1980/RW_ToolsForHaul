@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
-using RimWorld;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.JobDrivers
+﻿namespace ToolsForHaul.JobDrivers
 {
+    using System.Collections.Generic;
+
+    using RimWorld;
+
+    using ToolsForHaul.Vehicles;
+
+    using Verse;
+    using Verse.AI;
+
     public class JobDriver_Board : JobDriver
     {
         // Constants

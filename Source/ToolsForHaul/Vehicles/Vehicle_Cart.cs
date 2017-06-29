@@ -1,40 +1,32 @@
-﻿#if !CR
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-#if Headlights
-using ppumkin.LEDTechnology.Managers;
-#endif
-using RimWorld;
-using ToolsForHaul.Components;
-using ToolsForHaul.JobDefs;
-using ToolsForHaul.StatDefs;
-using ToolsForHaul.Utilities;
-using UnityEngine;
-using Verse;
-using Verse.AI;
-using Verse.Sound;
-
-namespace ToolsForHaul
+﻿namespace ToolsForHaul.Vehicles
 {
-    using ToolsForHaul.Components.Vehicle;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+
+    using RimWorld;
+
+    using ToolsForHaul.Components;
+    using ToolsForHaul.Defs;
+    using ToolsForHaul.Designators;
+    using ToolsForHaul.Utilities;
+
+    using UnityEngine;
+
+    using Verse;
+    using Verse.AI;
 
     [StaticConstructorOnStartup]
     public class Vehicle_Cart : Building_Turret, IThingHolder, IAttackTargetSearcher, IAttackTarget
     {
-
         #region Tank
 
         protected StunHandler stunner;
 
         protected LocalTargetInfo forcedTarget = LocalTargetInfo.Invalid;
 
-        public override LocalTargetInfo CurrentTarget
-        {
-            get;
-
-        }
+        public override LocalTargetInfo CurrentTarget { get; }
 
         public override Verb AttackVerb { get; }
 
@@ -80,13 +72,12 @@ namespace ToolsForHaul
             // CompPowerTrader comp = this.GetComp<CompPowerTrader>();
             // if (comp == null || !comp.PowerOn)
             // {
-            //     CompMannable comp2 = this.GetComp<CompMannable>();
-            //     if (comp2 == null || !comp2.MannedNow)
-            //     {
-            //         return true;
-            //     }
+            // CompMannable comp2 = this.GetComp<CompMannable>();
+            // if (comp2 == null || !comp2.MannedNow)
+            // {
+            // return true;
             // }
-
+            // }
             return false;
         }
 
@@ -103,7 +94,6 @@ namespace ToolsForHaul
         private int tickCheck = Find.TickManager.TicksGame;
 
         private int tickCooldown = 60;
-
 
         // mount and storage data
         public ThingOwner<Thing> innerContainer;
@@ -159,6 +149,7 @@ namespace ToolsForHaul
                 return this;
             }
         }
+
         // public static ListerVehicles listerVehicles = new ListerVehicles();
 #if Headlights
         HeadLights flooder;
@@ -168,7 +159,7 @@ namespace ToolsForHaul
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
-            this.innerContainer = new ThingOwner<Thing>(this, false, LookMode.Deep);
+            this.innerContainer = new ThingOwner<Thing>(this, false);
 
             if (this.allowances == null)
             {
@@ -179,7 +170,6 @@ namespace ToolsForHaul
 
             // Spotlight
             // this.updateOffsetInTicks = Rand.RangeInclusive(0, updatePeriodInTicks);
-            // 
             // spotlightMatrix.SetTRS(base.DrawPos + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightScale);
         }
 
@@ -189,7 +179,7 @@ namespace ToolsForHaul
             // foreach (Pawn pawn in Find.MapPawns.AllPawnsSpawned)
             // {
             // if (pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")) &&
-            // !ToolsForHaulUtility.IsDriver(pawn) && base.Position.AdjacentTo8WayOrInside(pawn.Position))
+            // !TFH_Utility.IsDriver(pawn) && base.Position.AdjacentTo8WayOrInside(pawn.Position))
             // {
             // mountableComp.MountOn(pawn);
             // hasChair = true;
@@ -198,8 +188,9 @@ namespace ToolsForHaul
             // }
             // if (!hasChair)
             // {
-
-            if (this.MountableComp.IsMounted) if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(this.MountableComp.Driver)) GameComponentToolsForHaul.CurrentDrivers.Remove(this.MountableComp.Driver);
+            if (this.MountableComp.IsMounted)
+                if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(this.MountableComp.Driver))
+                    GameComponentToolsForHaul.CurrentDrivers.Remove(this.MountableComp.Driver);
 
             if (this.MountableComp.SustainerAmbient != null) this.MountableComp.SustainerAmbient.End();
             base.DeSpawn();
@@ -232,12 +223,12 @@ namespace ToolsForHaul
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Deep.Look<ThingOwner<Thing>>(ref this.innerContainer, "innerContainer", new object[] { this });
+            Scribe_Deep.Look(ref this.innerContainer, "innerContainer", this);
             Scribe_Deep.Look(ref this.allowances, "allowances");
             Scribe_Values.Look(ref this.VehicleComp.tankLeaking, "tankLeaking");
             Scribe_Values.Look(ref this._tankHitPos, "tankHitPos");
 
-            Scribe_Deep.Look(ref this.stunner, "stunner", new object[] { this });
+            Scribe_Deep.Look(ref this.stunner, "stunner", this);
 
             // Scribe_References.Look<Thing>(ref this.light, "light");
             // Scribe_Values.Look<LightMode>(ref this.lightMode, "lightMode");
@@ -263,14 +254,42 @@ namespace ToolsForHaul
                 yield return baseGizmo;
             }
 
+            Designator_Mount designator =
+                new Designator_Mount
+                {
+                    vehicle = this,
+                    defaultLabel = Static.TxtCommandMountLabel.Translate(),
+                    defaultDesc = Static.TxtCommandMountDesc.Translate(),
+                    icon = Static.IconMount,
+                    activateSound = Static.ClickSound
+                };
+
+            if (!this.MountableComp.IsMounted)
+            {
+                yield return designator;
+            }
+            else
+            {
+                if (this.MountableComp.Driver != null)
+                    yield return new Command_Action
+                    {
+                        defaultLabel = Static.TxtCommandDismountLabel.Translate(),
+                        defaultDesc = Static.TxtCommandDismountDesc.Translate(),
+                        icon = Static.IconUnmount,
+                        activateSound = Static.ClickSound,
+                        action = delegate { TFH_Utility.DismountGizmoFloatMenu(this, this.MountableComp.Driver); }
+                    };
+            }
+
             if (this.ExplosiveComp != null)
             {
-                Command_Action command_Action = new Command_Action
-                {
-                    icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate"),
-                    defaultDesc = "CommandDetonateDesc".Translate(),
-                    action = Command_Detonate
-                };
+                Command_Action command_Action =
+                    new Command_Action
+                    {
+                        icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate"),
+                        defaultDesc = "CommandDetonateDesc".Translate(),
+                        action = this.Command_Detonate
+                    };
                 if (this.ExplosiveComp.wickStarted)
                 {
                     command_Action.Disable();
@@ -282,73 +301,65 @@ namespace ToolsForHaul
 
 
             // Spotlight
-            //  int groupKeyBase = 700000102;
-            //
-            //  Command_Action lightModeButton = new Command_Action();
-            //  switch (this.lightMode)
-            //  {
-            //      case (LightMode.Conic):
-            //          lightModeButton.defaultLabel = "Ligth mode: conic.";
-            //          lightModeButton.defaultDesc = "In this mode, the spotlight turret patrols in a conic area in front of it. Automatically lock on hostiles.";
-            //          break;
-            //      case (LightMode.Automatic):
-            //          lightModeButton.defaultLabel = "Ligth mode: automatic.";
-            //          lightModeButton.defaultDesc = "In this mode, the spotlight turret randomly lights the surroundings. Automatically lock on hostiles.";
-            //          break;
-            //      case (LightMode.Fixed):
-            //          lightModeButton.defaultLabel = "Ligth mode: fixed.";
-            //          lightModeButton.defaultDesc = "In this mode, the spotlight turret only light a fixed area. Does NOT automatically lock on hostiles.";
-            //          break;
-            //  }
-            //  lightModeButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_SwitchMode");
-            //  lightModeButton.activateSound = Static.ClickSound;
-            //  lightModeButton.action = new Action(SwitchLigthMode);
-            //  lightModeButton.groupKey = groupKeyBase + 1;
-            //  yield return lightModeButton;
-            //
-            //  if ((this.lightMode == LightMode.Conic)
-            //      || (this.lightMode == LightMode.Fixed))
-            //  {
-            //      Command_Action decreaseRangeButton = new Command_Action();
-            //      decreaseRangeButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_DecreaseRange");
-            //      decreaseRangeButton.defaultLabel = "Range: " + this.spotLightRangeBaseOffset;
-            //      decreaseRangeButton.defaultDesc = "Decrease range.";
-            //      decreaseRangeButton.activateSound = Static.ClickSound;
-            //      decreaseRangeButton.action = new Action(DecreaseSpotlightRange);
-            //      decreaseRangeButton.groupKey = groupKeyBase + 2;
-            //      yield return decreaseRangeButton;
-            //
-            //      Command_Action increaseRangeButton = new Command_Action();
-            //      increaseRangeButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_IncreaseRange");
-            //      increaseRangeButton.defaultLabel = "";
-            //      increaseRangeButton.defaultDesc = "Increase range.";
-            //      increaseRangeButton.activateSound = Static.ClickSound;
-            //      increaseRangeButton.action = new Action(IncreaseSpotlightRange);
-            //      increaseRangeButton.groupKey = groupKeyBase + 3;
-            //      yield return increaseRangeButton;
-            //
-            //      float rotation = Mathf.Repeat(this.Rotation.AsAngle + this.spotLightRotationBaseOffset, 360f);
-            //      Command_Action turnLeftButton = new Command_Action();
-            //      turnLeftButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_TurnLeft");
-            //      turnLeftButton.defaultLabel = "Rotation: " + rotation + "°";
-            //      turnLeftButton.defaultDesc = "Turn left.";
-            //      turnLeftButton.activateSound = Static.ClickSound;
-            //      turnLeftButton.action = new Action(AddSpotlightBaseRotationLeftOffset);
-            //      turnLeftButton.groupKey = groupKeyBase + 4;
-            //      yield return turnLeftButton;
-            //
-            //      Command_Action turnRightButton = new Command_Action();
-            //      turnRightButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_TurnRight");
-            //      turnRightButton.defaultLabel = "";
-            //      turnRightButton.defaultDesc = "Turn right.";
-            //      turnRightButton.activateSound = Static.ClickSound;
-            //      turnRightButton.action = new Action(AddSpotlightBaseRotationRightOffset);
-            //      turnRightButton.groupKey = groupKeyBase + 5;
-            //      yield return turnRightButton;
-            //  }
-
-
-
+            // int groupKeyBase = 700000102;
+            // Command_Action lightModeButton = new Command_Action();
+            // switch (this.lightMode)
+            // {
+            // case (LightMode.Conic):
+            // lightModeButton.defaultLabel = "Ligth mode: conic.";
+            // lightModeButton.defaultDesc = "In this mode, the spotlight turret patrols in a conic area in front of it. Automatically lock on hostiles.";
+            // break;
+            // case (LightMode.Automatic):
+            // lightModeButton.defaultLabel = "Ligth mode: automatic.";
+            // lightModeButton.defaultDesc = "In this mode, the spotlight turret randomly lights the surroundings. Automatically lock on hostiles.";
+            // break;
+            // case (LightMode.Fixed):
+            // lightModeButton.defaultLabel = "Ligth mode: fixed.";
+            // lightModeButton.defaultDesc = "In this mode, the spotlight turret only light a fixed area. Does NOT automatically lock on hostiles.";
+            // break;
+            // }
+            // lightModeButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_SwitchMode");
+            // lightModeButton.activateSound = Static.ClickSound;
+            // lightModeButton.action = new Action(SwitchLigthMode);
+            // lightModeButton.groupKey = groupKeyBase + 1;
+            // yield return lightModeButton;
+            // if ((this.lightMode == LightMode.Conic)
+            // || (this.lightMode == LightMode.Fixed))
+            // {
+            // Command_Action decreaseRangeButton = new Command_Action();
+            // decreaseRangeButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_DecreaseRange");
+            // decreaseRangeButton.defaultLabel = "Range: " + this.spotLightRangeBaseOffset;
+            // decreaseRangeButton.defaultDesc = "Decrease range.";
+            // decreaseRangeButton.activateSound = Static.ClickSound;
+            // decreaseRangeButton.action = new Action(DecreaseSpotlightRange);
+            // decreaseRangeButton.groupKey = groupKeyBase + 2;
+            // yield return decreaseRangeButton;
+            // Command_Action increaseRangeButton = new Command_Action();
+            // increaseRangeButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_IncreaseRange");
+            // increaseRangeButton.defaultLabel = "";
+            // increaseRangeButton.defaultDesc = "Increase range.";
+            // increaseRangeButton.activateSound = Static.ClickSound;
+            // increaseRangeButton.action = new Action(IncreaseSpotlightRange);
+            // increaseRangeButton.groupKey = groupKeyBase + 3;
+            // yield return increaseRangeButton;
+            // float rotation = Mathf.Repeat(this.Rotation.AsAngle + this.spotLightRotationBaseOffset, 360f);
+            // Command_Action turnLeftButton = new Command_Action();
+            // turnLeftButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_TurnLeft");
+            // turnLeftButton.defaultLabel = "Rotation: " + rotation + "°";
+            // turnLeftButton.defaultDesc = "Turn left.";
+            // turnLeftButton.activateSound = Static.ClickSound;
+            // turnLeftButton.action = new Action(AddSpotlightBaseRotationLeftOffset);
+            // turnLeftButton.groupKey = groupKeyBase + 4;
+            // yield return turnLeftButton;
+            // Command_Action turnRightButton = new Command_Action();
+            // turnRightButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_TurnRight");
+            // turnRightButton.defaultLabel = "";
+            // turnRightButton.defaultDesc = "Turn right.";
+            // turnRightButton.activateSound = Static.ClickSound;
+            // turnRightButton.action = new Action(AddSpotlightBaseRotationRightOffset);
+            // turnRightButton.groupKey = groupKeyBase + 5;
+            // yield return turnRightButton;
+            // }
 
             // yield return new Command_Action
             // {
@@ -378,12 +389,12 @@ namespace ToolsForHaul
             // do nothing if not of colony
             if (this.Faction != Faction.OfPlayer)
             {
+                FloatMenuOption failer = new FloatMenuOption("NotPlayerFaction".Translate(this.LabelShort), null, MenuOptionPriority.Default, null, null, 0f, null, null);
+                yield return failer;
                 yield break;
             }
 
-
             Map map = myPawn.Map;
-
 
             Action action_MakeMount = () =>
                 {
@@ -395,8 +406,7 @@ namespace ToolsForHaul
                     jobNew.targetB = myPawn;
                     foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
                         if (colonyPawn.CurJob.def != jobNew.def
-                            && (worker == null
-                                || (worker.Position - myPawn.Position).LengthHorizontal
+                            && (worker == null || (worker.Position - myPawn.Position).LengthHorizontal
                                 > (colonyPawn.Position - myPawn.Position).LengthHorizontal)) worker = colonyPawn;
                     if (worker == null)
                     {
@@ -414,25 +424,60 @@ namespace ToolsForHaul
                     myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
                 };
 
+            Action action_Mount = () =>
+            {
+                Job jobNew = new Job(HaulJobDefOf.Mount);
+                myPawn.Map.reservationManager.ReleaseAllForTarget(this);
+                myPawn.Map.reservationManager.Reserve(myPawn, this);
+                jobNew.targetA = this;
+                myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+            };
+
+            Action action_DismountInBase = () =>
+            {
+                Job jobNew = TFH_Utility.DismountAtParkingLot(myPawn, this);
+
+                myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+            };
+
             if (!this.MountableComp.IsMounted)
             {
-                yield return new FloatMenuOption("Deconstruct".Translate(this.LabelShort), action_Deconstruct);
-            }
+                if (!this.IsForbidden(Faction.OfPlayer))
+                {
+                    if (myPawn.RaceProps.Humanlike
+                        && !TFH_Utility.IsDriverOfThisVehicle(myPawn, this))
+                    {
+                        yield return new FloatMenuOption("MountOn".Translate(this.LabelShort), action_Mount);
+                    }
 
+                    bool flag = TFH_Utility.HasFreeParkingLot(this.Map);
+
+                    if (flag)
+                    {
+                        yield return new FloatMenuOption("DismountAtParkingLot".Translate(this.LabelShort), action_DismountInBase);
+                    }
+                    else
+                    {
+                        FloatMenuOption failer = new FloatMenuOption("NoFreeParkingSpace".Translate(this.LabelShort), null, MenuOptionPriority.Default, null, null, 0f, null, null);
+                        yield return failer;
+                    }
+                }
+                yield return new FloatMenuOption("Deconstruct".Translate(this.LabelShort), action_Deconstruct);
+
+            }
         }
+
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
             // PowerOffLight();
-
             if (mode == DestroyMode.Deconstruct) mode = DestroyMode.KillFinalize;
-            //  else if (this.explosiveComp != null && this.explosiveComp.wickStarted)
-            //  {
-            //      this.storage.ClearAndDestroyContents();
-            //  }
-            //
-            //  this.storage.TryDropAll(this.Position, Map, ThingPlaceMode.Near);
 
+            // else if (this.explosiveComp != null && this.explosiveComp.wickStarted)
+            // {
+            // this.storage.ClearAndDestroyContents();
+            // }
+            // this.storage.TryDropAll(this.Position, Map, ThingPlaceMode.Near);
             base.Destroy(mode);
         }
 
@@ -468,57 +513,60 @@ namespace ToolsForHaul
                 this.VehicleComp.currentDriverSpeed = this.VehicleComp.VehicleSpeed;
                 this.instantiated = true;
             }
-            //     this.innerContainer.ThingOwnerTick();
+
+            // this.innerContainer.ThingOwnerTick();
 
             // Lights
             // Check if turret is powered.
-            //  if (!this.MountableComp.IsMounted)
-            //  {
-            //      PowerOffLight();
-            //      ResetLight();
-            //  }
-            //
-            //  // Check locked target is still valid.
-            //  if (this.CurrentTarget != null)
-            //  {
-            //      //   // Check target is still valid: not killed or downed and in sight.
-            //      //   if (this.CurrentTarget.Thing.DestroyedOrNull()
-            //      //       || (IsPawnValidTarget(this.target) == false))
-            //      //   {
-            //      //       // Target is no more valid.
-            //      //       this.target = null;
-            //      //   }
-            //      // Target is valid.
-            //      this.spotLightRotationTarget = Mathf.Round((this.CurrentTarget.Thing.Position - this.Position).AngleFlat);
-            //      ComputeRotationDirection();
-            //      this.spotLightRangeTarget = (this.CurrentTarget.Thing.Position - this.Position).ToVector3().magnitude;
-            //  }
-            //  else
-            //  {
-            //      // Reset idle tick counter.
-            //      this.idlePauseTicks = idlePauseDurationInTicks;
-            //
-            //      // fixed rotation
-            //      IdleTurnTick();
-            //
-            //  }
-            //  // Update the spotlight rotation and range.
-            //  SpotlightMotionTick();
-
-
+            // if (!this.MountableComp.IsMounted)
+            // {
+            // PowerOffLight();
+            // ResetLight();
+            // }
+            // // Check locked target is still valid.
+            // if (this.CurrentTarget != null)
+            // {
+            // //   // Check target is still valid: not killed or downed and in sight.
+            // //   if (this.CurrentTarget.Thing.DestroyedOrNull()
+            // //       || (IsPawnValidTarget(this.target) == false))
+            // //   {
+            // //       // Target is no more valid.
+            // //       this.target = null;
+            // //   }
+            // // Target is valid.
+            // this.spotLightRotationTarget = Mathf.Round((this.CurrentTarget.Thing.Position - this.Position).AngleFlat);
+            // ComputeRotationDirection();
+            // this.spotLightRangeTarget = (this.CurrentTarget.Thing.Position - this.Position).ToVector3().magnitude;
+            // }
+            // else
+            // {
+            // // Reset idle tick counter.
+            // this.idlePauseTicks = idlePauseDurationInTicks;
+            // // fixed rotation
+            // IdleTurnTick();
+            // }
+            // // Update the spotlight rotation and range.
+            // SpotlightMotionTick();
             if (this.MountableComp.IsMounted)
             {
                 if (this.RefuelableComp != null)
                 {
                     if (this.MountableComp.Driver.Faction != Faction.OfPlayer)
+                    {
                         if (!this.fueledByAI)
                         {
                             if (this.RefuelableComp.FuelPercentOfMax < 0.550000011920929)
+                            {
                                 this.RefuelableComp.Refuel(
                                     ThingMaker.MakeThing(
                                         this.RefuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
-                            else this.fueledByAI = true;
+                            }
+                            else
+                            {
+                                this.fueledByAI = true;
+                            }
                         }
+                    }
                 }
 
                 if (this.MountableComp.Driver.pather.Moving)
@@ -537,23 +585,33 @@ namespace ToolsForHaul
                     {
                         if (!this.MountableComp.Driver.stances.FullBodyBusy)
                         {
-                            if (this.RefuelableComp != null) this.RefuelableComp.Notify_UsedThisTick();
-                            this.damagetick -= 1;
+                            this.RefuelableComp?.Notify_UsedThisTick();
 
                             if (this.AxlesComp.HasAxles())
+                            {
                                 this.VehicleComp.currentDriverSpeed =
-                                    ToolsForHaulUtility.GetMoveSpeed(this.MountableComp.Driver);
+                                    TFH_Utility.GetMoveSpeed(this.MountableComp.Driver);
+                            }
                         }
 
                         if (this.BreakdownableComp != null && this.BreakdownableComp.BrokenDown
-                            || this.RefuelableComp != null && !this.RefuelableComp.HasFuel) this.VehicleComp.VehicleSpeed = 0.75f;
-                        else this.VehicleComp.VehicleSpeed = this.DesiredSpeed;
+                            || this.RefuelableComp != null && !this.RefuelableComp.HasFuel)
+                        {
+                            this.VehicleComp.VehicleSpeed = 0.75f;
+                        }
+                        else
+                        {
+                            this.VehicleComp.VehicleSpeed = this.DesiredSpeed;
+                        }
                         this.tickCheck = Find.TickManager.TicksGame;
                     }
 
-                    if (this.Position.InNoBuildEdgeArea(Map) && this.VehicleComp.despawnAtEdge && this.Spawned
+                    if (this.Position.InNoBuildEdgeArea(this.Map) && this.VehicleComp.despawnAtEdge && this.Spawned
                         && (this.MountableComp.Driver.Faction != Faction.OfPlayer
-                            || this.MountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee)) this.DeSpawn();
+                            || this.MountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee))
+                    {
+                        this.DeSpawn();
+                    }
                 }
             }
 
@@ -570,24 +628,14 @@ namespace ToolsForHaul
                     {
                         this.RefuelableComp.ConsumeFuel(0.15f);
 
-                        FilthMaker.MakeFilth(this.Position, Map, this.fuelDefName, this.LabelCap);
+                        FilthMaker.MakeFilth(this.Position, this.Map, this.fuelDefName, this.LabelCap);
                         this._tankSpillTick = Find.TickManager.TicksGame + 15;
                     }
                 }
             }
-
-
         }
 
-        private static readonly Vector3 TrailOffset = new Vector3(0f, 0f, -0.3f);
-
-        private static readonly Vector3 FumesOffset = new Vector3(-0.3f, 0f, 0f);
-
-        private static readonly Vector3 DustOffset = new Vector3(-0.3f, 0f, -0.3f);
-
         private float _tankHitPos = 1f;
-
-        int damagetick = -5000;
 
         private int _tankSpillTick = -5000;
 
@@ -621,9 +669,9 @@ namespace ToolsForHaul
 
             if (this.VehicleComp.ShowsStorage())
             {
-                if (this.innerContainer.Any()
-                    || (this.MountableComp.IsMounted && this.MountableComp.Driver.RaceProps.packAnimal
-                        && this.MountableComp.Driver.RaceProps.Animal))
+                if (this.innerContainer.Any() || (this.MountableComp.IsMounted
+                                                  && this.MountableComp.Driver.RaceProps.packAnimal
+                                                  && this.MountableComp.Driver.RaceProps.Animal))
                 {
                     Vector3 mountThingLoc = drawLoc;
                     if (this.Rotation.AsInt % 2 == 1)
@@ -641,7 +689,8 @@ namespace ToolsForHaul
 
                     if (this.MountableComp.Driver.RaceProps.packAnimal && this.MountableComp.Driver.RaceProps.Animal)
                     {
-                        if (this.MountableComp.IsMounted && this.MountableComp.Driver.inventory.innerContainer.Count > 0)
+                        if (this.MountableComp.IsMounted && this.MountableComp.Driver.inventory.innerContainer.Count > 0
+                        )
                             foreach (Thing mountThing in this.MountableComp.Driver.inventory.innerContainer)
                             {
                                 mountThing.Rotation = this.Rotation;
@@ -663,26 +712,24 @@ namespace ToolsForHaul
             // spotlightMatrix.SetTRS(drawLoc + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightScale);
             // if (this.MountableComp.IsMounted)
             // {
-            //     Graphics.DrawMesh(MeshPool.plane10, spotlightMatrix, spotlightOnTexture, 0);
-            //     spotlightLightEffectMatrix.SetTRS(drawLoc + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightLightEffectScale);
-            //     Graphics.DrawMesh(MeshPool.plane10, spotlightLightEffectMatrix, spotlightLightEffectTexture, 0);
+            // Graphics.DrawMesh(MeshPool.plane10, spotlightMatrix, spotlightOnTexture, 0);
+            // spotlightLightEffectMatrix.SetTRS(drawLoc + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightLightEffectScale);
+            // Graphics.DrawMesh(MeshPool.plane10, spotlightLightEffectMatrix, spotlightLightEffectTexture, 0);
             // }
             // else
             // {
-            //     Graphics.DrawMesh(MeshPool.plane10, spotlightMatrix, spotlightOffTexture, 0);
+            // Graphics.DrawMesh(MeshPool.plane10, spotlightMatrix, spotlightOffTexture, 0);
             // }
-            //
             // if (Find.Selector.IsSelected(this)
-            //     && (this.CurrentTarget != null))
+            // && (this.CurrentTarget != null))
             // {
-            //     Vector3 lineOrigin = this.TrueCenter();
-            //     Vector3 lineTarget = this.CurrentTarget.Thing.Position.ToVector3Shifted();
-            //     lineTarget.y = Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays);
-            //     lineOrigin.y = lineTarget.y;
-            //     GenDraw.DrawLineBetween(lineOrigin, lineTarget, targetLineTexture);
+            // Vector3 lineOrigin = this.TrueCenter();
+            // Vector3 lineTarget = this.CurrentTarget.Thing.Position.ToVector3Shifted();
+            // lineTarget.y = Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays);
+            // lineOrigin.y = lineTarget.y;
+            // GenDraw.DrawLineBetween(lineOrigin, lineTarget, targetLineTexture);
             // }
         }
-
 
         public override string GetInspectString()
         {
@@ -728,4 +775,3 @@ namespace ToolsForHaul
         }
     }
 }
-#endif

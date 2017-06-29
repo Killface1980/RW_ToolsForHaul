@@ -4,6 +4,8 @@
   <!-- Mountable -->
   <MountOn>Mount {0}</MountOn>
   <Dismount>Dismount {0}</Dismount>
+  <NoFreeParkingSpace>No free parking lots configured for {0}</NoFreeParkingSpace>
+  <NotPlayerFaction>{0} must be claimed first</NotPlayerFaction>
   <DismountAtParkingLot>Dismount {0} at parking lot</DismountAtParkingLot>
   <DropIt>Drop it</DropIt>
   

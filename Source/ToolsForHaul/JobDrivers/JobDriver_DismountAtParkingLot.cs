@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using RimWorld;
-using ToolsForHaul.Components;
-using ToolsForHaul.Toils;
-using ToolsForHaul.Utilities;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.JobDrivers
+﻿namespace ToolsForHaul.JobDrivers
 {
-    using ToolsForHaul.Components.Vehicle;
+    using System.Collections.Generic;
+
+    using RimWorld;
+
+    using ToolsForHaul.Toils;
+    using ToolsForHaul.Vehicles;
+
+    using Verse;
+    using Verse.AI;
 
     public class JobDriver_DismountAtParkingLot : JobDriver
     {
@@ -51,7 +51,7 @@ namespace ToolsForHaul.JobDrivers
 
             this.FailOnDestroyedOrNull(CartInd);
 
-          //  this.FailOnDestroyedNullOrForbidden(ParkingLotCellInd);
+          // this.FailOnDestroyedNullOrForbidden(ParkingLotCellInd);
 
             // Note we only fail on forbidden if the target doesn't start that way
             // This helps haul-aside jobs on forbidden items
@@ -63,9 +63,9 @@ namespace ToolsForHaul.JobDrivers
             Vehicle_Cart cart = this.TargetThingA as Vehicle_Cart;
 
          // IntVec3 parkingSpace = IntVec3.Invalid;
-         // if (!ToolsForHaulUtility.FindParkingSpace(this.pawn.Map, cart.Position, out parkingSpace))
+         // if (!TFH_Utility.FindParkingSpace(this.pawn.Map, cart.Position, out parkingSpace))
          // {
-         //     JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceForCart);
+         // JobFailReason.Is(TFH_Utility.NoEmptyPlaceForCart);
          // }
 
 
@@ -87,7 +87,7 @@ namespace ToolsForHaul.JobDrivers
             // JumpIf already mounted
             yield return Toils_Jump.JumpIf(
                 toilGoToCell,
-                () => { return cart.MountableComp.Driver == this.pawn ? true : false; });
+                () => { return cart?.MountableComp.Driver == this.pawn ? true : false; });
 
             // Mount on Target
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch).FailOnDestroyedOrNull(CartInd);

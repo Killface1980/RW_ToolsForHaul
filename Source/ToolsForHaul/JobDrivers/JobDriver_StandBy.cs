@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.JobDrivers
+﻿namespace ToolsForHaul.JobDrivers
 {
+    using System.Collections.Generic;
+
+    using Verse;
+    using Verse.AI;
+
     class JobDriver_StandBy : JobDriver
     {
         // Constants

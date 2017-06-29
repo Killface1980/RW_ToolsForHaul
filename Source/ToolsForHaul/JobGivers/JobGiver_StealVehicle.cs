@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using RimWorld;
-using ToolsForHaul.JobDefs;
-using ToolsForHaul.Utilities;
-using UnityEngine;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.JobGivers
+﻿namespace ToolsForHaul.JobGivers
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using RimWorld;
+
+    using ToolsForHaul.Defs;
+    using ToolsForHaul.Utilities;
+    using ToolsForHaul.Vehicles;
+
+    using Verse;
+    using Verse.AI;
+
     public class JobGiver_StealVehicle : ThinkNode_JobGiver
     {
         public const float ItemsSearchRadiusInitial = 7f;
@@ -24,12 +26,12 @@ namespace ToolsForHaul.JobGivers
                 return null;
             }
 
-            List<Thing> steelVehicle = ToolsForHaulUtility.AvailableVehiclesForSteeling(pawn);
+            List<Thing> steelVehicle = TFH_Utility.AvailableVehiclesForSteeling(pawn);
             foreach (var thing in steelVehicle)
             {
                 var cart = (Vehicle_Cart)thing;
 
-                if (ToolsForHaulUtility.IsDriver(pawn))
+                if (TFH_Utility.IsDriver(pawn))
                     break;
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;
@@ -46,11 +48,14 @@ namespace ToolsForHaul.JobGivers
             }
 
 
-            if (steelVehicle.Any() )//&& !GenAI.InDangerousCombat(pawn))
+            if (steelVehicle.Any() )
             {
-                IOrderedEnumerable<Thing> orderedEnumerable = steelVehicle.OrderBy(x => x.Position.DistanceToSquared(pawn.Position));
+                // && !GenAI.InDangerousCombat(pawn))
+                IOrderedEnumerable<Thing> orderedEnumerable =
+                    steelVehicle.OrderBy(x => x.Position.DistanceToSquared(pawn.Position));
                 Job job = new Job(HaulJobDefOf.Mount);
-           //     orderedEnumerable.First().SetFaction(null);
+
+                // orderedEnumerable.First().SetFaction(null);
                 job.targetA = orderedEnumerable.First();
 
                 return job;

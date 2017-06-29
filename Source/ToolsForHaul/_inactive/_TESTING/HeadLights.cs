@@ -69,6 +69,7 @@ namespace ToolsForHaul
 
 // Find.MapDrawer.MapMeshDirty(thingPosition, MapMeshFlag.GroundGlow);
             }
+
             ColorCellIndexCache = new List<GlowGridCache>();
         }
 
@@ -148,7 +149,8 @@ namespace ToolsForHaul
 
                 distance++;
 
-            } while (distance < targetDistance);
+            }
+ while (distance < targetDistance);
 
 
             updateGlowGrid();
@@ -172,6 +174,7 @@ namespace ToolsForHaul
                     addCellIndex(position.TranslateDirection(Orientation, 1), true);
                     addCellIndex(position.TranslateDirection(Orientation, -1), true);
                 }
+
                 thingBlockers = null;
                 
 
@@ -200,6 +203,7 @@ namespace ToolsForHaul
 // addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -2), true);
                     // addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -3), true);
                 }
+
                 if (angleDelta > 0)
                 {
                     addCellIndex(thisCellBlocked.Position.TranslateDirection(Orientation, 1), true);

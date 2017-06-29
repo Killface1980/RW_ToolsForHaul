@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using RimWorld;
-using ToolsForHaul.Components;
-using ToolsForHaul.Utilities;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.JoyGivers
+﻿namespace ToolsForHaul.JobGivers
 {
-    using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
+    using System.Collections.Generic;
+
+    using RimWorld;
+
+    using ToolsForHaul.Components;
+    using ToolsForHaul.Utilities;
+
+    using Verse;
+    using Verse.AI;
 
     public class JoyGiver_GoForRide : JoyGiver_InteractBuilding
     {
@@ -16,7 +16,7 @@ namespace ToolsForHaul.JoyGivers
 
         protected override Job TryGivePlayJob(Pawn pawn, Thing t)
         {
-            if ((t as ThingWithComps).TryGetComp<CompMountable>().IsMounted && !ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, t))
+            if ((t as ThingWithComps).TryGetComp<CompMountable>().IsMounted && !TFH_Utility.IsDriverOfThisVehicle(pawn, t))
             {
                 return null;
             }
@@ -31,7 +31,7 @@ namespace ToolsForHaul.JoyGivers
                 return null;
             }
 
-            if (!JoyUtility.EnjoyableOutsideNow(pawn, null))
+            if (!JoyUtility.EnjoyableOutsideNow(pawn))
             {
                 return null;
             }
@@ -42,7 +42,7 @@ namespace ToolsForHaul.JoyGivers
             }
 
             Region reg;
-            if (!CellFinder.TryFindClosestRegionWith(pawn.Position.GetRegion(pawn.Map), TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), (Region r) => r.Room.PsychologicallyOutdoors && !r.IsForbiddenEntirely(pawn), 100, out reg))
+            if (!CellFinder.TryFindClosestRegionWith(pawn.Position.GetRegion(pawn.Map), TraverseParms.For(pawn), r => r.Room.PsychologicallyOutdoors && !r.IsForbiddenEntirely(pawn), 100, out reg))
             {
                 return null;
             }
@@ -62,7 +62,7 @@ namespace ToolsForHaul.JoyGivers
             Job job = new Job(this.def.jobDef, list[0])
             {
                 targetQueueA = new List<LocalTargetInfo>(),
-                targetB = t,
+                targetB = t
             };
 
             for (int i = 1; i < list.Count; i++)

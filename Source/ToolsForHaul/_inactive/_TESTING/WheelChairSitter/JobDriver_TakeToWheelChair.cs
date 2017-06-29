@@ -5,6 +5,8 @@ using Verse.AI;
 
 namespace ToolsForHaul
 {
+    using ToolsForHaul.Things;
+
     public class JobDriver_TakeToWheelChair : JobDriver
     {
         private const TargetIndex TakeeIndex = TargetIndex.A;

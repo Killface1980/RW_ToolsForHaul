@@ -72,7 +72,7 @@
     <comps>
       <li Class="CompProperties_Forbiddable"/>
       <li>
-        <compClass>ToolsForHaul.Components.Vehicle.CompMountable</compClass>
+        <compClass>ToolsForHaul.Components.CompMountable</compClass>
       </li>
       <li>
         <compClass>CompQuality</compClass>
@@ -93,7 +93,7 @@
     <label>cart</label>
     <repairEffect>ConstructWood</repairEffect>
     <description>A cart is an old-fashioned wooden vehicle that is used for transporting goods or people.</description>
-    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <thingClass>ToolsForHaul.Vehicles.Vehicle_Cart</thingClass>
    <!--
     <thingCategories>
       <li>Vehicles</li>
@@ -113,6 +113,7 @@
       <MaxHitPoints>150</MaxHitPoints>
       <VehicleSpeed>0.75</VehicleSpeed>
       <VehicleMaxItem>4</VehicleMaxItem>
+      <Mass>100</Mass>
     </statBases>
     <size>(1,1)</size>
     <fillPercent>0.99</fillPercent>
@@ -157,12 +158,12 @@
       </skillRequirements>
     </recipeMaker>
     <comps>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Axle">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
           <li>(-20,-40)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Vehicle">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>true</showsStorage>
         <animalsCanDrive>true</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
@@ -184,7 +185,7 @@
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
     <description>A truck is what you drive when you're done taking shit off of other people.</description>
-    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <thingClass>ToolsForHaul.Vehicles.Vehicle_Cart</thingClass>
     <!--
     <thingCategories>
       <li>Vehicles</li>
@@ -204,6 +205,7 @@
       <MaxHitPoints>300</MaxHitPoints>
       <VehicleSpeed>9</VehicleSpeed>
       <VehicleMaxItem>8</VehicleMaxItem>
+      <Mass>1200</Mass>
     </statBases>
     <size>(1,1)</size>
     <fillPercent>0.99</fillPercent>
@@ -263,13 +265,13 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Axle">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
           <li>(-35,-45)</li>
           <li>(85,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Vehicle">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>true</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
@@ -302,6 +304,7 @@
       <VehicleSpeed>15</VehicleSpeed>
       <VehicleMaxItem>2</VehicleMaxItem>
       <Beauty>10</Beauty>
+      <Mass>500</Mass>
     </statBases>
     <comps>
       <li Class="CompProperties_Explosive">
@@ -330,13 +333,13 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Axle">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Vehicle">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
@@ -351,7 +354,7 @@
     </comps>
     <pathCost>50</pathCost>
     <description>An ATV is what you drive when you want a concussion.</description>
-    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <thingClass>ToolsForHaul.Vehicles.Vehicle_Cart</thingClass>
     <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
     <!--
     <thingCategories>
@@ -432,7 +435,7 @@
     </graphicData>
     <repairEffect>Repair</repairEffect>
     <description>Keep out of reach of lightsabers.</description>
-    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <thingClass>ToolsForHaul.Vehicles.Vehicle_Cart</thingClass>
     <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
     <!--
     <thingCategories>
@@ -443,6 +446,7 @@
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>30</VehicleSpeed>
       <VehicleMaxItem>2</VehicleMaxItem>
+      <Mass>350</Mass>
     </statBases>
     <size>(1,1)</size>
     <inspectorTabs>
@@ -489,11 +493,11 @@
           <max>600</max>
         </wickTicks>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Axle">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Vehicle">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
@@ -542,7 +546,7 @@
     <label>SmackWay</label>
     <repairEffect>Repair</repairEffect>
     <description>For those who have some disability to walk</description>
-    <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <thingClass>ToolsForHaul.Vehicles.Vehicle_Cart</thingClass>
     <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
     <graphicData>
       <texPath>Things/Vehicles/VehicleSmackWay/SmackWay</texPath>
@@ -559,6 +563,7 @@
       <VehicleMaxItem>0</VehicleMaxItem>
       <Beauty>3</Beauty>
       <Comfort>0.5</Comfort>
+      <Mass>60</Mass>
     </statBases>
     <techHediffsTags>
       <li>Advanced</li>
@@ -610,12 +615,12 @@
           <max>600</max>
         </wickTicks>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Axle">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
           <li>(-25,-40)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Vehicle">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
@@ -655,51 +660,6 @@
       </options>
     </colorGenerator>
   </ThingDef>
-
-
-
-  <!-- 	<ThingDef ParentName="VehicleBase">
-		<defName>VehicleSaddle</defName>
-		<label>saddle</label>
-		<hasInteractionCell>True</hasInteractionCell>
-		<interactionCellOffset>(0,0,0)</interactionCellOffset>
-		<description>A saddle is a leather seat that you put on the back of an animal so that you can ride the animal.</description>
-		<thingClass>ToolsForHaul.Vehicle_Saddle</thingClass>
-		<thingCategories>
-			<li>Vehicles</li>
-		</thingCategories>
-		<graphicData>
-			<texPath>Things/Vehicles/Vehicle/Saddle</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(2,2)</drawSize>
-	      <damageData>
-      <enabled>false</enabled>
-      </damageData>
-  </graphicData>
-		<statBases>
-			<MaxHitPoints>100</MaxHitPoints>
-		</statBases>
-		<size>(1,1)</size>
-		<CostList>
-			<Steel>40</Steel>
-		</CostList>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<Steel>20</Steel>
-		</killedLeavings>
-		<recipeMaker>
-			<workSpeedStat>TailoringSpeed</workSpeedStat>
-			<workSkill>Crafting</workSkill>
-			<effectWorking>Tailor</effectWorking>
-			<soundWorking>Recipe_Tailor</soundWorking>
-			<recipeUsers>
-				<li>ElectricTailoringBench</li>
-				<li>HandTailoringBench</li>
-			</recipeUsers>
-			<unfinishedThingDef>UnfinishedApparel</unfinishedThingDef>
-			<workAmount>5000</workAmount>
-		</recipeMaker>
-	</ThingDef> -->
 
   <!-- Food Service Trolley -->
   <!--  <ThingDef ParentName="VehicleBase">

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ToolsForHaul
+﻿namespace ToolsForHaul
 {
     using System.Reflection;
 
     using Harmony;
 
     using RimWorld;
+
+    using ToolsForHaul.Vehicles;
 
     using Verse;
 

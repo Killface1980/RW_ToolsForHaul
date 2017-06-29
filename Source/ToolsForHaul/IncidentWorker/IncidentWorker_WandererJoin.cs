@@ -5,8 +5,7 @@
     using RimWorld;
 
     using ToolsForHaul.Components;
-    using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.JobDefs;
+    using ToolsForHaul.Defs;
 
     using UnityEngine;
 
@@ -22,15 +21,16 @@
         {
             Map map = (Map)parms.target;
             IntVec3 loc;
-            if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 c) => map.reachability.CanReachColony(c), map, CellFinder.EdgeRoadChance_Neutral, out loc))
+            if (!CellFinder.TryFindRandomEdgeCellWith(c => map.reachability.CanReachColony(c), map, CellFinder.EdgeRoadChance_Neutral, out loc))
             {
                 return false;
             }
+
             PawnKindDef pawnKindDef = new List<PawnKindDef>
                                           {
                                               PawnKindDefOf.Villager
-                                          }.RandomElement<PawnKindDef>();
-            PawnGenerationRequest request = new PawnGenerationRequest(pawnKindDef, Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, false, false, false, false, true, false, 20f, false, true, true, false, false, null, null, null, null, null, null);
+                                          }.RandomElement();
+            PawnGenerationRequest request = new PawnGenerationRequest(pawnKindDef, Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, false, false, false, false, true, false, 20f, false, true, true, false, false, null, null, null, null, null);
             Pawn pawn = PawnGenerator.GeneratePawn(request);
             GenSpawn.Spawn(pawn, loc, map);
 
@@ -43,7 +43,6 @@
                 {
                     CellFinder.RandomClosewalkCellNear(pawn.Position, pawn.Map, 5);
                     Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
-
                     {
                         thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
                     }
@@ -56,7 +55,7 @@
                     pawn.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
                     int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
-                    thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1, null, null));
+                    thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
 
                     SoundInfo info = SoundInfo.InMap(thing);
                     thing.TryGetComp<CompMountable>().SustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
@@ -65,15 +64,13 @@
 
 
 
-            string text = "WandererJoin".Translate(new object[]
-                                                       {
-                                                           pawnKindDef.label,
-                                                           pawn.story.Title.ToLower()
-                                                       });
+            string text = "WandererJoin".Translate(
+                pawnKindDef.label,
+                pawn.story.Title.ToLower());
             text = text.AdjustedFor(pawn);
             string label = "LetterLabelWandererJoin".Translate();
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, ref label, pawn);
-            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Good, pawn, null);
+            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Good, pawn);
             return true;
         }
     }

@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using RimWorld;
-using ToolsForHaul.Components;
-using ToolsForHaul.Toils;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.JobDrivers
+﻿namespace ToolsForHaul.JobDrivers
 {
-    using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+
+    using RimWorld;
+
+    using ToolsForHaul.Components;
+    using ToolsForHaul.Toils;
+
+    using Verse;
+    using Verse.AI;
 
     public class JobDriver_GoForRide : JobDriver
     {
@@ -36,7 +36,7 @@ namespace ToolsForHaul.JobDrivers
                     return;
                 }
 
-                JoyUtility.JoyTickCheckEnd(this.pawn, JoyTickFullJoyAction.EndJob, 1f);
+                JoyUtility.JoyTickCheckEnd(this.pawn);
             };
             ThingWithComps cart = this.CurJob.GetTarget(MountableInd).Thing as ThingWithComps;
 
@@ -65,11 +65,9 @@ namespace ToolsForHaul.JobDrivers
                         this.CurJob.targetQueueA.RemoveAt(0);
                         this.CurJob.targetA = targetA;
                         this.JumpToToil(toil);
-                        return;
                     }
                 }
             };
-            yield break;
         }
 
     }

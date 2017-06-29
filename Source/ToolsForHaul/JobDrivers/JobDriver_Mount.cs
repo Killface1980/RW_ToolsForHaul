@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using RimWorld;
-using ToolsForHaul.Components;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.JobDrivers
+﻿namespace ToolsForHaul.JobDrivers
 {
-    using ToolsForHaul.Components.Vehicle;
+    using System.Collections.Generic;
+
+    using RimWorld;
+
+    using ToolsForHaul.Components;
+
+    using Verse;
+    using Verse.AI;
 
     public class JobDriver_Mount : JobDriver
     {

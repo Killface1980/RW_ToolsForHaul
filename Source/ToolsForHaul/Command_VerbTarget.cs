@@ -1,9 +1,12 @@
-using RimWorld;
-using UnityEngine;
-using Verse.Sound;
-
-namespace Verse
+namespace ToolsForHaul
 {
+    using RimWorld;
+
+    using UnityEngine;
+
+    using Verse;
+    using Verse.Sound;
+
     internal class Command_VerbTarget : Command
     {
         public Verb verb;

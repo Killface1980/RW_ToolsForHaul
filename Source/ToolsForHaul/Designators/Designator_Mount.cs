@@ -1,15 +1,19 @@
-﻿using System.Collections.Generic;
-using RimWorld;
-using ToolsForHaul.JobDefs;
-using ToolsForHaul.Utilities;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.Designators
+﻿namespace ToolsForHaul.Designators
 {
+    using System.Collections.Generic;
+
+    using RimWorld;
+
+    using ToolsForHaul.Defs;
+    using ToolsForHaul.Utilities;
+    using ToolsForHaul.Vehicles;
+
+    using Verse;
+    using Verse.AI;
+
     public class Designator_Mount : Designator
     {
-        public Thing vehicle;
+        public Vehicle_Cart vehicle;
 
         public Designator_Mount()
         {
@@ -44,8 +48,13 @@ namespace ToolsForHaul.Designators
             {
                 Pawn pawn = thing as Pawn;
 
+                if (pawn == null)
+                {
+                    return;
 
-                if (pawn != null && pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !ToolsForHaulUtility.IsDriver(pawn))
+                }
+
+                if (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !TFH_Utility.IsDriver(pawn))
                 {
                     Job jobNew = new Job(HaulJobDefOf.Mount);
                     Map.reservationManager.ReleaseAllForTarget(this.vehicle);
@@ -54,17 +63,22 @@ namespace ToolsForHaul.Designators
                     break;
                 }
 
-                if (pawn != null && (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal) && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && ToolsForHaulUtility.IsDriver(pawn))
+                if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !TFH_Utility.IsDriver(pawn))
                 {
                     Pawn worker = null;
                     Job jobNew = new Job(HaulJobDefOf.MakeMount);
-                    Map.reservationManager.ReleaseAllForTarget(this.vehicle);
+                    this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
                     jobNew.count = 1;
                     jobNew.targetA = this.vehicle;
                     jobNew.targetB = pawn;
                     foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
-                        if (colonyPawn.CurJob.def != jobNew.def && (worker == null || (worker.Position - pawn.Position).LengthHorizontal > (colonyPawn.Position - pawn.Position).LengthHorizontal))
+                        if (colonyPawn.CurJob.def != jobNew.def
+                            && (worker == null || (worker.Position - pawn.Position).LengthHorizontal
+                                > (colonyPawn.Position - pawn.Position).LengthHorizontal))
+                        {
                             worker = colonyPawn;
+                        }
+
                     if (worker == null)
                     {
                         Messages.Message("NoWorkForMakeMount".Translate(), MessageSound.RejectInput);

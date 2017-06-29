@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Text;
-#if CR
+﻿#if CR
 using Combat_Realism;
 #endif
-using RimWorld;
-using ToolsForHaul.Components;
-using ToolsForHaul.Utilities;
-using UnityEngine;
-using Verse;
 
 namespace ToolsForHaul.StatWorkers
 {
+    using System.Text;
+
+    using RimWorld;
+
+    using ToolsForHaul.Components;
+    using ToolsForHaul.Vehicles;
+
+    using UnityEngine;
+
+    using Verse;
+
     internal class StatWorker_MoveSpeed : StatWorker
     {
         public override string GetExplanation(StatRequest req, ToStringNumberSense numberSense)
@@ -25,7 +29,7 @@ namespace ToolsForHaul.StatWorkers
                 {
                     if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(thisPawn))
                     {
-                        Vehicle_Cart vehicleCart = GameComponentToolsForHaul.CurrentDrivers[(Pawn)req.Thing] as Vehicle_Cart;
+                        Vehicle_Cart vehicleCart = GameComponentToolsForHaul.CurrentDrivers[(Pawn)req.Thing];
                         if (vehicleCart != null)
                         {
                             if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Driver == thisPawn)
@@ -44,7 +48,6 @@ namespace ToolsForHaul.StatWorkers
 
         public override float GetValueUnfinalized(StatRequest req, bool applyPostProcess = true)
         {
-
             float num = base.GetValueUnfinalized(req, applyPostProcess);
 
             if (req.HasThing && req.Thing is Pawn)
@@ -73,7 +76,7 @@ namespace ToolsForHaul.StatWorkers
 
             if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(thisPawn))
             {
-                Vehicle_Cart vehicleTank = GameComponentToolsForHaul.CurrentDrivers[thisPawn] as Vehicle_Cart;
+                Vehicle_Cart vehicleTank = GameComponentToolsForHaul.CurrentDrivers[thisPawn];
                 if (vehicleTank != null)
                 {
                     if (vehicleTank.MountableComp.IsMounted && !vehicleTank.MountableComp.Driver.RaceProps.Animal && vehicleTank.MountableComp.Driver == thisPawn)

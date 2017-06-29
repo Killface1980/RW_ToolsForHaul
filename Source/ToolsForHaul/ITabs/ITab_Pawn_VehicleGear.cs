@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using RimWorld;
-using ToolsForHaul.Components;
-using UnityEngine;
-using Verse;
+
 
 // Always needed
 //using VerseBase;         // Material/Graphics handling functions are found here
@@ -16,10 +12,17 @@ using Verse;
 //using RimWorld.SquadAI;  // RimWorld specific functions for squad brains 
 namespace ToolsForHaul.ITabs
 {
+    using System.Collections.Generic;
     using System.Linq;
 
-    using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
+    using RimWorld;
+
+    using ToolsForHaul.Components;
+    using ToolsForHaul.Vehicles;
+
+    using UnityEngine;
+
+    using Verse;
 
     class Itab_Pawn_VehicleGear : ITab_Pawn_Gear
     {
@@ -46,6 +49,7 @@ namespace ToolsForHaul.ITabs
                     if (cart.Faction == null) return false;
                     if (cart.Faction == Faction.OfPlayer) return true;
                 }
+
                 return false;
             }
         }
@@ -119,6 +123,7 @@ namespace ToolsForHaul.ITabs
                     {
                         Widgets.ThingIcon(thingIconRect, thing);
                     }
+
                     Widgets.Label(thingLabelRect, thing.LabelCap);
                     if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
                     {

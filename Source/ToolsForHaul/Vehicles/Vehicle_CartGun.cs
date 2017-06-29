@@ -1,7 +1,4 @@
-﻿using System;
-
-#if !CR
-namespace ToolsForHaul
+﻿namespace ToolsForHaul.Vehicles
 {
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -61,7 +58,7 @@ namespace ToolsForHaul
                     foreach (Verb verb in this.GunCompEq.AllVerbs)
                     {
                         verb.caster = this;
-                        verb.castCompleteCallback = BurstComplete;
+                        verb.castCompleteCallback = this.BurstComplete;
                     }
                 }
 
@@ -104,8 +101,8 @@ namespace ToolsForHaul
 
             if (this.burstWarmupTicksLeft > 0)
             {
-                int degreesWide = (int)((float)this.burstWarmupTicksLeft * 0.5f);
-                GenDraw.DrawAimPie(this, this.CurrentTarget, degreesWide, (float)this.def.size.x * 0.5f);
+                int degreesWide = (int)(this.burstWarmupTicksLeft * 0.5f);
+                GenDraw.DrawAimPie(this, this.CurrentTarget, degreesWide, this.def.size.x * 0.5f);
             }
 
             if (this.forcedTarget.IsValid && (!this.forcedTarget.HasThing || this.forcedTarget.Thing.Spawned))
@@ -177,8 +174,6 @@ namespace ToolsForHaul
                             isActive = () => this.holdFire
                         };
             }
-
-            yield break;
         }
 
         // RimWorld.Building_TurretGun
@@ -190,15 +185,18 @@ namespace ToolsForHaul
             {
                 stringBuilder.AppendLine(inspectString);
             }
+
             stringBuilder.AppendLine("GunInstalled".Translate() + ": " + this.Gun.Label);
             if (this.GunCompEq.PrimaryVerb.verbProps.minRange > 0f)
             {
                 stringBuilder.AppendLine("MinimumRange".Translate() + ": " + this.GunCompEq.PrimaryVerb.verbProps.minRange.ToString("F0"));
             }
+
             if (this.burstCooldownTicksLeft > 0)
             {
                 stringBuilder.AppendLine("CanFireIn".Translate() + ": " + this.burstCooldownTicksLeft.TicksToSecondsString());
             }
+
             if (this.def.building.turretShellDef != null)
             {
                 if (this.loaded)
@@ -210,6 +208,7 @@ namespace ToolsForHaul
                     stringBuilder.AppendLine("ShellNotLoaded".Translate());
                 }
             }
+
             return stringBuilder.ToString();
         }
 
@@ -327,6 +326,7 @@ namespace ToolsForHaul
             {
                 this.burstCooldownTicksLeft = this.GunCompEq.PrimaryVerb.verbProps.defaultCooldownTime.SecondsToTicks();
             }
+
             this.loaded = false;
         }
 
@@ -340,7 +340,7 @@ namespace ToolsForHaul
             Building t;
             if (Rand.Value < 0.5f && this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead
                 && faction.HostileTo(Faction.OfPlayer)
-                && Map.listerBuildings.allBuildingsColonist.Where(
+                && this.Map.listerBuildings.allBuildingsColonist.Where(
                     delegate(Building x)
                         {
                             float num = x.Position.DistanceToSquared(this.Position);
@@ -361,7 +361,7 @@ namespace ToolsForHaul
                 targetScanFlags |= TargetScanFlags.NeedNonBurning;
             }
 
-            return (Thing)AttackTargetFinder.BestShootTargetFromCurrentPosition(attackTargetSearcher, new Predicate<Thing>(this.IsValidTarget), range, minRange, targetScanFlags);
+            return (Thing)AttackTargetFinder.BestShootTargetFromCurrentPosition(attackTargetSearcher, this.IsValidTarget, range, minRange, targetScanFlags);
         }
 
         // RimWorld.Building_TurretGun
@@ -371,14 +371,17 @@ namespace ToolsForHaul
             {
                 this.forcedTarget = null;
             }
+
             if (this.holdFire && this.CanToggleHoldFire)
             {
                 return;
             }
-            if (this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead && base.Map.roofGrid.Roofed(base.Position))
+
+            if (this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead && this.Map.roofGrid.Roofed(this.Position))
             {
                 return;
             }
+
             bool isValid = this.currentTargetInt.IsValid;
             if (this.forcedTarget.IsValid)
             {
@@ -388,10 +391,12 @@ namespace ToolsForHaul
             {
                 this.currentTargetInt = this.TryFindNewTarget();
             }
+
             if (!isValid && this.currentTargetInt.IsValid)
             {
-                SoundDefOf.TurretAcquireTarget.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
+                SoundDefOf.TurretAcquireTarget.PlayOneShot(new TargetInfo(this.Position, this.Map));
             }
+
             if (this.currentTargetInt.IsValid)
             {
                 if (this.def.building.turretBurstWarmupTime > 0f)
@@ -413,16 +418,18 @@ namespace ToolsForHaul
             {
                 if (this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead)
                 {
-                    RoofDef roofDef = base.Map.roofGrid.RoofAt(t.Position);
+                    RoofDef roofDef = this.Map.roofGrid.RoofAt(t.Position);
                     if (roofDef != null && roofDef.isThickRoof)
                     {
                         return false;
                     }
                 }
+
                 if (this.mannableComp == null)
                 {
-                    return !GenAI.MachinesLike(base.Faction, pawn);
+                    return !GenAI.MachinesLike(this.Faction, pawn);
                 }
+
                 if (pawn.RaceProps.Animal && pawn.Faction == Faction.OfPlayer)
                 {
                     return false;
@@ -433,6 +440,7 @@ namespace ToolsForHaul
             {
                 return false;
             }
+
             return true;
         }
 
@@ -456,5 +464,3 @@ namespace ToolsForHaul
         }
     }
 }
-
-#endif

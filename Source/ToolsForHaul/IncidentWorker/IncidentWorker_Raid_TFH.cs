@@ -8,8 +8,7 @@
     using RimWorld;
 
     using ToolsForHaul.Components;
-    using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.JobDefs;
+    using ToolsForHaul.Defs;
 
     using UnityEngine;
 
@@ -40,6 +39,7 @@
             {
                 return;
             }
+
             if (parms.faction.def.techLevel < TechLevel.Spacer || parms.points < 240f)
             {
                 parms.raidArrivalMode = PawnsArriveMode.EdgeWalkIn;
@@ -70,6 +70,7 @@
             {
                 return true;
             }
+
             if (parms.raidArrivalMode == PawnsArriveMode.CenterDrop || parms.raidArrivalMode == PawnsArriveMode.EdgeDrop)
             {
                 if (parms.raidArrivalMode == PawnsArriveMode.CenterDrop)
@@ -85,6 +86,7 @@
                         parms.raidArrivalMode = PawnsArriveMode.EdgeDrop;
                     }
                 }
+
                 if (parms.raidArrivalMode == PawnsArriveMode.EdgeDrop)
                 {
                     parms.raidPodOpenDelay = 140;
@@ -94,12 +96,14 @@
             }
             else
             {
-                if (!RCellFinder.TryFindRandomPawnEntryCell(out parms.spawnCenter, map, CellFinder.EdgeRoadChance_Hostile, null))
+                if (!RCellFinder.TryFindRandomPawnEntryCell(out parms.spawnCenter, map, CellFinder.EdgeRoadChance_Hostile))
                 {
                     return false;
                 }
+
                 parms.spawnRotation = Rot4.FromAngleFlat((map.Center - parms.spawnCenter).AngleFlat);
             }
+
             return true;
         }
 
@@ -111,32 +115,35 @@
             {
                 return false;
             }
+
             this.ResolveRaidStrategy(parms);
             this.ResolveRaidArriveMode(parms);
             if (!this.ResolveRaidSpawnCenter(parms))
             {
                 return false;
             }
+
             IncidentParmsUtility.AdjustPointsForGroupArrivalParams(parms);
             PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(parms);
-            List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(PawnGroupKindDefOf.Normal, defaultPawnGroupMakerParms, true).ToList<Pawn>();
+            List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(PawnGroupKindDefOf.Normal, defaultPawnGroupMakerParms).ToList();
             if (list.Count == 0)
             {
                 Log.Error("Got no pawns spawning raid from parms " + parms);
                 return false;
             }
+
             TargetInfo target = TargetInfo.Invalid;
             if (parms.raidArrivalMode == PawnsArriveMode.CenterDrop || parms.raidArrivalMode == PawnsArriveMode.EdgeDrop)
             {
-                DropPodUtility.DropThingsNear(parms.spawnCenter, map, list.Cast<Thing>(), parms.raidPodOpenDelay, false, true, true);
-                target = new TargetInfo(parms.spawnCenter, map, false);
+                DropPodUtility.DropThingsNear(parms.spawnCenter, map, list.Cast<Thing>(), parms.raidPodOpenDelay, false, true);
+                target = new TargetInfo(parms.spawnCenter, map);
             }
             else
             {
                 foreach (Pawn current in list)
                 {
-                    IntVec3 loc = CellFinder.RandomClosewalkCellNear(parms.spawnCenter, map, 8, null);
-                    GenSpawn.Spawn(current, loc, map, parms.spawnRotation, false);
+                    IntVec3 loc = CellFinder.RandomClosewalkCellNear(parms.spawnCenter, map, 8);
+                    GenSpawn.Spawn(current, loc, map, parms.spawnRotation);
                     target = current;
 
                     // Vehicles for raiders
@@ -174,7 +181,7 @@
                             current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
                             int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
-                            thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1, null, null));
+                            thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
 
                             SoundInfo info = SoundInfo.InMap(thing);
                             thing.TryGetComp<CompMountable>().SustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
@@ -182,6 +189,7 @@
                     }
                 }
             }
+
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Points = " + parms.points.ToString("F0"));
             foreach (Pawn current2 in list)
@@ -189,14 +197,16 @@
                 string str = (current2.equipment == null || current2.equipment.Primary == null) ? "unarmed" : current2.equipment.Primary.LabelCap;
                 stringBuilder.AppendLine(current2.KindLabel + " - " + str);
             }
+
             string letterLabel = this.GetLetterLabel(parms);
             string letterText = this.GetLetterText(parms, list);
             PawnRelationUtility.Notify_PawnsSeenByPlayer(list, ref letterLabel, ref letterText, this.GetRelatedPawnsInfoLetterText(parms), true);
             Find.LetterStack.ReceiveLetter(letterLabel, letterText, this.GetLetterDef(), target, stringBuilder.ToString());
             if (this.GetLetterDef() == LetterDefOf.BadUrgent)
             {
-                TaleRecorder.RecordTale(TaleDefOf.RaidArrived, new object[0]);
+                TaleRecorder.RecordTale(TaleDefOf.RaidArrived);
             }
+
             Lord lord = LordMaker.MakeNewLord(parms.faction, parms.raidStrategy.Worker.MakeLordJob(parms, map), map, list);
             AvoidGridMaker.RegenerateAvoidGridsFor(parms.faction, map);
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.EquippingWeapons, OpportunityType.Critical);
@@ -205,24 +215,25 @@
                 for (int i = 0; i < list.Count; i++)
                 {
                     Pawn pawn = list[i];
-                    if (pawn.apparel.WornApparel.Any((Apparel ap) => ap is ShieldBelt))
+                    if (pawn.apparel.WornApparel.Any(ap => ap is ShieldBelt))
                     {
                         LessonAutoActivator.TeachOpportunity(ConceptDefOf.ShieldBelts, OpportunityType.Critical);
                         break;
                     }
                 }
             }
+
             if (DebugViewSettings.drawStealDebug && parms.faction.HostileTo(Faction.OfPlayer))
             {
                 Log.Message(
                     string.Concat(
-                        new object[]
-                            {
-                                "Market value threshold to start stealing: ",
-                                StealAIUtility.StartStealingMarketValueThreshold(lord), " (colony wealth = ",
-                                map.wealthWatcher.WealthTotal, ")"
-                            }));
+                        "Market value threshold to start stealing: ",
+                        StealAIUtility.StartStealingMarketValueThreshold(lord),
+                        " (colony wealth = ",
+                        map.wealthWatcher.WealthTotal,
+                        ")"));
             }
+
             return true;
         }
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ThingDefs>
 
-  <ThingDef Name="BaseBullet" Abstract="True">
+  <ThingDef Name="TFH_BaseBullet" Abstract="True">
     <category>Projectile</category>
     <tickerType>Normal</tickerType>
     <altitudeLayer>Projectile</altitudeLayer>
@@ -14,7 +14,7 @@
     </graphicData>
   </ThingDef>
 
-  <ThingDef Name="BaseGun" Abstract="True">
+  <ThingDef Name="TFH_BaseGun" Abstract="True">
     <category>Item</category>
     <thingClass>ThingWithComps</thingClass>
     <equipmentType>Primary</equipmentType>
@@ -55,7 +55,7 @@
   </ThingDef>
 
 
-  <ThingDef Name="BaseHumanGun" ParentName="BaseGun" Abstract="True">
+  <ThingDef Name="TFH_BaseHumanGun" ParentName="TFH_BaseGun" Abstract="True">
     <weaponTags>
       <li>Gun</li>
     </weaponTags>
@@ -66,7 +66,7 @@
   <ThingDef ParentName="VehicleBase">
     <defName>VehicleCombatATV</defName>
     <label>CombatATV</label>
-    <thingClass>ToolsForHaul.Vehicle_CartGun</thingClass>
+    <thingClass>ToolsForHaul.Vehicles.Vehicle_CartGun</thingClass>
     <graphicData>
       <texPath>Things/Vehicles/VehicleCombatATV/CombatATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
@@ -112,13 +112,13 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Axle">
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.Vehicle.CompProperties_Vehicle">
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.2</fuelCatchesFireHitPointsPercent>
@@ -206,7 +206,7 @@
     </researchPrerequisites>
   </ThingDef>
 
-  <ThingDef ParentName="BaseBullet">
+  <ThingDef ParentName="TFH_BaseBullet">
     <defName>Bullet_VehicleTurretImprovised</defName>
     <label>improvised vehicle turret bullet</label>
     <graphicData>
@@ -220,7 +220,7 @@
     </projectile>
   </ThingDef>
 
-  <ThingDef ParentName="BaseHumanGun">
+  <ThingDef ParentName="TFH_BaseHumanGun">
     <defName>Gun_VehicleTurretImprovised</defName>
     <label>improvised vehicle turret gun</label>
     <graphicData>
@@ -247,6 +247,7 @@
       <AccuracyMedium>0.41</AccuracyMedium>
       <AccuracyLong>0.22</AccuracyLong>
       <RangedWeapon_Cooldown>0.33</RangedWeapon_Cooldown>
+      <Mass>100</Mass>
     </statBases>
     <weaponTags>
       <li>TurretGun</li>

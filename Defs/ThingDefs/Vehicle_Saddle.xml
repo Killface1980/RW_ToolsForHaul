@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ThingDefs>
-  <ThingDef Name="BaseThingWithComponents" Abstract="True">
+  <ThingDef Name="TFH_BaseThingWithComponents" Abstract="True">
     <thingClass>ThingWithComponents</thingClass>
     <category>Item</category>
     <selectable>true</selectable>
@@ -14,7 +14,7 @@
 
   <!-- ============================ Vehicle ========================== -->
 
-  <ThingDef ParentName="BaseThingWithComponents" Name="BaseVehicle" Abstract="True">
+  <ThingDef ParentName="TFH_BaseThingWithComponents" Name="BaseVehicle" Abstract="True">
     <statBases>
       <Flammability>1.0</Flammability>
     </statBases>
@@ -25,7 +25,7 @@
         <compClass>CompForbiddable</compClass>
       </li>
       <li>
-        <compClass>ToolsForHaul.Components.Vehicle.CompMountable</compClass>
+        <compClass>ToolsForHaul.Components.CompMountable</compClass>
       </li>
     </comps>
   </ThingDef>
@@ -38,7 +38,7 @@
     <passability>PassThroughOnly</passability>
     <altitudeLayer>Item</altitudeLayer>
     <description>A saddle is a leather seat that you put on the back of an animal so that you can ride the animal.</description>
-    <thingClass>ToolsForHaul.Vehicle_Saddle</thingClass>
+    <thingClass>ToolsForHaul.Vehicles.Vehicle_Saddle</thingClass>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
@@ -49,6 +49,7 @@
     </graphicData>
     <statBases>
       <MaxHitPoints>100</MaxHitPoints>
+      <Mass>15</Mass>
     </statBases>
     <size>(1,1)</size>
     <!--     <inspectorTabs>

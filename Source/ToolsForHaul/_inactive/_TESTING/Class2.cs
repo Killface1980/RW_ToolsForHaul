@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using UnityEngine;
-using Verse;
-using RimWorld;
 using ppumkin.LEDTechnology.GlowFlooders;
+
+using RimWorld;
+
+using UnityEngine;
+
+using Verse;
 
 namespace ppumkin.LEDTechnology.Managers
 {
@@ -22,8 +25,8 @@ namespace ppumkin.LEDTechnology.Managers
 
         public static void RegisterFlooder(IGlowFlooder theFlooder)
         {
-            //Log.Message("Registered new customGlower:");
-            //Log.Message(theFlooder.ToString());
+            // Log.Message("Registered new customGlower:");
+            // Log.Message(theFlooder.ToString());
             customFlooders.Add(theFlooder);
         }
 
@@ -40,7 +43,7 @@ namespace ppumkin.LEDTechnology.Managers
 
         public static void RefreshGlowFlooders()
         {
-            //Log.Message("CustomGlowFlooder: Refreshing all registered glowFlooders");
+            // Log.Message("CustomGlowFlooder: Refreshing all registered glowFlooders");
             foreach (var customFlooder in customFlooders)
             {
                 customFlooder.CalculateGlowFlood();

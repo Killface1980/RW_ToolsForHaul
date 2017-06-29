@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Verse;
-
-namespace ToolsForHaul
+﻿namespace ToolsForHaul.NoCCL
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+
+    using Verse;
+
     /// <summary>
     /// For when CCL is not available
     /// </summary>

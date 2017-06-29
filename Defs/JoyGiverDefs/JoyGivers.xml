@@ -5,7 +5,7 @@
 
   <JoyGiverDef>
     <defName>GoForRide</defName>
-    <giverClass>ToolsForHaul.JoyGivers.JoyGiver_GoForRide</giverClass>
+    <giverClass>ToolsForHaul.JobGivers.JoyGiver_GoForRide</giverClass>
     <baseChance>2.3</baseChance>
     <thingDefs>
       <li>VehicleATV</li>

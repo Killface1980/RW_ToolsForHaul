@@ -29,18 +29,18 @@ namespace ToolsForHaul
                 }
         }
 
-        public static void ThrowDustPuff(Vector3 loc,Map map, float scale)
+        public static void ThrowDustPuff(Vector3 loc, Map map, float scale)
         {
             if (!loc.ShouldSpawnMotesAt(map) || MoteCounterTFH.SaturatedLowPriority)
             {
                 return;
             }
 
-            MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(ThingDefOf.Mote_DustPuff, null);
+            MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(ThingDefOf.Mote_DustPuff);
             moteThrown.Scale = 1.9f * scale;
-            moteThrown.rotationRate = (float)Rand.Range(-60, 60);
+            moteThrown.rotationRate = Rand.Range(-60, 60);
             moteThrown.exactPosition = loc;
-            moteThrown.SetVelocity((float)Rand.Range(0, 360), Rand.Range(0.6f, 0.75f));
+            moteThrown.SetVelocity(Rand.Range(0, 360), Rand.Range(0.6f, 0.75f));
             GenSpawn.Spawn(moteThrown, loc.ToIntVec3(), map);
         }
 
@@ -62,13 +62,13 @@ namespace ToolsForHaul
                 return;
             }
 
-            MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(ThingDefOf.Mote_MicroSparks, null);
+            MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(ThingDefOf.Mote_MicroSparks);
             moteThrown.Scale = Rand.Range(0.8f, 1.2f);
             moteThrown.rotationRate = Rand.Range(-12f, 12f);
             moteThrown.exactPosition = loc;
             moteThrown.exactPosition -= new Vector3(0.5f, 0f, 0.5f);
             moteThrown.exactPosition += new Vector3(Rand.Value, 0f, Rand.Value);
-            moteThrown.SetVelocity((float)Rand.Range(35, 45), 1.2f);
+            moteThrown.SetVelocity(Rand.Range(35, 45), 1.2f);
             GenSpawn.Spawn(moteThrown, loc.ToIntVec3(), map);
         }
 
@@ -79,11 +79,11 @@ namespace ToolsForHaul
                 return;
             }
 
-            MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(ThingDefOf.Mote_Smoke, null);
+            MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(ThingDefOf.Mote_Smoke);
             moteThrown.Scale = Rand.Range(1.5f, 2.5f) * size;
             moteThrown.rotationRate = Rand.Range(-30f, 30f);
             moteThrown.exactPosition = loc;
-            moteThrown.SetVelocity((float)Rand.Range(30, 40), Rand.Range(0.5f, 0.7f));
+            moteThrown.SetVelocity(Rand.Range(30, 40), Rand.Range(0.5f, 0.7f));
             GenSpawn.Spawn(moteThrown, loc.ToIntVec3(), map);
         }
     }

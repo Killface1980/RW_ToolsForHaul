@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
-using RimWorld;
-using Verse;
-
-namespace ToolsForHaul
+﻿namespace ToolsForHaul.Things
 {
+    using System.Collections.Generic;
+
+    using RimWorld;
+
+    using Verse;
+
     public class IncendiaryFuel : Filth
     {
         private const float maxFireSize = 1.25f;
@@ -37,7 +39,7 @@ namespace ToolsForHaul
 
         public override void Tick()
         {
-            if (this.Position.GetThingList(Map).Any(x => x.def == ThingDefOf.FilthFireFoam))
+            if (this.Position.GetThingList(this.Map).Any(x => x.def == ThingDefOf.FilthFireFoam))
             {
                 if (!this.Destroyed) this.Destroy();
             }

@@ -1,14 +1,14 @@
-﻿using System;
-using RimWorld;
-using ToolsForHaul.Components;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.WorkGivers
+﻿namespace ToolsForHaul.WorkGivers
 {
-    using ToolsForHaul.Components.Vehicle;
+    using System;
 
-    using CompVehicle = ToolsForHaul.Components.CompVehicle;
+    using RimWorld;
+
+    using ToolsForHaul.Components;
+    using ToolsForHaul.Vehicles;
+
+    using Verse;
+    using Verse.AI;
 
     public class WorkGiver_Refuel_Vehicle : WorkGiver_Scanner
     {
@@ -46,7 +46,7 @@ namespace ToolsForHaul.WorkGivers
                 return false;
             }
 
-            if (t.IsForbidden(pawn) || !pawn.CanReserveAndReach(t, PathEndMode.Touch, pawn.NormalMaxDanger(), 1))
+            if (t.IsForbidden(pawn) || !pawn.CanReserveAndReach(t, PathEndMode.Touch, pawn.NormalMaxDanger()))
             {
                 return false;
             }
@@ -54,10 +54,7 @@ namespace ToolsForHaul.WorkGivers
             if (this.FindBestFuel(pawn, t) == null)
             {
                 ThingFilter fuelFilter = t.TryGetComp<CompRefuelable>().Props.fuelFilter;
-                JobFailReason.Is("NoFuelToRefuel".Translate(new object[]
-                {
-                    fuelFilter.Summary
-                }));
+                JobFailReason.Is("NoFuelToRefuel".Translate(fuelFilter.Summary));
                 return false;
             }
 
@@ -69,12 +66,13 @@ namespace ToolsForHaul.WorkGivers
 
             return true;
         }
+
         private Thing FindBestFuel(Pawn pawn, Thing refuelable)
         {
             ThingFilter filter = refuelable.TryGetComp<CompRefuelable>().Props.fuelFilter;
-            Predicate<Thing> predicate = (Thing x) => !x.IsForbidden(pawn) && pawn.CanReserve(x, 1) && filter.Allows(x);
+            Predicate<Thing> predicate = x => !x.IsForbidden(pawn) && pawn.CanReserve(x) && filter.Allows(x);
             Predicate<Thing> validator = predicate;
-            return GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, filter.BestThingRequest, PathEndMode.ClosestTouch, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, validator, null, 0, -1, false, RegionType.Set_Passable, false);
+            return GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, filter.BestThingRequest, PathEndMode.ClosestTouch, TraverseParms.For(pawn), 9999f, validator);
         }
     }
 }

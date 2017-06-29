@@ -7,7 +7,7 @@
 			<li Class="PatchOperationAdd">
 				<xpath>/Defs/DesignationCategoryDef[DefName="Zone"]/specialDesignatorClasses</xpath>
 				<value>
-					<li>ToolsForHaul.Designator_ZoneAddParkingLot</li>
+					<li>ToolsForHaul.Designators.Designator_ZoneAddParkingLot</li>
 				</value>
 				<order>Append</order>
 			</li>

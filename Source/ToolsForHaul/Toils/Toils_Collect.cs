@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using RimWorld;
-using ToolsForHaul.Utilities;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.Toils
+﻿namespace ToolsForHaul.Toils
 {
-    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using RimWorld;
+
+    using ToolsForHaul.Utilities;
+    using ToolsForHaul.Vehicles;
+
+    using Verse;
+    using Verse.AI;
 
     public static class Toils_Collect
     {
@@ -61,8 +63,7 @@ namespace ToolsForHaul.Toils
 
                     int curItemCount = cart.innerContainer.Count
                                        + targetQueue.Count;
-                    int curItemStack = (cart.innerContainer.TotalStackCount
-                                            )
+                    int curItemStack = cart.innerContainer.TotalStackCount
                                        + targetQueue.Sum(item => item.Thing.stackCount);
                     int maxItem = cart.MaxItem;
                     int maxStack = cart.MaxStack;
@@ -143,7 +144,6 @@ namespace ToolsForHaul.Toils
              return toil;
          }
          */
-
         public static Toil CollectInCarrier(TargetIndex CarrierInd, TargetIndex HaulableInd)
         {
             Toil toil = new Toil();
@@ -154,7 +154,7 @@ namespace ToolsForHaul.Toils
                     Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
                     Vehicle_Cart carrier = curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
 
-                    //      ThingOwner thingOwner = haulThing.TryGetInnerInteractableThingOwner();
+                    // ThingOwner thingOwner = haulThing.TryGetInnerInteractableThingOwner();
 
 
                     // Check haulThing is human_corpse. If other race has apparel, It need to change
@@ -177,26 +177,25 @@ namespace ToolsForHaul.Toils
                     // }
                     // }
                     // Collecting TargetIndex ind
-                    //if
                     {
-                        //                        haulThing.DeSpawn();
+                        // if
+                        // haulThing.DeSpawn();
                         haulThing.holdingOwner.TryTransferToContainer(haulThing, carrier.innerContainer, haulThing.stackCount);// carrier.innerContainer.TryAdd(haulThing);
                     }
                     {
-                        //            haulThing.holdingOwner = carrier.innerContainer;
+                        // haulThing.holdingOwner = carrier.innerContainer;
                     }
 
                     List<LocalTargetInfo> thingList = curJob.GetTargetQueue(HaulableInd);
                     for (int i = 0; i < thingList.Count; i++)
                         if (actor.Position.AdjacentTo8Way(thingList[i].Thing.Position))
                         {
-                            //     thingList[i].Thing.DeSpawn();
-
+                            // thingList[i].Thing.DeSpawn();
                             thingList[i].Thing.holdingOwner
                                 .TryTransferToContainer(thingList[i].Thing, carrier.innerContainer, thingList[i].Thing.stackCount);
-                            //      carrier.innerContainer.TryAdd(thingList[i].Thing);
                             {
-                                //       thingList[i].Thing.holdingOwner = carrier.innerContainer;
+                                // carrier.innerContainer.TryAdd(thingList[i].Thing);
+                                // thingList[i].Thing.holdingOwner = carrier.innerContainer;
                             }
 
                             thingList.RemoveAt(i);
@@ -244,7 +243,7 @@ namespace ToolsForHaul.Toils
                         return;
                     }
 
-                    IntVec3 cell = ToolsForHaulUtility.FindStorageCell(actor, cart.innerContainer.First());
+                    IntVec3 cell = TFH_Utility.FindStorageCell(actor, cart.innerContainer.First());
                     if (cell != IntVec3.Invalid)
                     {
                         toil.actor.jobs.curJob.SetTarget(StoreCellInd, cell);
@@ -339,7 +338,6 @@ namespace ToolsForHaul.Toils
                 }
         */
 
-
         public static Toil DropTheCarriedInCell(
             TargetIndex StoreCellInd,
             ThingPlaceMode placeMode,
@@ -355,6 +353,7 @@ namespace ToolsForHaul.Toils
                     {
                         return;
                     }
+
                     toil.actor.jobs.curJob.SetTarget(TargetIndex.A, carrier.innerContainer.First());
                     Thing dropThing = toil.actor.jobs.curJob.targetA.Thing;
                     IntVec3 destLoc = actor.jobs.curJob.GetTarget(StoreCellInd).Cell;
@@ -415,7 +414,6 @@ namespace ToolsForHaul.Toils
             return toil;
         }
         */
-
 
 
         #endregion

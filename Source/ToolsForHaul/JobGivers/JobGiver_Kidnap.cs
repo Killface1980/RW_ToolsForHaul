@@ -15,7 +15,7 @@ namespace ToolsForHaul.JobGivers
 
         private const float VictimSearchRadius = 20f;
 
-          [Detour(typeof(RimWorld.JobDriver_Kidnap), bindingFlags = (BindingFlags.Instance | BindingFlags.NonPublic))]
+          [Detour(typeof(RimWorld.JobDriver_Kidnap), bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic)]
         protected override Job TryGiveJob(Pawn pawn)
         {
             IntVec3 intVec;

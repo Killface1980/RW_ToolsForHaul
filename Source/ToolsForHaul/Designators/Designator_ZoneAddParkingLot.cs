@@ -1,10 +1,8 @@
-﻿using System;
-using UnityEngine;
-using Verse;
-
-namespace ToolsForHaul
+﻿namespace ToolsForHaul.Designators
 {
     using RimWorld;
+
+    using Verse;
 
     public class Designator_ZoneAddParkingLot : Designator_ZoneAdd
     {
@@ -20,10 +18,11 @@ namespace ToolsForHaul
         {
             this.zoneTypeToPlace = typeof(Zone_ParkingLot);
             this.defaultLabel = "ParkingLot".Translate();
-            defaultDesc = Static.ParkingLotDesc;
-            icon = Static.TexParkingLot;
+            this.defaultDesc = Static.ParkingLotDesc;
+            this.icon = Static.TexParkingLot;
             this.tutorTag = "ZoneAdd_ParkingLot";
-            //     this.hotKey = KeyBindingDefOf.Misc1;
+
+            // this.hotKey = KeyBindingDefOf.Misc1;
         }
 
         public override AcceptanceReport CanDesignateCell(IntVec3 c)
@@ -32,13 +31,14 @@ namespace ToolsForHaul
             {
                 return false;
             }
+
             return true;
         }
 
         protected override Zone MakeNewZone()
         {
             // TODO add tutorials
-      //      PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.GrowingFood, KnowledgeAmount.Total);
+      // PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.GrowingFood, KnowledgeAmount.Total);
             return new Zone_ParkingLot(Find.VisibleMap.zoneManager);
         }
     }

@@ -1,8 +1,9 @@
-﻿using RimWorld;
-using Verse;
-
-namespace ToolsForHaul.JobDefs
+﻿namespace ToolsForHaul.Defs
 {
+    using RimWorld;
+
+    using Verse;
+
     [DefOf]
     public static class HaulJobDefOf
     {

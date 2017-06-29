@@ -3,8 +3,6 @@
     using System;
     using System.Collections.Generic;
 
-    using ToolsForHaul.Components.Vehicle;
-
     using UnityEngine;
 
     using Verse;
@@ -15,7 +13,7 @@
         // Graphic data
         public Graphic_Single graphic_Wheel_Single;
 
-        public double tick_time = 0;
+        public double tick_time;
 
         public float wheel_shake;
 
@@ -56,7 +54,7 @@
                         if (this.parent.TryGetComp<CompAxles>().HasAxles())
                             if (!this.breakSoundPlayed)
                             {
-                                SoundDef.Named("VehicleATV_Ambience_Break").PlayOneShot(new TargetInfo(mountableComp.Driver.Position, this.parent.Map, false)); ;
+                                SoundDef.Named("VehicleATV_Ambience_Break").PlayOneShot(new TargetInfo(mountableComp.Driver.Position, this.parent.Map)); 
                                 MoteMakerTFH.ThrowDustPuff(this.parent.DrawPos, this.parent.Map, 0.8f);
                                 this.breakSoundPlayed = true;
                             }

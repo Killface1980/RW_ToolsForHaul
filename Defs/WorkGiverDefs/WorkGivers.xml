@@ -82,11 +82,24 @@
   <WorkGiverDef>
     <defName>HaulCorpsesWithCart</defName>
     <label>haul corpses with cart</label>
-    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HaulCorpses_Vehicle</giverClass>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HaulCorpses_WithVehicle</giverClass>
     <workType>Hauling</workType>
     <verb>haul with cart</verb>
     <gerund>hauling</gerund>
     <priorityInType>85</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  
+  <WorkGiverDef>
+    <defName>HaulCorpsesWithAnimalCart</defName>
+    <label>haul corpses with cart</label>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HaulCorpses_WithAnimalCart</giverClass>
+    <workType>Hauling</workType>
+    <verb>haul with animal cart</verb>
+    <gerund>hauling</gerund>
+    <priorityInType>83</priorityInType>
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
@@ -109,8 +122,21 @@
   <!-- ============= Driver ============= -->
  
   <WorkGiverDef>
+    <defName>HaulWithAnimalCart</defName>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_Haul_WithAnimalCart</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>13</priorityInType>
+    <scanThings>true</scanThings>
+    <verb>haul with animal cart</verb>
+    <gerund>hauling with animal cart</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef> 
+  
+  <WorkGiverDef>
     <defName>HaulWithCart</defName>
-    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_HaulWithCart</giverClass>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_Haul_WithCart</giverClass>
     <workType>Hauling</workType>
     <priorityInType>15</priorityInType>
     <scanThings>true</scanThings>

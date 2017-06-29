@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using UnityEngine;
-using Verse;
-using Verse.AI;
-using Verse.Sound;
-using RimWorld;
-
-namespace ToolsForHaul
+﻿namespace ToolsForHaul.Vehicles
 {
+    using System.Collections.Generic;
+
+    using RimWorld;
+
+    using Verse;
+    using Verse.AI;
+
     class Designator_Board : Designator
     {
         private const string txtCannotBoard = "CannotBoard";
@@ -18,9 +14,8 @@ namespace ToolsForHaul
         public Thing vehicle;
 
         public Designator_Board()
-            : base()
         {
-            useMouseIcon = true;
+            this.useMouseIcon = true;
             this.soundSucceeded = SoundDefOf.Click;
         }
 
@@ -36,6 +31,7 @@ namespace ToolsForHaul
                 if (pawn != null && (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike)))
                     return true;
             }
+
             return new AcceptanceReport(txtCannotBoard.Translate());
         }
 
@@ -49,12 +45,13 @@ namespace ToolsForHaul
                 {
                     Pawn crew = pawn;
                     Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("Board"));
-                    this.Map.reservationManager.ReleaseAllForTarget(vehicle);
-                    jobNew.targetA = vehicle;
+                    this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
+                    jobNew.targetA = this.vehicle;
                     crew.jobs.TryTakeOrderedJob(jobNew);
                     break;
                 }
             }
+
             Find.DesignatorManager.Deselect();
         }
     }

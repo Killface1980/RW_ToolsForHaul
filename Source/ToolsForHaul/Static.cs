@@ -1,10 +1,10 @@
-﻿using System.Reflection;
-
-using UnityEngine;
-using Verse;
-
+﻿
 namespace ToolsForHaul
 {
+    using UnityEngine;
+
+    using Verse;
+
     [StaticConstructorOnStartup]
     public static class Static
     {
@@ -12,7 +12,7 @@ namespace ToolsForHaul
 
         public static string ParkingLotDesc = "TFH_DescriptionParkingLot".Translate();
 
-        public static Texture2D TexParkingLot = ContentFinder<Texture2D>.Get("UI/Designations/ZoneCreate_ParkingLot", true);
+        public static Texture2D TexParkingLot = ContentFinder<Texture2D>.Get("UI/Designations/ZoneCreate_ParkingLot");
 
         #endregion
 

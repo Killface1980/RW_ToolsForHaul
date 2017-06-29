@@ -11,7 +11,7 @@
     {
         protected override bool FactionCanBeGroupSource(Faction f, Map map, bool desperate = false)
         {
-            return base.FactionCanBeGroupSource(f, map, desperate) && f.HostileTo(Faction.OfPlayer) && (desperate || (float)GenDate.DaysPassed >= f.def.earliestRaidDays);
+            return base.FactionCanBeGroupSource(f, map, desperate) && f.HostileTo(Faction.OfPlayer) && (desperate || GenDate.DaysPassed >= f.def.earliestRaidDays);
         }
 
         public override bool TryExecute(IncidentParms parms)
@@ -20,6 +20,7 @@
             {
                 return false;
             }
+
             Find.TickManager.slower.SignalForceNormalSpeedShort();
             Find.StoryWatcher.statsRecord.numRaidsEnemy++;
             return true;
@@ -32,22 +33,25 @@
             {
                 return true;
             }
+
             float maxPoints = parms.points;
             if (maxPoints <= 0f)
             {
                 maxPoints = 999999f;
             }
+
             if (!(from f in Find.FactionManager.AllFactions
-                  where this.FactionCanBeGroupSource(f, map, false) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
-                  select f).TryRandomElementByWeight((Faction f) => f.def.raidCommonality, out parms.faction))
+                  where this.FactionCanBeGroupSource(f, map) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
+                  select f).TryRandomElementByWeight(f => f.def.raidCommonality, out parms.faction))
             {
                 if (!(from f in Find.FactionManager.AllFactions
                       where this.FactionCanBeGroupSource(f, map, true) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
-                      select f).TryRandomElementByWeight((Faction f) => f.def.raidCommonality, out parms.faction))
+                      select f).TryRandomElementByWeight(f => f.def.raidCommonality, out parms.faction))
                 {
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -56,7 +60,7 @@
             if (parms.points <= 0f)
             {
                 Log.Error("RaidEnemy is resolving raid points. They should always be set before initiating the incident.");
-                parms.points = (float)Rand.Range(50, 300);
+                parms.points = Rand.Range(50, 300);
             }
         }
 
@@ -66,10 +70,11 @@
             {
                 return;
             }
+
             Map map = (Map)parms.target;
             parms.raidStrategy = (from d in DefDatabase<RaidStrategyDef>.AllDefs
                                   where d.Worker.CanUseWith(parms)
-                                  select d).RandomElementByWeight((RaidStrategyDef d) => d.Worker.SelectionChance(map));
+                                  select d).RandomElementByWeight(d => d.Worker.SelectionChance(map));
         }
 
         protected override string GetLetterLabel(IncidentParms parms)
@@ -83,39 +88,32 @@
             switch (parms.raidArrivalMode)
             {
                 case PawnsArriveMode.EdgeWalkIn:
-                    text = "EnemyRaidWalkIn".Translate(new object[]
-                                                           {
-                                                               parms.faction.def.pawnsPlural,
-                                                               parms.faction.Name
-                                                           });
+                    text = "EnemyRaidWalkIn".Translate(
+                        parms.faction.def.pawnsPlural,
+                        parms.faction.Name);
                     break;
                 case PawnsArriveMode.EdgeDrop:
-                    text = "EnemyRaidEdgeDrop".Translate(new object[]
-                                                             {
-                                                                 parms.faction.def.pawnsPlural,
-                                                                 parms.faction.Name
-                                                             });
+                    text = "EnemyRaidEdgeDrop".Translate(
+                        parms.faction.def.pawnsPlural,
+                        parms.faction.Name);
                     break;
                 case PawnsArriveMode.CenterDrop:
-                    text = "EnemyRaidCenterDrop".Translate(new object[]
-                                                               {
-                                                                   parms.faction.def.pawnsPlural,
-                                                                   parms.faction.Name
-                                                               });
+                    text = "EnemyRaidCenterDrop".Translate(
+                        parms.faction.def.pawnsPlural,
+                        parms.faction.Name);
                     break;
             }
             text += "\n\n";
             text += parms.raidStrategy.arrivalTextEnemy;
-            Pawn pawn = pawns.Find((Pawn x) => x.Faction.leader == x);
+            Pawn pawn = pawns.Find(x => x.Faction.leader == x);
             if (pawn != null)
             {
                 text += "\n\n";
-                text += "EnemyRaidLeaderPresent".Translate(new object[]
-                                                               {
-                                                                   pawn.Faction.def.pawnsPlural,
-                                                                   pawn.LabelShort
-                                                               });
+                text += "EnemyRaidLeaderPresent".Translate(
+                    pawn.Faction.def.pawnsPlural,
+                    pawn.LabelShort);
             }
+
             return text;
         }
 
@@ -126,10 +124,7 @@
 
         protected override string GetRelatedPawnsInfoLetterText(IncidentParms parms)
         {
-            return "LetterRelatedPawnsRaidEnemy".Translate(new object[]
-                                                               {
-                                                                   parms.faction.def.pawnsPlural
-                                                               });
+            return "LetterRelatedPawnsRaidEnemy".Translate(parms.faction.def.pawnsPlural);
         }
     }
 }

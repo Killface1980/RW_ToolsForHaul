@@ -1,20 +1,20 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using RimWorld;
-using ToolsForHaul;
-using ToolsForHaul.JobDefs;
-using ToolsForHaul.Utilities;
-using UnityEngine;
-using Verse;
-using Verse.AI;
-using static ToolsForHaul.GameComponentToolsForHaul;
-
-namespace Verse.AI
+﻿namespace ToolsForHaul.Detours
 {
+    using System;
     using System.Collections.Generic;
+    using System.Reflection;
 
-    using ToolsForHaul.Components.Vehicle;
+    using RimWorld;
+
+    using ToolsForHaul.Components;
+    using ToolsForHaul.Defs;
+    using ToolsForHaul.NoCCL;
+    using ToolsForHaul.Utilities;
+
+    using UnityEngine;
+
+    using Verse;
+    using Verse.AI;
 
     public abstract class _ThinkNode_JobGiver : ThinkNode
     {
@@ -33,27 +33,30 @@ namespace Verse.AI
                     {
                         Log.Error("Squad flag was not reset properly; raiders may behave strangely");
                     }
+
                     pawn.mindState.maxDistToSquadFlag = jobParams.maxDistToSquadFlag;
                 }
+
                 Job job = this.TryGiveJob(pawn);
 
                 if (job == null)
                 {
                     result = ThinkResult.NoJob;
 
-                    //Modded
+                    // Modded
                     if (pawn.mindState.IsIdle)
                     {
-                        if (ToolsForHaulUtility.IsDriver(pawn))
+                        if (TFH_Utility.IsDriver(pawn))
                         {
                             try
                             {
-                                job = ToolsForHaulUtility.DismountAtParkingLot(pawn, CurrentDrivers[pawn]);
+                                job = TFH_Utility.DismountAtParkingLot(pawn, GameComponentToolsForHaul.CurrentDrivers[pawn]);
                             }
                             catch (ArgumentNullException argumentNullException)
                             {
                                 Debug.Log(argumentNullException);
                             }
+
                             result = new ThinkResult(job, this, null);
 
                         }
@@ -69,22 +72,24 @@ namespace Verse.AI
                             || job.def == JobDefOf.Ingest || job.def == JobDefOf.ManTurret
                             || job.def == JobDefOf.Slaughter || job.def == JobDefOf.VisitSickPawn || job.def == JobDefOf.WaitWander || job.def == JobDefOf.DoBill)
                         {
-                            if (ToolsForHaulUtility.IsDriver(pawn))
+                            if (TFH_Utility.IsDriver(pawn))
                             {
-                                job = ToolsForHaulUtility.DismountAtParkingLot(pawn, CurrentDrivers[pawn]);
+                                job = TFH_Utility.DismountAtParkingLot(pawn, GameComponentToolsForHaul.CurrentDrivers[pawn]);
                             }
                         }
+
                         if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
                         {
-                            List<Thing> availableVehicles = ToolsForHaulUtility.AvailableVehicles(pawn);
+                            List<Thing> availableVehicles = TFH_Utility.AvailableVehicles(pawn);
                             if (availableVehicles.Count > 0 || availableVehicles.Count > 0)
                             {
-                                Thing vehicle = RightVehicle.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Construction);
+                                Thing vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Construction);
                                 if (vehicle != null && pawn.Position.DistanceToSquared(vehicle.Position) < pawn.Position.DistanceToSquared(job.targetA.Cell))
                                     job = GetVehicle(pawn, job, WorkTypeDefOf.Construction);
                             }
                         }
                     }
+
                     result = new ThinkResult(job, this, null);
                 }
             }
@@ -92,31 +97,32 @@ namespace Verse.AI
             {
                 pawn.mindState.maxDistToSquadFlag = -1f;
             }
+
             return result;
         }
 
         private static Job GetVehicle(Pawn pawn, Job job, WorkTypeDef workType)
         {
-            List<Thing> availableVehicles = ToolsForHaulUtility.AvailableVehicles(pawn);
-            if (!ToolsForHaulUtility.IsDriver(pawn))
+            List<Thing> availableVehicles = TFH_Utility.AvailableVehicles(pawn);
+            if (!TFH_Utility.IsDriver(pawn))
             {
                 if (availableVehicles.Count > 0)
                 {
-                    Thing vehicle = RightVehicle.GetRightVehicle(pawn, availableVehicles, workType);
+                    Thing vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, workType);
                     if (vehicle != null)
                     {
                         job = new Job(HaulJobDefOf.Mount)
                         {
-                            targetA = vehicle,
+                            targetA = vehicle
                         };
                     }
                 }
             }
             else
             {
-                if (!ToolsForHaulUtility.IsDriverOfThisVehicle(pawn, RightVehicle.GetRightVehicle(pawn, availableVehicles, workType)))
+                if (!TFH_Utility.IsDriverOfThisVehicle(pawn, TFH_Utility.GetRightVehicle(pawn, availableVehicles, workType)))
                 {
-                    job = ToolsForHaulUtility.DismountAtParkingLot(pawn, CurrentDrivers[pawn]);
+                    job = TFH_Utility.DismountAtParkingLot(pawn, GameComponentToolsForHaul.CurrentDrivers[pawn]);
                 }
             }
 

@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using RimWorld;
-using ToolsForHaul.JobDefs;
-using ToolsForHaul.StatDefs;
-using ToolsForHaul.Utilities;
-using UnityEngine;
-using Verse;
-using Verse.AI;
-using Random = UnityEngine.Random;
-
-namespace ToolsForHaul.Components
+﻿namespace ToolsForHaul.Components
 {
-    using ToolsForHaul.Components.Vehicle;
+    using System;
+    using System.Linq;
+
+    using RimWorld;
+
+    using ToolsForHaul.Defs;
+    using ToolsForHaul.Utilities;
+
+    using UnityEngine;
+
+    using Verse;
+
+    using Random = UnityEngine.Random;
 
     public class CompVehicle : ThingComp
     {
@@ -77,8 +77,7 @@ namespace ToolsForHaul.Components
         private static readonly Vector3 DustOffset = new Vector3(-0.3f, 0f, -0.3f);
         private static readonly Vector3 FumesOffset = new Vector3(-0.3f, 0f, 0f);
 
-      //  private HeadLights flooder;
-
+      // private HeadLights flooder;
         public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             base.PostPostApplyDamage(dinfo, totalDamageDealt);
@@ -114,12 +113,12 @@ namespace ToolsForHaul.Components
 
                         int splash = (int)(refuelableComp.FuelPercentOfMax - this._tankHitPos * 20);
 
-                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map,this.fuelDefName, this.parent.LabelCap, splash);
+                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, this.fuelDefName, this.parent.LabelCap, splash);
                     }
 
                     if (hitpointsPercent < 0.05f && Rand.Value > 0.5f)
                     {
-                        FireUtility.TryStartFireIn(this.parent.Position,this.parent.Map, 0.1f);
+                        FireUtility.TryStartFireIn(this.parent.Position, this.parent.Map, 0.1f);
                     }
 
                     return;
@@ -146,9 +145,12 @@ namespace ToolsForHaul.Components
                     this.tankHitCount += 1;
                     this._tankHitPos = Math.Min(this._tankHitPos, Rand.Value);
 
-                    int splash = (int)(refuelableComp.FuelPercentOfMax - this._tankHitPos * 20);
+                    if (refuelableComp != null)
+                    {
+                        int splash = (int)(refuelableComp.FuelPercentOfMax - this._tankHitPos * 20);
 
-                    FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, this.fuelDefName, this.parent.LabelCap, splash);
+                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, this.fuelDefName, this.parent.LabelCap, splash);
+                    }
                 }
 
             }
@@ -239,7 +241,7 @@ namespace ToolsForHaul.Components
 
                             if ((loc - this._lastTireTrackPlacePos).MagnitudeHorizontalSquared() > FootprintIntervalDist)
                             {
-                                MoteMakerTFH.PlaceTireTrack(loc,this.parent.Map, rot, pos);
+                                MoteMakerTFH.PlaceTireTrack(loc, this.parent.Map, rot, pos);
                                 this._lastTireTrackPlacePos = pos;
                             }
                         }
@@ -274,7 +276,7 @@ namespace ToolsForHaul.Components
 
                             if (axlesComp.HasAxles())
                             {
-                                this.currentDriverSpeed = ToolsForHaulUtility.GetMoveSpeed(mountableComp.Driver);
+                                this.currentDriverSpeed = TFH_Utility.GetMoveSpeed(mountableComp.Driver);
                             }
                         }
 
@@ -287,6 +289,7 @@ namespace ToolsForHaul.Components
                         {
                             this.VehicleSpeed = this.DesiredSpeed;
                         }
+
                         this.tickCheck = Find.TickManager.TicksGame;
                     }
 
@@ -314,7 +317,7 @@ namespace ToolsForHaul.Components
                     {
                         refuelableComp.ConsumeFuel(0.15f);
 
-                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map,this.fuelDefName, this.parent.LabelCap);
+                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, this.fuelDefName, this.parent.LabelCap);
                         this._tankSpillTick = Find.TickManager.TicksGame + 15;
                     }
                 }

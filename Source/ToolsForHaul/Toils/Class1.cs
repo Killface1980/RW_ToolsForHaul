@@ -1,8 +1,11 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using RimWorld;
+
 using UnityEngine;
+
 using Verse.Sound;
 
 namespace ToolsForHaul.Toils
@@ -25,6 +28,7 @@ namespace ToolsForHaul.Toils
                                               }));
                 pawn.jobs.EndCurrentJob(JobCondition.Incompletable, true);
             }
+
             if (haulThing.stackCount == 0)
             {
                 Log.Message(string.Concat(new object[]
@@ -36,6 +40,7 @@ namespace ToolsForHaul.Toils
                                               }));
                 pawn.jobs.EndCurrentJob(JobCondition.Incompletable, true);
             }
+
             if (pawn.jobs.curJob.count <= 0)
             {
                 Log.Error(string.Concat(new object[]
@@ -68,6 +73,7 @@ namespace ToolsForHaul.Toils
                                                                   curJob
                                                               }));
                     }
+
                     int num = actor.carryTracker.AvailableStackSpace(thing.def);
                     if (num == 0)
                     {
@@ -81,7 +87,8 @@ namespace ToolsForHaul.Toils
                                                                   curJob
                                                               }));
                     }
-                    int num2 = Mathf.Min(new int[]
+
+                    int num2 = Mathf.Min(new[]
                                              {
                                                  curJob.count,
                                                  num,
@@ -91,12 +98,14 @@ namespace ToolsForHaul.Toils
                     {
                         throw new Exception("StartCarryThing desiredNumToTake = " + num2);
                     }
+
                     int stackCount = thing.stackCount;
                     int num3 = actor.carryTracker.TryStartCarry(thing, num2);
                     if (num3 == 0)
                     {
                         actor.jobs.EndCurrentJob(JobCondition.Incompletable, true);
                     }
+
                     if (num3 < stackCount)
                     {
                         int num4 = curJob.count - num3;
@@ -107,6 +116,7 @@ namespace ToolsForHaul.Toils
                             {
                                 curJob.countQueue = new List<int>();
                             }
+
                             curJob.countQueue.Insert(0, num4);
                         }
                         else if (actor.Map.reservationManager.ReservedBy(thing, actor))
@@ -114,10 +124,12 @@ namespace ToolsForHaul.Toils
                             actor.Map.reservationManager.Release(thing, actor);
                         }
                     }
+
                     if (subtractNumTakenFromJobCount)
                     {
                         curJob.count -= num3;
                     }
+
                     curJob.SetTarget(haulableInd, actor.carryTracker.CarriedThing);
                     actor.Reserve(actor.carryTracker.CarriedThing, 1, -1, null);
                     actor.records.Increment(RecordDefOf.ThingsHauled);
@@ -137,15 +149,18 @@ namespace ToolsForHaul.Toils
                     {
                         return;
                     }
+
                     if (curJob.count <= 0)
                     {
                         return;
                     }
+
                     if (actor.carryTracker.CarriedThing == null)
                     {
                         Log.Error("JumpToAlsoCollectTargetInQueue run on " + actor + " who is not carrying something.");
                         return;
                     }
+
                     for (int i = 0; i < targetQueue.Count; i++)
                     {
                         if (!GenAI.CanUseItemForWork(actor, targetQueue[i].Thing))
@@ -153,6 +168,7 @@ namespace ToolsForHaul.Toils
                             actor.jobs.EndCurrentJob(JobCondition.Incompletable, true);
                             return;
                         }
+
                         if (targetQueue[i].Thing.def == actor.carryTracker.CarriedThing.def)
                         {
                             curJob.SetTarget(ind, targetQueue[i].Thing);
@@ -176,14 +192,17 @@ namespace ToolsForHaul.Toils
                     {
                         return;
                     }
+
                     if (actor.carryTracker.Full)
                     {
                         return;
                     }
+
                     if (curJob.count <= 0)
                     {
                         return;
                     }
+
                     Predicate<Thing> validator = (Thing t) => t.Spawned && t.def == actor.carryTracker.CarriedThing.def && t.CanStackWith(actor.carryTracker.CarriedThing) && !t.IsForbidden(actor) && (takeFromValidStorage || !t.IsInValidStorage()) && (storeCellInd == TargetIndex.None || curJob.GetTarget(storeCellInd).Cell.IsValidStorageFor(actor.Map, t)) && actor.CanReserve(t, 1, -1, null, false) && (extraValidator == null || extraValidator(t));
                     Thing thing = GenClosest.ClosestThingReachable(actor.Position, actor.Map, ThingRequest.ForGroup(ThingRequestGroup.HaulableAlways), PathEndMode.ClosestTouch, TraverseParms.For(actor, Danger.Deadly, TraverseMode.ByPawn, false), 8f, validator, null, 0, -1, false, RegionType.Set_Passable, false);
                     if (thing != null)
@@ -229,6 +248,7 @@ namespace ToolsForHaul.Toils
                     {
                         b = target.Cell;
                     }
+
                     IntVec3 dropLoc = actor.Position + PawnRotator.RotFromAngleBiased((actor.Position - b).AngleFlat).FacingCell;
                     Thing thing;
                     if (!actor.carryTracker.TryDropCarriedThing(dropLoc, ThingPlaceMode.Direct, out thing, null))
@@ -252,6 +272,7 @@ namespace ToolsForHaul.Toils
                     {
                         actor.Map.designationManager.RemoveAllDesignationsOn(actor.carryTracker.CarriedThing, false);
                     }
+
                     Action<Thing, int> placedAction = null;
                     if (curJob.def == JobDefOf.DoBill)
                     {
@@ -261,6 +282,7 @@ namespace ToolsForHaul.Toils
                                 {
                                     curJob.placedThings = new List<ThingStackPartClass>();
                                 }
+
                                 ThingStackPartClass thingStackPartClass = curJob.placedThings.Find((ThingStackPartClass x) => x.thing == th);
                                 if (thingStackPartClass != null)
                                 {
@@ -272,6 +294,7 @@ namespace ToolsForHaul.Toils
                                 }
                             };
                     }
+
                     Thing thing;
                     if (!actor.carryTracker.TryDropCarriedThing(cell, ThingPlaceMode.Direct, out thing, placedAction))
                     {
@@ -284,10 +307,12 @@ namespace ToolsForHaul.Toils
                                 {
                                     actor.Reserve(c, 1, -1, null);
                                 }
+
                                 actor.CurJob.SetTarget(cellInd, c);
                                 actor.jobs.curDriver.JumpToToil(nextToilOnPlaceFailOrIncomplete);
                                 return;
                             }
+
                             Job job = HaulAIUtility.HaulAsideJobFor(actor, actor.carryTracker.CarriedThing);
                             if (job != null)
                             {
@@ -338,6 +363,7 @@ namespace ToolsForHaul.Toils
                     {
                         return true;
                     }
+
                     ThingOwner thingOwner = thing.TryGetInnerInteractableThingOwner();
                     return thingOwner != null && !thingOwner.CanAcceptAnyOf(gotoDest.actor.carryTracker.CarriedThing, true);
                 });
@@ -357,6 +383,7 @@ namespace ToolsForHaul.Toils
                         Log.Error(actor + " tried to place hauled thing in container but is not hauling anything.");
                         return;
                     }
+
                     Thing thing = curJob.GetTarget(containerInd).Thing;
                     ThingOwner thingOwner = thing.TryGetInnerInteractableThingOwner();
                     if (thingOwner != null)
@@ -376,6 +403,7 @@ namespace ToolsForHaul.Toils
                                 }
                             }
                         }
+
                         actor.carryTracker.innerContainer.TryTransferToContainer(actor.carryTracker.CarriedThing, thingOwner, num, true);
                     }
                     else if (curJob.GetTarget(containerInd).Thing.def.Minifiable)
@@ -401,6 +429,7 @@ namespace ToolsForHaul.Toils
                     {
                         return;
                     }
+
                     if (curJob.targetQueueB != null && curJob.targetQueueB.Count > 0)
                     {
                         Thing primaryTarget = curJob.GetTarget(primaryTargetInd).Thing;
@@ -444,6 +473,7 @@ namespace ToolsForHaul.Toils
                         {
                             actor.mindState.lastInventoryRawFoodUseTick = Find.TickManager.TicksGame;
                         }
+
                         thing.def.soundPickup.PlayOneShot(new TargetInfo(actor.Position, actor.Map, false));
                     }
                 };

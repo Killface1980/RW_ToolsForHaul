@@ -1,8 +1,9 @@
-﻿using RimWorld;
-using Verse;
-
-namespace ToolsForHaul.StatDefs
+﻿namespace ToolsForHaul.Defs
 {
+    using RimWorld;
+
+    using Verse;
+
     [DefOf]
     public static class HaulStatDefOf
     {

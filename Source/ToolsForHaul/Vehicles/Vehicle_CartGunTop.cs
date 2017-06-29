@@ -1,9 +1,9 @@
-﻿using System;
-using UnityEngine;
-using Verse;
-
-namespace ToolsForHaul
+﻿namespace ToolsForHaul.Vehicles
 {
+    using UnityEngine;
+
+    using Verse;
+
     public class Vehicle_CartGunTop
     {
         private const float IdleTurnDegreesPerTick = 0.26f;

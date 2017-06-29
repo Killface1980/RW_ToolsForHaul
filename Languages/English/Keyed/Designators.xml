@@ -20,7 +20,8 @@
   <NoDoctor>Colonist is not a doctor</NoDoctor>
   <CannotEatAnymore>Colonist is not hungry</CannotEatAnymore>
 
-  <ParkingLot>Parking lot</ParkingLot>
+  <ParkingLotZone>Parking lot</ParkingLotZone>
   <TFH_DescriptionParkingLot>A place for pawns to store vehicles. Pre-requisite for hauling with vehicles.</TFH_DescriptionParkingLot>
-
+  <MaximumLots>Maximum parking lots: {0}</MaximumLots>
+  <OccupiedLots>Occupied parking lots: {0}</OccupiedLots>
 </LanguageData>

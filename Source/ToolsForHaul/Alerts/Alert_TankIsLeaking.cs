@@ -11,7 +11,7 @@ namespace ToolsForHaul.Alerts
 
     using RimWorld;
 
-    using ToolsForHaul.Utilities;
+    using ToolsForHaul.Vehicles;
 
     using Verse;
 
@@ -29,7 +29,7 @@ namespace ToolsForHaul.Alerts
             foreach (Map currentMap in maps)
             {
                 List<Thing> list = currentMap.listerThings.AllThings.FindAll(
-                    (Thing aV) => (aV is Vehicle_Cart) && aV.Faction == Faction.OfPlayer);
+                    aV => (aV is Vehicle_Cart) && aV.Faction == Faction.OfPlayer);
 
                 foreach (Thing thing in list)
                 {

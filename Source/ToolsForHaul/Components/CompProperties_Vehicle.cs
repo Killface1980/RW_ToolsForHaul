@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace ToolsForHaul.Components.Vehicle
+namespace ToolsForHaul.Components
 {
     using Verse;
 

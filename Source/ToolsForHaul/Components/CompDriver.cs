@@ -5,18 +5,15 @@
 //   Defines the CompDriver type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace ToolsForHaul.Components.Vehicles
+namespace ToolsForHaul.Components
 {
     using System;
     using System.Collections.Generic;
 
     using RimWorld;
 
-    using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.JobDefs;
     using ToolsForHaul.Utilities;
-
-    using UnityEngine;
+    using ToolsForHaul.Vehicles;
 
     using Verse;
     using Verse.AI;
@@ -25,9 +22,17 @@ namespace ToolsForHaul.Components.Vehicles
     {
         public Thing Vehicle { get; set; }
 
+        private Pawn Pawn => this.parent as Pawn;
+
         public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
         {
-            var pawn = parent as Pawn;
+            var pawn = this.parent as Pawn;
+
+            if (pawn == null)
+            {
+                absorbed = false;
+                return;
+            }
 
             if (pawn.RaceProps.Animal)
             {
@@ -52,19 +57,19 @@ namespace ToolsForHaul.Components.Vehicles
 
         // IMPORTANT: THE parent IS THE PAWN, NOT THE VEHICLE!!!!!!!
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
-        {
-            if (selPawn.Faction != Faction.OfPlayer)
+        {            
+            if (this.parent == null || selPawn.Faction != Faction.OfPlayer)
             {
                 yield break;
             }
 
-            Vehicle_Cart cart = ToolsForHaulUtility.GetCartByDriver(selPawn);
+            Vehicle_Cart cart = TFH_Utility.GetCartByDriver(selPawn);
             if (cart == null)
                 yield break;
 
             Action action_DismountInBase = () =>
                 {
-                    Job jobNew = ToolsForHaulUtility.DismountAtParkingLot(selPawn, cart);
+                    Job jobNew = TFH_Utility.DismountAtParkingLot(selPawn, cart);
 
                     selPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
@@ -83,9 +88,8 @@ namespace ToolsForHaul.Components.Vehicles
 
                     // mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
                 };
-
-        //    if (cart.MountableComp.IsMounted && selPawn == cart.MountableComp.Driver)
             {
+                // if (cart.MountableComp.IsMounted && selPawn == cart.MountableComp.Driver)
                 // && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
                 yield return new FloatMenuOption("Dismount".Translate(this.parent.LabelShort), action_Dismount);
                 yield return new FloatMenuOption("DismountAtParkingLot".Translate(this.parent.LabelShort), action_DismountInBase);
@@ -98,20 +102,28 @@ namespace ToolsForHaul.Components.Vehicles
             {
                 yield return c;
             }
+
+            if (this.parent == null)
+            {
+                yield break;
+            }
+
+            Vehicle_Cart cart = TFH_Utility.GetCartByDriver(this.Pawn);
+
             yield return new Command_Action
             {
                 defaultLabel = Static.TxtCommandDismountLabel.Translate(),
                 defaultDesc = Static.TxtCommandDismountDesc.Translate(),
                 icon = Static.IconUnmount,
                 activateSound = Static.ClickSound,
-                action = ToolsForHaulUtility.GetCartByDriver(this.parent as Pawn).MountableComp.Dismount
+                action = delegate { TFH_Utility.DismountGizmoFloatMenu(cart, this.parent as Pawn); }
             };
 
-            var saddle = parent as Vehicle_Saddle;
+            var saddle = TFH_Utility.GetSaddleByRider((Pawn)this.parent);
 
             if (saddle != null)
             {
-                if (saddle.mountableComp.Driver.RaceProps.Animal)
+                if (saddle.MountableComp.Driver.RaceProps.Animal)
                 {
                     Designator_Board designatorBoard =
                         new Designator_Board
@@ -123,22 +135,19 @@ namespace ToolsForHaul.Components.Vehicles
                             activateSound = Static.ClickSound
                         };
 
-
                     yield return designatorBoard;
+
                     // if (mountableComp.IsMounted && this.innerContainer.Count(x => x is Pawn) >= maxNumBoarding)
                     // {
-                    //     Command_Action commandUnboardAll = new Command_Action();
+                    // Command_Action commandUnboardAll = new Command_Action();
 
                     // commandUnboardAll.defaultLabel = "CommandGetOffLabel".Translate();
                     // commandUnboardAll.defaultDesc = "CommandGetOffDesc".Translate();
                     // commandUnboardAll.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnboardAll");
                     // commandUnboardAll.activateSound = Static.ClickSound;
                     // commandUnboardAll.action = () => { this.UnboardAll(); };
-                    //
                     // yield return commandUnboardAll;
-
                 }
-
             }
         }
 

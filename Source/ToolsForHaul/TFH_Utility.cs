@@ -8,16 +8,16 @@ namespace ToolsForHaul.Utilities
 
     using RimWorld;
 
-    using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.JobDefs;
+    using ToolsForHaul.Components;
+    using ToolsForHaul.Defs;
+    using ToolsForHaul.Vehicles;
 
     using UnityEngine;
 
     using Verse;
     using Verse.AI;
 
-
-    public static class ToolsForHaulUtility
+    public static class TFH_Utility
     {
         private const double ValidDistance = 30;
 
@@ -81,6 +81,26 @@ namespace ToolsForHaul.Utilities
             return null;
         }
 
+        public static bool HasFreeParkingLot(Map map)
+        {
+            bool flag = false;
+            foreach (IntVec3 cell in map.AllCells)
+            {
+                if (cell.GetZone(map) is Zone_ParkingLot)
+                {
+                    if (map.thingGrid.ThingsAt(cell).Any(
+                        current => current.def.passability == Traversability.PassThroughOnly
+                                   || current.def.passability == Traversability.Impassable))
+                    {
+                        continue;
+                    }
+                    flag = true;
+                    break;
+                }
+            }
+            return flag;
+        }
+
         public static bool FindParkingSpace(Pawn pawn, IntVec3 searchPos, out IntVec3 parkingSpace)
         {
             List<IntVec3> parkingLot = new List<IntVec3>();
@@ -96,18 +116,21 @@ namespace ToolsForHaul.Utilities
                     {
                         continue;
                     }
+
                   if (!pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, pawn.NormalMaxDanger()))
                       continue;
 
                     parkingLot.Add(cell);
                 }
             }
+
             if (parkingLot.Count > 0)
             {
                 IOrderedEnumerable<IntVec3> orderedEnumerable = parkingLot.OrderBy(x => x.DistanceTo(searchPos));
                 parkingSpace = orderedEnumerable.First();
                 return true;
             }
+
             parkingSpace = IntVec3.Invalid;
             return false;
         }
@@ -159,6 +182,7 @@ namespace ToolsForHaul.Utilities
                     }
                 }
             }
+
             return IntVec3.Invalid;
         }
 
@@ -185,8 +209,17 @@ namespace ToolsForHaul.Utilities
         public static List<Thing> AvailableVehicles(Pawn pawn)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                (Thing aV) => (aV is Vehicle_Cart) && !aV.IsForbidden(pawn.Faction)
+                aV => (aV is Vehicle_Cart) && !aV.IsForbidden(pawn.Faction)
                               && ((!aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV)) // Unmounted
+                                  || aV.TryGetComp<CompMountable>().Driver == pawn)); // or Driver is pawn himself
+            return availableVehicles;
+        }
+
+        public static List<Thing> AvailableRideables(Pawn pawn)
+        {
+            List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
+                aV => (aV is Vehicle_Saddle) && !aV.IsForbidden(pawn.Faction)
+                              && ((aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV)) // Unmounted
                                   || aV.TryGetComp<CompMountable>().Driver == pawn)); // or Driver is pawn himself
             return availableVehicles;
         }
@@ -194,7 +227,7 @@ namespace ToolsForHaul.Utilities
         public static List<Thing> AvailableVehiclesForSteeling(Pawn pawn)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                (Thing aV) => (aV is Vehicle_Cart) && !aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV)); // Unmounted
+                aV => (aV is Vehicle_Cart) && !aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV)); // Unmounted
             return availableVehicles;
         }
 
@@ -210,6 +243,23 @@ namespace ToolsForHaul.Utilities
                     return vehicle;
                 }
             }
+
+            return null;
+        }
+
+        public static Vehicle_Saddle GetSaddleByRider(Pawn pawn)
+        {
+
+            List<Thing> availableVehicles = AvailableRideables(pawn);
+            foreach (var thing in availableVehicles)
+            {
+                var vehicle = (Vehicle_Saddle)thing;
+                if (vehicle.MountableComp.Driver == pawn)
+                {
+                    return vehicle;
+                }
+            }
+
             return null;
         }
 
@@ -261,10 +311,11 @@ namespace ToolsForHaul.Utilities
             return 60 / movePerTick;
         }
 
-        public static Job HaulWithTools(Pawn pawn, Vehicle_Cart cart = null, Thing haulThing = null)
+        public static Job HaulWithTools(Pawn pawn, Vehicle_Cart cart, Thing haulThing = null)
         {
             Trace.StopWatchStart();
             bool forced = false;
+
             // Job Setting
             JobDef jobDef = null;
             LocalTargetInfo targetC;
@@ -273,13 +324,13 @@ namespace ToolsForHaul.Utilities
             int reservedMaxItem;
             IEnumerable<Thing> remainingItems;
             bool shouldDrop;
-            //       Thing lastItem = TryGetBackpackLastItem(pawn);
 
+            // Thing lastItem = TryGetBackpackLastItem(pawn);
             if (cart.MountableComp.IsMounted)
             {
                 jobDef = cart.MountableComp.Driver.RaceProps.Animal
-                    ? HaulJobDefOf.HaulWithAnimalCart
-                    : HaulJobDefOf.HaulWithCart;
+                             ? HaulJobDefOf.HaulWithAnimalCart
+                             : HaulJobDefOf.HaulWithCart;
             }
             else
             {
@@ -298,20 +349,20 @@ namespace ToolsForHaul.Utilities
             shouldDrop = reservedMaxItem > 0 ? true : false;
 
             Job job = new Job(jobDef)
-            {
-                targetQueueA = new List<LocalTargetInfo>(),
-                targetQueueB = new List<LocalTargetInfo>(),
-                targetC = targetC
-            };
-
+                          {
+                              targetQueueA = new List<LocalTargetInfo>(),
+                              targetQueueB = new List<LocalTargetInfo>(),
+                              targetC = targetC
+                          };
 
             Trace.AppendLine(
                 pawn.LabelCap + " In HaulWithTools: " + jobDef.defName + "\n" + "MaxItem: " + maxItem
                 + " reservedMaxItem: " + reservedMaxItem);
 
             Thing lastItem = null;
-            //Drop remaining item
-            //    if (reservedMaxItem >= Math.Ceiling(maxItem * 0.5) && shouldDrop)
+
+            // Drop remaining item
+            // if (reservedMaxItem >= Math.Ceiling(maxItem * 0.5) && shouldDrop)
             if (shouldDrop)
             {
                 bool startDrop = false;
@@ -319,20 +370,21 @@ namespace ToolsForHaul.Utilities
                 {
                     // if (startDrop == false)
                     // {
-                    //     if (remainingItems.ElementAt(i) == lastItem)
-                    //     {
-                    //         startDrop = true;
-                    //     }
-                    //     else
-                    //     {
-                    //         continue;
-                    //     }
+                    // if (remainingItems.ElementAt(i) == lastItem)
+                    // {
+                    // startDrop = true;
+                    // }
+                    // else
+                    // {
+                    // continue;
+                    // }
                     // }
                     IntVec3 storageCell = FindStorageCell(pawn, remainingItems.ElementAt(i), job.targetQueueB);
                     if (storageCell == IntVec3.Invalid)
                     {
                         break;
                     }
+
                     job.targetQueueB.Add(storageCell);
                 }
 
@@ -345,21 +397,25 @@ namespace ToolsForHaul.Utilities
                 {
                     return DismountAtParkingLot(pawn, cart);
                 }
+
                 Log.Message("HaulWithTools Failes NoEmptyPlaceLowerTrans");
-                JobFailReason.Is(ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
+                JobFailReason.Is(NoEmptyPlaceLowerTrans);
 #if DEBUG
-                Log.Message("No Job. Reason: " + ToolsForHaulUtility.NoEmptyPlaceLowerTrans);
+                Log.Message("No Job. Reason: " + NoEmptyPlaceLowerTrans);
 #endif
-                return (Job)null;
+                return null;
             }
+
             // Collect item
             Trace.AppendLine("Start Collect item");
 
-            //ClosestThing_Global_Reachable Configuration
-            Predicate<Thing> predicate = item
-                => !job.targetQueueA.Contains(item) && !FireUtility.IsBurning(item) //&& !deniedThings.Contains(item)
-                   && (cart.allowances.Allows(item))
-                   && pawn.CanReserveAndReach(item, PathEndMode.Touch, DangerUtility.NormalMaxDanger(pawn));
+            // ClosestThing_Global_Reachable Configuration
+            Predicate<Thing> predicate = item => !job.targetQueueA.Contains(item)
+                                                 && !item.IsBurning() // && !deniedThings.Contains(item)
+                                                 && cart.allowances.Allows(item) && pawn.CanReserveAndReach(
+                                                     item,
+                                                     PathEndMode.Touch,
+                                                     pawn.NormalMaxDanger());
 
             IntVec3 searchPos;
             if (haulThing != null)
@@ -374,25 +430,28 @@ namespace ToolsForHaul.Utilities
             bool flag1 = false;
             int maxDistance = 99999;
 
-            //Collect and drop item
+            // Collect and drop item
             while (reservedMaxItem < maxItem)
             {
-                if (flag1 == false && !job.targetQueueA.NullOrEmpty() && job.targetQueueA.First().Thing.Position != IntVec3.Invalid)
+                if (flag1 == false && !job.targetQueueA.NullOrEmpty()
+                    && job.targetQueueA.First().Thing.Position != IntVec3.Invalid)
                 {
                     flag1 = true;
                     searchPos = job.targetQueueA.First().Thing.Position;
                     maxDistance = NearbyCell;
                 }
 
-                //Find Haulable
-                Thing closestHaulable = GenClosest.ClosestThing_Global_Reachable(searchPos, pawn.Map,
+                // Find Haulable
+                Thing closestHaulable = GenClosest.ClosestThing_Global_Reachable(
+                    searchPos,
+                    pawn.Map,
                     pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling(),
                     PathEndMode.Touch,
                     TraverseParms.For(pawn, Danger.Some),
                     maxDistance,
                     predicate);
 
-                //Check it can be hauled
+                // Check it can be hauled
                 /*
                 if ((closestHaulable is UnfinishedThing && ((UnfinishedThing)closestHaulable).BoundBill != null)
                     || (closestHaulable.def.IsNutritionSource && !SocialProperness.IsSociallyProper(closestHaulable, pawn, false, true)))
@@ -404,17 +463,16 @@ namespace ToolsForHaul.Utilities
                 {
                     break;
                 }
-                //Find StorageCell
+
+                // Find StorageCell
                 IntVec3 storageCell = FindStorageCell(pawn, closestHaulable, job.targetQueueB);
                 if (storageCell == IntVec3.Invalid) break;
 
-                //Add Queue & Reserve
+                // Add Queue & Reserve
                 job.targetQueueA.Add(closestHaulable);
                 job.targetQueueB.Add(storageCell);
                 reservedMaxItem++;
             }
-
-
 
             Trace.AppendLine("Elapsed Time");
             Trace.StopWatchStop();
@@ -447,6 +505,7 @@ namespace ToolsForHaul.Utilities
                 Log.Message("HaulWithTools NoEmptyPlaceLowerTrans");
                 JobFailReason.Is(NoEmptyPlaceLowerTrans);
             }
+
             Trace.AppendLine("No Job. Reason: " + JobFailReason.Reason);
             Trace.LogMessage();
             return null;
@@ -462,6 +521,7 @@ namespace ToolsForHaul.Utilities
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -473,7 +533,83 @@ namespace ToolsForHaul.Utilities
                 var vehicleTurret = (Vehicle_Cart)thing;
                 if (vehicleTurret.MountableComp.Driver == pawn && vehicleTurret == vehicleReq) return true;
             }
+
             return false;
+        }
+
+        /// <summary>
+        /// Selects the appropriate vehicle by worktype
+        /// </summary>
+        public static Thing GetRightVehicle(
+            Pawn pawn,
+            List<Thing> availableVehicles,
+            WorkTypeDef worktype,
+            Thing haulThing = null)
+        {
+            Thing cart = null;
+
+            if (worktype.Equals(WorkTypeDefOf.Hunting))
+            {
+                IOrderedEnumerable<Thing> orderedEnumerable =
+                    availableVehicles.OrderBy(x => pawn.Position.DistanceToSquared(x.Position));
+                foreach (Thing thing in orderedEnumerable)
+                {
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart == null) continue;
+                    if (!TFH_Utility.IsVehicleAvailable(pawn, vehicleCart)) continue;
+                    if (!vehicleCart.VehicleComp.IsCurrentlyMotorized()) continue;
+                    if (vehicleCart.VehicleComp.tankLeaking) continue;
+                    if (vehicleCart.ExplosiveComp.wickStarted) continue;
+                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
+
+                    cart = vehicleCart;
+                    break;
+                }
+            }
+            else if (worktype == WorkTypeDefOf.Hauling)
+            {
+                IOrderedEnumerable<Thing> orderedEnumerable2 =
+                    availableVehicles.OrderByDescending(x => (x as Vehicle_Cart)?.MaxItem).ThenBy(x => pawn.Position.DistanceToSquared(x.Position));
+
+                foreach (Thing thing in orderedEnumerable2)
+                {
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart == null)
+                    {
+                        continue;
+                    }
+                    if (!TFH_Utility.IsVehicleAvailable(pawn, vehicleCart)) continue;
+                    if (vehicleCart.VehicleComp.tankLeaking) continue;
+                    if (vehicleCart.ExplosiveComp.wickStarted) continue;
+                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                    if (haulThing != null)
+                    {
+                        if (!vehicleCart.allowances.Allows(haulThing)) continue;
+                    }
+                    cart = vehicleCart;
+                    break;
+                }
+            }
+            else if (worktype.Equals(WorkTypeDefOf.Construction))
+            {
+                IOrderedEnumerable<Thing> orderedEnumerable2 =
+                    availableVehicles.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).VehicleComp.VehicleSpeed);
+                foreach (Thing thing in orderedEnumerable2)
+                {
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart == null)
+                        continue;
+                    if (!TFH_Utility.IsVehicleAvailable(pawn, vehicleCart)) continue;
+                    if (!vehicleCart.VehicleComp.IsCurrentlyMotorized()) continue;
+                    if (vehicleCart.VehicleComp.tankLeaking) continue;
+                    if (vehicleCart.ExplosiveComp.wickStarted) continue;
+                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                    cart = vehicleCart;
+                    break;
+                }
+            }
+
+            return cart;
         }
 
         /*
@@ -501,5 +637,58 @@ namespace ToolsForHaul.Utilities
             return lastItem;
         }
         */
+
+
+        public static void DismountGizmoFloatMenu(Vehicle_Cart cart, Pawn driver)
+        {
+            List<FloatMenuOption> options = new List<FloatMenuOption>();
+
+            Action action_DismountInBase = () =>
+                {
+
+                    Job jobNew = TFH_Utility.DismountAtParkingLot(driver, cart);
+
+                    driver.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                };
+
+            Action action_Dismount = () =>
+                {
+                    if (!driver.Position.InBounds(driver.Map))
+                    {
+                        cart.MountableComp.DismountAt(driver.Position);
+                        return;
+                    }
+
+                    cart.MountableComp.DismountAt(
+                        driver.Position - cart.def.interactionCellOffset.RotatedBy(driver.Rotation));
+                    driver.Position = driver.Position.RandomAdjacentCell8Way();
+
+                    // mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
+                };
+
+            options.Add(new FloatMenuOption("Dismount".Translate(driver.LabelShort), action_Dismount));
+            bool flag = TFH_Utility.HasFreeParkingLot(cart.Map);
+
+            if (flag)
+            {
+                options.Add(new FloatMenuOption("DismountAtParkingLot".Translate(cart.LabelShort), action_DismountInBase));
+            }
+            else
+            {
+                FloatMenuOption failer = new FloatMenuOption(
+                    "NoFreeParkingSpace".Translate(cart.LabelShort),
+                    null,
+                    MenuOptionPriority.Default,
+                    null,
+                    null,
+                    0f,
+                    null,
+                    null);
+                options.Add(failer);
+            }
+            FloatMenu window = new FloatMenu(options, "WhereToDismount".Translate());
+            Find.WindowStack.Add(window);
+        }
+
     }
 }

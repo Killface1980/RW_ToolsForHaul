@@ -1,15 +1,21 @@
-﻿using System;
+﻿// Always needed
+
+// using VerseBase;   // Material/Graphics handling functions are found here
+// RimWorld specific functions are found here
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using UnityEngine;   // Always needed
-//using VerseBase;   // Material/Graphics handling functions are found here
-using RimWorld;      // RimWorld specific functions are found here
-using Verse;         // RimWorld universal objects are here
+using RimWorld;
+
+using UnityEngine;
+
+using Verse;
+
+// RimWorld universal objects are here
 //using Verse.AI;    // Needed when you do something with the AI
 //using Verse.Sound; // Needed when you do something with the Sound
-
 namespace SpotlightTurret
 {
     /// <summary>

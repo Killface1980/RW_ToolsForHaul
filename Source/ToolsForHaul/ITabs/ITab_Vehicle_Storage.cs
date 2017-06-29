@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using RimWorld;
-using UnityEngine;
-using Verse;
+﻿
 
 // Always needed
 //using VerseBase;         // Material/Graphics handling functions are found here
@@ -15,6 +12,16 @@ using Verse;
 //using RimWorld.SquadAI;  // RimWorld specific functions for squad brains 
 namespace ToolsForHaul.ITabs
 {
+    using System.Linq;
+
+    using RimWorld;
+
+    using ToolsForHaul.Vehicles;
+
+    using UnityEngine;
+
+    using Verse;
+
     class Itab_Pawn_Vehicle_Storage : ITab_Storage
     {
         private const float TopAreaHeight = 35f;
@@ -38,6 +45,7 @@ namespace ToolsForHaul.ITabs
                     if (cart.Faction == null) return false;
                     if (cart.Faction == Faction.OfPlayer) return true;
                 }
+
                 return false;
             }
         }

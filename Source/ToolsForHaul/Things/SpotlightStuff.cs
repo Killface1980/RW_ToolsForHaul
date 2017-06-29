@@ -61,6 +61,7 @@ namespace ToolsForHaul.Things
             {
                 this.light.Destroy();
             }
+
             this.light = null;
         }
 
@@ -70,11 +71,11 @@ namespace ToolsForHaul.Things
         public void LightAreaAt(IntVec3 position)
         {
             // Remove old light if target has moved.
-            if ((this.light.DestroyedOrNull() == false)
-                && (position != this.light.Position))
+            if ((this.light.DestroyedOrNull() == false) && (position != this.light.Position))
             {
                 PowerOffLight();
             }
+
             // Spawn a new light.
             if (this.light.DestroyedOrNull())
             {
@@ -110,24 +111,34 @@ namespace ToolsForHaul.Things
                     this.spotLightRangeTarget = Rand.Range(spotlightMinRange, this.def.specialDisplayRadius);
                     break;
                 case LightMode.Conic:
-                    if (this.spotLightRotation == Mathf.Repeat(this.Rotation.AsAngle + this.spotLightRotationBaseOffset - 45f, 360f))
+                    if (this.spotLightRotation == Mathf.Repeat(
+                            this.Rotation.AsAngle + this.spotLightRotationBaseOffset - 45f,
+                            360f))
                     {
                         // Spotlight is targeting the left. Now, target the right.
-                        this.spotLightRotationTarget = Mathf.Repeat(this.Rotation.AsAngle + this.spotLightRotationBaseOffset + 45f, 360f);
+                        this.spotLightRotationTarget = Mathf.Repeat(
+                            this.Rotation.AsAngle + this.spotLightRotationBaseOffset + 45f,
+                            360f);
                     }
                     else
                     {
                         // Spotlight is targeting the right. Now, target the left.
-                        this.spotLightRotationTarget = Mathf.Repeat(this.Rotation.AsAngle + this.spotLightRotationBaseOffset - 45f, 360f);
+                        this.spotLightRotationTarget = Mathf.Repeat(
+                            this.Rotation.AsAngle + this.spotLightRotationBaseOffset - 45f,
+                            360f);
                     }
+
                     this.spotLightRangeTarget = this.spotLightRangeBaseOffset;
                     break;
                 case LightMode.Fixed:
                     // Fixed range and rotation.
-                    this.spotLightRotationTarget = Mathf.Repeat(this.Rotation.AsAngle + this.spotLightRotationBaseOffset, 360f);
+                    this.spotLightRotationTarget = Mathf.Repeat(
+                        this.Rotation.AsAngle + this.spotLightRotationBaseOffset,
+                        360f);
                     this.spotLightRangeTarget = this.spotLightRangeBaseOffset;
                     break;
             }
+
             // Compute rotation direction.
             ComputeRotationDirection();
         }
@@ -184,6 +195,7 @@ namespace ToolsForHaul.Things
                         rotationRate *= 2;
                     }
                 }
+
                 if ((Find.TickManager.TicksGame % rotationRate) == 0)
                 {
                     if (this.spotLightRotationTurnRight)
@@ -205,6 +217,7 @@ namespace ToolsForHaul.Things
                 {
                     rangeRate = spotLightRangeRateInTicksIdleTargetting;
                 }
+
                 if ((Find.TickManager.TicksGame % rangeRate) == 0)
                 {
                     if (Mathf.Abs(this.spotLightRangeTarget - this.spotLightRange) < 1f)
@@ -249,6 +262,7 @@ namespace ToolsForHaul.Things
             {
                 absoluteDeltaAngle -= 180f;
             }
+
             return absoluteDeltaAngle;
         }
 
@@ -270,8 +284,10 @@ namespace ToolsForHaul.Things
                     // Return last non-blocked position.
                     return farthestPosition;
                 }
+
                 farthestPosition = point; // Store last valid point in sight.
             }
+
             if (spotlightTarget.CanBeSeenOverFast(this.Map))
             {
                 // Nothing is blocking.
@@ -294,6 +310,7 @@ namespace ToolsForHaul.Things
             this.spotLightRangeTarget = this.spotLightRange;
             this.idlePauseTicks = 1;
         }
+
         /// <summary>
         /// Switch light mode.
         /// </summary>
@@ -341,6 +358,7 @@ namespace ToolsForHaul.Things
             {
                 this.spotLightRangeBaseOffset -= 1f;
             }
+
             ResetLight();
         }
 
@@ -353,6 +371,7 @@ namespace ToolsForHaul.Things
             {
                 this.spotLightRangeBaseOffset += 1f;
             }
+
             ResetLight();
         }
     }

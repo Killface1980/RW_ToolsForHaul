@@ -6,8 +6,7 @@
     using RimWorld.Planet;
 
     using ToolsForHaul.Components;
-    using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.JobDefs;
+    using ToolsForHaul.Defs;
 
     using UnityEngine;
 
@@ -27,12 +26,13 @@
         {
             Map map = (Map)parms.target;
             IntVec3 spawnSpot;
-            if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 c) => map.reachability.CanReachColony(c), map, CellFinder.EdgeRoadChance_Neutral, out spawnSpot))
+            if (!CellFinder.TryFindRandomEdgeCellWith(c => map.reachability.CanReachColony(c), map, CellFinder.EdgeRoadChance_Neutral, out spawnSpot))
             {
                 return false;
             }
+
             Faction faction = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Spacer);
-            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDefOf.SpaceRefugee, faction, PawnGenerationContext.NonPlayer, -1, false, false, false, false, true, false, 20f, false, true, true, false, false, null, null, null, null, null, null);
+            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDefOf.SpaceRefugee, faction, PawnGenerationContext.NonPlayer, -1, false, false, false, false, true, false, 20f, false, true, true, false, false, null, null, null, null, null);
             Pawn refugee = PawnGenerator.GeneratePawn(request);
             refugee.relations.everSeenByPlayer = true;
             Faction enemyFac;
@@ -42,14 +42,13 @@
             {
                 return false;
             }
-            string text = "RefugeeChasedInitial".Translate(new object[]
-                                                               {
-                                                                   refugee.Name.ToStringFull,
-                                                                   refugee.story.Title.ToLower(),
-                                                                   enemyFac.def.pawnsPlural,
-                                                                   enemyFac.Name,
-                                                                   refugee.ageTracker.AgeBiologicalYears
-                                                               });
+
+            string text = "RefugeeChasedInitial".Translate(
+                refugee.Name.ToStringFull,
+                refugee.story.Title.ToLower(),
+                enemyFac.def.pawnsPlural,
+                enemyFac.Name,
+                refugee.ageTracker.AgeBiologicalYears);
             text = text.AdjustedFor(refugee);
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, refugee);
             DiaNode diaNode = new DiaNode(text);
@@ -57,7 +56,7 @@
             diaOption.action = delegate
                 {
                     GenSpawn.Spawn(refugee, spawnSpot, map);
-                    refugee.SetFaction(Faction.OfPlayer, null);
+                    refugee.SetFaction(Faction.OfPlayer);
                     CameraJumper.TryJump(refugee);
                     IncidentParms incidentParms = StorytellerUtility.DefaultParmsNow(Find.Storyteller.def, IncidentCategory.ThreatBig, map);
                     incidentParms.forced = true;
@@ -66,15 +65,12 @@
                     incidentParms.raidArrivalMode = PawnsArriveMode.EdgeWalkIn;
                     incidentParms.spawnCenter = spawnSpot;
                     incidentParms.points *= 1.35f;
-                    QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDefOf.RaidEnemy, null, incidentParms), Find.TickManager.TicksGame + IncidentWorker_RefugeeChased.RaidDelay.RandomInRange);
+                    QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDefOf.RaidEnemy, null, incidentParms), Find.TickManager.TicksGame + RaidDelay.RandomInRange);
                     Find.Storyteller.incidentQueue.Add(qi);
                 };
             diaOption.resolveTree = true;
             diaNode.options.Add(diaOption);
-            string text2 = "RefugeeChasedRejected".Translate(new object[]
-                                                                 {
-                                                                     refugee.NameStringShort
-                                                                 });
+            string text2 = "RefugeeChasedRejected".Translate(refugee.NameStringShort);
             DiaNode diaNode2 = new DiaNode(text2);
             DiaOption diaOption2 = new DiaOption("OK".Translate());
             diaOption2.resolveTree = true;
@@ -82,14 +78,11 @@
             DiaOption diaOption3 = new DiaOption("RefugeeChasedInitial_Reject".Translate());
             diaOption3.action = delegate
                 {
-                    Find.WorldPawns.PassToWorld(refugee, PawnDiscardDecideMode.Decide);
+                    Find.WorldPawns.PassToWorld(refugee);
                 };
             diaOption3.link = diaNode2;
             diaNode.options.Add(diaOption3);
-            string title = "RefugeeChasedTitle".Translate(new object[]
-                                                              {
-                                                                  map.info.parent.Label
-                                                              });
+            string title = "RefugeeChasedTitle".Translate(map.info.parent.Label);
 
             // Vehicle
             if ( refugee.RaceProps.ToolUser)
@@ -100,7 +93,6 @@
                 {
                     CellFinder.RandomClosewalkCellNear(refugee.Position, refugee.Map, 5);
                     Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
-
                     {
                         thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
                     }
@@ -113,12 +105,13 @@
                     refugee.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
                     int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
-                    thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1, null, null));
+                    thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
 
                     SoundInfo info = SoundInfo.InMap(thing);
                     thing.TryGetComp<CompMountable>().SustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
                 }
             }
+
             Find.WindowStack.Add(new Dialog_NodeTree(diaNode, true, true, title));
             return true;
         }

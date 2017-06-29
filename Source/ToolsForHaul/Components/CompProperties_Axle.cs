@@ -5,7 +5,7 @@
 //   Defines the CompProperties_Axle type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace ToolsForHaul.Components.Vehicle
+namespace ToolsForHaul.Components
 {
     using System.Collections.Generic;
 

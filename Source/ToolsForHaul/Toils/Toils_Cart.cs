@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using RimWorld;
-using ToolsForHaul.Components;
-using ToolsForHaul.JobDefs;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.Toils
+﻿namespace ToolsForHaul.Toils
 {
-    using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+
+    using RimWorld;
+
+    using ToolsForHaul.Components;
+    using ToolsForHaul.Defs;
     using ToolsForHaul.Utilities;
+    using ToolsForHaul.Vehicles;
+
+    using Verse;
+    using Verse.AI;
 
     public static class Toils_Cart
     {
@@ -93,7 +94,7 @@ namespace ToolsForHaul.Toils
                     // Find Valid Storage
                     foreach (IntVec3 cell in GenRadial.RadialCellsAround(vehicleCart.Position, NearbyCell, false))
                     {
-                        if (cell.IsValidStorageFor(actor.Map,vehicleCart )
+                        if (cell.IsValidStorageFor(actor.Map, vehicleCart )
                             && actor.CanReserveAndReach(cell, PathEndMode.ClosestTouch, actor.NormalMaxDanger()))
                         {
                             storeCell = cell;
@@ -203,7 +204,7 @@ namespace ToolsForHaul.Toils
                     }
 
                     // Find Valid Storage
-                    if (!ToolsForHaulUtility.FindParkingSpace(actor, actor.Position, out storeCell))
+                    if (!TFH_Utility.FindParkingSpace(actor, actor.Position, out storeCell))
                     {
                         Log.Error(actor.LabelCap + " Report: No parking space for cart.");
                         toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);

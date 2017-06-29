@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using RimWorld;
-using ToolsForHaul.Components;
-using ToolsForHaul.JobDefs;
-using Verse;
-using Verse.AI;
-
-namespace ToolsForHaul.JobDrivers
+﻿namespace ToolsForHaul.JobDrivers
 {
-    using ToolsForHaul.Components.Vehicle;
-    using ToolsForHaul.Components.Vehicles;
+    using System.Collections.Generic;
+
+    using RimWorld;
+
+    using ToolsForHaul.Components;
+    using ToolsForHaul.Defs;
+    using ToolsForHaul.Vehicles;
+
+    using Verse;
+    using Verse.AI;
 
     public class JobDriver_MakeMount : JobDriver
     {
@@ -68,7 +69,7 @@ namespace ToolsForHaul.JobDrivers
                             Thing haulThing = curJob.GetTarget(MountableInd).Thing;
 
                             IntVec3 destLoc = actor.jobs.curJob.GetTarget(TargetIndex.B).Cell;
-                            if (!destLoc.IsValidStorageFor(actor.Map,haulThing)) return true;
+                            if (!destLoc.IsValidStorageFor(actor.Map, haulThing)) return true;
                         }
 
                         return false;
