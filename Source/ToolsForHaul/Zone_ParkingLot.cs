@@ -18,6 +18,7 @@ namespace ToolsForHaul
         public Zone_ParkingLot(ZoneManager zoneManager) : base("ParkingLotZone".Translate(), zoneManager)
         {
         }
+
         public override bool IsMultiselectable
         {
             get
@@ -29,7 +30,7 @@ namespace ToolsForHaul
         {
             get
             {
-                return ZoneColorUtility.NextGrowingZoneColor();
+                return Static.ParkingLotColour;  // ZoneColorUtility.NextGrowingZoneColor();
             }
         }
     }

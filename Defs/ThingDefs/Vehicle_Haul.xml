@@ -94,9 +94,11 @@
     <repairEffect>ConstructWood</repairEffect>
     <description>A cart is an old-fashioned wooden vehicle that is used for transporting goods or people.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+   <!--
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
+    -->
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <graphicData>
       <texPath>Things/Vehicles/VehicleCart/Cart</texPath>
@@ -183,9 +185,11 @@
     <hasInteractionCell>True</hasInteractionCell>
     <description>A truck is what you drive when you're done taking shit off of other people.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
+    <!--
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
+    -->
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <graphicData>
       <texPath>Things/Vehicles/VehicleTruck/Truck</texPath>
@@ -349,9 +353,11 @@
     <description>An ATV is what you drive when you want a concussion.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
+    <!--
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
+    -->
     <size>(1,1)</size>
     <inspectorTabs>
       <li>ToolsForHaul.ITabs.Itab_Pawn_Vehicle_Storage</li>
@@ -428,9 +434,11 @@
     <description>Keep out of reach of lightsabers.</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
     <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
+    <!--
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
+    -->
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>30</VehicleSpeed>
@@ -535,11 +543,7 @@
     <repairEffect>Repair</repairEffect>
     <description>For those who have some disability to walk</description>
     <thingClass>ToolsForHaul.Vehicle_Cart</thingClass>
-    <isBodyPartOrImplant>true</isBodyPartOrImplant>
     <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
-    <thingCategories>
-      <li>Vehicles</li>
-    </thingCategories>
     <graphicData>
       <texPath>Things/Vehicles/VehicleSmackWay/SmackWay</texPath>
       <graphicClass>Graphic_Multi</graphicClass>

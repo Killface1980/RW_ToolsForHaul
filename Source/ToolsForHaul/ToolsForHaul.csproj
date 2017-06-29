@@ -58,9 +58,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Static.cs" />
     <Compile Include="Zone_ParkingLot.cs" />
     <None Include="SpotlightTurret.cs" />
-    <Compile Include="Components\Strings.cs" />
     <Compile Include="Designators\Designator_ZoneAddParkingLot.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_Raid_TFH.cs" />
@@ -70,7 +70,7 @@
     <Compile Include="MoteMakerTFH.cs" />
     <Compile Include="MoteCounterTFH.cs" />
     <Compile Include="Defs\HaulStatDefOf.cs" />
-    <Compile Include="Components\Vehicle\CompDriver.cs" />
+    <Compile Include="Components\CompDriver.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
@@ -99,10 +99,10 @@
     <Compile Include="Alerts\Alert_TankIsLeaking.cs" />
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
     <None Include="_inactive\Class1.cs" />
-    <Compile Include="Components\Vehicle\CompAxles.cs" />
-    <Compile Include="Components\Vehicle\CompProperties_Axle.cs" />
-    <Compile Include="Components\Vehicle\CompProperties_Vehicle.cs" />
-    <Compile Include="Components\Vehicle\CompVehicle.cs" />
+    <Compile Include="Components\CompAxles.cs" />
+    <Compile Include="Components\CompProperties_Axle.cs" />
+    <Compile Include="Components\CompProperties_Vehicle.cs" />
+    <Compile Include="Components\CompVehicle.cs" />
     <None Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
     <Compile Include="Things\IncendiaryFuel.cs" />
@@ -119,7 +119,7 @@
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="Toils\Toils_Cart.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithCart.cs" />
-    <Compile Include="Components\Vehicle\CompMountable.cs" />
+    <Compile Include="Components\CompMountable.cs" />
     <Compile Include="Designators\Designator_Mount.cs" />
     <Compile Include="ITabs\ITab_Pawn_VehicleGear.cs">
       <SubType>Code</SubType>

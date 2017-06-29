@@ -146,8 +146,8 @@ namespace ToolsForHaul
                             vehicle = this,
                             defaultLabel = "CommandRideLabel".Translate(),
                             defaultDesc = "CommandRideDesc".Translate(),
-                            icon = ContentFinder<Texture2D>.Get("UI/Commands/IconBoard"),
-                            activateSound = SoundDef.Named("Click")
+                            icon = Static.IconBoard,
+                            activateSound = Static.ClickSound
                         };
 
 
@@ -160,7 +160,7 @@ namespace ToolsForHaul
                 commandUnboardAll.defaultLabel = "CommandGetOffLabel".Translate();
                 commandUnboardAll.defaultDesc = "CommandGetOffDesc".Translate();
                 commandUnboardAll.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnboardAll");
-                commandUnboardAll.activateSound = SoundDef.Named("Click");
+                commandUnboardAll.activateSound = Static.ClickSound;
                 commandUnboardAll.action = () => { this.UnboardAll(); };
 
                 yield return commandUnboardAll;
@@ -171,7 +171,7 @@ namespace ToolsForHaul
                 // designator.defaultLabel = "CommandMoveLabel".Translate();
                 // designator.defaultDesc = "CommandMoveDesc".Translate();
                 // designator.icon = ContentFinder<Texture2D>.Get("UI/Commands/ReleaseAnimals");
-                // designator.activateSound = SoundDef.Named("Click");
+                // designator.activateSound = Static.ClickSound;
                 // designator.hotKey = KeyBindingDefOf.Misc1;
                 //
                 // yield return designator;

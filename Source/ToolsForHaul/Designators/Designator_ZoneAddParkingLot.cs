@@ -19,12 +19,11 @@ namespace ToolsForHaul
         public Designator_ZoneAddParkingLot()
         {
             this.zoneTypeToPlace = typeof(Zone_ParkingLot);
-
             this.defaultLabel = "ParkingLot".Translate();
-            this.defaultDesc = "DesignatorParkingLotDesc".Translate();
-            this.icon = ContentFinder<Texture2D>.Get("UI/Designators/ZoneCreate_Stockpile", true);
-       //     this.hotKey = KeyBindingDefOf.Misc1;
+            defaultDesc = Static.ParkingLotDesc;
+            icon = Static.TexParkingLot;
             this.tutorTag = "ZoneAdd_ParkingLot";
+            //     this.hotKey = KeyBindingDefOf.Misc1;
         }
 
         public override AcceptanceReport CanDesignateCell(IntVec3 c)

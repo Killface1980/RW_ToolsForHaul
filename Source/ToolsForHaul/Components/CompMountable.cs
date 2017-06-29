@@ -159,10 +159,10 @@ namespace ToolsForHaul.Components.Vehicle
                 new Designator_Mount
                 {
                     vehicle = this.parent,
-                    defaultLabel = Strings.TxtCommandMountLabel.Translate(),
-                    defaultDesc = Strings.TxtCommandMountDesc.Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/Commands/IconMount"),
-                    activateSound = SoundDef.Named("Click")
+                    defaultLabel = Static.TxtCommandMountLabel.Translate(),
+                    defaultDesc = Static.TxtCommandMountDesc.Translate(),
+                    icon = Static.IconMount,
+                    activateSound = Static.ClickSound
                 };
 
             yield return designator;
@@ -171,7 +171,10 @@ namespace ToolsForHaul.Components.Vehicle
         public override void CompTick()
         {
             base.CompTick();
-            if (this.IsMounted)
+            if (!this.IsMounted)
+            {
+                return;
+            }
             {
                 if (!this.Driver.Spawned)
                 {
@@ -321,13 +324,6 @@ namespace ToolsForHaul.Components.Vehicle
 
         public void Dismount()
         {
-#if CR
-            Building_Reloadable turret = (parent as Building_Reloadable);
-            if (turret != null)
-            {
-                turret.dontReload = false;
-            }
-#endif
             //    if (this.Driver.RaceProps.Humanlike)
             {
                 this.Driver.AllComps?.Remove(this.DriverComp);

@@ -100,10 +100,10 @@ namespace ToolsForHaul.Components.Vehicles
             }
             yield return new Command_Action
             {
-                defaultLabel = Strings.TxtCommandDismountLabel.Translate(),
-                defaultDesc = Strings.TxtCommandDismountDesc.Translate(),
-                icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnmount"),
-                activateSound = SoundDef.Named("Click"),
+                defaultLabel = Static.TxtCommandDismountLabel.Translate(),
+                defaultDesc = Static.TxtCommandDismountDesc.Translate(),
+                icon = Static.IconUnmount,
+                activateSound = Static.ClickSound,
                 action = ToolsForHaulUtility.GetCartByDriver(this.parent as Pawn).MountableComp.Dismount
             };
 
@@ -119,8 +119,8 @@ namespace ToolsForHaul.Components.Vehicles
                             vehicle = this.parent,
                             defaultLabel = "CommandRideLabel".Translate(),
                             defaultDesc = "CommandRideDesc".Translate(),
-                            icon = ContentFinder<Texture2D>.Get("UI/Commands/IconBoard"),
-                            activateSound = SoundDef.Named("Click")
+                            icon = Static.IconBoard,
+                            activateSound = Static.ClickSound
                         };
 
 
@@ -132,7 +132,7 @@ namespace ToolsForHaul.Components.Vehicles
                     // commandUnboardAll.defaultLabel = "CommandGetOffLabel".Translate();
                     // commandUnboardAll.defaultDesc = "CommandGetOffDesc".Translate();
                     // commandUnboardAll.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnboardAll");
-                    // commandUnboardAll.activateSound = SoundDef.Named("Click");
+                    // commandUnboardAll.activateSound = Static.ClickSound;
                     // commandUnboardAll.action = () => { this.UnboardAll(); };
                     //
                     // yield return commandUnboardAll;

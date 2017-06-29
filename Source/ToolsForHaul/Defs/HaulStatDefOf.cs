@@ -8,6 +8,5 @@ namespace ToolsForHaul.StatDefs
     {
         public static readonly StatDef VehicleSpeed = DefDatabase<StatDef>.GetNamed("VehicleSpeed");
         public static readonly StatDef VehicleMaxItem = DefDatabase<StatDef>.GetNamed("VehicleMaxItem");
-        public static readonly StatDef InventoryMaxItem = DefDatabase<StatDef>.GetNamed("InventoryMaxItem");        
     }
 }

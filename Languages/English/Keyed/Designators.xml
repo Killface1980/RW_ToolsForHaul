@@ -1,23 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  
+
   <!-- Backpack -->
   <DesignatorPutInDefaultLabel>Put in</DesignatorPutInDefaultLabel>
   <DesignatorPutInDefaultDesc>Put in inventory. Capacity: </DesignatorPutInDefaultDesc>
-  
+
   <!-- Failure messages -->
   <CannotMount>Must designate colonist that can be mounted.</CannotMount>
-    <NotPawn>Is not a pawn.</NotPawn>
-    <NotColonyFaction>Is not in your faction.</NotColonyFaction>
-    <NotHumanlikeOrMechanoid>Is not for humanlike or mechanoid.</NotHumanlikeOrMechanoid>
-    <NotTrainedAnimal>The animal is not trained for 'Obedience'.</NotTrainedAnimal>
-    <TooSmallAnimal>The animal is too small to be mounted.</TooSmallAnimal>
-    <NoWorkForMakeMount>No worker to mount animal.</NoWorkForMakeMount>
+  <NotPawn>Is not a pawn.</NotPawn>
+  <NotColonyFaction>Is not in your faction.</NotColonyFaction>
+  <NotHumanlikeOrMechanoid>Is not for humanlike or mechanoid.</NotHumanlikeOrMechanoid>
+  <NotTrainedAnimal>The animal is not trained for 'Obedience'.</NotTrainedAnimal>
+  <TooSmallAnimal>The animal is too small to be mounted.</TooSmallAnimal>
+  <NoWorkForMakeMount>No worker to mount animal.</NoWorkForMakeMount>
   <CannotBoard>Must designate humanlike or colony mechanoid.</CannotBoard>
   <NoNeedTreatment>Must designate a pawn who needs treatment.</NoNeedTreatment>
   <BackpackIsFull>BackPack is Full.</BackpackIsFull>
   <InvalidPutInTarget>Must designate an item can be hauled</InvalidPutInTarget>
   <NoDoctor>Colonist is not a doctor</NoDoctor>
   <CannotEatAnymore>Colonist is not hungry</CannotEatAnymore>
+
+  <ParkingLot>Parking lot</ParkingLot>
+  <TFH_DescriptionParkingLot>A place for pawns to store vehicles. Pre-requisite for hauling with vehicles.</TFH_DescriptionParkingLot>
 
 </LanguageData>

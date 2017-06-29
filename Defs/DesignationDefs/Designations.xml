@@ -3,7 +3,7 @@
 
 	<DesignationDef>
 		<defName>TFH_Designator_ParkingLotAdd</defName>
-		<texturePath>Cupro/UI/ZoneCreate_StockpileMeal</texturePath>
+		<texturePath>UI/Designations/ZoneCreate_ParkingLot</texturePath>
 		<targetType>Cell</targetType>
 	</DesignationDef>
 

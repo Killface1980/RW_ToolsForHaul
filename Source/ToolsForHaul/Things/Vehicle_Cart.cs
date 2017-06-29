@@ -301,7 +301,7 @@ namespace ToolsForHaul
             //          break;
             //  }
             //  lightModeButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_SwitchMode");
-            //  lightModeButton.activateSound = SoundDef.Named("Click");
+            //  lightModeButton.activateSound = Static.ClickSound;
             //  lightModeButton.action = new Action(SwitchLigthMode);
             //  lightModeButton.groupKey = groupKeyBase + 1;
             //  yield return lightModeButton;
@@ -313,7 +313,7 @@ namespace ToolsForHaul
             //      decreaseRangeButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_DecreaseRange");
             //      decreaseRangeButton.defaultLabel = "Range: " + this.spotLightRangeBaseOffset;
             //      decreaseRangeButton.defaultDesc = "Decrease range.";
-            //      decreaseRangeButton.activateSound = SoundDef.Named("Click");
+            //      decreaseRangeButton.activateSound = Static.ClickSound;
             //      decreaseRangeButton.action = new Action(DecreaseSpotlightRange);
             //      decreaseRangeButton.groupKey = groupKeyBase + 2;
             //      yield return decreaseRangeButton;
@@ -322,7 +322,7 @@ namespace ToolsForHaul
             //      increaseRangeButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_IncreaseRange");
             //      increaseRangeButton.defaultLabel = "";
             //      increaseRangeButton.defaultDesc = "Increase range.";
-            //      increaseRangeButton.activateSound = SoundDef.Named("Click");
+            //      increaseRangeButton.activateSound = Static.ClickSound;
             //      increaseRangeButton.action = new Action(IncreaseSpotlightRange);
             //      increaseRangeButton.groupKey = groupKeyBase + 3;
             //      yield return increaseRangeButton;
@@ -332,7 +332,7 @@ namespace ToolsForHaul
             //      turnLeftButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_TurnLeft");
             //      turnLeftButton.defaultLabel = "Rotation: " + rotation + "°";
             //      turnLeftButton.defaultDesc = "Turn left.";
-            //      turnLeftButton.activateSound = SoundDef.Named("Click");
+            //      turnLeftButton.activateSound = Static.ClickSound;
             //      turnLeftButton.action = new Action(AddSpotlightBaseRotationLeftOffset);
             //      turnLeftButton.groupKey = groupKeyBase + 4;
             //      yield return turnLeftButton;
@@ -341,7 +341,7 @@ namespace ToolsForHaul
             //      turnRightButton.icon = ContentFinder<Texture2D>.Get("UI/Commands/CommandButton_TurnRight");
             //      turnRightButton.defaultLabel = "";
             //      turnRightButton.defaultDesc = "Turn right.";
-            //      turnRightButton.activateSound = SoundDef.Named("Click");
+            //      turnRightButton.activateSound = Static.ClickSound;
             //      turnRightButton.action = new Action(AddSpotlightBaseRotationRightOffset);
             //      turnRightButton.groupKey = groupKeyBase + 5;
             //      yield return turnRightButton;
