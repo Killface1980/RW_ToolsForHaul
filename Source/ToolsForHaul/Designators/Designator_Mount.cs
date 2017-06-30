@@ -54,7 +54,7 @@
 
                 }
 
-                if (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !TFH_Utility.IsDriver(pawn))
+                if (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !pawn.IsDriver())
                 {
                     Job jobNew = new Job(HaulJobDefOf.Mount);
                     Map.reservationManager.ReleaseAllForTarget(this.vehicle);
@@ -63,7 +63,7 @@
                     break;
                 }
 
-                if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !TFH_Utility.IsDriver(pawn))
+                if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !pawn.IsDriver())
                 {
                     Pawn worker = null;
                     Job jobNew = new Job(HaulJobDefOf.MakeMount);

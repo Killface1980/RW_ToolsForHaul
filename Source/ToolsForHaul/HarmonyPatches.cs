@@ -6,6 +6,7 @@
 
     using RimWorld;
 
+    using ToolsForHaul.Components;
     using ToolsForHaul.Vehicles;
 
     using Verse;
@@ -30,13 +31,15 @@
         public static void Notify_VehicleRepaired(Building b)
         {
             var cart = b as Vehicle_Cart;
-            if (cart== null)
+            if (cart == null)
                 return;
 
-            if (cart.VehicleComp.tankLeaking)
+            if (cart.TryGetComp<CompGasTank>() == null)
+                return;
+            if (cart.TryGetComp<CompGasTank>().tankLeaking)
             {
-                cart.VehicleComp.tankLeaking = false;
-                cart.VehicleComp._tankHitPos = 1f;
+                cart.TryGetComp<CompGasTank>().tankLeaking = false;
+                cart.TryGetComp<CompGasTank>()._tankHitPos = 1f;
             }
         }
     }

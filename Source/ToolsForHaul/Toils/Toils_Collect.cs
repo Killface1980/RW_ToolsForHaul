@@ -174,10 +174,10 @@
                     // apparel.holdingContainer = carrier.GetContainer();
                     // apparel.holdingContainer.owner = carrier;
                     // }
-                    // }
-                    // }
-                    // Collecting TargetIndex ind
                     {
+                        // }
+                        // }
+                        // Collecting TargetIndex ind
                         // if
                         // haulThing.DeSpawn();
                         haulThing.holdingOwner.TryTransferToContainer(haulThing, carrier.innerContainer, haulThing.stackCount);// carrier.innerContainer.TryAdd(haulThing);
@@ -337,7 +337,6 @@
                     return toil;
                 }
         */
-
         public static Toil DropTheCarriedInCell(
             TargetIndex StoreCellInd,
             ThingPlaceMode placeMode,
@@ -414,8 +413,6 @@
             return toil;
         }
         */
-
-
         #endregion
     }
 }

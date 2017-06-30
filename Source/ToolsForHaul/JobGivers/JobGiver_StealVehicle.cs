@@ -26,12 +26,12 @@
                 return null;
             }
 
-            List<Thing> steelVehicle = TFH_Utility.AvailableVehiclesForSteeling(pawn);
+            List<Thing> steelVehicle = pawn.AvailableVehiclesForSteeling();
             foreach (var thing in steelVehicle)
             {
                 var cart = (Vehicle_Cart)thing;
 
-                if (TFH_Utility.IsDriver(pawn))
+                if (pawn.IsDriver())
                     break;
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;

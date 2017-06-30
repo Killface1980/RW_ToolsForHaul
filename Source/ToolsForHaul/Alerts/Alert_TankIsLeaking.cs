@@ -11,6 +11,7 @@ namespace ToolsForHaul.Alerts
 
     using RimWorld;
 
+    using ToolsForHaul.Components;
     using ToolsForHaul.Vehicles;
 
     using Verse;
@@ -34,9 +35,9 @@ namespace ToolsForHaul.Alerts
                 foreach (Thing thing in list)
                 {
                     Vehicle_Cart cart = thing as Vehicle_Cart;
-                    if (cart?.VehicleComp != null)
+                    if (cart.TryGetComp<CompGasTank>() != null)
                     {
-                        if (cart.VehicleComp.tankLeaking)
+                        if (cart.TryGetComp<CompGasTank>().tankLeaking)
                         {
                             return cart;
                         }

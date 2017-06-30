@@ -44,23 +44,23 @@
                     result = ThinkResult.NoJob;
 
                     // Modded
-                    if (pawn.mindState.IsIdle)
-                    {
-                        if (TFH_Utility.IsDriver(pawn))
-                        {
-                            try
-                            {
-                                job = TFH_Utility.DismountAtParkingLot(pawn, GameComponentToolsForHaul.CurrentDrivers[pawn]);
-                            }
-                            catch (ArgumentNullException argumentNullException)
-                            {
-                                Debug.Log(argumentNullException);
-                            }
-
-                            result = new ThinkResult(job, this, null);
-
-                        }
-                    }
+                    //      if (pawn.mindState.IsIdle)
+                    //      {
+                    //          if (pawn.IsDriver())
+                    //          {
+                    //              try
+                    //              {
+                    //                  job = pawn.DismountAtParkingLot(pawn.MountedVehicle());
+                    //              }
+                    //              catch (ArgumentNullException argumentNullException)
+                    //              {
+                    //                  Debug.Log(argumentNullException);
+                    //              }
+                    //
+                    //              result = new ThinkResult(job, this, null);
+                    //
+                    //          }
+                    //      }
                 }
                 else
                 {
@@ -70,17 +70,18 @@
                         if (job.def == JobDefOf.LayDown || job.def == JobDefOf.Arrest || job.def == JobDefOf.DeliverFood
                             || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.EnterTransporter
                             || job.def == JobDefOf.Ingest || job.def == JobDefOf.ManTurret
-                            || job.def == JobDefOf.Slaughter || job.def == JobDefOf.VisitSickPawn || job.def == JobDefOf.WaitWander || job.def == JobDefOf.DoBill)
+                            || job.def == JobDefOf.Slaughter || job.def == JobDefOf.VisitSickPawn
+                            || job.def == JobDefOf.WaitWander || job.def == JobDefOf.DoBill)
                         {
-                            if (TFH_Utility.IsDriver(pawn))
+                            if (pawn.IsDriver())
                             {
-                                job = TFH_Utility.DismountAtParkingLot(pawn, GameComponentToolsForHaul.CurrentDrivers[pawn]);
+                                job = pawn.DismountAtParkingLot(pawn.MountedVehicle());
                             }
                         }
 
                         if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
                         {
-                            List<Thing> availableVehicles = TFH_Utility.AvailableVehicles(pawn);
+                            List<Thing> availableVehicles = pawn.AvailableVehicles();
                             if (availableVehicles.Count > 0 || availableVehicles.Count > 0)
                             {
                                 Thing vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Construction);
@@ -103,8 +104,8 @@
 
         private static Job GetVehicle(Pawn pawn, Job job, WorkTypeDef workType)
         {
-            List<Thing> availableVehicles = TFH_Utility.AvailableVehicles(pawn);
-            if (!TFH_Utility.IsDriver(pawn))
+            List<Thing> availableVehicles = pawn.AvailableVehicles();
+            if (!pawn.IsDriver())
             {
                 if (availableVehicles.Count > 0)
                 {
@@ -122,7 +123,7 @@
             {
                 if (!TFH_Utility.IsDriverOfThisVehicle(pawn, TFH_Utility.GetRightVehicle(pawn, availableVehicles, workType)))
                 {
-                    job = TFH_Utility.DismountAtParkingLot(pawn, GameComponentToolsForHaul.CurrentDrivers[pawn]);
+                    job = pawn.DismountAtParkingLot(pawn.MountedVehicle());
                 }
             }
 

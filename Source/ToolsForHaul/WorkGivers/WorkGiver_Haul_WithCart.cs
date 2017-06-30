@@ -11,6 +11,7 @@
     using Verse;
     using Verse.AI;
 
+
     public class WorkGiver_Haul_WithCart : WorkGiver_Scanner
     {
 
@@ -24,7 +25,7 @@
 
         public override bool ShouldSkip(Pawn pawn)
         {
-            List<Thing> availabeVehicles = TFH_Utility.AvailableVehicles(pawn);
+            List<Thing> availabeVehicles = pawn.AvailableVehicles();
 
             Trace.DebugWriteHaulingPawn(pawn);
             if (TFH_Utility.GetRightVehicle(pawn, availabeVehicles, WorkTypeDefOf.Hauling) == null)
@@ -46,20 +47,14 @@
             }
 
             // Vehicle selection
-            if (TFH_Utility.IsDriver(pawn))
+            if (pawn.IsDriver())
             {
-                cart = TFH_Utility.GetCartByDriver(pawn);
-
-                if (cart == null)
-                {
-                    // JobFailReason.Is("Can't haul with military vehicle");
-                    return TFH_Utility.DismountAtParkingLot(pawn, GameComponentToolsForHaul.CurrentDrivers[pawn]);
-                }
+                cart = pawn.MountedVehicle();
             }
 
             if (cart == null)
             {
-                List<Thing> availableVehicles = TFH_Utility.AvailableVehicles(pawn);
+                List<Thing> availableVehicles = pawn.AvailableVehicles();
                 if (availableVehicles.Count == 0) return null;
 
                 cart = TFH_Utility.GetRightVehicle(pawn, availableVehicles, DefDatabase<WorkTypeDef>.GetNamed("Hauling"), t) as Vehicle_Cart;
@@ -70,7 +65,7 @@
 
             if (cart.IsBurning())
             {
-                JobFailReason.Is(TFH_Utility.BurningLowerTrans);
+                JobFailReason.Is(Static.BurningLowerTrans);
                 return null;
             }
 
@@ -90,8 +85,8 @@
             IntVec3 storeCell;
             if (!StoreUtility.TryFindBestBetterStoreCellFor(t, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell))
             {
-                Log.Message("WorkGiver_Haul_WithCart " + TFH_Utility.NoEmptyPlaceLowerTrans);
-                JobFailReason.Is(TFH_Utility.NoEmptyPlaceLowerTrans);
+                Log.Message("WorkGiver_Haul_WithCart " + Static.NoEmptyPlaceLowerTrans);
+                JobFailReason.Is(Static.NoEmptyPlaceLowerTrans);
                 return null;
             }
 
@@ -100,12 +95,12 @@
             // JobFailReason.Is(TFH_Utility.NoEmptyPlaceLowerTrans);
             // return null;
             // }
-            if (TFH_Utility.AvailableAnimalCart(cart) || TFH_Utility.IsVehicleAvailable(pawn, cart))
+            if (cart.IsMountedOnAnimalAndAvailable() || pawn.IsAllowedToRide(cart))
             {
                 return TFH_Utility.HaulWithTools(pawn, cart, t);
             }
 
-            JobFailReason.Is(TFH_Utility.NoAvailableCart);
+            JobFailReason.Is(Static.NoAvailableCart);
             return null;
         }
 

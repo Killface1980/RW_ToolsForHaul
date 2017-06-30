@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\CompGasTank.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithAnimalCart.cs" />
@@ -177,6 +178,9 @@
     <Content Include="..\..\Defs\ThingCategoryDefs\ThingCategories.xml">
       <Link>Defs\ThingCategories.xml</Link>
     </Content>
+    <Content Include="..\..\Defs\ThingDefs\Filth_Various.xml">
+      <Link>Defs\ThingDefs\Filth_Various.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
       <Link>Defs\ThingDefs\Items_IRResources.xml</Link>
       <SubType>Designer</SubType>
@@ -187,9 +191,6 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Mote_Special.xml">
       <Link>Defs\ThingDefs\Mote_Special.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\ThingDefs\Things_Special.xml">
-      <Link>Defs\ThingDefs\Things_Special.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Haul.xml">
       <Link>Defs\ThingDefs\Vehicle_Haul.xml</Link>

@@ -63,13 +63,13 @@ namespace ToolsForHaul.Components
                 yield break;
             }
 
-            Vehicle_Cart cart = TFH_Utility.GetCartByDriver(selPawn);
+            Vehicle_Cart cart = selPawn.MountedVehicle();
             if (cart == null)
                 yield break;
 
             Action action_DismountInBase = () =>
                 {
-                    Job jobNew = TFH_Utility.DismountAtParkingLot(selPawn, cart);
+                    Job jobNew = selPawn.DismountAtParkingLot(cart);
 
                     selPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
@@ -108,7 +108,7 @@ namespace ToolsForHaul.Components
                 yield break;
             }
 
-            Vehicle_Cart cart = TFH_Utility.GetCartByDriver(this.Pawn);
+            Vehicle_Cart cart =Pawn.MountedVehicle();
 
             yield return new Command_Action
             {

@@ -36,6 +36,16 @@ namespace ToolsForHaul
 
         #region Strings
 
+        public static readonly string BurningLowerTrans = "BurningLower".Translate();
+
+        public static readonly string NoAvailableCart = "NoAvailableCart".Translate();
+
+        public static readonly string NoEmptyPlaceForCart = "NoEmptyPlaceForCart".Translate();
+
+        public static readonly string NoEmptyPlaceLowerTrans = "NoEmptyPlaceLower".Translate();
+
+        public static readonly string TooLittleHaulable = "TooLittleHaulable".Translate();
+
         public const string TxtCommandDismountDesc = "CommandDismountDesc";
 
         public const string TxtCommandDismountLabel = "CommandDismountLabel";
@@ -55,7 +65,6 @@ namespace ToolsForHaul
         public static Color ParkingLotColour = new Color32(23, 44, 150, 100);
         
         #endregion
-
     }
     
 }

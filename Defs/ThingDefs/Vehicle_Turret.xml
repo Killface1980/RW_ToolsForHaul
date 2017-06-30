@@ -85,6 +85,9 @@
       <VehicleSpeed>12</VehicleSpeed>
     </statBases>
     <comps>
+      <li>
+        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+      </li>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>2.4</explosiveRadius>
         <explosiveDamageType>Flame</explosiveDamageType>

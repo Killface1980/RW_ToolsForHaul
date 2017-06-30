@@ -10,6 +10,7 @@
     using Verse;
     using Verse.AI;
 
+
     public class WorkGiver_HaulCorpses_WithVehicle : WorkGiver_Haul
     {
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
@@ -26,7 +27,7 @@
                 return true;
             }
 
-            List<Thing> availableVehicles = TFH_Utility.AvailableVehicles(pawn);
+            List<Thing> availableVehicles = pawn.AvailableVehicles();
 
             if (availableVehicles.Count < 1)
             {
@@ -67,14 +68,14 @@
             }
 
             // Vehicle selection
-            if (TFH_Utility.IsDriver(pawn))
+            if (pawn.IsDriver())
             {
-                cart = TFH_Utility.GetCartByDriver(pawn);
+                cart = pawn.MountedVehicle();
             }
 
             if (cart == null)
             {
-                List<Thing> availableVehicles = TFH_Utility.AvailableVehicles(pawn);
+                List<Thing> availableVehicles = pawn.AvailableVehicles();
 
                 cart = TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling, t) as Vehicle_Cart;
 
@@ -84,7 +85,7 @@
 
             if (cart.IsBurning())
             {
-                JobFailReason.Is(TFH_Utility.BurningLowerTrans);
+                JobFailReason.Is(Static.BurningLowerTrans);
                 return null;
             }
 
@@ -105,16 +106,16 @@
             if (!StoreUtility.TryFindBestBetterStoreCellFor(t, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell))
             {
                 Log.Message("WorkGiver_HaulCorpses NoEmptyPlaceLowerTrans");
-                JobFailReason.Is(TFH_Utility.NoEmptyPlaceLowerTrans);
+                JobFailReason.Is(Static.NoEmptyPlaceLowerTrans);
                 return null;
             }
 
-            if (TFH_Utility.AvailableAnimalCart(cart) || TFH_Utility.IsVehicleAvailable(pawn, cart))
+            if (cart.IsMountedOnAnimalAndAvailable() || pawn.IsAllowedToRide(cart))
             {
                 return TFH_Utility.HaulWithTools(pawn, cart, t);
             }
 
-            JobFailReason.Is(TFH_Utility.NoAvailableCart);
+            JobFailReason.Is(Static.NoAvailableCart);
 
             return null;
         }

@@ -16,6 +16,7 @@
 
     using Verse;
     using Verse.AI;
+    using Verse.Sound;
 
     [StaticConstructorOnStartup]
     public class Vehicle_Cart : Building_Turret, IThingHolder, IAttackTargetSearcher, IAttackTarget
@@ -123,20 +124,7 @@
 
         public CompVehicle VehicleComp => this.GetComp<CompVehicle>();
 
-        public CompDriver DriverComp
-        {
-            get
-            {
-                return this.driverComp;
-            }
-
-            set
-            {
-                this.driverComp = value;
-            }
-        }
-        private CompDriver driverComp;
-
+        public CompDriver DriverComp { get; set; }
 
         public int MaxItem => this.MountableComp.IsMounted && this.MountableComp.Driver.RaceProps.Animal
                                   ? Mathf.CeilToInt(this.MountableComp.Driver.BodySize * this.DefaultMaxItem)
@@ -174,6 +162,15 @@
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
+            if (this.MountableComp.IsMounted && this.IsCurrentlyMotorized())
+            {
+                this.VehicleComp.StartSustainerVehicleIfInactive();
+
+                this.DriverComp = new CompDriver { Vehicle = this };
+                this.MountableComp.Driver?.AllComps?.Add(this.DriverComp);
+                this.DriverComp.parent = this.MountableComp.Driver;
+            }
+
             this.innerContainer = new ThingOwner<Thing>(this, false);
 
             if (this.allowances == null)
@@ -188,60 +185,11 @@
             // spotlightMatrix.SetTRS(base.DrawPos + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightScale);
         }
 
-        public override void DeSpawn()
-        {
-            // bool hasChair = false;
-            // foreach (Pawn pawn in Find.MapPawns.AllPawnsSpawned)
-            // {
-            // if (pawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")) &&
-            // !TFH_Utility.IsDriver(pawn) && base.Position.AdjacentTo8WayOrInside(pawn.Position))
-            // {
-            // mountableComp.MountOn(pawn);
-            // hasChair = true;
-            // break;
-            // }
-            // }
-            // if (!hasChair)
-            // {
-            if (this.MountableComp.IsMounted)
-                if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(this.MountableComp.Driver))
-                    GameComponentToolsForHaul.CurrentDrivers.Remove(this.MountableComp.Driver);
-
-            if (this.MountableComp.SustainerAmbient != null) this.MountableComp.SustainerAmbient.End();
-            base.DeSpawn();
-
-            // not working
-            // if (explosiveComp != null && explosiveComp.wickStarted)
-            // if (tankLeaking)
-            // {
-            // FireUtility.TryStartFireIn(Position, 0.3f);
-            // if (Rand.Value > 0.8f)
-            // {
-            // FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
-            // }
-            // if (Rand.Value > 0.7f)
-            // {
-            // FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
-            // }
-            // if (Rand.Value > 0.6f)
-            // {
-            // FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
-            // }
-            // if (Rand.Value > 0.5f)
-            // {
-            // FireUtility.TryStartFireIn(Position.RandomAdjacentCell8Way(), 0.1f);
-            // }
-            // }
-            // }
-        }
-
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Deep.Look(ref this.innerContainer, "innerContainer", this);
             Scribe_Deep.Look(ref this.allowances, "allowances");
-            Scribe_Values.Look(ref this.VehicleComp.tankLeaking, "tankLeaking");
-            Scribe_Values.Look(ref this._tankHitPos, "tankHitPos");
 
             Scribe_Deep.Look(ref this.stunner, "stunner", this);
 
@@ -450,7 +398,7 @@
 
             Action action_DismountInBase = () =>
             {
-                Job jobNew = TFH_Utility.DismountAtParkingLot(myPawn, this);
+                Job jobNew = myPawn.DismountAtParkingLot(this);
 
                 myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
             };
@@ -465,7 +413,7 @@
                         yield return new FloatMenuOption("MountOn".Translate(this.LabelShort), action_Mount);
                     }
 
-                    bool flag = TFH_Utility.HasFreeParkingLot(this.Map);
+                    bool flag = this.Map.HasFreeCellsInParkingLot();
 
                     if (flag)
                     {
@@ -477,6 +425,7 @@
                         yield return failer;
                     }
                 }
+
                 yield return new FloatMenuOption("Deconstruct".Translate(this.LabelShort), action_Deconstruct);
 
             }
@@ -497,8 +446,6 @@
             // this.storage.TryDropAll(this.Position, Map, ThingPlaceMode.Near);
             base.Destroy(mode);
         }
-
-        private ThingDef fuelDefName = ThingDef.Named("FilthFuel");
 
         /// <summary>
         /// PreApplyDamage from Building_Turret - not sure what the stunner does
@@ -620,6 +567,7 @@
                         {
                             this.VehicleComp.VehicleSpeed = this.DesiredSpeed;
                         }
+
                         this.tickCheck = Find.TickManager.TicksGame;
                     }
 
@@ -637,24 +585,9 @@
             // TakeDamage(new DamageInfo(DamageDefOf.Deterioration, 1, null, null, null));
             // damagetick = Find.TickManager.TicksGame + 3600;
             // }
-            if (this.VehicleComp.tankLeaking)
-            {
-                if (Find.TickManager.TicksGame > this._tankSpillTick)
-                {
-                    if (this.RefuelableComp.FuelPercentOfMax > this._tankHitPos)
-                    {
-                        this.RefuelableComp.ConsumeFuel(0.15f);
 
-                        FilthMaker.MakeFilth(this.Position, this.Map, this.fuelDefName, this.LabelCap);
-                        this._tankSpillTick = Find.TickManager.TicksGame + 15;
-                    }
-                }
-            }
         }
 
-        private float _tankHitPos = 1f;
-
-        private int _tankSpillTick = -5000;
 
         #endregion
 
@@ -664,7 +597,12 @@
         {
             get
             {
-                if (!this.Spawned || !this.MountableComp.IsMounted || !this.instantiated)
+                if (!this.Spawned || !this.instantiated)
+                {
+                    return base.DrawPos;
+                }
+
+                if (!this.MountableComp.IsMounted)
                 {
                     return base.DrawPos;
                 }
@@ -754,7 +692,7 @@
             stringBuilder.Append(base.GetInspectString());
 
             string currentDriverString;
-            if (this.MountableComp.Driver != null)
+            if (this.MountableComp.IsMounted)
             {
                 currentDriverString = this.MountableComp.Driver.LabelCap;
             }
@@ -764,9 +702,14 @@
             }
 
             stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
-            if (this.VehicleComp.tankLeaking)
+
+            CompGasTank gasTankComp = this.TryGetComp<CompGasTank>();
+            if (gasTankComp != null)
             {
-                stringBuilder.AppendLine("TankLeaking".Translate());
+                if (gasTankComp.tankLeaking)
+                {
+                    stringBuilder.AppendLine("TankLeaking".Translate());
+                }
             }
 
             // string text = storage.ContentsString;

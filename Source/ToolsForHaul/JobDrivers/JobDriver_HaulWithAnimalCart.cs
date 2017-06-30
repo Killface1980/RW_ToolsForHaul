@@ -4,8 +4,8 @@
 
     using RimWorld;
 
-    using ToolsForHaul.Vehicles;
     using ToolsForHaul.Toils;
+    using ToolsForHaul.Vehicles;
 
     using Verse;
     using Verse.AI;

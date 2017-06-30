@@ -56,9 +56,6 @@
 
                     int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
                     thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
-
-                    SoundInfo info = SoundInfo.InMap(thing);
-                    thing.TryGetComp<CompMountable>().SustainerAmbient = thing.TryGetComp<CompVehicle>().compProps.soundAmbient.TrySpawnSustainer(info);
                 }
             }
 

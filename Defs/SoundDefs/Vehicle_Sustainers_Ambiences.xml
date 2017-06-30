@@ -52,7 +52,7 @@
     <defName>VehicleATV_Ambience_Break</defName>
     <context>MapOnly</context>
     <eventNames />
-    <maxSimultaneous>1</maxSimultaneous>
+    <maxSimultaneous>5</maxSimultaneous>
     <subSounds>
       <li>
         <grains>
@@ -127,7 +127,7 @@
     <context>MapOnly</context>
     <sustain>True</sustain>  
     <eventNames />
-    <maxSimultaneous>3</maxSimultaneous>
+    <maxSimultaneous>10</maxSimultaneous>
     <priorityMode>PrioritizeNearest</priorityMode>  
     <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>  
     <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>  
@@ -161,6 +161,7 @@
     <context>MapOnly</context>
     <sustain>True</sustain>
     <eventNames />
+    <maxSimultaneous>5</maxSimultaneous>
     <priorityMode>PrioritizeNearest</priorityMode>
     <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>
     <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>
@@ -195,6 +196,7 @@
     <context>MapOnly</context>
     <sustain>True</sustain>
     <eventNames />
+    <maxSimultaneous>5</maxSimultaneous>
     <priorityMode>PrioritizeNearest</priorityMode>
     <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>
     <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>
@@ -228,6 +230,7 @@
     <context>MapOnly</context>
     <sustain>True</sustain>
     <eventNames />
+    <maxSimultaneous>5</maxSimultaneous>
     <priorityMode>PrioritizeNearest</priorityMode>
     <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>
     <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>
@@ -261,6 +264,7 @@
     <context>MapOnly</context>
     <sustain>True</sustain>
     <eventNames />
+    <maxSimultaneous>5</maxSimultaneous>
     <priorityMode>PrioritizeNearest</priorityMode>
     <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>
     <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>

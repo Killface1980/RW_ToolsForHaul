@@ -4,6 +4,7 @@
 
     using RimWorld;
 
+    using ToolsForHaul.Utilities;
     using ToolsForHaul.Vehicles;
 
     using Verse;
@@ -44,8 +45,6 @@
           
         public static List<Thing> AutoInventory = new List<Thing>();
 
-        public static Dictionary<Pawn, Vehicle_Cart> CurrentDrivers = new Dictionary<Pawn, Vehicle_Cart>();
-
         public static List<Entry> CachedToolEntries
         {
             get
@@ -59,10 +58,21 @@
             }
         }
 
+        public override void LoadedGame()
+        {
+            base.LoadedGame();
+            foreach (Map map in Find.Maps)
+            {
+                foreach (Thing vehicle in map.MountedVehicles())
+                {
+                    ((Vehicle_Cart)vehicle).VehicleComp.StartSustainerVehicleIfInactive();
+                }
+            }
+        }
+
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref PreviousPawnWeapon, "previousPawnWeapons", LookMode.Reference, LookMode.Reference);
-            Scribe_Collections.Look(ref CurrentDrivers, "currentVehicle", LookMode.Reference, LookMode.Reference);
             Scribe_Collections.Look(ref AutoInventory, "AutoInventory", LookMode.Reference);
             Scribe_Collections.Look(ref _cachedToolEntries, "_cachedToolEntries", LookMode.Reference);
         }

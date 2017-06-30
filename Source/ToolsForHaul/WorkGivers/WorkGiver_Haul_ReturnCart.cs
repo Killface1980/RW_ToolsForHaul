@@ -11,6 +11,7 @@
     using Verse;
     using Verse.AI;
 
+
     public class WorkGiver_Haul_ReturnCart : WorkGiver_Scanner
     {
 
@@ -19,20 +20,27 @@
         {
             var noParking = new List<Thing>();
 
-            foreach (var vehicle in TFH_Utility.AvailableVehicles(pawn))
+            foreach (var vehicle in pawn.AvailableVehicles())
             {
                 if (!(vehicle.Position.GetZone(pawn.Map) is Zone_ParkingLot))
+                {
                     noParking.Add(vehicle);
+                }
             }
+
             // return TFH_Utility.Cart();
-        //    noParking.SortBy(x => pawn.Position.DistanceTo(x.Position));
+            // noParking.SortBy(x => pawn.Position.DistanceTo(x.Position));
             return noParking;
-            //pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling();
+
+            // pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling();
         }
 
         public override bool ShouldSkip(Pawn pawn)
         {
-            if (TFH_Utility.IsDriver(pawn)) return true;
+            if (pawn.IsDriver())
+            {
+                return true;
+            }
 
             return false;
         }
@@ -41,12 +49,12 @@
         {
             Vehicle_Cart cart = t as Vehicle_Cart;
 
-            return TFH_Utility.DismountAtParkingLot(pawn, cart);
+            return pawn.DismountAtParkingLot(cart);
 
             // Vehicle selection
-            if (TFH_Utility.IsDriver(pawn))
+            if (pawn.IsDriver())
             {
-                cart = TFH_Utility.GetCartByDriver(pawn);
+                cart = pawn.MountedVehicle();
 
                 if (cart == null)
                 {
@@ -56,7 +64,7 @@
 
             if (cart == null)
             {
-                List<Thing> availableVehicles = TFH_Utility.AvailableVehicles(pawn);
+                List<Thing> availableVehicles = pawn.AvailableVehicles();
                 if (availableVehicles.Count == 0) return null;
 
                 cart = TFH_Utility.GetRightVehicle(pawn, availableVehicles, DefDatabase<WorkTypeDef>.GetNamed("Hauling"), t) as Vehicle_Cart;
@@ -67,7 +75,7 @@
 
             if (cart.IsBurning())
             {
-                JobFailReason.Is(TFH_Utility.BurningLowerTrans);
+                JobFailReason.Is(Static.BurningLowerTrans);
                 return null;
             }
 
@@ -87,8 +95,8 @@
             IntVec3 storeCell;
             if (!StoreUtility.TryFindBestBetterStoreCellFor(t, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell))
             {
-                Log.Message("WorkGiver_Haul_WithCart " + TFH_Utility.NoEmptyPlaceLowerTrans);
-                JobFailReason.Is(TFH_Utility.NoEmptyPlaceLowerTrans);
+                Log.Message("WorkGiver_Haul_WithCart " + Static.NoEmptyPlaceLowerTrans);
+                JobFailReason.Is(Static.NoEmptyPlaceLowerTrans);
                 return null;
             }
 
@@ -97,12 +105,12 @@
             // JobFailReason.Is(TFH_Utility.NoEmptyPlaceLowerTrans);
             // return null;
             // }
-            if (TFH_Utility.AvailableAnimalCart(cart) || TFH_Utility.IsVehicleAvailable(pawn, cart))
+            if (cart.IsMountedOnAnimalAndAvailable() || pawn.IsAllowedToRide(cart))
             {
                 return TFH_Utility.HaulWithTools(pawn, cart, t);
             }
 
-            JobFailReason.Is(TFH_Utility.NoAvailableCart);
+            JobFailReason.Is(Static.NoAvailableCart);
             return null;
         }
 

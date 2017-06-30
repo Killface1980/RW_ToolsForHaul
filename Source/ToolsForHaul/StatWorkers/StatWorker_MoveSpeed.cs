@@ -9,6 +9,7 @@ namespace ToolsForHaul.StatWorkers
     using RimWorld;
 
     using ToolsForHaul.Components;
+    using ToolsForHaul.Utilities;
     using ToolsForHaul.Vehicles;
 
     using UnityEngine;
@@ -27,9 +28,8 @@ namespace ToolsForHaul.StatWorkers
 
                 if (thisPawn?.RaceProps.intelligence >= Intelligence.ToolUser)
                 {
-                    if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(thisPawn))
                     {
-                        Vehicle_Cart vehicleCart = GameComponentToolsForHaul.CurrentDrivers[(Pawn)req.Thing];
+                        Vehicle_Cart vehicleCart = thisPawn.MountedVehicle();
                         if (vehicleCart != null)
                         {
                             if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Driver == thisPawn)
@@ -74,20 +74,20 @@ namespace ToolsForHaul.StatWorkers
         {
             float result = 1f;
 
-            if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(thisPawn))
+            if (thisPawn.IsDriver())
             {
-                Vehicle_Cart vehicleTank = GameComponentToolsForHaul.CurrentDrivers[thisPawn];
-                if (vehicleTank != null)
+                Vehicle_Cart cart = thisPawn.MountedVehicle();
+                if (cart != null)
                 {
-                    if (vehicleTank.MountableComp.IsMounted && !vehicleTank.MountableComp.Driver.RaceProps.Animal && vehicleTank.MountableComp.Driver == thisPawn)
+                    if (cart.MountableComp.IsMounted && !cart.MountableComp.Driver.RaceProps.Animal && cart.MountableComp.Driver == thisPawn)
                     {
-                        if (vehicleTank.VehicleComp.IsCurrentlyMotorized())
+                        if (cart.IsCurrentlyMotorized())
                         {
-                            result = Mathf.Clamp(vehicleTank.VehicleComp.VehicleSpeed, 2f, 100f);
+                            result = Mathf.Clamp(cart.VehicleComp.VehicleSpeed, 2f, 100f);
                         }
                         else
                         {
-                            result = Mathf.Clamp(vehicleTank.VehicleComp.VehicleSpeed, 0.5f, 1f);
+                            result = Mathf.Clamp(cart.VehicleComp.VehicleSpeed, 0.5f, 1f);
                         }
 
                         return result;

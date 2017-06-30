@@ -23,15 +23,13 @@ namespace ToolsForHaul.Components
     using Verse.AI;
     using Verse.Sound;
 
+    using Debug = System.Diagnostics.Debug;
+
     public class CompMountable : ThingComp
     {
-        private Pawn driver;
-
         public float lastDrawAsAngle;
 
         private Building_Door lastPassedDoor;
-
-        private Sustainer sustainerAmbient;
 
         private int tickCheck = Find.TickManager.TicksGame;
 
@@ -43,7 +41,7 @@ namespace ToolsForHaul.Components
 
         public Vector3 InteractionOffset => this.parent.def.interactionCellOffset.ToVector3().RotatedBy(this.lastDrawAsAngle);
 
-        public bool IsMounted => this.Driver != null;
+        public bool IsMounted = false;
 
         public Vector3 Position
         {
@@ -65,32 +63,10 @@ namespace ToolsForHaul.Components
             }
         }
 
-        public Sustainer SustainerAmbient
-        {
-            get
-            {
-                return this.sustainerAmbient;
-            }
 
-            set
-            {
-                this.sustainerAmbient = value;
-            }
-        }
+        public Pawn Driver;
 
-        public Pawn Driver
-        {
-            get
-            {
-                return this.driver;
-            }
-
-            set
-            {
-                this.driver = value;
-            }
-        }
-
+        private Vehicle_Cart cart;
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
@@ -109,20 +85,10 @@ namespace ToolsForHaul.Components
 
         public override void CompTick()
         {
-            if (this.driver == null)
-            {
-                return;
-            }
-
             base.CompTick();
+
             if (!this.IsMounted)
             {
-                return;
-            }
-
-            if (!this.Driver.Spawned)
-            {
-                this.parent.DeSpawn();
                 return;
             }
 
@@ -131,16 +97,22 @@ namespace ToolsForHaul.Components
             {
                 if (!this.Driver.Position.InBounds(this.parent.Map))
                 {
+                    Log.Message("1");
                     this.DismountAt(this.Driver.Position);
                     return;
                 }
 
+                Log.Message("2");
                 this.DismountAt(
                     this.Driver.Position - this.parent.def.interactionCellOffset.RotatedBy(this.Driver.Rotation));
-                this.Driver.Position = this.Driver.Position.RandomAdjacentCell8Way();
                 return;
             }
 
+            if (!this.Driver.Spawned)
+            {
+                this.parent.DeSpawn();
+                return;
+            }
             if (Find.TickManager.TicksGame - this.tickCheck >= this.tickCooldown)
             {
                 if (this.Driver.Faction == Faction.OfPlayer && this.Driver.CurJob != null)
@@ -191,10 +163,12 @@ namespace ToolsForHaul.Components
                         this.parent.Rotation = this.Driver.Rotation;
                         if (!this.Driver.Position.InBounds(this.parent.Map))
                         {
+                            Log.Message("3");
                             this.DismountAt(this.Driver.Position);
                             return;
                         }
 
+                        Log.Message("4");
                         this.DismountAt(this.Driver.Position - this.InteractionOffset.ToIntVec3());
                         this.Driver.Position = this.Driver.Position.RandomAdjacentCell8Way();
                         return;
@@ -204,15 +178,11 @@ namespace ToolsForHaul.Components
                 this.tickCheck = Find.TickManager.TicksGame;
                 this.tickCooldown = Rand.RangeInclusive(60, 180);
 
-                CompVehicle vehicleComp = this.parent.TryGetComp<CompVehicle>();
 
                 // bring vehicles home
-                if (vehicleComp != null && !vehicleComp.MotorizedWithoutFuel())
+                if (cart.VehicleComp != null && !cart.VehicleComp.MotorizedWithoutFuel())
                 {
-                    CompRefuelable refuelableComp = this.parent.TryGetComp<CompRefuelable>();
-                    Job jobNew = TFH_Utility.DismountAtParkingLot(
-                        this.Driver,
-                        GameComponentToolsForHaul.CurrentDrivers[this.Driver]);
+                    Job jobNew = this.Driver.DismountAtParkingLot(this.parent as Vehicle_Cart);
                     float hitPointsPercent = this.parent.HitPoints / this.parent.MaxHitPoints;
 
                     if (this.Driver.Faction == Faction.OfPlayer)
@@ -220,12 +190,12 @@ namespace ToolsForHaul.Components
                         if (!GenAI.EnemyIsNear(this.Driver, 40f))
                         {
                             if (hitPointsPercent < 0.65f
-                                || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
-                                || ((this.parent as Vehicle_Cart) != null
-                                    && (this.parent as Vehicle_Cart).VehicleComp.tankLeaking)
-                                || !refuelableComp.HasFuel)
+                                || this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep
+                                || ((parent as Vehicle_Cart)?.TryGetComp<CompGasTank>() != null
+                                    && ((Vehicle_Cart)this.parent).TryGetComp<CompGasTank>().tankLeaking)
+                                || !this.cart.RefuelableComp.HasFuel)
                             {
-                                this.Driver.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                                this.Driver.jobs.StartJob(jobNew);
                             }
                         }
                     }
@@ -264,26 +234,31 @@ namespace ToolsForHaul.Components
 
         public void Dismount()
         {
-            var cart = this.parent as Vehicle_Cart;
-            this.Driver.AllComps?.Remove(cart.DriverComp);
-            cart.DriverComp.Vehicle = null;
-            cart.DriverComp.parent = null;
+            Vehicle_Cart cart = this.parent as Vehicle_Cart;
 
-            GameComponentToolsForHaul.CurrentDrivers.Remove(this.Driver);
+            if (this.Driver.AllComps.Contains(cart.DriverComp))
+            {
+                this.Driver.AllComps?.Remove(cart.DriverComp);
+                cart.DriverComp.Vehicle = null;
+                cart.DriverComp.parent = null;
+            }
 
             this.Driver.RaceProps.makesFootprints = true;
 
             // if (Find.Reservations.IsReserved(parent, Driver.Faction))
             this.parent.Map.reservationManager.ReleaseAllForTarget(this.parent);
+
             if (this.Driver.Faction != Faction.OfPlayer)
             {
                 this.parent.SetForbidden(true);
                 this.parent.SetFaction(null);
             }
+            this.Driver.Position = this.Driver.Position.RandomAdjacentCell8Way();
 
             this.Driver = null;
+            this.IsMounted = false;
 
-            this.SustainerAmbient?.End();
+            cart.VehicleComp.EndSustainerVehicleIfActive();
 
             // Find.ListerBuildings.Add(parent as Building);
         }
@@ -308,72 +283,55 @@ namespace ToolsForHaul.Components
                 return;
             }
 
-            // Check to make pawns not mount two vehicles at once
-            if (TFH_Utility.IsDriver(pawn))
+            Vehicle_Cart cart = this.parent as Vehicle_Cart;
+            if (cart == null)
             {
-                if (TFH_Utility.GetCartByDriver(pawn) != null)
-                {
-                    TFH_Utility.GetCartByDriver(pawn).MountableComp.Dismount();
-                }
+                return;
+            }
 
+            // Check to make pawns not mount two vehicles at once
+            if (pawn.IsDriver())
+            {
+                if (pawn.MountedVehicle() != null)
+                {
+                    pawn.MountedVehicle().MountableComp.Dismount();
+                }
             }
 
             this.Driver = pawn;
-            Vehicle_Cart vehicleCart = this.parent as Vehicle_Cart;
+            this.IsMounted = true;
 
-
-            if (this.Driver.RaceProps.Humanlike)
+            if (pawn.RaceProps.Humanlike)
             {
-                GameComponentToolsForHaul.CurrentDrivers.Add(pawn, this.parent as Vehicle_Cart);
-                this.Driver.RaceProps.makesFootprints = false;
+                pawn.RaceProps.makesFootprints = false;
             }
 
-            vehicleCart.DriverComp = new CompDriver
+            cart.DriverComp = new CompDriver { Vehicle = this.parent };
+            this.Driver?.AllComps?.Add(cart.DriverComp);
+            cart.DriverComp.parent = this.Driver;
+
+            // Set faction of vehicle to whoever mounts it
+            if (cart.Faction != this.Driver.Faction)
             {
-                Vehicle = this.parent
-            };
-            this.Driver?.AllComps?.Add(vehicleCart.DriverComp);
-            vehicleCart.DriverComp.parent = this.Driver;
-
-            if (vehicleCart != null)
-            {
-                // Set faction of vehicle to whoever mounts it
-                if (vehicleCart.Faction != this.driver.Faction)
-                {
-                    vehicleCart.SetFaction(this.driver.Faction);
-                }
-
-                if (vehicleCart.VehicleComp.IsCurrentlyMotorized())
-                {
-                    SoundInfo info = SoundInfo.InMap(this.parent);
-                    this.SustainerAmbient = vehicleCart.VehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
-                }
-
-                this.IsPrisonBreaking = PrisonBreakUtility.IsPrisonBreaking(pawn);
-            }
-        }
-
-        public override void PostDeSpawn(Map map)
-        {
-            if (this.IsMounted)
-            {
-                if (GameComponentToolsForHaul.CurrentDrivers.ContainsKey(this.Driver))
-                {
-                    GameComponentToolsForHaul.CurrentDrivers.Remove(this.Driver);
-                }
+                cart.SetFaction(this.Driver.Faction);
             }
 
-            this.SustainerAmbient?.End();
+            cart.VehicleComp.StartSustainerVehicleIfInactive();
 
-            base.PostDeSpawn(map);
+
+
+            this.IsPrisonBreaking = PrisonBreakUtility.IsPrisonBreaking(pawn);
         }
 
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_References.Look(ref this.driver, "Driver");
+            Scribe_References.Look(ref this.Driver, "Driver");
+            Scribe_References.Look(ref this.cart, "cart");
             Scribe_References.Look(ref this.lastPassedDoor, "lastPassedDoor");
             Scribe_Values.Look(ref this.lastDrawAsAngle, "lastDrawAsAngle");
+            Scribe_Values.Look(ref this.IsMounted, "IsMounted");
+            Scribe_Values.Look(ref this.IsPrisonBreaking, "IsPrisonBreaking");
         }
 
         public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
@@ -415,41 +373,24 @@ namespace ToolsForHaul.Components
         /// </summary>
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
+            cart = this.parent as Vehicle_Cart;
+
             base.PostSpawnSetup(respawningAfterLoad);
 
-            var cart = this.parent as Vehicle_Cart;
-
-            if (this.Driver == null)
+            if (this.Driver != null)
             {
-                return;
-            }
+                this.IsMounted = true;
 
-            if (cart.VehicleComp.IsCurrentlyMotorized())
-            {
-                LongEventHandler.ExecuteWhenFinished(
-                    delegate
-                        {
-                            SoundInfo info = SoundInfo.InMap(this.parent);
-                            this.SustainerAmbient = cart.VehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
-                        });
-            }
-
-            //      if (this.Driver.RaceProps.Humanlike)
-            {
-                if (!GameComponentToolsForHaul.CurrentDrivers.ContainsKey(this.Driver))
-                {
-                    GameComponentToolsForHaul.CurrentDrivers.Add(this.Driver, this.parent as Vehicle_Cart);
-                }
+                // if (this.Driver.RaceProps.Humanlike)
                 if (this.Driver.RaceProps.Humanlike)
                 {
                     this.Driver.RaceProps.makesFootprints = false;
-
                 }
-            //  cart.DriverComp = new CompDriver { Vehicle = this.parent };
-            // Driver.AllComps?.Add(cart.DriverComp);
-            //  cart.DriverComp.parent = this.Driver;
             }
 
+            // cart.DriverComp = new CompDriver { Vehicle = this.parent };
+            // Driver.AllComps?.Add(cart.DriverComp);
+            // cart.DriverComp.parent = this.Driver;
         }
     }
 }

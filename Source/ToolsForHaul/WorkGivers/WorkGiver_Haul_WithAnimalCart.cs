@@ -42,7 +42,7 @@
 
             // Set carrier
             jobNew.targetC = carrier;
-            ReservationUtility.Reserve(pawn, carrier);
+            pawn.Reserve(carrier);
 
             // Drop remaining item
             foreach (var remainingItem in remainingItems)
@@ -53,7 +53,7 @@
                     break;
                 }
 
-                ReservationUtility.Reserve(pawn, storageCell);
+                pawn.Reserve(storageCell);
                 jobNew.targetQueueB.Add(storageCell);
             }
 
@@ -98,8 +98,8 @@
 
                 jobNew.targetQueueA.Add(closestHaulable);
                 jobNew.targetQueueB.Add(storageCell);
-                ReservationUtility.Reserve(pawn, closestHaulable);
-                ReservationUtility.Reserve(pawn, storageCell);
+                pawn.Reserve(closestHaulable);
+                pawn.Reserve(storageCell);
                 reservedMaxItem++;
             }
 
@@ -178,7 +178,7 @@
             {
                 foreach (var cell in slotGroup.CellsList.Where(
                     cell => !targetQueue.Contains(cell)
-                            && StoreUtility.IsValidStorageFor(cell, pawn.Map, closestHaulable)
+                            && cell.IsValidStorageFor(pawn.Map, closestHaulable)
                             && pawn.CanReserve(cell)))
                 {
                     if (cell != invalidCell && cell != IntVec3.Invalid)

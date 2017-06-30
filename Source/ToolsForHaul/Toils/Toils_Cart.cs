@@ -185,8 +185,7 @@
 
         public static Toil FindParkingSpaceForCartForCart(TargetIndex CartInd)
         {
-            const int NearbyCell = 8;
-            const int RegionCellOffset = 16;
+
             IntVec3 invalid = new IntVec3(0, 0, 0);
 #if DEBUG
             StringBuilder stringBuilder = new StringBuilder();
@@ -204,7 +203,7 @@
                     }
 
                     // Find Valid Storage
-                    if (!TFH_Utility.FindParkingSpace(actor, actor.Position, out storeCell))
+                    if (!actor.FindParkingSpace(actor.Position, out storeCell))
                     {
                         Log.Error(actor.LabelCap + " Report: No parking space for cart.");
                         toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);

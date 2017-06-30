@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ThingDefs>
+
+  <ThingDef Name="TFH_BaseFilth" Abstract="True">
+    <thingClass>Filth</thingClass>
+    <category>Filth</category>
+    <altitudeLayer>Filth</altitudeLayer>
+    <useHitPoints>false</useHitPoints>
+    <drawerType>MapMeshOnly</drawerType>
+    <graphicData>
+      <graphicClass>Graphic_Cluster</graphicClass>
+      <shaderType>Transparent</shaderType>
+    </graphicData>
+    <statBases>
+      <Beauty>-15</Beauty>
+      <Cleanliness>-5</Cleanliness>
+    </statBases>
+  </ThingDef>
+
+
+  <!--=================== Fluids etc =================-->
+
+
+  <ThingDef ParentName="TFH_BaseFilth">
+    <defName>TFH_FilthFuel</defName>
+    <label>chemfuel puddle</label>
+    <description>A puddle of flammable chemfuel.</description>
+    <thingClass>LiquidFuel</thingClass>
+    <useHitPoints>true</useHitPoints>
+    <statBases>
+      <Beauty>-10</Beauty>
+      <Cleanliness>-15</Cleanliness>
+      <MaxHitPoints>150</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+    </statBases>
+    <graphicData>
+      <texPath>Things/Filth/LiquidFuel</texPath>
+    </graphicData>
+    <filth>
+      <rainWashes>true</rainWashes>
+      <cleaningWorkToReduceThickness>70</cleaningWorkToReduceThickness>
+      <canFilthAttach>true</canFilthAttach>
+      <maxThickness>1</maxThickness>
+    </filth>
+  </ThingDef>
+
+  
+
+
+
+</ThingDefs>

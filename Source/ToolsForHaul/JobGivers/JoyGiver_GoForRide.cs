@@ -6,6 +6,7 @@
 
     using ToolsForHaul.Components;
     using ToolsForHaul.Utilities;
+    using ToolsForHaul.Vehicles;
 
     using Verse;
     using Verse.AI;
@@ -16,12 +17,19 @@
 
         protected override Job TryGivePlayJob(Pawn pawn, Thing t)
         {
-            if ((t as ThingWithComps).TryGetComp<CompMountable>().IsMounted && !TFH_Utility.IsDriverOfThisVehicle(pawn, t))
+            var cart = t as Vehicle_Cart;
+
+            if (cart == null)
             {
                 return null;
             }
 
-            if (!(t as ThingWithComps).TryGetComp<CompRefuelable>().HasFuel)
+            if (cart.MountableComp.IsMounted && !pawn.IsDriverOfThisVehicle(cart))
+            {
+                return null;
+            }
+
+            if (!cart.RefuelableComp.HasFuel)
             {
                 return null;
             }

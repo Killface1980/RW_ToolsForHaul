@@ -32,48 +32,44 @@
 
         public override void CompTick()
         {
-            if ((this.parent as Vehicle_Cart).MountableComp.Driver == null)
+            base.CompTick();
+
+            var cart = this.parent as Vehicle_Cart;
+
+            if (cart == null || cart.MountableComp.Driver == null)
             {
                 return;
             }
 
-            CompMountable mountableComp = this.parent.TryGetComp<CompMountable>();
-            CompVehicle vehicleComp = this.parent.TryGetComp<CompVehicle>();
-
-            if (mountableComp.IsMounted)
+            if (cart.MountableComp.Driver.pather.Moving)
             {
-                if (mountableComp.Driver.pather.Moving)
+                // || mountableComp.Driver.drafter.pawn.pather.Moving)
+                if (!cart.MountableComp.Driver.stances.FullBodyBusy && this.HasAxles())
                 {
-                    // || mountableComp.Driver.drafter.pawn.pather.Moving)
-                    if (!mountableComp.Driver.stances.FullBodyBusy && this.HasAxles())
-                    {
-                        this.wheelRotation += vehicleComp.currentDriverSpeed / 3f;
-                        this.tick_time += 0.01f * vehicleComp.currentDriverSpeed / 5f;
-                        this.wheel_shake =
-                            (float)((Math.Sin(this.tick_time) + Math.Abs(Math.Sin(this.tick_time))) / 40.0);
-                    }
+                    this.wheelRotation += cart.VehicleComp.currentDriverSpeed / 3f;
+                    this.tick_time += 0.01f * cart.VehicleComp.currentDriverSpeed / 5f;
+                    this.wheel_shake = (float)((Math.Sin(this.tick_time) + Math.Abs(Math.Sin(this.tick_time))) / 40.0);
+                }
 
-                    if (
-                        mountableComp.Driver.Position.AdjacentTo8WayOrInside(
-                            mountableComp.Driver.pather.Destination.Cell))
+                if (cart.MountableComp.Driver.Position.AdjacentTo8WayOrInside(cart.MountableComp.Driver.pather.Destination.Cell))
+                {
+                    // Make the breaks sound once and throw some dust if Driver comes to his destination
+                    if (this.HasAxles())
                     {
-                        // Make the breaks sound once and throw some dust if Driver comes to his destination
-                        if (this.parent.TryGetComp<CompAxles>().HasAxles())
-                            if (!this.breakSoundPlayed)
-                            {
-                                SoundDef.Named("VehicleATV_Ambience_Break").PlayOneShot(new TargetInfo(mountableComp.Driver.Position, this.parent.Map)); 
-                                MoteMakerTFH.ThrowDustPuff(this.parent.DrawPos, this.parent.Map, 0.8f);
-                                this.breakSoundPlayed = true;
-                            }
-                    }
-                    else
-                    {
-                        this.breakSoundPlayed = false;
+                        if (!this.breakSoundPlayed)
+                        {
+                            SoundDef.Named("VehicleATV_Ambience_Break")
+                                .PlayOneShot(new TargetInfo(cart.MountableComp.Driver.Position, this.parent.Map));
+                            MoteMakerTFH.ThrowDustPuff(this.parent.DrawPos, this.parent.Map, 0.8f);
+                            this.breakSoundPlayed = true;
+                        }
                     }
                 }
+                else
+                {
+                    this.breakSoundPlayed = false;
+                }
             }
-
-            base.CompTick();
         }
 
         private bool GetAxleLocations(Vector2 drawSize, int flip, out List<Vector3> axleVecs)

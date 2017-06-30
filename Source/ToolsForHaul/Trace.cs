@@ -30,7 +30,7 @@ namespace ToolsForHaul
         [Conditional("LOGGING")]
         public static void DebugWriteHaulingPawn(Pawn pawn)
         {
-            List<Thing> availableVehicles = TFH_Utility.AvailableVehicles(pawn);
+            List<Thing> availableVehicles = pawn.AvailableVehicles();
 
             foreach (var thing in availableVehicles)
             {
@@ -47,14 +47,14 @@ namespace ToolsForHaul
                     state = string.Concat(state, "CanReserveAndReach ");
                 }
 
-                if (TFH_Utility.IsVehicleAvailable(pawn, cart))
+                if (pawn.IsAllowedToRide(cart))
                 {
                     state = string.Concat(state, "AvailableCart ");
                 }
 
-                if (TFH_Utility.AvailableAnimalCart(cart))
+                if (cart.IsMountedOnAnimalAndAvailable())
                 {
-                    state = string.Concat(state, "AvailableAnimalCart ");
+                    state = string.Concat(state, "IsMountedOnAnimalAndAvailable ");
                 }
 
                 // Pawn reserver = cart.Map.reservationManager.FirstReserverWhoseReservationsRespects(cart, Faction.OfPlayer);

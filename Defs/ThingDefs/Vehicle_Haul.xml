@@ -244,6 +244,9 @@
       </skillRequirements>
     </recipeMaker>
     <comps>
+      <li>
+        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+      </li>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Extinguish</explosiveDamageType>
@@ -307,6 +310,9 @@
       <Mass>500</Mass>
     </statBases>
     <comps>
+      <li>
+        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+      </li>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>3.6</explosiveRadius>
         <explosiveDamageType>Stun</explosiveDamageType>
