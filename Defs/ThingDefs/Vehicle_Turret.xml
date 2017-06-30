@@ -81,7 +81,7 @@
       <MaxHitPoints>250</MaxHitPoints>
       <Flammability>1.0</Flammability>
       <Beauty>10</Beauty>
-      <VehicleMaxItem>3</VehicleMaxItem>
+      <VehicleMaxItem>2</VehicleMaxItem>
       <VehicleSpeed>12</VehicleSpeed>
     </statBases>
     <comps>

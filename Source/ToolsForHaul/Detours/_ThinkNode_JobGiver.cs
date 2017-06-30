@@ -75,7 +75,7 @@
                         {
                             if (pawn.IsDriver())
                             {
-                                job = pawn.DismountAtParkingLot(pawn.MountedVehicle());
+                                job = pawn.DismountAtParkingLot(pawn.MountedVehicle(), "TN #1");
                             }
                         }
 
@@ -98,7 +98,7 @@
             {
                 pawn.mindState.maxDistToSquadFlag = -1f;
             }
-
+            Log.Message("TNJ #1");
             return result;
         }
 
@@ -123,7 +123,7 @@
             {
                 if (!TFH_Utility.IsDriverOfThisVehicle(pawn, TFH_Utility.GetRightVehicle(pawn, availableVehicles, workType)))
                 {
-                    job = pawn.DismountAtParkingLot(pawn.MountedVehicle());
+                    job = pawn.DismountAtParkingLot(pawn.MountedVehicle(), "TNJ 99");
                 }
             }
 

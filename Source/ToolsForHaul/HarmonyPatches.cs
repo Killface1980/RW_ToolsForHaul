@@ -34,12 +34,12 @@
             if (cart == null)
                 return;
 
-            if (cart.TryGetComp<CompGasTank>() == null)
+            if (!cart.HasGasTank())
                 return;
-            if (cart.TryGetComp<CompGasTank>().tankLeaking)
+            if (cart.GasTankComp.tankLeaking)
             {
-                cart.TryGetComp<CompGasTank>().tankLeaking = false;
-                cart.TryGetComp<CompGasTank>()._tankHitPos = 1f;
+                cart.GasTankComp.tankLeaking = false;
+                cart.GasTankComp._tankHitPos = 1f;
             }
         }
     }

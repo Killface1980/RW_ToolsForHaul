@@ -92,7 +92,7 @@ namespace ToolsForHaul.Components
                 return;
             }
 
-            if (this.Driver.Dead || this.Driver.Downed || this.Driver.health.InPainShock || this.Driver.InMentalState
+            if (this.Driver.Dead || this.Driver.Downed || this.Driver.health.InPainShock
                 || (this.parent.IsForbidden(Faction.OfPlayer) && this.Driver.Faction == Faction.OfPlayer))
             {
                 if (!this.Driver.Position.InBounds(this.parent.Map))
@@ -182,20 +182,24 @@ namespace ToolsForHaul.Components
                 // bring vehicles home
                 if (cart.VehicleComp != null && !cart.VehicleComp.MotorizedWithoutFuel())
                 {
-                    Job jobNew = this.Driver.DismountAtParkingLot(this.parent as Vehicle_Cart);
                     float hitPointsPercent = this.parent.HitPoints / this.parent.MaxHitPoints;
 
-                    if (this.Driver.Faction == Faction.OfPlayer)
+                    if (this.cart.Faction.IsPlayer)
                     {
-                        if (!GenAI.EnemyIsNear(this.Driver, 40f))
+                        if (!GenAI.EnemyIsNear(this.Driver, 120f))
                         {
-                            if (hitPointsPercent < 0.65f
-                                || this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep
-                                || ((parent as Vehicle_Cart)?.TryGetComp<CompGasTank>() != null
-                                    && ((Vehicle_Cart)this.parent).TryGetComp<CompGasTank>().tankLeaking)
-                                || !this.cart.RefuelableComp.HasFuel)
+                            if (!this.Driver.drafter.Drafted)
                             {
-                                this.Driver.jobs.StartJob(jobNew);
+                                var flag = this.cart.HasGasTank() && this.cart.GasTankComp.tankLeaking;
+
+                                if (hitPointsPercent < 0.65f
+                                    //          || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
+                                    || flag
+                                        || !this.cart.RefuelableComp.HasFuel)
+                                {
+                                    Job jobNew = this.Driver.DismountAtParkingLot(cart, "CM");
+                                    this.Driver.jobs.StartJob(jobNew);
+                                }
                             }
                         }
                     }
@@ -269,7 +273,7 @@ namespace ToolsForHaul.Components
             if (dismountPos != IntVec3.Invalid)
             {
                 this.Dismount();
-                this.parent.Position = dismountPos;
+                this.cart.Position = dismountPos;
                 return;
             }
 
@@ -327,7 +331,6 @@ namespace ToolsForHaul.Components
         {
             base.PostExposeData();
             Scribe_References.Look(ref this.Driver, "Driver");
-            Scribe_References.Look(ref this.cart, "cart");
             Scribe_References.Look(ref this.lastPassedDoor, "lastPassedDoor");
             Scribe_Values.Look(ref this.lastDrawAsAngle, "lastDrawAsAngle");
             Scribe_Values.Look(ref this.IsMounted, "IsMounted");

@@ -305,7 +305,7 @@
     <statBases>
       <MaxHitPoints>200</MaxHitPoints>
       <VehicleSpeed>15</VehicleSpeed>
-      <VehicleMaxItem>2</VehicleMaxItem>
+      <VehicleMaxItem>3</VehicleMaxItem>
       <Beauty>10</Beauty>
       <Mass>500</Mass>
     </statBases>

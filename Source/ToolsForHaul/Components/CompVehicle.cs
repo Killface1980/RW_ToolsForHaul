@@ -119,8 +119,6 @@
         {
             base.PostExposeData();
 
-            Scribe_Values.Look(ref this.cart, "cart");
-
             Scribe_Values.Look(ref this.despawnAtEdge, "despawnAtEdge");
         }
 
@@ -232,11 +230,11 @@
                         this.tickCheck = Find.TickManager.TicksGame;
                     }
 
-                    if (this.parent.Position.InNoBuildEdgeArea(this.parent.Map) && this.despawnAtEdge && this.parent.Spawned
+                    if (this.cart.Position.InNoBuildEdgeArea(this.parent.Map) && this.despawnAtEdge && this.parent.Spawned
                         && (this.cart.MountableComp.Driver.Faction != Faction.OfPlayer
                             || this.cart.MountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee))
                     {
-                        this.parent.DeSpawn();
+                        this.cart.DeSpawn();
                     }
                 }
 

@@ -28,13 +28,13 @@
         // Body and part location
         private Vector3 wheelLoc;
 
+        private Vehicle_Cart cart;
+
         public CompProperties_Axle Props => (CompProperties_Axle)this.props;
 
         public override void CompTick()
         {
             base.CompTick();
-
-            var cart = this.parent as Vehicle_Cart;
 
             if (cart == null || cart.MountableComp.Driver == null)
             {
@@ -162,6 +162,12 @@
                         });
 
             }
+        }
+
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            cart = this.parent as Vehicle_Cart;
         }
     }
 }

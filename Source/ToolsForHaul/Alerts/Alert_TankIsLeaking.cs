@@ -12,6 +12,7 @@ namespace ToolsForHaul.Alerts
     using RimWorld;
 
     using ToolsForHaul.Components;
+    using ToolsForHaul.Utilities;
     using ToolsForHaul.Vehicles;
 
     using Verse;
@@ -20,8 +21,8 @@ namespace ToolsForHaul.Alerts
     {
         public Alert_TankIsLeaking()
         {
-            this.defaultLabel = "VehicleTankLeaking".Translate();
-            this.defaultExplanation = "VehicleTankLeaking".Translate();
+            this.defaultLabel = "VehicleTankLeakingLabel".Translate();
+            this.defaultExplanation = "VehicleTankLeakingExplanation".Translate();
         }
 
         public override AlertReport GetReport()
@@ -29,15 +30,12 @@ namespace ToolsForHaul.Alerts
             List<Map> maps = Find.Maps;
             foreach (Map currentMap in maps)
             {
-                List<Thing> list = currentMap.listerThings.AllThings.FindAll(
-                    aV => (aV is Vehicle_Cart) && aV.Faction == Faction.OfPlayer);
-
-                foreach (Thing thing in list)
+                foreach (Thing thing in currentMap.VehiclesOfPlayer())
                 {
                     Vehicle_Cart cart = thing as Vehicle_Cart;
-                    if (cart.TryGetComp<CompGasTank>() != null)
+                    if (cart.HasGasTank())
                     {
-                        if (cart.TryGetComp<CompGasTank>().tankLeaking)
+                        if (cart.GasTankComp.tankLeaking)
                         {
                             return cart;
                         }

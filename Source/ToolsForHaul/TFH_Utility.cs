@@ -53,8 +53,10 @@ namespace ToolsForHaul.Utilities
 
 
 
-        public static Job DismountAtParkingLot(this Pawn pawn, Vehicle_Cart cart)
+        public static Job DismountAtParkingLot(this Pawn pawn, Vehicle_Cart cart, string caller)
         {
+            Log.Message(caller);
+
             Job job = new Job(HaulJobDefOf.DismountAtParkingLot) { targetA = cart };
 
             IntVec3 parkingSpace = IntVec3.Invalid;
@@ -215,7 +217,15 @@ namespace ToolsForHaul.Utilities
         {
             List<Thing> availableVehicles =
                 map.listerThings.AllThings.FindAll(
-                    aV => (aV is Vehicle_Cart) && ((!aV.TryGetComp<CompMountable>().IsMounted)));
+                    aV => aV is Vehicle_Cart && ((Vehicle_Cart)aV).MountableComp.IsMounted);
+            return availableVehicles;
+        }
+
+        public static List<Thing> VehiclesOfPlayer(this Map map)
+        {
+            List<Thing> availableVehicles =
+                map.listerThings.AllThings.FindAll(
+                    aV => (aV is Vehicle_Cart) && aV.Faction == Faction.OfPlayer);
             return availableVehicles;
         }
 
@@ -399,7 +409,7 @@ namespace ToolsForHaul.Utilities
 
                 if (job.def == HaulJobDefOf.HaulWithCart && !(zone is Zone_ParkingLot))
                 {
-                    return pawn.DismountAtParkingLot(cart);
+                    return pawn.DismountAtParkingLot(cart, "TFH U Parkin");
                 }
 
                 Log.Message("HaulWithTools Failes NoEmptyPlaceLowerTrans");
@@ -493,7 +503,7 @@ namespace ToolsForHaul.Utilities
             if (job.def == HaulJobDefOf.HaulWithCart && !(zone is Zone_ParkingLot))
             {
                 Trace.AppendLine("In DismountAtParkingLot: ");
-                return pawn.DismountAtParkingLot(cart);
+                return pawn.DismountAtParkingLot(cart, "TFHU");
             }
 
             if (job.targetQueueA.NullOrEmpty())
@@ -564,9 +574,9 @@ namespace ToolsForHaul.Utilities
                     Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
                     if (vehicleCart == null) continue;
                     if (!pawn.IsAllowedToRide(vehicleCart)) continue;
-                    if (vehicleCart.TryGetComp<CompGasTank>() != null)
+                    if (vehicleCart.HasGasTank())
                     {
-                        if (vehicleCart.TryGetComp<CompGasTank>().tankLeaking) continue;
+                        if (vehicleCart.GasTankComp.tankLeaking) continue;
                     }
                     if (vehicleCart.ExplosiveComp.wickStarted) continue;
                     if (!vehicleCart.IsCurrentlyMotorized()) continue;
@@ -589,9 +599,9 @@ namespace ToolsForHaul.Utilities
                     }
 
                     if (!pawn.IsAllowedToRide(vehicleCart)) continue;
-                    if (vehicleCart.TryGetComp<CompGasTank>() != null)
+                    if (vehicleCart.HasGasTank())
                     {
-                        if (vehicleCart.TryGetComp<CompGasTank>().tankLeaking) continue;
+                        if (vehicleCart.GasTankComp.tankLeaking) continue;
                     }
                     if (vehicleCart.ExplosiveComp.wickStarted) continue;
                     if (!vehicleCart.IsCurrentlyMotorized()) continue;
@@ -614,9 +624,9 @@ namespace ToolsForHaul.Utilities
                     if (vehicleCart == null)
                         continue;
                     if (!pawn.IsAllowedToRide(vehicleCart)) continue;
-                    if (vehicleCart.TryGetComp<CompGasTank>() != null)
+                    if (vehicleCart.HasGasTank())
                     {
-                        if (vehicleCart.TryGetComp<CompGasTank>().tankLeaking) continue;
+                        if (vehicleCart.GasTankComp.tankLeaking) continue;
                     }
                     if (vehicleCart.ExplosiveComp.wickStarted) continue;
                     if (!vehicleCart.IsCurrentlyMotorized()) continue;
@@ -660,7 +670,7 @@ namespace ToolsForHaul.Utilities
             Action action_DismountInBase = () =>
                 {
 
-                    Job jobNew = driver.DismountAtParkingLot(cart);
+                    Job jobNew = driver.DismountAtParkingLot(cart, "DGFM");
 
                     driver.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };

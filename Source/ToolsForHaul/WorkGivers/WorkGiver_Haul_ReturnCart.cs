@@ -49,7 +49,7 @@
         {
             Vehicle_Cart cart = t as Vehicle_Cart;
 
-            return pawn.DismountAtParkingLot(cart);
+            return pawn.DismountAtParkingLot(cart, "WG Haul");
 
             // Vehicle selection
             if (pawn.IsDriver())

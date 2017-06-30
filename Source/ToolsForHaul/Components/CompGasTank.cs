@@ -26,7 +26,7 @@ namespace ToolsForHaul.Components
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            this.cart=this.parent as Vehicle_Cart;
+            this.cart = this.parent as Vehicle_Cart;
         }
 
         public override void CompTick()
@@ -37,14 +37,20 @@ namespace ToolsForHaul.Components
             {
                 if (this.cart.RefuelableComp != null)
                 {
-                    if (this.cart.MountableComp.Driver.Faction != Faction.OfPlayer)
+                    if (!this.cart.MountableComp.Driver.Faction.IsPlayer)
                     {
                         if (!this.fueledByAI)
                         {
                             if (this.cart.RefuelableComp.FuelPercentOfMax < 0.550000011920929)
+                            {
                                 this.cart.RefuelableComp.Refuel(
-                                    ThingMaker.MakeThing(this.cart.RefuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
-                            else this.fueledByAI = true;
+                                    ThingMaker.MakeThing(
+                                        this.cart.RefuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
+                            }
+                            else
+                            {
+                                this.fueledByAI = true;
+                            }
                         }
                     }
                 }
@@ -96,7 +102,7 @@ namespace ToolsForHaul.Components
                     return;
                 }
 
-                if (this.cart.RefuelableComp != null && this.cart.RefuelableComp.HasFuel)
+                if (this.cart.RefuelableComp.HasFuel)
                 {
                     if (hitpointsPercent < this.cart.VehicleComp.FuelCatchesFireHitPointsPercent() && Rand.Value > 0.5f)
                     {
@@ -107,7 +113,7 @@ namespace ToolsForHaul.Components
                             makeHole = true;
                         }
 
-                        FireUtility.TryStartFireIn(this.parent.Position, this.parent.Map, 0.1f);
+                      //  FireUtility.TryStartFireIn(this.parent.Position, this.parent.Map, 0.1f);
                     }
                 }
 
@@ -132,7 +138,6 @@ namespace ToolsForHaul.Components
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_References.Look(ref this.cart, "cart");
             Scribe_Values.Look(ref this.tankLeaking, "tankLeaking");
             Scribe_Values.Look(ref this._tankHitPos, "tankHitPos");
         }

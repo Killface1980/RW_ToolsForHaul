@@ -90,6 +90,11 @@
                    || this.VehicleComp.MotorizedWithoutFuel();
         }
 
+        public bool HasGasTank()
+        {
+            return (this.GasTankComp != null);
+        }
+
         public bool fueledByAI;
 
         private int tickCheck = Find.TickManager.TicksGame;
@@ -123,6 +128,8 @@
         public CompAxles AxlesComp => this.GetComp<CompAxles>();
 
         public CompVehicle VehicleComp => this.GetComp<CompVehicle>();
+
+        public CompGasTank GasTankComp => this.GetComp<CompGasTank>();
 
         public CompDriver DriverComp { get; set; }
 
@@ -398,7 +405,7 @@
 
             Action action_DismountInBase = () =>
             {
-                Job jobNew = myPawn.DismountAtParkingLot(this);
+                Job jobNew = myPawn.DismountAtParkingLot(this, "VC GFMO");
 
                 myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
             };
@@ -703,10 +710,9 @@
 
             stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
 
-            CompGasTank gasTankComp = this.TryGetComp<CompGasTank>();
-            if (gasTankComp != null)
+            if (this.HasGasTank())
             {
-                if (gasTankComp.tankLeaking)
+                if (this.GasTankComp.tankLeaking)
                 {
                     stringBuilder.AppendLine("TankLeaking".Translate());
                 }

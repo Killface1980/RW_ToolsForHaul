@@ -12,7 +12,8 @@
   
   <!-- Cart -->
   <InStorage>In Storage</InStorage>
-  
+  <VehicleTankLeakingLabel>A gas tank is leaking fuel</VehicleTankLeakingLabel>
+  <VehicleTankLeakingExplanation>The gas tank of this vehicle has been damaged and is leaking fuel. Repair it to avoid more gas spilled on the ground.</VehicleTankLeakingExplanation>
   <!-- Saddle -->
   <Rider>Rider</Rider>
   
