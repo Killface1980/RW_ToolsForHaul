@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     using RimWorld;
@@ -64,8 +65,7 @@
                 }
                 else
                 {
-
-                    if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Humanlike && pawn.RaceProps.IsFlesh)
+                    if (pawn.Faction.IsPlayer && pawn.RaceProps.Humanlike && pawn.RaceProps.IsFlesh)
                     {
                         if (job.def == JobDefOf.LayDown || job.def == JobDefOf.Arrest || job.def == JobDefOf.DeliverFood
                             || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.EnterTransporter
@@ -90,7 +90,25 @@
                             }
                         }
                     }
+                    else if (pawn.Faction.HostileTo(Faction.OfPlayer))
+                    {
+                        if (!pawn.IsDriver())
+                        {
+                            if (job.def == JobDefOf.Flee || job.def == JobDefOf.FleeAndCower || job.def == JobDefOf.Steal || job.def == JobDefOf.Kidnap || job.def == JobDefOf.CarryDownedPawnToExit)
+                            {
+                                List<Thing> availableVehiclesForSteeling = pawn.AvailableVehiclesForSteeling(20f);
 
+                                if (availableVehiclesForSteeling.Any())
+                                {
+                                    var oldJob = job;
+                                    pawn.jobs.jobQueue.EnqueueFirst(oldJob);
+
+                                    job = new Job(HaulJobDefOf.Mount);
+                                    job.targetA = availableVehiclesForSteeling.FirstOrDefault();
+                                }
+                            }
+                        }
+                    }
                     result = new ThinkResult(job, this, null);
                 }
             }

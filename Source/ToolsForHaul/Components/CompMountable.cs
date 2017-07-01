@@ -194,8 +194,7 @@ namespace ToolsForHaul.Components
 
                                 if (hitPointsPercent < 0.65f
                                     //          || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
-                                    || flag
-                                        || !this.cart.RefuelableComp.HasFuel)
+                                    || flag || !this.cart.RefuelableComp.HasFuel)
                                 {
                                     Job jobNew = this.Driver.DismountAtParkingLot(cart, "CM");
                                     this.Driver.jobs.StartJob(jobNew);

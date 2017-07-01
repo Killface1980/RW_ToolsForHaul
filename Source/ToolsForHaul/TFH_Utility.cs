@@ -238,10 +238,11 @@ namespace ToolsForHaul.Utilities
             return availableVehicles;
         }
 
-        public static List<Thing> AvailableVehiclesForSteeling(this Pawn pawn)
+        public static List<Thing> AvailableVehiclesForSteeling(this Pawn pawn, float distance)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                aV => (aV is Vehicle_Cart) && !aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV)); // Unmounted
+                aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted && pawn.CanReserve(aV) && aV.Position.InHorDistOf(pawn.Position, distance)); // Unmounted
+            availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
             return availableVehicles;
         }
 

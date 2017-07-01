@@ -26,13 +26,13 @@
                 return null;
             }
 
-            List<Thing> steelVehicle = pawn.AvailableVehiclesForSteeling();
+            if (pawn.IsDriver()) return null;
+
+            List<Thing> steelVehicle = pawn.AvailableVehiclesForSteeling(20f);
             foreach (var thing in steelVehicle)
             {
                 var cart = (Vehicle_Cart)thing;
 
-                if (pawn.IsDriver())
-                    break;
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;
                 if (!cart.IsBurning()

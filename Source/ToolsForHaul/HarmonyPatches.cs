@@ -7,9 +7,13 @@
     using RimWorld;
 
     using ToolsForHaul.Components;
+    using ToolsForHaul.Utilities;
     using ToolsForHaul.Vehicles;
 
+    using UnityEngine;
+
     using Verse;
+    using Verse.AI;
 
     [StaticConstructorOnStartup]
     class HarmonyPatches
@@ -41,6 +45,80 @@
                 cart.GasTankComp.tankLeaking = false;
                 cart.GasTankComp._tankHitPos = 1f;
             }
+        }
+    }
+
+
+
+    [HarmonyPatch(typeof(Pawn_PathFollower), "SetupMoveIntoNextCell")]
+    static class SetupMoveIntoNextCell_Postfix
+    {
+        static FieldInfo PawnField = AccessTools.Field(typeof(Pawn_PathFollower), "pawn");
+
+        [HarmonyPostfix]
+        public static void SetupMoveIntoNextCell(Pawn_PathFollower __instance)
+        {
+            Pawn pawn = (Pawn)PawnField?.GetValue(__instance);
+            //Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
+
+            Vehicle_Cart cart = pawn.MountedVehicle();
+            if (cart != null)
+            {
+
+                // TODO create own formula, wheel size??
+          //      Log.Message("Old cell cost: " + +__instance.nextCellCostLeft + " / " + __instance.nextCellCostTotal);
+                var newCost = Mathf.Min(__instance.nextCellCostTotal, 20f);
+
+                   __instance.nextCellCostTotal = newCost;
+                   __instance.nextCellCostLeft = newCost;
+            }
+
+            //  int num;
+            //  if (c.x == this.pawn.Position.x || c.z == this.pawn.Position.z)
+            //  {
+            //      num = this.pawn.TicksPerMoveCardinal;
+            //  }
+            //  else
+            //  {
+            //      num = this.pawn.TicksPerMoveDiagonal;
+            //  }
+            //  num += this.pawn.Map.pathGrid.CalculatedCostAt(c, false, this.pawn.Position);
+            //  Building edifice = c.GetEdifice(this.pawn.Map);
+            //  if (edifice != null)
+            //  {
+            //      num += (int)edifice.PathWalkCostFor(this.pawn);
+            //  }
+            //  if (num > 450)
+            //  {
+            //      num = 450;
+            //  }
+            //  if (this.pawn.jobs.curJob != null)
+            //  {
+            //      switch (this.pawn.jobs.curJob.locomotionUrgency)
+            //      {
+            //          case LocomotionUrgency.Amble:
+            //              num *= 3;
+            //              if (num < 60)
+            //              {
+            //                  num = 60;
+            //              }
+            //              break;
+            //          case LocomotionUrgency.Walk:
+            //              num *= 2;
+            //              if (num < 50)
+            //              {
+            //                  num = 50;
+            //              }
+            //              break;
+            //          case LocomotionUrgency.Jog:
+            //              num *= 1;
+            //              break;
+            //          case LocomotionUrgency.Sprint:
+            //              num = Mathf.RoundToInt((float)num * 0.75f);
+            //              break;
+            //      }
+            //  }
+            //  return Mathf.Max(num, 1);
         }
     }
 }
