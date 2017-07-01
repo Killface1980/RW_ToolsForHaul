@@ -21,7 +21,6 @@ namespace ToolsForHaul.Components
         public bool tankLeaking;
         public float _tankHitPos = 1f;
         private int tankHitCount;
-        public ThingDef fuelFilthDefName = ThingDef.Named("TFH_FilthFuel");
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -64,7 +63,7 @@ namespace ToolsForHaul.Components
                     {
                         this.cart.RefuelableComp.ConsumeFuel(0.15f);
 
-                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, this.fuelFilthDefName, this.parent.LabelCap);
+                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, TFH_ThingDefOf.ChemFuelFilth, this.parent.LabelCap);
                         this._tankSpillTick = Find.TickManager.TicksGame + 15;
                     }
                 }
@@ -91,7 +90,7 @@ namespace ToolsForHaul.Components
 
                         int splash = (int)(this.cart.RefuelableComp.FuelPercentOfMax - this._tankHitPos * 20);
 
-                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, this.fuelFilthDefName, this.parent.LabelCap, splash);
+                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, TFH_ThingDefOf.ChemFuelFilth, this.parent.LabelCap, splash);
                     }
 
                     if (hitpointsPercent < 0.05f && Rand.Value > 0.5f)
@@ -109,7 +108,7 @@ namespace ToolsForHaul.Components
                         if (!this.tankLeaking)
                         {
                             this.cart.RefuelableComp.ConsumeFuel(1f);
-                            FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, this.fuelFilthDefName, this.parent.LabelCap, 6);
+                            FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, TFH_ThingDefOf.ChemFuelFilth, this.parent.LabelCap, 6);
                             makeHole = true;
                         }
 
@@ -127,7 +126,7 @@ namespace ToolsForHaul.Components
                     {
                         int splash = (int)(this.cart.RefuelableComp.FuelPercentOfMax - this._tankHitPos * 20);
 
-                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, this.fuelFilthDefName, this.parent.LabelCap, splash);
+                        FilthMaker.MakeFilth(this.parent.Position, this.parent.Map, TFH_ThingDefOf.ChemFuelFilth, this.parent.LabelCap, splash);
                     }
                 }
 

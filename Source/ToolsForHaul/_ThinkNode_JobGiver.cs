@@ -1,5 +1,7 @@
 ﻿namespace ToolsForHaul.Detours
 {
+    // Not working
+
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -25,6 +27,7 @@
         [Detour(typeof(ThinkNode_JobGiver), bindingFlags = BindingFlags.Instance | BindingFlags.Public)]
         public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
         {
+            Log.Message("Test - detour working");
             ThinkResult result;
             try
             {
@@ -94,17 +97,26 @@
                     {
                         if (!pawn.IsDriver())
                         {
-                            if (job.def == JobDefOf.Flee || job.def == JobDefOf.FleeAndCower || job.def == JobDefOf.Steal || job.def == JobDefOf.Kidnap || job.def == JobDefOf.CarryDownedPawnToExit)
+                            if (job.def == JobDefOf.Flee || job.def == JobDefOf.FleeAndCower
+                                || job.def == JobDefOf.Steal || job.def == JobDefOf.Kidnap
+                                || job.def == JobDefOf.CarryDownedPawnToExit || job.def == JobDefOf.Goto
+                                && pawn.CurJob.targetA.Cell.OnEdge(pawn.Map))
                             {
+                                Log.Message(pawn.LabelShort + " no driver. " + job.def);
                                 List<Thing> availableVehiclesForSteeling = pawn.AvailableVehiclesForSteeling(20f);
 
-                                if (availableVehiclesForSteeling.Any())
+                                Log.Message("Shiny cars " + availableVehiclesForSteeling);
+
+                                if (!availableVehiclesForSteeling.NullOrEmpty())
                                 {
                                     var oldJob = job;
                                     pawn.jobs.jobQueue.EnqueueFirst(oldJob);
 
-                                    job = new Job(HaulJobDefOf.Mount);
-                                    job.targetA = availableVehiclesForSteeling.FirstOrDefault();
+                                    job = new Job(HaulJobDefOf.Mount)
+                                    {
+                                        targetA = availableVehiclesForSteeling
+                                                      .FirstOrDefault()
+                                    };
                                 }
                             }
                         }
@@ -120,32 +132,5 @@
             return result;
         }
 
-        private static Job GetVehicle(Pawn pawn, Job job, WorkTypeDef workType)
-        {
-            List<Thing> availableVehicles = pawn.AvailableVehicles();
-            if (!pawn.IsDriver())
-            {
-                if (availableVehicles.Count > 0)
-                {
-                    Thing vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, workType);
-                    if (vehicle != null)
-                    {
-                        job = new Job(HaulJobDefOf.Mount)
-                        {
-                            targetA = vehicle
-                        };
-                    }
-                }
-            }
-            else
-            {
-                if (!TFH_Utility.IsDriverOfThisVehicle(pawn, TFH_Utility.GetRightVehicle(pawn, availableVehicles, workType)))
-                {
-                    job = pawn.DismountAtParkingLot(pawn.MountedVehicle(), "TNJ 99");
-                }
-            }
-
-            return job;
-        }
     }
 }

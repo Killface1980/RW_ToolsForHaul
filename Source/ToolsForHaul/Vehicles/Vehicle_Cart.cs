@@ -65,7 +65,8 @@
 
         public override bool ClaimableBy(Faction faction)
         {
-            if (!this.MountableComp.IsMounted)
+            // Insect hack to forbid vehicles of non-dead enemies to player
+            if (!this.MountableComp.IsMounted && this.Faction == Faction.OfInsects)
             {
                 return true;
             }
@@ -88,6 +89,25 @@
         {
             return (this.RefuelableComp != null && this.RefuelableComp.HasFuel)
                    || this.VehicleComp.MotorizedWithoutFuel();
+        }
+
+        public bool CanExplode()
+        {
+            return this.ExplosiveComp != null;
+        }
+
+        public bool IsAboutToBlowUp()
+        {
+            if (this.CanExplode())
+            {
+                if (this.IsBurning() && this.HitPoints / this.MaxHitPoints < 0.4f
+                    || this.ExplosiveComp.wickStarted)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool HasGasTank()
@@ -164,6 +184,8 @@
 #if Headlights
         HeadLights flooder;
 #endif
+
+
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
@@ -251,7 +273,7 @@
                     };
             }
 
-            if (this.ExplosiveComp != null)
+            if (this.CanExplode())
             {
                 Command_Action command_Action =
                     new Command_Action
@@ -698,25 +720,27 @@
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append(base.GetInspectString());
 
+            if (this.HasGasTank())
+            {
+                if (this.GasTankComp.tankLeaking)
+                {
+                    stringBuilder.Append(" - " + "TankIsLeaking".Translate());
+                    stringBuilder.Append(" - ");
+                }
+            }
+
             string currentDriverString;
             if (this.MountableComp.IsMounted)
             {
-                currentDriverString = this.MountableComp.Driver.LabelCap;
+                currentDriverString = "Driver".Translate() + ": " + this.MountableComp.Driver.LabelCap;
             }
             else
             {
                 currentDriverString = "NoDriver".Translate();
             }
 
-            stringBuilder.AppendLine("Driver".Translate() + ": " + currentDriverString);
+            stringBuilder.AppendLine(currentDriverString);
 
-            if (this.HasGasTank())
-            {
-                if (this.GasTankComp.tankLeaking)
-                {
-                    stringBuilder.AppendLine("TankLeaking".Translate());
-                }
-            }
 
             // string text = storage.ContentsString;
             // stringBuilder.AppendLine(string.Concat(new object[]

@@ -22,7 +22,7 @@ namespace ToolsForHaul
         {
                 if (loc.ShouldSpawnMotesAt(map) && !MoteCounterTFH.SaturatedLowPriority)
                 {
-                    MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(ThingDef.Named("Mote_Track_ATV"));
+                    MoteThrown moteThrown = (MoteThrown)ThingMaker.MakeThing(TFH_ThingDefOf.Mote_Track_ATV);
                     moteThrown.exactRotation = rot;
                     moteThrown.exactPosition = loc;
                     GenSpawn.Spawn(moteThrown, loc.ToIntVec3(), map);

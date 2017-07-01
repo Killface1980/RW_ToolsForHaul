@@ -13,7 +13,7 @@
 
     public class JoyGiver_GoForRide : JoyGiver_InteractBuilding
     {
-        protected override bool CanDoDuringParty => false;
+        protected override bool CanDoDuringParty => true;
 
         protected override Job TryGivePlayJob(Pawn pawn, Thing t)
         {

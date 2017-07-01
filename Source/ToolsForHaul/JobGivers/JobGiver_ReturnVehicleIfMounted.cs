@@ -12,31 +12,32 @@
     using Verse;
     using Verse.AI;
 
-    public class JobGiver_StealVehicle : ThinkNode_JobGiver
+    public class JobGiver_ReturnVehicleIfMounted : ThinkNode_JobGiver
     {
         public const float ItemsSearchRadiusInitial = 7f;
 
-        private const float vehicleSearchRadius = 24f;
+        private const float vehicleSearchRadius = 12f;
 
         protected override Job TryGiveJob(Pawn pawn)
         {
+
+            if (!pawn.IsDriver())
+            {
+                return null;
+            }
+            else
+            {
+                Job job = pawn.DismountAtParkingLot(pawn.MountedVehicle(), "Jobgiver Return");
+                return job;
+            }
 
             if (pawn != null && !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
             {
                 return null;
             }
 
-            if (pawn.Faction.IsPlayer)
-            {
-                return null;
-            }
 
-            if (pawn.IsDriver())
-            {
-                return null;
-            }
-
-            List<Thing> steelVehicle = pawn.AvailableVehiclesForSteeling(vehicleSearchRadius);
+            List<Thing> steelVehicle = pawn.AvailableVehiclesForSteeling(20f);
             foreach (var thing in steelVehicle)
             {
                 var cart = (Vehicle_Cart)thing;
@@ -44,10 +45,11 @@
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;
                 if (!cart.IsBurning()
+                    && cart.Position.InHorDistOf(pawn.Position, vehicleSearchRadius)
                     && !cart.MountableComp.IsMounted
                     && (float)cart.HitPoints / cart.MaxHitPoints > 0.2f
                     && cart.VehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed)
-                    )
+                    && pawn.CanReserveAndReach(cart, PathEndMode.InteractionCell, Danger.Deadly))
                 {
                     steelVehicle.Add(cart);
                 }
@@ -55,7 +57,7 @@
             }
 
 
-            if (steelVehicle.Any() )
+            if (steelVehicle.Any())
             {
                 // && !GenAI.InDangerousCombat(pawn))
                 IOrderedEnumerable<Thing> orderedEnumerable =

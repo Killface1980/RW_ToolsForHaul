@@ -22,7 +22,7 @@
 
 
   <ThingDef ParentName="TFH_BaseFilth">
-    <defName>TFH_FilthFuel</defName>
+    <defName>ChemFuelFilth</defName>
     <label>chemfuel puddle</label>
     <description>A puddle of flammable chemfuel.</description>
     <thingClass>LiquidFuel</thingClass>

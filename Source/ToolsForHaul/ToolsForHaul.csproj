@@ -45,7 +45,7 @@
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\..\..\..\..\..\workshop\content\294100\818773962\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -58,7 +58,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ThinkNode_JobGiver_Patch.cs" />
+    <None Include="JobGivers\Class1.cs" />
+    <Compile Include="TFH_ThingDefOf.cs" />
     <Compile Include="Components\CompGasTank.cs" />
+    <Compile Include="JobGivers\JobGiver_ReturnVehicleIfMounted.cs" />
+    <Compile Include="JobGivers\JobGiver_MountFreeNearFactionVehicle.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithAnimalCart.cs" />
@@ -73,7 +78,7 @@
     <Compile Include="IncidentWorker\IncidentWorker_RaidEnemy.cs" />
     <Compile Include="MoteMakerTFH.cs" />
     <Compile Include="MoteCounterTFH.cs" />
-    <Compile Include="Defs\HaulStatDefOf.cs" />
+    <Compile Include="HaulStatDefOf.cs" />
     <Compile Include="Components\CompDriver.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
@@ -83,7 +88,7 @@
     <None Include="_inactive\_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
     <None Include="NoCCL\Class1.cs" />
-    <Compile Include="Defs\HaulJobDefOf.cs" />
+    <Compile Include="HaulJobDefOf.cs" />
     <Compile Include="JobGivers\JobGiver_StealVehicle.cs" />
     <Compile Include="NoCCL\DetourAttribute.cs" />
     <None Include="Things\SpotlightStuff.cs" />
@@ -112,7 +117,7 @@
     <None Include="_inactive\RA_PawnRenderer.cs" />
     <None Include="_inactive\CompTool.cs" />
     <None Include="JobGivers\JobGiver_Kidnap.cs" />
-    <Compile Include="Detours\_ThinkNode_JobGiver.cs" />
+    <None Include="_ThinkNode_JobGiver.cs" />
     <Compile Include="Components\GameComponentToolsForHaul.cs" />
     <Compile Include="NoCCL\Detours.cs" />
     <Compile Include="TFH_Utility.cs" />
@@ -146,6 +151,15 @@
     </Content>
     <Content Include="..\..\Defs\DesignationDefs\Designations.xml">
       <Link>Defs\DesignationDefs\Designations.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\DutyDefs\Duties_Gatherings.xml">
+      <Link>Defs\DutyDefs\Duties_Gatherings.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\DutyDefs\Duties_Misc.xml">
+      <Link>Defs\DutyDefs\Duties_Misc.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\DutyDefs\Duties_NonPlayerHome.xml">
+      <Link>Defs\DutyDefs\Duties_NonPlayerHome.xml</Link>
     </Content>
     <Content Include="..\..\Defs\EffecterDefs\Effecter_Misc.xml">
       <Link>Defs\EffecterDefs\Effecter_Misc.xml</Link>

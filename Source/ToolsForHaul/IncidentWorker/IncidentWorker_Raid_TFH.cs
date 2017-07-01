@@ -146,42 +146,48 @@
                     GenSpawn.Spawn(current, loc, map, parms.spawnRotation);
                     target = current;
 
-                    // Vehicles for raiders
-                    // lowered probability for shield users as they are overpowered
-                        float value = Rand.Value;
-                    bool isShieldUser = false;
-
-                    if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && current.RaceProps.ToolUser)
                     {
-                        List<Apparel> wornApparel = current.apparel.WornApparel;
-                        for (int i = 0; i < wornApparel.Count; i++)
+
+                        // Vehicles for raiders
+                        // lowered probability for shield users as they are overpowered
+                        float value = Rand.Value;
+                        bool isShieldUser = false;
+
+                        if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && current.RaceProps.ToolUser)
                         {
-                            if (wornApparel[i].def == ThingDefOf.Apparel_ShieldBelt)
+                            List<Apparel> wornApparel = current.apparel.WornApparel;
+                            for (int i = 0; i < wornApparel.Count; i++)
                             {
-                                isShieldUser = true;
-                                break;
+                                if (wornApparel[i].def == ThingDefOf.Apparel_ShieldBelt)
+                                {
+                                    isShieldUser = true;
+                                    break;
+                                }
                             }
-                        }
-
-                        if (value >= 0.66f && !isShieldUser || isShieldUser && value > 0.9f)
-                        {
-                            CellFinder.RandomClosewalkCellNear(current.Position, current.Map, 5);
-                            Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
-
-                            if (value >= 0.9f && !isShieldUser)
+                            if (current.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
                             {
-                                thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
+                                if (value >= 0.66f && !isShieldUser || isShieldUser && value > 0.9f)
+                                {
+                                    CellFinder.RandomClosewalkCellNear(current.Position, current.Map, 5);
+                                    Thing thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleATV);
+
+                                    if (value >= 0.9f && !isShieldUser)
+                                    {
+                                        thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleCombatATV);
+                                    }
+                                    GenSpawn.Spawn(thing, current.Position, current.Map);
+                                    thing.SetFaction(parms.faction);
+
+
+                                    // Job job = new Job(HaulJobDefOf.Mount);
+                                    // thing.Map.reservationManager.ReleaseAllForTarget(thing);
+                                    // job.targetA = thing;
+                                    // current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
+
+                                    int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
+                                    thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
+                                }
                             }
-
-                            GenSpawn.Spawn(thing, current.Position, current.Map);
-
-                            Job job = new Job(HaulJobDefOf.Mount);
-                            thing.Map.reservationManager.ReleaseAllForTarget(thing);
-                            job.targetA = thing;
-                            current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
-
-                            int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
-                            thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
                         }
                     }
                 }

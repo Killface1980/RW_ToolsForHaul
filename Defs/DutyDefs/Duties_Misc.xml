@@ -2,6 +2,135 @@
 <Defs>
 
   <DutyDef>
+    <defName>Travel</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="JobGiver_GotoTravelDestination" />
+        <!-- Note this exit node can happen at odd times
+            like if you block siegers from hitting their siege location before they arrive-->
+        <li Class="JobGiver_ExitMapRandom">
+          <defaultLocomotion>Walk</defaultLocomotion>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>Defend</defName>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <thinkNode Class="ThinkNode_Priority">
+      <!-- Todo here - if outside of duty radius, go to within duty radius-->
+      <!-- Currently this is handled by a hack in JobGiver_AIFightBase-->
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="JobGiver_TakeCombatEnhancingDrug">
+          <onlyIfInDanger>true</onlyIfInDanger>
+        </li>
+        <li Class="JobGiver_AIDefendPoint">
+          <targetAcquireRadius>65</targetAcquireRadius>
+          <targetKeepRadius>72</targetKeepRadius>
+        </li>
+        <li Class="ThinkNode_ForbidOutsideFlagRadius">
+          <maxDistToSquadFlag>16</maxDistToSquadFlag>
+          <subNodes>
+            <li Class="ThinkNode_Subtree">
+              <treeDef>SatisfyBasicNeedsAndWork</treeDef>
+            </li>
+          </subNodes>
+        </li>
+        <li Class="JobGiver_WanderNearDutyLocation">
+          <wanderRadius>8</wanderRadius>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>AssaultColony</defName>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle">
+          <vehicleSearchRadius>1</vehicleSearchRadius>
+        </li>
+        <li Class="JobGiver_TakeCombatEnhancingDrug" />
+        <li Class="JobGiver_AIFightEnemies">
+          <targetAcquireRadius>65</targetAcquireRadius>
+          <targetKeepRadius>72</targetKeepRadius>
+        </li>
+        <li Class="JobGiver_AITrashColonyClose" />
+        <li Class="JobGiver_AITrashBuildingsDistant" />
+        <li Class="JobGiver_AIGotoNearestHostile" />
+        <li Class="JobGiver_AISapper">
+          <canMineNonMineables>false</canMineNonMineables>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>Sapper</defName>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle">
+          <vehicleSearchRadius>1</vehicleSearchRadius>
+        </li>
+        <li Class="JobGiver_TakeCombatEnhancingDrug" />
+        <li Class="JobGiver_AIFightEnemies">
+          <targetAcquireRadius>12</targetAcquireRadius>
+          <targetKeepRadius>15</targetKeepRadius>
+          <needLOSToAcquireNonPawnTargets>true</needLOSToAcquireNonPawnTargets>
+        </li>
+        <li Class="JobGiver_AISapper" />
+        <li Class="JobGiver_AITrashColonyClose" />
+        <li Class="JobGiver_AITrashBuildingsDistant" />
+        <li Class="JobGiver_AIGotoNearestHostile" />
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>Escort</defName>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="JobGiver_TakeCombatEnhancingDrug">
+          <onlyIfInDanger>true</onlyIfInDanger>
+        </li>
+        <li Class="JobGiver_AIFollowEscortee"/>
+        <li Class="JobGiver_AIDefendEscortee">
+          <targetAcquireRadius>65</targetAcquireRadius>
+          <targetKeepRadius>72</targetKeepRadius>
+        </li>
+        <li Class="JobGiver_WanderNearDutyLocation">
+          <wanderRadius>8</wanderRadius>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>HuntEnemiesIndividual</defName>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="JobGiver_TakeCombatEnhancingDrug" />
+        <li Class="JobGiver_AIFightEnemies">
+          <targetAcquireRadius>65</targetAcquireRadius>
+          <targetKeepRadius>72</targetKeepRadius>
+        </li>
+        <li Class="JobGiver_AITrashColonyClose" />
+        <li Class="JobGiver_AITrashBuildingsDistant" />
+        <li Class="JobGiver_AIGotoNearestHostile" />
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
     <defName>Kidnap</defName>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
@@ -10,6 +139,21 @@
         <li Class="JobGiver_ExitMapBest">
           <defaultLocomotion>Jog</defaultLocomotion>
           <jobMaxDuration>200</jobMaxDuration>
+          <forceCanDig>true</forceCanDig>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+  <DutyDef>
+    <defName>TakeWoundedGuest</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="JobGiver_TakeWoundedGuest" />
+        <li Class="JobGiver_ExitMapBest">
+          <defaultLocomotion>Jog</defaultLocomotion>
+          <jobMaxDuration>500</jobMaxDuration>
           <forceCanDig>true</forceCanDig>
         </li>
       </subNodes>
@@ -82,7 +226,7 @@
         <li Class="ToolsForHaul.JobGivers.JobGiver_StealVehicle" />
       </subNodes>
     </constantThinkNode>
-    
+
   </DutyDef>
 
   <DutyDef>
@@ -123,5 +267,47 @@
     </constantThinkNode>
   </DutyDef>
 
+  <!-- not working with subnodes-->
+  <!--
+  
+  <DutyDef>
+    <defName>ExitMapRandom</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="JobGiver_ExitMapRandom">
+          <defaultLocomotion>Walk</defaultLocomotion>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
 
+  <DutyDef>
+    <defName>ExitMapBest</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="JobGiver_ExitMapBest">
+          <defaultLocomotion>Walk</defaultLocomotion>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+-->
+  <DutyDef>
+    <defName>ExitMapBestAndDefendSelf</defName>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <li Class="ToolsForHaul.JobGivers.JobGiver_StealVehicle" />
+        <li Class="JobGiver_AIDefendSelf">
+          <targetAcquireRadius>35</targetAcquireRadius>
+          <targetKeepRadius>40</targetKeepRadius>
+        </li>
+        <li Class="JobGiver_ExitMapBest">
+          <defaultLocomotion>Walk</defaultLocomotion>
+          <jobMaxDuration>200</jobMaxDuration>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
 </Defs>

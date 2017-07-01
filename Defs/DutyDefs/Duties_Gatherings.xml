@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <DutyDef>
+    <defName>MarryPawn</defName>
+    <socialModeMax>Off</socialModeMax>
+    <thinkNode Class="ThinkNode_Priority">
+      <subNodes>
+        <!-- TFH - Dismount vehicles if have any - needs patching -->
+        <li Class ="ToolsForHaul.JobGivers.JobGiver_ReturnVehicleIfMounted"/>
+
+        <!-- Goto my spot -->
+        <li Class="JobGiver_GotoTravelDestination">
+          <exactCell>true</exactCell>
+          <locomotionUrgency>Jog</locomotionUrgency>
+        </li>
+
+        <!-- Arrived -->
+        <li Class="ThinkNode_ConditionalAtDutyLocation">
+          <subNodes>
+            <!-- Try to marry adjacent fiance -->
+            <li Class="JobGiver_MarryAdjacentPawn" />
+
+            <!-- Wait for the fiance to arrive -->
+            <li Class="JobGiver_Idle">
+              <ticks>50</ticks>
+            </li>
+          </subNodes>
+        </li>
+      </subNodes>
+    </thinkNode>
+  </DutyDef>
+
+</Defs>

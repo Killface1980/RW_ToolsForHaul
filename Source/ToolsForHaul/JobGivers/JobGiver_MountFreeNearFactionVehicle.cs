@@ -12,11 +12,11 @@
     using Verse;
     using Verse.AI;
 
-    public class JobGiver_StealVehicle : ThinkNode_JobGiver
+    public class JobGiver_MountFreeNearFactionVehicle : ThinkNode_JobGiver
     {
         public const float ItemsSearchRadiusInitial = 7f;
 
-        private const float vehicleSearchRadius = 24f;
+        private float vehicleSearchRadius = 24f;
 
         protected override Job TryGiveJob(Pawn pawn)
         {
@@ -36,18 +36,26 @@
                 return null;
             }
 
-            List<Thing> steelVehicle = pawn.AvailableVehiclesForSteeling(vehicleSearchRadius);
+            List<Thing> steelVehicle;
+
+            if (pawn.Faction.HostileTo(Faction.OfPlayer))
+            {
+                steelVehicle = pawn.AvailableVehiclesForFaction(this.vehicleSearchRadius);
+            }
+            else
+            {
+                
+                steelVehicle = pawn.AvailableVehiclesForSteeling(this.vehicleSearchRadius);
+            }
+
             foreach (var thing in steelVehicle)
             {
                 var cart = (Vehicle_Cart)thing;
 
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;
-                if (!cart.IsBurning()
-                    && !cart.MountableComp.IsMounted
-                    && (float)cart.HitPoints / cart.MaxHitPoints > 0.2f
-                    && cart.VehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed)
-                    )
+                if ((float)cart.HitPoints / cart.MaxHitPoints > 0.2f
+                    && cart.VehicleComp.VehicleSpeed >= pawn.GetStatValue(StatDefOf.MoveSpeed))
                 {
                     steelVehicle.Add(cart);
                 }
@@ -55,7 +63,7 @@
             }
 
 
-            if (steelVehicle.Any() )
+            if (steelVehicle.Any())
             {
                 // && !GenAI.InDangerousCombat(pawn))
                 IOrderedEnumerable<Thing> orderedEnumerable =

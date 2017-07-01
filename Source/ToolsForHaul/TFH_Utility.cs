@@ -241,7 +241,22 @@ namespace ToolsForHaul.Utilities
         public static List<Thing> AvailableVehiclesForSteeling(this Pawn pawn, float distance)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted && pawn.CanReserve(aV) && aV.Position.InHorDistOf(pawn.Position, distance)); // Unmounted
+                aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted
+                      && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
+                      && aV.Position.InHorDistOf(pawn.Position, distance)
+                      && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
+            availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
+            return availableVehicles;
+        }
+
+        public static List<Thing> AvailableVehiclesForFaction(this Pawn pawn, float distance)
+        {
+            List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
+                aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted
+                      && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
+                      && aV.Position.InHorDistOf(pawn.Position, distance)
+                      && (aV.Faction == pawn.Faction || aV.Faction == Faction.OfInsects || pawn.Faction.HostileTo(aV.Faction))
+                      && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
             availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
             return availableVehicles;
         }
@@ -579,7 +594,10 @@ namespace ToolsForHaul.Utilities
                     {
                         if (vehicleCart.GasTankComp.tankLeaking) continue;
                     }
-                    if (vehicleCart.ExplosiveComp.wickStarted) continue;
+                    if (vehicleCart.IsAboutToBlowUp())
+                    {
+                        continue;
+                    }
                     if (!vehicleCart.IsCurrentlyMotorized()) continue;
 
                     cart = vehicleCart;
@@ -604,7 +622,10 @@ namespace ToolsForHaul.Utilities
                     {
                         if (vehicleCart.GasTankComp.tankLeaking) continue;
                     }
-                    if (vehicleCart.ExplosiveComp.wickStarted) continue;
+                    if (vehicleCart.IsAboutToBlowUp())
+                    {
+                        continue;
+                    }
                     if (!vehicleCart.IsCurrentlyMotorized()) continue;
                     if (haulThing != null)
                     {
@@ -629,7 +650,10 @@ namespace ToolsForHaul.Utilities
                     {
                         if (vehicleCart.GasTankComp.tankLeaking) continue;
                     }
-                    if (vehicleCart.ExplosiveComp.wickStarted) continue;
+                    if (vehicleCart.IsAboutToBlowUp())
+                    {
+                        continue;
+                    }
                     if (!vehicleCart.IsCurrentlyMotorized()) continue;
                     cart = vehicleCart;
                     break;

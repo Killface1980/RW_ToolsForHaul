@@ -85,27 +85,31 @@
             string title = "RefugeeChasedTitle".Translate(map.info.parent.Label);
 
             // Vehicle
-            if ( refugee.RaceProps.ToolUser)
+            if (refugee.RaceProps.ToolUser)
             {
                 float value = Rand.Value;
 
-                if (value >= 0.5f)
+                if (refugee.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
                 {
-                    CellFinder.RandomClosewalkCellNear(refugee.Position, refugee.Map, 5);
-                    Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
+                    if (value >= 0.2f)
                     {
-                        thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
+                        CellFinder.RandomClosewalkCellNear(refugee.Position, refugee.Map, 5);
+                        Thing thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleSmackWay);
+                        if (Rand.Value > 0.7f)
+                        {
+                            thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleSpeeder);
+                        }
+
+                        GenSpawn.Spawn(thing, refugee.Position, refugee.Map);
+
+                        Job job = new Job(HaulJobDefOf.Mount);
+                        thing.Map.reservationManager.ReleaseAllForTarget(thing);
+                        job.targetA = thing;
+                        refugee.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
+
+                        int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
+                        thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
                     }
-
-                    GenSpawn.Spawn(thing, refugee.Position, refugee.Map);
-
-                    Job job = new Job(HaulJobDefOf.Mount);
-                    thing.Map.reservationManager.ReleaseAllForTarget(thing);
-                    job.targetA = thing;
-                    refugee.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
-
-                    int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
-                    thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
                 }
             }
 

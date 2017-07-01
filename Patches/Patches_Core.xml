@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Patch>
 
-	<Operation Class="PatchOperationSequence">
-		<success>Always</success>
-		<Operations>
-			<li Class="PatchOperationAdd">
-				<xpath>/Defs/DesignationCategoryDef[DefName="Zone"]/specialDesignatorClasses</xpath>
-				<value>
-					<li>ToolsForHaul.Designators.Designator_ZoneAddParkingLot</li>
-				</value>
-				<order>Append</order>
-			</li>
-		</Operations>
-	</Operation>
+  <Operation Class="PatchOperationSequence">
+    <success>Always</success>
+    <Operations>
+      <li Class="PatchOperationAdd">
+        <xpath>/Defs/DesignationCategoryDef[DefName="Zone"]/specialDesignatorClasses</xpath>
+        <value>
+          <li>ToolsForHaul.Designators.Designator_ZoneAddParkingLot</li>
+        </value>
+        <order>Append</order>
+      </li>
+    </Operations>
+  </Operation>
 
+  <!--
+  <Operation Class="PatchOperationSequence">
+    <success>Always</success>
+    <Operations>
+      <li Class="PatchOperationAdd">
+        <xpath>
+          /Defs/DutyDef[DefName="AssaultColony"]/thinkNode Class="ThinkNode_Priority"/subNodes
+        </xpath>
+        <value>
+          <li Class ="ToolsForHaul.JobGivers.JobGiver_StealVehicle"></li>
+        </value>
+        <order>Prepend</order>
+      </li>
+    </Operations>
+  </Operation>
+-->
+  
 </Patch>

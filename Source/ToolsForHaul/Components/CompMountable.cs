@@ -246,15 +246,18 @@ namespace ToolsForHaul.Components
                 cart.DriverComp.parent = null;
             }
 
-            this.Driver.RaceProps.makesFootprints = true;
+            this.Driver.RaceProps.makesFootprints = this.Driver.def.race.makesFootprints;
 
             // if (Find.Reservations.IsReserved(parent, Driver.Faction))
             this.parent.Map.reservationManager.ReleaseAllForTarget(this.parent);
 
             if (this.Driver.Faction != Faction.OfPlayer)
             {
-                this.parent.SetForbidden(true);
-                this.parent.SetFaction(null);
+            //    this.parent.SetForbidden(true);
+                if (this.Driver.Dead)
+                {
+                    this.parent.SetFaction(Faction.OfInsects);
+                }
             }
             this.Driver.Position = this.Driver.Position.RandomAdjacentCell8Way();
 

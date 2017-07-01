@@ -67,7 +67,7 @@
 
                 // TODO create own formula, wheel size??
           //      Log.Message("Old cell cost: " + +__instance.nextCellCostLeft + " / " + __instance.nextCellCostTotal);
-                var newCost = Mathf.Min(__instance.nextCellCostTotal, 20f);
+                float newCost = Mathf.Min(__instance.nextCellCostTotal, 20f);
 
                    __instance.nextCellCostTotal = newCost;
                    __instance.nextCellCostLeft = newCost;

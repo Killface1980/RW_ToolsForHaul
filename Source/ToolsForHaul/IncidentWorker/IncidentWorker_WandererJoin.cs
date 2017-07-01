@@ -35,29 +35,33 @@
             GenSpawn.Spawn(pawn, loc, map);
 
             // Vehicle
-            if (parms.faction.def.techLevel >= TechLevel.Industrial && pawn.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && pawn.RaceProps.ToolUser)
+            if (pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
             {
-                float value = Rand.Value;
-
-                if (value >= 0.5f)
+                if (parms.faction.def.techLevel >= TechLevel.Industrial && pawn.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && pawn.RaceProps.ToolUser)
                 {
-                    CellFinder.RandomClosewalkCellNear(pawn.Position, pawn.Map, 5);
-                    Thing thing = ThingMaker.MakeThing(ThingDef.Named("VehicleATV"));
+                    float value = Rand.Value;
+
+                    if (value >= 0.35f)
                     {
-                        thing = ThingMaker.MakeThing(ThingDef.Named("VehicleCombatATV"));
+                        CellFinder.RandomClosewalkCellNear(pawn.Position, pawn.Map, 5);
+                        Thing thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleATV);
+                        if (Rand.Value > 0.7f)
+                        {
+                            thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleSpeeder);
+                        }
+
+
+                        GenSpawn.Spawn(thing, pawn.Position, pawn.Map);
+
+                        Job job = new Job(HaulJobDefOf.Mount);
+                        thing.Map.reservationManager.ReleaseAllForTarget(thing);
+                        job.targetA = thing;
+                        pawn.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
+
+                        int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
+                        thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
                     }
-
-                    GenSpawn.Spawn(thing, pawn.Position, pawn.Map);
-
-                    Job job = new Job(HaulJobDefOf.Mount);
-                    thing.Map.reservationManager.ReleaseAllForTarget(thing);
-                    job.targetA = thing;
-                    pawn.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
-
-                    int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
-                    thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
-                }
-            }
+                }}
 
 
 
@@ -70,5 +74,8 @@
             Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Good, pawn);
             return true;
         }
+
+            
+        
     }
 }
