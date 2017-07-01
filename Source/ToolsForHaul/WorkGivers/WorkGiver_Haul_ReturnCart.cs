@@ -20,7 +20,7 @@
         {
             var noParking = new List<Thing>();
 
-            foreach (var vehicle in pawn.AvailableVehicles())
+            foreach (var vehicle in pawn.AvailableVehiclesForPlayerFaction(999f))
             {
                 if (!(vehicle.Position.GetZone(pawn.Map) is Zone_ParkingLot))
                 {

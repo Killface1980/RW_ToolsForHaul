@@ -197,7 +197,7 @@ namespace ToolsForHaul.Components
                                     || flag || !this.cart.RefuelableComp.HasFuel)
                                 {
                                     Job jobNew = this.Driver.DismountAtParkingLot(cart, "CM");
-                                    this.Driver.jobs.StartJob(jobNew);
+                                    this.Driver.jobs.TryTakeOrderedJob(jobNew);
                                 }
                             }
                         }

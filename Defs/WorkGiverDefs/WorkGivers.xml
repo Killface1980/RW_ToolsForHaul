@@ -78,7 +78,39 @@
 
 
   <!-- ============= Hauling ============= -->
-
+<!--
+  <WorkGiverDef>
+    <defName>ConstructDeliverResourcesToFramesWithVehicle</defName>
+    <label>deliver resources to frames</label>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_WithVehilce_ConstructDeliverResourcesToFrames</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>45</priorityInType>
+    <verb>work on</verb>
+    <gerund>working on</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <canBeDoneByNonColonists>true</canBeDoneByNonColonists>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+  -->
+  
+  <!--
+  <WorkGiverDef>
+    <defName>ConstructDeliverResourcesToBlueprintsWithVehicle</defName>
+    <label>deliver resources to blueprints</label>
+    <giverClass>ToolsForHaul.WorkGivers.WorkGiver_WithVehicle_ConstructDeliverResourcesToBlueprints</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>35</priorityInType>
+    <verb>work on</verb>
+    <gerund>working on</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <canBeDoneByNonColonists>true</canBeDoneByNonColonists>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+  -->
   <WorkGiverDef>
     <defName>HaulCorpsesWithCart</defName>
     <label>haul corpses with cart</label>

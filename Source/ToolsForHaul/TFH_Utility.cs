@@ -249,13 +249,25 @@ namespace ToolsForHaul.Utilities
             return availableVehicles;
         }
 
-        public static List<Thing> AvailableVehiclesForFaction(this Pawn pawn, float distance)
+        public static List<Thing> AvailableVehiclesForAllFactions(this Pawn pawn, float distance)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
                 aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted
                       && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
                       && aV.Position.InHorDistOf(pawn.Position, distance)
                       && (aV.Faction == pawn.Faction || aV.Faction == Faction.OfInsects || pawn.Faction.HostileTo(aV.Faction))
+                      && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
+            availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
+            return availableVehicles;
+        }
+
+        public static List<Thing> AvailableVehiclesForPlayerFaction(this Pawn pawn, float distance)
+        {
+            List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
+                aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted
+                      && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Some)
+                      && aV.Position.InHorDistOf(pawn.Position, distance)
+                      && (aV.Faction.IsPlayer)
                       && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
             availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
             return availableVehicles;

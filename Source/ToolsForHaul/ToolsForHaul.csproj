@@ -64,6 +64,7 @@
     <Compile Include="JobGivers\JobGiver_ReturnVehicleIfMounted.cs" />
     <Compile Include="JobGivers\JobGiver_MountSpawnedFactionVehicle.cs" />
     <Compile Include="Static.cs" />
+    <None Include="WorkGivers\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_ReturnCart.cs" />
