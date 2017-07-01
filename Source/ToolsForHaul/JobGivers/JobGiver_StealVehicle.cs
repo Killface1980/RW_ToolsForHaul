@@ -16,7 +16,7 @@
     {
         public const float ItemsSearchRadiusInitial = 7f;
 
-        private const float vehicleSearchRadius = 24f;
+        private const float vehicleSearchRadius = 20f;
 
         protected override Job TryGiveJob(Pawn pawn)
         {

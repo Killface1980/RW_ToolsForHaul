@@ -6,7 +6,7 @@
     <alwaysShowWeapon>true</alwaysShowWeapon>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountSpawnedFactionVehicle" />
         <li Class="JobGiver_TakeCombatEnhancingDrug">
           <onlyIfInDanger>true</onlyIfInDanger>
         </li>

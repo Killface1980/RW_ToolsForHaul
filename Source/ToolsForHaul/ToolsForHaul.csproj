@@ -58,12 +58,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ThinkNode_JobGiver_Patch.cs" />
-    <None Include="JobGivers\Class1.cs" />
+    <Compile Include="ThinkNode_JobGiver_Patch.cs" />
     <Compile Include="TFH_ThingDefOf.cs" />
     <Compile Include="Components\CompGasTank.cs" />
     <Compile Include="JobGivers\JobGiver_ReturnVehicleIfMounted.cs" />
-    <Compile Include="JobGivers\JobGiver_MountFreeNearFactionVehicle.cs" />
+    <Compile Include="JobGivers\JobGiver_MountSpawnedFactionVehicle.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithAnimalCart.cs" />

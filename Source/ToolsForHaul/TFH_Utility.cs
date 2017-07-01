@@ -261,6 +261,16 @@ namespace ToolsForHaul.Utilities
             return availableVehicles;
         }
 
+        public static List<Thing> AvailableVehicleAt(this Pawn pawn)
+        {
+            List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
+                aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted
+                      && aV.Position == pawn.Position
+                      && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
+                      && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
+            return availableVehicles;
+        }
+
         public static Vehicle_Cart MountedVehicle(this Pawn pawn)
         {
 

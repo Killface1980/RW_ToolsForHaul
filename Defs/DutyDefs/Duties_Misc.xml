@@ -5,7 +5,7 @@
     <defName>Travel</defName>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountSpawnedFactionVehicle" />
         <li Class="JobGiver_GotoTravelDestination" />
         <!-- Note this exit node can happen at odd times
             like if you block siegers from hitting their siege location before they arrive-->
@@ -23,7 +23,7 @@
       <!-- Todo here - if outside of duty radius, go to within duty radius-->
       <!-- Currently this is handled by a hack in JobGiver_AIFightBase-->
       <subNodes>
-        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountSpawnedFactionVehicle" />
         <li Class="JobGiver_TakeCombatEnhancingDrug">
           <onlyIfInDanger>true</onlyIfInDanger>
         </li>
@@ -51,7 +51,7 @@
     <alwaysShowWeapon>true</alwaysShowWeapon>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle">
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountSpawnedFactionVehicle">
           <vehicleSearchRadius>1</vehicleSearchRadius>
         </li>
         <li Class="JobGiver_TakeCombatEnhancingDrug" />
@@ -74,7 +74,7 @@
     <alwaysShowWeapon>true</alwaysShowWeapon>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle">
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountSpawnedFactionVehicle">
           <vehicleSearchRadius>1</vehicleSearchRadius>
         </li>
         <li Class="JobGiver_TakeCombatEnhancingDrug" />
@@ -96,7 +96,7 @@
     <alwaysShowWeapon>true</alwaysShowWeapon>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountSpawnedFactionVehicle" />
         <li Class="JobGiver_TakeCombatEnhancingDrug">
           <onlyIfInDanger>true</onlyIfInDanger>
         </li>
@@ -117,7 +117,7 @@
     <alwaysShowWeapon>true</alwaysShowWeapon>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountSpawnedFactionVehicle" />
         <li Class="JobGiver_TakeCombatEnhancingDrug" />
         <li Class="JobGiver_AIFightEnemies">
           <targetAcquireRadius>65</targetAcquireRadius>
@@ -149,7 +149,7 @@
     <defName>TakeWoundedGuest</defName>
     <thinkNode Class="ThinkNode_Priority">
       <subNodes>
-        <li Class="ToolsForHaul.JobGivers.JobGiver_MountFreeNearFactionVehicle" />
+        <li Class="ToolsForHaul.JobGivers.JobGiver_MountSpawnedFactionVehicle" />
         <li Class="JobGiver_TakeWoundedGuest" />
         <li Class="JobGiver_ExitMapBest">
           <defaultLocomotion>Jog</defaultLocomotion>
