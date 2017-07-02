@@ -7,6 +7,7 @@
 
     using Verse;
 
+    // Vanilla copy with edited base class
     public class IncidentWorker_RaidEnemy : IncidentWorker_Raid_TFH
     {
         protected override bool FactionCanBeGroupSource(Faction f, Map map, bool desperate = false)

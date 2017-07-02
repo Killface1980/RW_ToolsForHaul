@@ -169,11 +169,11 @@
                                 if (value >= 0.66f && !isShieldUser || isShieldUser && value > 0.9f)
                                 {
                                     CellFinder.RandomClosewalkCellNear(current.Position, current.Map, 5);
-                                    Thing thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleATV);
+                                    Thing thing = ThingMaker.MakeThing(VehicleDefOf.VehicleATV);
 
                                     if (value >= 0.9f && !isShieldUser)
                                     {
-                                        thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleCombatATV);
+                                        thing = ThingMaker.MakeThing(VehicleDefOf.VehicleCombatATV);
                                     }
                                     GenSpawn.Spawn(thing, current.Position, current.Map);
                                     thing.SetFaction(parms.faction);

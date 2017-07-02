@@ -1,4 +1,5 @@
-﻿namespace ToolsForHaul.Vehicles
+﻿using System;
+namespace ToolsForHaul.Vehicles
 {
     using UnityEngine;
 
@@ -30,7 +31,6 @@
             {
                 return this.curRotationInt;
             }
-
             set
             {
                 this.curRotationInt = value;
@@ -38,7 +38,6 @@
                 {
                     this.curRotationInt -= 360f;
                 }
-
                 if (this.curRotationInt < 0f)
                 {
                     this.curRotationInt += 360f;
@@ -73,7 +72,6 @@
                     {
                         this.idleTurnClockwise = false;
                     }
-
                     this.idleTurnTicksLeft = IdleTurnDuration;
                 }
             }
@@ -87,13 +85,11 @@
                 {
                     this.CurRotation -= IdleTurnDegreesPerTick;
                 }
-
                 this.idleTurnTicksLeft--;
                 if (this.idleTurnTicksLeft <= 0)
                 {
-                    this.ticksUntilIdleTurn = Rand.RangeInclusive(IdleTurnIntervalMin, IdleTurnIntervalMax);
+                    this.ticksUntilIdleTurn = Rand.RangeInclusive(150, 350);
                 }
-
             }
         }
 

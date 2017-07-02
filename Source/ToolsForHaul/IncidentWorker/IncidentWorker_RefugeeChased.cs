@@ -14,6 +14,7 @@
     using Verse.AI;
     using Verse.Sound;
 
+    // Vanilla copy with spawning vehicles
     public class IncidentWorker_RefugeeChased : IncidentWorker
     {
         private const float RaidPointsFactor = 1.35f;
@@ -94,10 +95,10 @@
                     if (value >= 0.2f)
                     {
                         CellFinder.RandomClosewalkCellNear(refugee.Position, refugee.Map, 5);
-                        Thing thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleSmackWay);
+                        Thing thing = ThingMaker.MakeThing(VehicleDefOf.VehicleSmackWay);
                         if (Rand.Value > 0.7f)
                         {
-                            thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleSpeeder);
+                            thing = ThingMaker.MakeThing(VehicleDefOf.VehicleSpeeder);
                         }
 
                         GenSpawn.Spawn(thing, refugee.Position, refugee.Map);

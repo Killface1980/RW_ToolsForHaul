@@ -167,7 +167,7 @@ namespace ToolsForHaul.Utilities
                 {
                     foreach (IntVec3 cell in slotGroup.CellsList)
                     {
-                        if ((!targetQueue.NullOrEmpty() && !targetQueue.Contains(cell)) || targetQueue.NullOrEmpty())
+                        if (!targetQueue.NullOrEmpty() && !targetQueue.Contains(cell) || targetQueue.NullOrEmpty())
                         {
                             if (cell.GetStorable(pawn.Map) == null)
                             {
@@ -207,8 +207,8 @@ namespace ToolsForHaul.Utilities
         public static List<Thing> AvailableVehicles(this Pawn pawn)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                aV => (aV is Vehicle_Cart) && !aV.IsForbidden(pawn.Faction)
-                              && ((!aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV)) // Unmounted
+                aV => aV is Vehicle_Cart && !aV.IsForbidden(pawn.Faction)
+                              && (!aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV) // Unmounted
                                   || aV.TryGetComp<CompMountable>().Driver == pawn)); // or Driver is pawn himself
             return availableVehicles;
         }
@@ -225,15 +225,15 @@ namespace ToolsForHaul.Utilities
         {
             List<Thing> availableVehicles =
                 map.listerThings.AllThings.FindAll(
-                    aV => (aV is Vehicle_Cart) && aV.Faction == Faction.OfPlayer);
+                    aV => aV is Vehicle_Cart && aV.Faction == Faction.OfPlayer);
             return availableVehicles;
         }
 
         public static List<Thing> AvailableRideables(Pawn pawn)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                aV => (aV is Vehicle_Saddle) && !aV.IsForbidden(pawn.Faction)
-                              && ((aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV)) // Unmounted
+                aV => aV is Vehicle_Saddle && !aV.IsForbidden(pawn.Faction)
+                              && (aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV) // Unmounted
                                   || aV.TryGetComp<CompMountable>().Driver == pawn)); // or Driver is pawn himself
             return availableVehicles;
         }
@@ -241,42 +241,51 @@ namespace ToolsForHaul.Utilities
         public static List<Thing> AvailableVehiclesForSteeling(this Pawn pawn, float distance)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted
+                aV => aV is Vehicle_Cart && !((Vehicle_Cart)aV).MountableComp.IsMounted
                       && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
                       && aV.Position.InHorDistOf(pawn.Position, distance)
                       && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
-            availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
+            if (!availableVehicles.NullOrEmpty())
+            {
+                availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
+            }
             return availableVehicles;
         }
 
         public static List<Thing> AvailableVehiclesForAllFactions(this Pawn pawn, float distance)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted
+                aV => aV is Vehicle_Cart && !((Vehicle_Cart)aV).MountableComp.IsMounted
                       && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
                       && aV.Position.InHorDistOf(pawn.Position, distance)
-                      && (aV.Faction == pawn.Faction || aV.Faction == Faction.OfInsects || pawn.Faction.HostileTo(aV.Faction))
+                      && (aV.Faction == pawn.Faction || aV.Faction == null || pawn.Faction.HostileTo(aV.Faction))
                       && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
-            availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
+            if (!availableVehicles.NullOrEmpty())
+            {
+                availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
+            }
             return availableVehicles;
         }
 
-        public static List<Thing> AvailableVehiclesForPlayerFaction(this Pawn pawn, float distance)
+        public static List<Thing> AvailableVehiclesForPawnFaction(this Pawn pawn, float distance)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted
+                aV => aV is Vehicle_Cart && !((Vehicle_Cart)aV).MountableComp.IsMounted
                       && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Some)
                       && aV.Position.InHorDistOf(pawn.Position, distance)
-                      && (aV.Faction.IsPlayer)
+                      && aV.Faction == pawn.Faction
                       && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
-            availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
+            if (!availableVehicles.NullOrEmpty())
+            {
+                availableVehicles.OrderBy(x => x.Position.DistanceTo(pawn.Position));
+            }
             return availableVehicles;
         }
 
         public static List<Thing> AvailableVehicleAt(this Pawn pawn)
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                aV => (aV is Vehicle_Cart) && !((Vehicle_Cart)aV).MountableComp.IsMounted
+                aV => aV is Vehicle_Cart && !((Vehicle_Cart)aV).MountableComp.IsMounted
                       && aV.Position == pawn.Position
                       && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
                       && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted

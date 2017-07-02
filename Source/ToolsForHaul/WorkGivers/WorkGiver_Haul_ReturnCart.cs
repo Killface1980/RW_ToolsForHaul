@@ -1,6 +1,7 @@
 ﻿namespace ToolsForHaul.WorkGivers
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using RimWorld;
 
@@ -18,19 +19,10 @@
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            var noParking = new List<Thing>();
-
-            foreach (var vehicle in pawn.AvailableVehiclesForPlayerFaction(999f))
-            {
-                if (!(vehicle.Position.GetZone(pawn.Map) is Zone_ParkingLot))
-                {
-                    noParking.Add(vehicle);
-                }
-            }
-
             // return TFH_Utility.Cart();
             // noParking.SortBy(x => pawn.Position.DistanceTo(x.Position));
-            return noParking;
+            return pawn.AvailableVehiclesForPawnFaction(999f)
+                .Where(vehicle => !(vehicle.Position.GetZone(pawn.Map) is Zone_ParkingLot)).ToList();
 
             // pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling();
         }

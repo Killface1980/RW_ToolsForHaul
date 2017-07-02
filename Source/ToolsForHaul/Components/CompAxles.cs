@@ -8,6 +8,7 @@
     using UnityEngine;
 
     using Verse;
+    using Verse.AI;
     using Verse.Sound;
 
     public class CompAxles : ThingComp
@@ -15,11 +16,11 @@
         // Graphic data
         public Graphic_Single graphic_Wheel_Single;
 
-        public double tick_time;
+        public double tick_time = 0f;
 
-        public float wheel_shake;
+        public float wheel_shake = 0f;
 
-        public float wheelRotation;
+        public float wheelRotation = 0f;
 
         private Vector3 bodyLoc;
 
@@ -36,22 +37,25 @@
         {
             base.CompTick();
 
-            if (cart == null || cart.MountableComp.Driver == null)
+            if (this.cart == null || !this.cart.MountableComp.IsMounted)
             {
                 return;
             }
 
-            if (cart.MountableComp.Driver.pather.Moving)
+            Pawn_PathFollower pawnPathFollower = this.cart.MountableComp.Driver.pather;
+            if (pawnPathFollower != null && pawnPathFollower.Moving)
             {
                 // || mountableComp.Driver.drafter.pawn.pather.Moving)
-                if (!cart.MountableComp.Driver.stances.FullBodyBusy && this.HasAxles())
+                Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Driver.stances;
+                if (pawnStanceTracker != null && (!pawnStanceTracker.FullBodyBusy && this.HasAxles()))
                 {
-                    this.wheelRotation += cart.VehicleComp.currentDriverSpeed / 3f;
-                    this.tick_time += 0.01f * cart.VehicleComp.currentDriverSpeed / 5f;
+                    this.wheelRotation += this.cart.VehicleComp.currentDriverSpeed / 10f;
+                    this.tick_time += 0.01f * this.cart.VehicleComp.currentDriverSpeed / 5f;
                     this.wheel_shake = (float)((Math.Sin(this.tick_time) + Math.Abs(Math.Sin(this.tick_time))) / 40.0);
+
                 }
 
-                if (cart.MountableComp.Driver.Position.AdjacentTo8WayOrInside(cart.MountableComp.Driver.pather.Destination.Cell))
+                if (this.cart.MountableComp.Driver.Position.AdjacentTo8WayOrInside(this.cart.MountableComp.Driver.pather.Destination.Cell))
                 {
                     // Make the breaks sound once and throw some dust if Driver comes to his destination
                     if (this.HasAxles())
@@ -59,7 +63,7 @@
                         if (!this.breakSoundPlayed)
                         {
                             SoundDef.Named("VehicleATV_Ambience_Break")
-                                .PlayOneShot(new TargetInfo(cart.MountableComp.Driver.Position, this.parent.Map));
+                                .PlayOneShot(new TargetInfo(this.cart.MountableComp.Driver.Position, this.parent.Map));
                             MoteMakerTFH.ThrowDustPuff(this.parent.DrawPos, this.parent.Map, 0.8f);
                             this.breakSoundPlayed = true;
                         }
@@ -70,6 +74,11 @@
                     this.breakSoundPlayed = false;
                 }
             }
+        }
+
+        private bool HasAxles()
+        {
+            return this.Props.axles.Count > 0;
         }
 
         private bool GetAxleLocations(Vector2 drawSize, int flip, out List<Vector3> axleVecs)
@@ -89,10 +98,7 @@
             return true;
         }
 
-        public bool HasAxles()
-        {
-            return this.Props.axles.Count > 0;
-        }
+
 
         public override void PostDraw()
         {
@@ -116,8 +122,8 @@
                 int num = this.parent.Rotation == Rot4.West ? -1 : 1;
                 Vector3 vector3 = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
                 Quaternion asQuat = this.parent.Rotation.AsQuat;
-                float x = 1f * Mathf.Sin(num * (this.wheelRotation * 0.05f) % (2 * Mathf.PI));
-                float z = 1f * Mathf.Cos(num * (this.wheelRotation * 0.05f) % (2 * Mathf.PI));
+                float x = 1f * Mathf.Sin(num * (this.wheelRotation * 0.1f) % (2 * Mathf.PI));
+                float z = 1f * Mathf.Cos(num * (this.wheelRotation * 0.1f) % (2 * Mathf.PI));
 
                 asQuat.SetLookRotation(new Vector3(x, 0f, z), Vector3.up);
 
@@ -135,7 +141,7 @@
                         Graphics.DrawMesh(
                             MeshPool.plane10,
                             matrix,
-                            graphic_Wheel_Single.MatAt(this.parent.Rotation),
+                            this.graphic_Wheel_Single.MatAt(this.parent.Rotation),
                             0);
                     }
                 }
@@ -152,7 +158,7 @@
                 LongEventHandler.ExecuteWhenFinished(
                     delegate
                         {
-                            graphic_Wheel_Single =
+                            this.graphic_Wheel_Single =
                                 GraphicDatabase.Get<Graphic_Single>(
                                     text,
                                     this.parent.def.graphic.Shader,
@@ -167,7 +173,7 @@
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            cart = this.parent as Vehicle_Cart;
+            this.cart = this.parent as Vehicle_Cart;
         }
     }
 }

@@ -58,8 +58,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IncidentWorker\IncidentWorker_RaidFriendly.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_TraderCaravanArrival.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_TravelerGroup.cs" />
+    <Compile Include="IncidentWorker\IncidentWorker_VisitorGroup.cs" />
     <Compile Include="ThinkNode_JobGiver_Patch.cs" />
-    <Compile Include="TFH_ThingDefOf.cs" />
+    <Compile Include="VehicleDefOf.cs" />
     <Compile Include="Components\CompGasTank.cs" />
     <Compile Include="JobGivers\JobGiver_ReturnVehicleIfMounted.cs" />
     <Compile Include="JobGivers\JobGiver_MountSpawnedFactionVehicle.cs" />

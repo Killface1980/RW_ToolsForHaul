@@ -16,16 +16,14 @@
 
     using Verse;
     using Verse.AI;
-    using Verse.Sound;
 
-    [StaticConstructorOnStartup]
     public class Vehicle_Cart : Building_Turret, IThingHolder, IAttackTargetSearcher, IAttackTarget
     {
         #region Tank
 
-        protected StunHandler stunner;
+        private const float SightRadiusTurret = 13.4f;
 
-        protected LocalTargetInfo forcedTarget = LocalTargetInfo.Invalid;
+        protected StunHandler stunner;
 
         public override LocalTargetInfo CurrentTarget { get; }
 
@@ -49,6 +47,8 @@
 
         public bool ThreatDisabled()
         {
+            return !this.MountableComp.IsMounted;
+
             CompPowerTrader comp = this.GetComp<CompPowerTrader>();
             if (comp == null || !comp.PowerOn)
             {
@@ -59,14 +59,13 @@
                 }
             }
 
-            return !this.MountableComp.IsMounted;
             return false;
         }
 
         public override bool ClaimableBy(Faction faction)
         {
             // Insect hack to forbid vehicles of non-dead enemies to player
-            if (!this.MountableComp.IsMounted && this.Faction == Faction.OfInsects)
+            if (!this.MountableComp.IsMounted && (this.Faction.HostileTo(Faction.OfPlayer) || this.Faction == null))
             {
                 return true;
             }
@@ -100,8 +99,7 @@
         {
             if (this.CanExplode())
             {
-                if (this.IsBurning() && this.HitPoints / this.MaxHitPoints < 0.4f
-                    || this.ExplosiveComp.wickStarted)
+                if (this.IsBurning() && this.HitPoints / this.MaxHitPoints < 0.4f || this.ExplosiveComp.wickStarted)
                 {
                     return true;
                 }
@@ -110,9 +108,19 @@
             return false;
         }
 
+        public bool HasAxles()
+        {
+            if (this.AxlesComp?.Props.axles.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public bool HasGasTank()
         {
-            return (this.GasTankComp != null);
+            return this.GasTankComp != null;
         }
 
         public bool fueledByAI;
@@ -185,8 +193,6 @@
         HeadLights flooder;
 #endif
 
-
-
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
@@ -217,10 +223,11 @@
         public override void ExposeData()
         {
             base.ExposeData();
+
             Scribe_Deep.Look(ref this.innerContainer, "innerContainer", this);
             Scribe_Deep.Look(ref this.allowances, "allowances");
 
-            Scribe_Deep.Look(ref this.stunner, "stunner", this);
+            Scribe_Deep.Look<StunHandler>(ref this.stunner, "stunner", new object[] { this });
 
             // Scribe_References.Look<Thing>(ref this.light, "light");
             // Scribe_Values.Look<LightMode>(ref this.lightMode, "lightMode");
@@ -248,13 +255,13 @@
 
             Designator_Mount designator =
                 new Designator_Mount
-                {
-                    vehicle = this,
-                    defaultLabel = Static.TxtCommandMountLabel.Translate(),
-                    defaultDesc = Static.TxtCommandMountDesc.Translate(),
-                    icon = Static.IconMount,
-                    activateSound = Static.ClickSound
-                };
+                    {
+                        vehicle = this,
+                        defaultLabel = Static.TxtCommandMountLabel.Translate(),
+                        defaultDesc = Static.TxtCommandMountDesc.Translate(),
+                        icon = Static.IconMount,
+                        activateSound = Static.ClickSound
+                    };
 
             if (!this.MountableComp.IsMounted)
             {
@@ -263,25 +270,32 @@
             else
             {
                 if (this.MountableComp.Driver != null)
+                {
                     yield return new Command_Action
-                    {
-                        defaultLabel = Static.TxtCommandDismountLabel.Translate(),
-                        defaultDesc = Static.TxtCommandDismountDesc.Translate(),
-                        icon = Static.IconUnmount,
-                        activateSound = Static.ClickSound,
-                        action = delegate { TFH_Utility.DismountGizmoFloatMenu(this, this.MountableComp.Driver); }
-                    };
+                                     {
+                                         defaultLabel = Static.TxtCommandDismountLabel.Translate(),
+                                         defaultDesc = Static.TxtCommandDismountDesc.Translate(),
+                                         icon = Static.IconUnmount,
+                                         activateSound = Static.ClickSound,
+                                         action = delegate
+                                             {
+                                                 TFH_Utility.DismountGizmoFloatMenu(
+                                                     this,
+                                                     this.MountableComp.Driver);
+                                             }
+                                     };
+                }
             }
 
             if (this.CanExplode())
             {
                 Command_Action command_Action =
                     new Command_Action
-                    {
-                        icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate"),
-                        defaultDesc = "CommandDetonateDesc".Translate(),
-                        action = this.Command_Detonate
-                    };
+                        {
+                            icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate"),
+                            defaultDesc = "CommandDetonateDesc".Translate(),
+                            action = this.Command_Detonate
+                        };
                 if (this.ExplosiveComp.wickStarted)
                 {
                     command_Action.Disable();
@@ -290,7 +304,6 @@
                 command_Action.defaultLabel = "CommandDetonateLabel".Translate();
                 yield return command_Action;
             }
-
 
             // Spotlight
             // int groupKeyBase = 700000102;
@@ -376,7 +389,15 @@
             // do nothing if not of colony
             if (this.Faction != Faction.OfPlayer)
             {
-                FloatMenuOption failer = new FloatMenuOption("NotPlayerFaction".Translate(this.LabelCap), null, MenuOptionPriority.Default, null, null, 0f, null, null);
+                FloatMenuOption failer = new FloatMenuOption(
+                    "NotPlayerFaction".Translate(this.LabelCap),
+                    null,
+                    MenuOptionPriority.Default,
+                    null,
+                    null,
+                    0f,
+                    null,
+                    null);
                 yield return failer;
                 yield break;
             }
@@ -397,14 +418,23 @@
                     jobNew.targetA = this;
                     jobNew.targetB = myPawn;
                     foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
+                    {
                         if (colonyPawn.CurJob.def != jobNew.def
                             && (worker == null || (worker.Position - myPawn.Position).LengthHorizontal
-                                > (colonyPawn.Position - myPawn.Position).LengthHorizontal)) worker = colonyPawn;
+                                > (colonyPawn.Position - myPawn.Position).LengthHorizontal))
+                        {
+                            worker = colonyPawn;
+                        }
+                    }
+
                     if (worker == null)
                     {
                         Messages.Message("NoWorkForMakeMount".Translate(), MessageSound.RejectInput);
                     }
-                    else worker.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                    else
+                    {
+                        worker.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                    }
                 };
 
             Action action_Deconstruct = () =>
@@ -417,27 +447,26 @@
                 };
 
             Action action_Mount = () =>
-            {
-                Job jobNew = new Job(HaulJobDefOf.Mount);
-                myPawn.Map.reservationManager.ReleaseAllForTarget(this);
-                myPawn.Map.reservationManager.Reserve(myPawn, this);
-                jobNew.targetA = this;
-                myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
-            };
+                {
+                    Job jobNew = new Job(HaulJobDefOf.Mount);
+                    myPawn.Map.reservationManager.ReleaseAllForTarget(this);
+                    myPawn.Map.reservationManager.Reserve(myPawn, this);
+                    jobNew.targetA = this;
+                    myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                };
 
             Action action_DismountInBase = () =>
-            {
-                Job jobNew = myPawn.DismountAtParkingLot(this, "VC GFMO");
+                {
+                    Job jobNew = myPawn.DismountAtParkingLot(this, "VC GFMO");
 
-                myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
-            };
+                    myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                };
 
             if (!this.MountableComp.IsMounted)
             {
                 if (!this.IsForbidden(Faction.OfPlayer))
                 {
-                    if (myPawn.RaceProps.Humanlike
-                        && !TFH_Utility.IsDriverOfThisVehicle(myPawn, this))
+                    if (myPawn.RaceProps.Humanlike && !TFH_Utility.IsDriverOfThisVehicle(myPawn, this))
                     {
                         yield return new FloatMenuOption("MountOn".Translate(this.LabelShort), action_Mount);
                     }
@@ -446,27 +475,38 @@
 
                     if (flag)
                     {
-                        yield return new FloatMenuOption("DismountAtParkingLot".Translate(this.LabelShort), action_DismountInBase);
+                        yield return new FloatMenuOption(
+                            "DismountAtParkingLot".Translate(this.LabelShort),
+                            action_DismountInBase);
                     }
                     else
                     {
-                        FloatMenuOption failer = new FloatMenuOption("NoFreeParkingSpace".Translate(this.LabelShort), null, MenuOptionPriority.Default, null, null, 0f, null, null);
+                        FloatMenuOption failer = new FloatMenuOption(
+                            "NoFreeParkingSpace".Translate(this.LabelShort),
+                            null,
+                            MenuOptionPriority.Default,
+                            null,
+                            null,
+                            0f,
+                            null,
+                            null);
                         yield return failer;
                     }
                 }
 
                 yield return new FloatMenuOption("Deconstruct".Translate(this.LabelShort), action_Deconstruct);
-
             }
         }
-
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
             this.MountableComp.Driver?.AllComps?.Remove(this.DriverComp);
 
             // PowerOffLight();
-            if (mode == DestroyMode.Deconstruct) mode = DestroyMode.KillFinalize;
+            if (mode == DestroyMode.Deconstruct)
+            {
+                mode = DestroyMode.KillFinalize;
+            }
 
             // else if (this.explosiveComp != null && this.explosiveComp.wickStarted)
             // {
@@ -500,6 +540,7 @@
         public override void Tick()
         {
             base.Tick();
+            this.stunner.StunHandlerTick();
 
             if (!this.instantiated)
             {
@@ -561,52 +602,6 @@
                         }
                     }
                 }
-
-                if (this.MountableComp.Driver.pather.Moving)
-                {
-                    // || mountableComp.Driver.drafter.pawn.pather.Moving)
-                    if (!this.MountableComp.Driver.stances.FullBodyBusy && this.AxlesComp.HasAxles())
-                    {
-                        this.AxlesComp.wheelRotation += this.VehicleComp.currentDriverSpeed / 10f; // 3f
-                        this.AxlesComp.tick_time += 0.01f * this.VehicleComp.currentDriverSpeed / 5f;
-                    }
-                }
-
-                if (Find.TickManager.TicksGame - this.tickCheck >= this.tickCooldown)
-                {
-                    if (this.MountableComp.Driver.pather.Moving)
-                    {
-                        if (!this.MountableComp.Driver.stances.FullBodyBusy)
-                        {
-                            this.RefuelableComp?.Notify_UsedThisTick();
-
-                            if (this.AxlesComp.HasAxles())
-                            {
-                                this.VehicleComp.currentDriverSpeed =
-                                    TFH_Utility.GetMoveSpeed(this.MountableComp.Driver);
-                            }
-                        }
-
-                        if (this.BreakdownableComp != null && this.BreakdownableComp.BrokenDown
-                            || this.RefuelableComp != null && !this.RefuelableComp.HasFuel)
-                        {
-                            this.VehicleComp.VehicleSpeed = 0.75f;
-                        }
-                        else
-                        {
-                            this.VehicleComp.VehicleSpeed = this.DesiredSpeed;
-                        }
-
-                        this.tickCheck = Find.TickManager.TicksGame;
-                    }
-
-                    if (this.Position.InNoBuildEdgeArea(this.Map) && this.VehicleComp.despawnAtEdge && this.Spawned
-                        && (this.MountableComp.Driver.Faction != Faction.OfPlayer
-                            || this.MountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee))
-                    {
-                        this.DeSpawn();
-                    }
-                }
             }
 
             // if (Find.TickManager.TicksGame >= damagetick)
@@ -614,9 +609,7 @@
             // TakeDamage(new DamageInfo(DamageDefOf.Deterioration, 1, null, null, null));
             // damagetick = Find.TickManager.TicksGame + 3600;
             // }
-
         }
-
 
         #endregion
 
@@ -663,23 +656,30 @@
                         mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.LayingPawn); // horizontal
                         mountThingLoc.z += 0.1f;
                     }
-                    else mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.07f; // vertical
+                    else
+                    {
+                        mountThingLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.07f; // vertical
+                    }
 
                     Vector3 mountThingOffset =
                         (-0.3f * this.def.interactionCellOffset.ToVector3()).RotatedBy(this.Rotation.AsAngle);
                     if (this.MountableComp.IsMounted)
+                    {
                         mountThingOffset =
                             (-0.3f * this.def.interactionCellOffset.ToVector3()).RotatedBy(this.Rotation.AsAngle);
+                    }
 
                     if (this.MountableComp.Driver.RaceProps.packAnimal && this.MountableComp.Driver.RaceProps.Animal)
                     {
-                        if (this.MountableComp.IsMounted && this.MountableComp.Driver.inventory.innerContainer.Count > 0
-                        )
+                        if (this.MountableComp.IsMounted
+                            && this.MountableComp.Driver.inventory.innerContainer.Count > 0)
+                        {
                             foreach (Thing mountThing in this.MountableComp.Driver.inventory.innerContainer)
                             {
                                 mountThing.Rotation = this.Rotation;
                                 mountThing.DrawAt(mountThingLoc + mountThingOffset);
                             }
+                        }
                     }
                     else if (this.innerContainer.Count > 0)
                     {
@@ -740,7 +740,6 @@
             }
 
             stringBuilder.AppendLine(currentDriverString);
-
 
             // string text = storage.ContentsString;
             // stringBuilder.AppendLine(string.Concat(new object[]

@@ -3,70 +3,45 @@
 
 <!--================= AllyArrival ================-->
 
-  <!--
   <IncidentDef>
     <defName>TraderCaravanArrival</defName>
     <label>trader caravan arrival</label>
-    <targetType>BaseMap</targetType>
+    <targetType>MapPlayerHome</targetType>
     <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_TraderCaravanArrival</workerClass>
     <category>AllyArrival</category>
     <baseChance>4</baseChance>
   </IncidentDef>
--->
   
-<!--
   <IncidentDef>
     <defName>VisitorGroup</defName>
     <label>visitor group</label>
-    <targetType>BaseMap</targetType>
+    <targetType>MapPlayerHome</targetType>
     <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_VisitorGroup</workerClass>
     <category>AllyArrival</category>
     <baseChance>4</baseChance>
     <pointsScaleable>true</pointsScaleable>
   </IncidentDef>
--->
   
-  <!--
   <IncidentDef>
     <defName>TravelerGroup</defName>
     <label>traveler group</label>
-    <workerClass>IncidentWorker_TravelerGroup</workerClass>
+    <targetType>MapPlayerHome</targetType>
+    <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_TravelerGroup</workerClass>
     <category>AllyArrival</category>
     <baseChance>4</baseChance>
     <pointsScaleable>true</pointsScaleable>
   </IncidentDef>
--->
-  
-  <!--================= Misc ================-->
 
-  <!--
-  <IncidentDef>
-    <defName>ResourcePodCrash</defName>
-    <label>resource pod crash</label>
-    <workerClass>IncidentWorker_ResourcePodCrash</workerClass>
-    <baseChance>4</baseChance>
-  </IncidentDef>
--->
+  <!--================= AllyAssistance ================-->
 
   <IncidentDef>
-    <defName>WandererJoin</defName>
-    <label>wanderer join</label>
-    <category>Misc</category>
+    <defName>RaidFriendly</defName>
+    <label>friendly raid</label>
+    <category>AllyAssistance</category>
     <targetType>MapPlayerHome</targetType>
-    <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_WandererJoin</workerClass>
-    <baseChance>0.4</baseChance>
-    <populationEffect>Increase</populationEffect>
+    <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_RaidFriendly</workerClass>
+    <baseChance>3.0</baseChance>
+    <pointsScaleable>true</pointsScaleable>
   </IncidentDef>
-
   
-  <!--
-	<IncidentDef>
-		<defName>MiracleHeal</defName>
-    <label>miracle heal</label>
-		<workerClass>IncidentWorker_MiracleHeal</workerClass>
-		<baseChance>2</baseChance>
-		<favorability>Good</favorability>
-	</IncidentDef>
-  -->
-
 </IncidentDefs>

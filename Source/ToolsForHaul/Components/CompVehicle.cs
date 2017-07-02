@@ -12,6 +12,7 @@
     using UnityEngine;
 
     using Verse;
+    using Verse.AI;
     using Verse.Sound;
 
     using Random = UnityEngine.Random;
@@ -164,7 +165,10 @@
 #endif
             if (this.cart.MountableComp.IsMounted)
             {
-                if (this.cart.MountableComp.Driver.pather.Moving)
+                Pawn_PathFollower pawnPathFollower = this.cart.MountableComp.Driver.pather;
+                var isMoving = pawnPathFollower != null && pawnPathFollower.Moving;
+
+                if (isMoving)
                 {
                     Vector3 pos = this.parent.DrawPos;
                     if (this.parent.Map.terrainGrid.TerrainAt(pos.ToIntVec3()).takeFootprints
@@ -183,7 +187,8 @@
                             }
                         }
 
-                        if (this.cart.AxlesComp.HasAxles())
+
+                        if (this.cart.HasAxles())
                         {
                             MoteMakerTFH.ThrowDustPuff(
                                 pos + DustOffset,
@@ -202,16 +207,14 @@
 
                 if (Find.TickManager.TicksGame - this.tickCheck >= this.tickCooldown)
                 {
-                    if (this.cart.MountableComp.Driver.pather.Moving)
+                    if (isMoving)
                     {
-                        if (!this.cart.MountableComp.Driver.stances.FullBodyBusy)
+                        Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Driver.stances;
+                        if (pawnStanceTracker != null && !pawnStanceTracker.FullBodyBusy)
                         {
-                            if (this.cart.RefuelableComp != null)
-                            {
-                                this.cart.RefuelableComp.Notify_UsedThisTick();
-                            }
+                            this.cart.RefuelableComp?.Notify_UsedThisTick();
 
-                            if (this.cart.AxlesComp.HasAxles())
+                            if (this.cart.HasAxles())
                             {
                                 this.currentDriverSpeed = TFH_Utility.GetMoveSpeed(this.cart.MountableComp.Driver);
                             }
@@ -230,12 +233,11 @@
                         this.tickCheck = Find.TickManager.TicksGame;
                     }
 
-                    if (this.cart.Position.InNoBuildEdgeArea(this.parent.Map) && this.despawnAtEdge && this.parent.Spawned
-                        && (this.cart.MountableComp.Driver.Faction != Faction.OfPlayer
-                            || this.cart.MountableComp.Driver.MentalState.def == MentalStateDefOf.PanicFlee))
-                    {
-                        this.cart.DeSpawn();
-                    }
+             //     if (this.cart.Position.InNoBuildEdgeArea(this.parent.Map) && this.despawnAtEdge && this.parent.Spawned
+             //         && this.cart.MountableComp.Driver.Faction != Faction.OfPlayer)
+             //     {
+             //         this.cart.DeSpawn();
+             //     }
                 }
 
                 // Exhaustion fumes - basic
@@ -251,8 +253,8 @@
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            this.cart = this.parent as Vehicle_Cart;
             base.PostSpawnSetup(respawningAfterLoad);
+            this.cart = this.parent as Vehicle_Cart;
 
             if (this.cart.MountableComp.IsMounted)
             {

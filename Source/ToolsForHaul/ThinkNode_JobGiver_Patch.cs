@@ -78,9 +78,10 @@ namespace ToolsForHaul
                         if (job != null)
                         {
                             if (job.def == JobDefOf.Flee || job.def == JobDefOf.FleeAndCower
-                            || job.def == JobDefOf.Steal || job.def == JobDefOf.Kidnap
-                            || job.def == JobDefOf.CarryDownedPawnToExit || job.def == JobDefOf.WaitCombat || job.def == JobDefOf.Goto
-                            && pawn.CurJob.exitMapOnArrival)
+                                || job.def == JobDefOf.Steal || job.def == JobDefOf.Kidnap
+                                || job.def == JobDefOf.CarryDownedPawnToExit || job.def == JobDefOf.WaitCombat
+                                || job.def == JobDefOf.AttackMelee || job.def == JobDefOf.AttackStatic
+                                || job.def == JobDefOf.Goto && pawn.CurJob.exitMapOnArrival)
                             {
                                 List<Thing> availableVehicles;
 
@@ -90,17 +91,12 @@ namespace ToolsForHaul
                                 }
                                 else
                                 {
-                                    availableVehicles = pawn.AvailableVehiclesForAllFactions(vehicleSearchRadius * 2);
+                                    availableVehicles = pawn.AvailableVehiclesForAllFactions(vehicleSearchRadius);
                                 }
 
-                                if (availableVehicles.Any())
+                                if (!availableVehicles.NullOrEmpty())
                                 {
-                                    job = new Job(HaulJobDefOf.Mount)
-                                    {
-                                        targetA = availableVehicles
-                                                      .FirstOrDefault(),
-
-                                    };
+                                    job = new Job(HaulJobDefOf.Mount) { targetA = availableVehicles.FirstOrDefault(), };
                                     newjob = true;
                                 }
                             }

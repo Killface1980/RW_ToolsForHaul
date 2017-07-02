@@ -52,10 +52,16 @@ namespace ToolsForHaul.Components
                 position = this.Driver.DrawPos - this.InteractionOffset * 1.3f;
 
                 // No Driver
-                if (this.Driver == null) return this.parent.DrawPos;
+                if (this.Driver == null)
+                {
+                    return this.cart.DrawPos;
+                }
 
                 // Out of bound or Preventing cart from stucking door
-                if (!position.InBounds(this.parent.Map)) return this.Driver.DrawPos;
+                if (!position.InBounds(this.parent.Map))
+                {
+                    return this.Driver.DrawPos;
+                }
 
                 if (!position.ToIntVec3().Walkable(this.parent.Map)) return this.Driver.DrawPos;
 
@@ -206,12 +212,12 @@ namespace ToolsForHaul.Components
             }
 
             if (Find.TickManager.TicksGame - this.tickLastDoorCheck >= 96
-                && (this.Driver.Position.GetEdifice(this.parent.Map) is Building_Door
-                    || this.parent.Position.GetEdifice(this.parent.Map) is Building_Door))
+                && (this.Driver.Position.GetDoor(this.parent.Map) != null
+                    || this.parent.Position.GetDoor(this.parent.Map) != null))
             {
-                this.lastPassedDoor = (this.Driver.Position.GetEdifice(this.parent.Map) is Building_Door
-                                           ? this.Driver.Position.GetEdifice(this.parent.Map)
-                                           : this.parent.Position.GetEdifice(this.parent.Map)) as Building_Door;
+                this.lastPassedDoor = this.Driver.Position.GetDoor(this.Driver.Map) != null
+                                           ? this.Driver.Position.GetDoor(this.Driver.Map)
+                                           : this.cart.Position.GetDoor(this.cart.Map);
                 this.lastPassedDoor?.StartManualOpenBy(this.Driver);
                 this.tickLastDoorCheck = Find.TickManager.TicksGame;
             }

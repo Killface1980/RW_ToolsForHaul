@@ -10,9 +10,13 @@ namespace ToolsForHaul
     using Verse;
 
     [DefOf]
-    public static class TFH_ThingDefOf
+    public static class VehicleDefOf
     {
         public static readonly ThingDef ChemFuelFilth;
+
+        public static readonly ThingDef VehicleCart;
+
+        public static readonly ThingDef VehicleTruck;
 
         public static readonly ThingDef VehicleATV;
 

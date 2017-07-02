@@ -131,8 +131,7 @@
                                 {
                                     // Find best cell for placing cart
                                     if (cell.GetEdifice(actor.Map) == null && cell.GetZone(actor.Map) == null && cell.Standable(actor.Map)
-                                        && !GenAdj.CellsAdjacentCardinal(cell, Rot4.North, IntVec2.One)
-                                            .Any(cardinal => cardinal.GetEdifice(actor.Map) is Building_Door)
+                                        && GenAdj.CellsAdjacentCardinal(cell, Rot4.North, IntVec2.One).All(cardinal => cardinal.GetDoor(actor.Map) == null)
                                         && actor.CanReserveAndReach(
                                             cell,
                                             PathEndMode.ClosestTouch,

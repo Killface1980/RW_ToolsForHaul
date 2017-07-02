@@ -13,6 +13,7 @@
     using Verse.AI;
     using Verse.Sound;
 
+    // Vanilla copy with spawning vehicles
     public class IncidentWorker_WandererJoin : IncidentWorker
     {
         private const float RelationWithColonistWeight = 20f;
@@ -44,10 +45,10 @@
                     if (value >= 0.35f)
                     {
                         CellFinder.RandomClosewalkCellNear(pawn.Position, pawn.Map, 5);
-                        Thing thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleATV);
+                        Thing thing = ThingMaker.MakeThing(VehicleDefOf.VehicleATV);
                         if (Rand.Value > 0.7f)
                         {
-                            thing = ThingMaker.MakeThing(TFH_ThingDefOf.VehicleSpeeder);
+                            thing = ThingMaker.MakeThing(VehicleDefOf.VehicleSpeeder);
                         }
 
 
