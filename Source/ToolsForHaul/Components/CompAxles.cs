@@ -49,7 +49,7 @@
                 Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Driver.stances;
                 if (pawnStanceTracker != null && (!pawnStanceTracker.FullBodyBusy && this.HasAxles()))
                 {
-                    this.wheelRotation += this.cart.VehicleComp.currentDriverSpeed / 10f;
+                    this.wheelRotation += this.cart.VehicleComp.currentDriverSpeed / 5f;
                     this.tick_time += 0.01f * this.cart.VehicleComp.currentDriverSpeed / 5f;
                     this.wheel_shake = (float)((Math.Sin(this.tick_time) + Math.Abs(Math.Sin(this.tick_time))) / 40.0);
 

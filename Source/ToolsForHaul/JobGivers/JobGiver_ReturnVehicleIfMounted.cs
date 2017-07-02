@@ -27,7 +27,7 @@
             }
             else
             {
-                Job job = pawn.DismountAtParkingLot(pawn.MountedVehicle(), "Jobgiver Return");
+                Job job = pawn.DismountAtParkingLot("Jobgiver Return");
                 return job;
             }
 

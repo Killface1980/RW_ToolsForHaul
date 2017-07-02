@@ -95,8 +95,7 @@
   </WorkGiverDef>
   -->
   
-  <!--
-  <WorkGiverDef>
+  <!--  <WorkGiverDef>
     <defName>ConstructDeliverResourcesToBlueprintsWithVehicle</defName>
     <label>deliver resources to blueprints</label>
     <giverClass>ToolsForHaul.WorkGivers.WorkGiver_WithVehicle_ConstructDeliverResourcesToBlueprints</giverClass>
@@ -111,6 +110,8 @@
     <prioritizeSustains>true</prioritizeSustains>
   </WorkGiverDef>
   -->
+
+
   <WorkGiverDef>
     <defName>HaulCorpsesWithCart</defName>
     <label>haul corpses with cart</label>

@@ -45,12 +45,10 @@
             return repString;
         }
 
-        private Thing HaulThingie => (Pawn)this.CurJob.GetTarget(TargetIndex.A).Thing;
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
             Vehicle_Cart cart = this.CurJob.GetTarget(CartInd).Thing as Vehicle_Cart;
-            Job jobNew = new Job();
 
             ///
             // Set fail conditions

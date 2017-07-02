@@ -112,7 +112,7 @@
 
             if (cart.IsMountedOnAnimalAndAvailable() || pawn.IsAllowedToRide(cart))
             {
-                return TFH_Utility.HaulWithTools(pawn, cart, t);
+                return TFH_Utility.HaulWithToolsToCell(pawn, cart, t);
             }
 
             JobFailReason.Is(Static.NoAvailableCart);

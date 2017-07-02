@@ -57,7 +57,7 @@ namespace ToolsForHaul.Components
 
         // IMPORTANT: THE parent IS THE PAWN, NOT THE VEHICLE!!!!!!!
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
-        {            
+        {
             if (this.parent == null || selPawn.Faction != Faction.OfPlayer)
             {
                 yield break;
@@ -69,7 +69,7 @@ namespace ToolsForHaul.Components
 
             Action action_DismountInBase = () =>
                 {
-                    Job jobNew = selPawn.DismountAtParkingLot(cart, "CFMO driver");
+                    Job jobNew = selPawn.DismountAtParkingLot("CFMO driver");
 
                     selPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
@@ -108,7 +108,7 @@ namespace ToolsForHaul.Components
                 yield break;
             }
 
-            Vehicle_Cart cart =Pawn.MountedVehicle();
+            Vehicle_Cart cart = this.Pawn.MountedVehicle();
 
             yield return new Command_Action
             {
@@ -116,8 +116,9 @@ namespace ToolsForHaul.Components
                 defaultDesc = Static.TxtCommandDismountDesc.Translate(),
                 icon = Static.IconUnmount,
                 activateSound = Static.ClickSound,
-                action = delegate { TFH_Utility.DismountGizmoFloatMenu(cart, this.parent as Pawn); }
+                action = delegate { TFH_Utility.DismountGizmoFloatMenu(this.parent as Pawn); }
             };
+
 
             var saddle = TFH_Utility.GetSaddleByRider((Pawn)this.parent);
 

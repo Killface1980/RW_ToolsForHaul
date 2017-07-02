@@ -110,7 +110,7 @@
       </damageData>
     </graphicData>
     <statBases>
-      <MaxHitPoints>150</MaxHitPoints>
+      <MaxHitPoints>125</MaxHitPoints>
       <VehicleSpeed>0.75</VehicleSpeed>
       <VehicleMaxItem>4</VehicleMaxItem>
       <Mass>100</Mass>
@@ -202,7 +202,7 @@
       </damageData>
     </graphicData>
     <statBases>
-      <MaxHitPoints>300</MaxHitPoints>
+      <MaxHitPoints>220</MaxHitPoints>
       <VehicleSpeed>9</VehicleSpeed>
       <VehicleMaxItem>8</VehicleMaxItem>
       <Mass>1200</Mass>
@@ -290,6 +290,129 @@
   </ThingDef>
 
   <ThingDef ParentName="VehicleBase">
+    <defName>VehicleBeetle</defName>
+    <label>Beetle</label>
+    <graphicData>
+      <texPath>Things/Vehicles/VehicleBeetle/Vehicle_Beetle</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(4,4)</drawSize>
+      <damageData>
+        <!-- no damage marks because they don't move with the vehicle <rect>(0,0.12,1,0.76)</rect>-->
+        <enabled>false</enabled>
+      </damageData>
+    </graphicData>
+    <repairEffect>Repair</repairEffect>
+    <statBases>
+      <MaxHitPoints>150</MaxHitPoints>
+      <VehicleSpeed>15</VehicleSpeed>
+      <VehicleMaxItem>3</VehicleMaxItem>
+      <Beauty>30</Beauty>
+      <Mass>500</Mass>
+    </statBases>
+    <comps>
+      <li>
+        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+      </li>
+      <li Class="CompProperties_Explosive">
+        <explosiveRadius>3.6</explosiveRadius>
+        <explosiveDamageType>Stun</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+        <startWickHitPointsPercent>0.2</startWickHitPointsPercent>
+        <wickTicks>
+          <min>100</min>
+          <max>120</max>
+        </wickTicks>
+        <postExplosionSpawnThingDef>FilthFuel</postExplosionSpawnThingDef>
+        <postExplosionSpawnChance>1</postExplosionSpawnChance>
+        <postExplosionSpawnThingCount>3</postExplosionSpawnThingCount>
+        <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
+        <explosionEffect>VehicleExplosion</explosionEffect>
+      </li>
+      <li Class="CompProperties_Refuelable">
+        <!-- Fuel consumption only called once every 96 ticks -->
+        <fuelConsumptionRate>2000</fuelConsumptionRate>
+        <fuelCapacity>50.0</fuelCapacity>
+        <fuelFilter>
+          <thingDefs>
+            <li>Chemfuel</li>
+          </thingDefs>
+        </fuelFilter>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+      </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+        <axles>
+          <li>(-25,-45)</li>
+          <li>(55,-45)</li>
+        </axles>
+      </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+        <showsStorage>false</showsStorage>
+        <animalsCanDrive>false</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>false</motorizedWithoutFuel>
+        <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <specialshadowData>
+          <volume>(0.65, 0.6, 0.5)</volume>
+          <offset>(0,0,-0.3)</offset>
+        </specialshadowData>
+      </li>
+      <li Class="CompProperties_Breakdownable"/>
+    </comps>
+    <pathCost>50</pathCost>
+    <description>An ATV is what you drive when you want a concussion.</description>
+    <thingClass>ToolsForHaul.Vehicles.Vehicle_Cart</thingClass>
+    <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
+    <!--
+    <thingCategories>
+      <li>Vehicles</li>
+    </thingCategories>
+    -->
+    <size>(2,3)</size>
+    <inspectorTabs>
+      <li>ToolsForHaul.ITabs.Itab_Pawn_Vehicle_Storage</li>
+      <li>ToolsForHaul.ITabs.ITab_Pawn_VehicleGear</li>
+    </inspectorTabs>
+    <CostList>
+      <Steel>150</Steel>
+      <Plasteel>10</Plasteel>
+      <Component>10</Component>
+      <VehicleATVFrame>1</VehicleATVFrame>
+    </CostList>
+    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <VehicleATVFrame>1</VehicleATVFrame>
+    </killedLeavings>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Machining</soundWorking>
+      <recipeUsers>
+        <li>TableMachining</li>
+      </recipeUsers>
+      <workAmount>22000</workAmount>
+      <unfinishedThingDef>UnfinishedATV</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+    </recipeMaker>
+    <colorGenerator Class="ColorGenerator_Options">
+      <options>
+
+        <li>
+          <weight>2</weight>
+          <min>RGBA(0.5,0.5,0.5,1)</min>
+          <max>RGBA(1,1,1,1)</max>
+        </li>
+      </options>
+    </colorGenerator>
+  </ThingDef>
+
+
+  <ThingDef ParentName="VehicleBase">
     <defName>VehicleATV</defName>
     <label>ATV</label>
     <graphicData>
@@ -303,7 +426,7 @@
     </graphicData>
     <repairEffect>Repair</repairEffect>
     <statBases>
-      <MaxHitPoints>200</MaxHitPoints>
+      <MaxHitPoints>150</MaxHitPoints>
       <VehicleSpeed>15</VehicleSpeed>
       <VehicleMaxItem>3</VehicleMaxItem>
       <Beauty>10</Beauty>
@@ -320,7 +443,7 @@
         <startWickHitPointsPercent>0.2</startWickHitPointsPercent>
         <wickTicks>
           <min>100</min>
-          <max>300</max>
+          <max>120</max>
         </wickTicks>
         <postExplosionSpawnThingDef>FilthFuel</postExplosionSpawnThingDef>
         <postExplosionSpawnChance>1</postExplosionSpawnChance>
@@ -449,7 +572,7 @@
     </thingCategories>
     -->
     <statBases>
-      <MaxHitPoints>200</MaxHitPoints>
+      <MaxHitPoints>175</MaxHitPoints>
       <VehicleSpeed>30</VehicleSpeed>
       <VehicleMaxItem>2</VehicleMaxItem>
       <Mass>350</Mass>
@@ -495,8 +618,8 @@
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.10</startWickHitPointsPercent>
         <wickTicks>
-          <min>300</min>
-          <max>600</max>
+          <min>100</min>
+          <max>120</max>
         </wickTicks>
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Axle">
@@ -564,7 +687,7 @@
       </damageData>
     </graphicData>
     <statBases>
-      <MaxHitPoints>200</MaxHitPoints>
+      <MaxHitPoints>80</MaxHitPoints>
       <VehicleSpeed>8</VehicleSpeed>
       <VehicleMaxItem>0</VehicleMaxItem>
       <Beauty>3</Beauty>
@@ -617,8 +740,8 @@
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
         <startWickHitPointsPercent>0.10</startWickHitPointsPercent>
         <wickTicks>
-          <min>300</min>
-          <max>600</max>
+          <min>100</min>
+          <max>120</max>
         </wickTicks>
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Axle">

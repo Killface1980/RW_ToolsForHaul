@@ -33,7 +33,10 @@
 
             // Note we only fail on forbidden if the target doesn't start that way
             // This helps haul-aside jobs on forbidden items
-            if (this.TargetThingA.IsForbidden(this.pawn.Faction)) this.FailOnForbidden(MountableInd);
+            if (this.TargetThingA.IsForbidden(this.pawn.Faction))
+            {
+                this.FailOnForbidden(MountableInd);
+            }
 
             ///
             // Define Toil
@@ -43,7 +46,7 @@
             // Toils Start
             ///
 
-            // Reserve thing to be stored and storage cell 
+            // Reserve tvehicle 
             yield return Toils_Reserve.Reserve(MountableInd);
 
             // Mount on Target
@@ -57,6 +60,7 @@
                 };
 
             yield return toilMountOn;
+
         }
     }
 }

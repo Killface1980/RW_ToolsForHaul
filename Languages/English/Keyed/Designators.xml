@@ -24,4 +24,5 @@
   <TFH_DescriptionParkingLot>A place for pawns to store vehicles. Pre-requisite for hauling with vehicles.</TFH_DescriptionParkingLot>
   <MaximumLots>Maximum parking spaces: {0}</MaximumLots>
   <OccupiedLots>Occupied parking spaces: {0}</OccupiedLots>
+  
 </LanguageData>

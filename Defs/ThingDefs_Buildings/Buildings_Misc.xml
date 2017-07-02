@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Buildings>
+
+	<ThingDef Name="TFH_BuildingBase" Abstract="True">
+		<category>Building</category>
+		<thingClass>Building</thingClass>
+		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+		<selectable>true</selectable>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<repairEffect>Repair</repairEffect>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<filthLeaving>BuildingRubble</filthLeaving>
+		<statBases>
+			<SellPriceFactor>0.70</SellPriceFactor>
+		</statBases>
+	</ThingDef>
+
+	<!--============================ Spots =============================-->
+
+	<ThingDef ParentName="TFH_BuildingBase">
+		<defName>TFHSpot</defName>
+		<label>Tools for haul battle beacon</label>
+		<Description>Designates a spot where pawns can summoned with vehicles of war. After activation, pawns will grab their best combat gear and move to the spot. Despawns after usage</Description>
+		<thingClass>ToolsForHaul.Building_BattleSpot</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Misc/CaravanPackingSpot</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(1,1)</drawSize>
+		</graphicData>
+		<AltitudeLayer>FloorEmplacement</AltitudeLayer>
+		<statBases>
+			<WorkToBuild>0</WorkToBuild>
+		</statBases>
+		<useHitPoints>False</useHitPoints>
+		<scatterableOnMapGen>false</scatterableOnMapGen>
+		<Size>(1,1)</Size>
+		<DesignationCategory>Misc</DesignationCategory>
+		<Passability>Standable</Passability>
+		<building>
+			<sowTag>SupportPlantsOnly</sowTag>
+			<canPlaceOverImpassablePlant>false</canPlaceOverImpassablePlant>
+			<ai_chillDestination>false</ai_chillDestination>
+		</building>
+		<!--  <designationHotkey>Misc10</designationHotkey> -->
+	</ThingDef>
+
+</Buildings>

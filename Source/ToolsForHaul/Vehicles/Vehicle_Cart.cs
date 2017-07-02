@@ -21,6 +21,8 @@
     {
         #region Tank
 
+        public Graphic graphic_VehicleFront;
+
         private const float SightRadiusTurret = 13.4f;
 
         protected StunHandler stunner;
@@ -90,7 +92,7 @@
                    || this.VehicleComp.MotorizedWithoutFuel();
         }
 
-        public bool CanExplode()
+        private bool CanExplode()
         {
             return this.ExplosiveComp != null;
         }
@@ -99,7 +101,8 @@
         {
             if (this.CanExplode())
             {
-                if (this.IsBurning() && this.HitPoints / this.MaxHitPoints < 0.4f || this.ExplosiveComp.wickStarted)
+                bool maximumDamage = this.HitPoints / this.MaxHitPoints < 0.4f;
+                if ((this.IsBurning() && maximumDamage) || this.ExplosiveComp.wickStarted)
                 {
                     return true;
                 }
@@ -197,6 +200,21 @@
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
+            string text = "Things/Vehicles/" + this.def.defName + "/Front";
+          if (false){
+                LongEventHandler.ExecuteWhenFinished(
+                delegate
+                    {
+                        this.graphic_VehicleFront =
+                            GraphicDatabase.Get<Graphic_Multi>(
+                                text,
+                                this.def.graphic.Shader,
+                                this.def.graphic.drawSize,
+                                this.def.graphic.color,
+                                this.def.graphic.colorTwo);
+                    });
+            }
+
             if (this.MountableComp.IsMounted && this.IsCurrentlyMotorized())
             {
                 this.VehicleComp.StartSustainerVehicleIfInactive();
@@ -255,13 +273,13 @@
 
             Designator_Mount designator =
                 new Designator_Mount
-                    {
-                        vehicle = this,
-                        defaultLabel = Static.TxtCommandMountLabel.Translate(),
-                        defaultDesc = Static.TxtCommandMountDesc.Translate(),
-                        icon = Static.IconMount,
-                        activateSound = Static.ClickSound
-                    };
+                {
+                    vehicle = this,
+                    defaultLabel = Static.TxtCommandMountLabel.Translate(),
+                    defaultDesc = Static.TxtCommandMountDesc.Translate(),
+                    icon = Static.IconMount,
+                    activateSound = Static.ClickSound
+                };
 
             if (!this.MountableComp.IsMounted)
             {
@@ -272,18 +290,17 @@
                 if (this.MountableComp.Driver != null)
                 {
                     yield return new Command_Action
-                                     {
-                                         defaultLabel = Static.TxtCommandDismountLabel.Translate(),
-                                         defaultDesc = Static.TxtCommandDismountDesc.Translate(),
-                                         icon = Static.IconUnmount,
-                                         activateSound = Static.ClickSound,
-                                         action = delegate
-                                             {
-                                                 TFH_Utility.DismountGizmoFloatMenu(
-                                                     this,
-                                                     this.MountableComp.Driver);
-                                             }
-                                     };
+                    {
+                        defaultLabel = Static.TxtCommandDismountLabel.Translate(),
+                        defaultDesc = Static.TxtCommandDismountDesc.Translate(),
+                        icon = Static.IconUnmount,
+                        activateSound = Static.ClickSound,
+                        action = delegate
+                            {
+                                TFH_Utility.DismountGizmoFloatMenu(
+                                    this.MountableComp.Driver);
+                            }
+                    };
                 }
             }
 
@@ -291,11 +308,11 @@
             {
                 Command_Action command_Action =
                     new Command_Action
-                        {
-                            icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate"),
-                            defaultDesc = "CommandDetonateDesc".Translate(),
-                            action = this.Command_Detonate
-                        };
+                    {
+                        icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate"),
+                        defaultDesc = "CommandDetonateDesc".Translate(),
+                        action = this.Command_Detonate
+                    };
                 if (this.ExplosiveComp.wickStarted)
                 {
                     command_Action.Disable();
@@ -457,7 +474,7 @@
 
             Action action_DismountInBase = () =>
                 {
-                    Job jobNew = myPawn.DismountAtParkingLot(this, "VC GFMO");
+                    Job jobNew = myPawn.DismountAtParkingLot("VC GFMO");
 
                     myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
@@ -531,6 +548,8 @@
 
             this.stunner.Notify_DamageApplied(dinfo, true);
             absorbed = false;
+
+
         }
 
         #endregion
@@ -636,9 +655,11 @@
             }
         }
 
-        public override void DrawAt(Vector3 drawLoc, bool flip)
+        public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             base.DrawAt(drawLoc);
+
+
             if (!this.Spawned)
             {
                 return;

@@ -32,6 +32,9 @@ namespace ToolsForHaul.Components
         {
             base.CompTick();
 
+            if (!this.cart.Spawned)
+                return;
+
             if (this.cart.MountableComp.IsMounted)
             {
                 if (this.cart.RefuelableComp != null)
@@ -74,6 +77,9 @@ namespace ToolsForHaul.Components
         public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             base.PostPostApplyDamage(dinfo, totalDamageDealt);
+
+            if (!this.cart.Spawned)
+                return;
 
             bool makeHole = false;
             float hitpointsPercent = (float)this.parent.HitPoints / this.parent.MaxHitPoints;

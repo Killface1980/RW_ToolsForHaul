@@ -20,5 +20,10 @@
 
   <!-- Saddle -->
   <Rider>Rider</Rider>
-  
+
+  <!-- Parking Lots -->
+  <NoParkingLotLabel>No parking lots available</NoParkingLotLabel>
+  <NoParkingLotExplanation>There is no available unblocked space left in your parking lots.</NoParkingLotExplanation>
+
+
 </LanguageData>

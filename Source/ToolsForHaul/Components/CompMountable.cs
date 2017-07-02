@@ -202,7 +202,7 @@ namespace ToolsForHaul.Components
                                     //          || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
                                     || flag || !this.cart.RefuelableComp.HasFuel)
                                 {
-                                    Job jobNew = this.Driver.DismountAtParkingLot(cart, "CM");
+                                    Job jobNew = this.Driver.DismountAtParkingLot("CM");
                                     this.Driver.jobs.TryTakeOrderedJob(jobNew);
                                 }
                             }
@@ -235,10 +235,36 @@ namespace ToolsForHaul.Components
                 if (this.Driver.Position != this.Driver.pather.Destination.Cell)
                 {
                     this.lastDrawAsAngle = this.Driver.Rotation.AsAngle;
-                    this.parent.Position = this.Position.ToIntVec3();
-                    this.parent.Rotation = this.Driver.Rotation;
+                    this.cart.Position = this.Position.ToIntVec3();
+                    this.cart.Rotation = this.Driver.Rotation;
                 }
             }
+        }
+
+        public override void PostDraw()
+        {
+            
+            base.PostDraw();
+
+            return;
+
+            Vector2 drawSize = this.cart.def.graphic.drawSize;
+            Vector3 vector3 = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
+            var pos = this.cart.DrawPos;
+            pos.y = Altitudes.AltitudeFor(AltitudeLayer.PawnUnused) + 0.05f;
+
+            // Rot4 rotation = this.Rotation;
+            // rotation.Rotate(RotationDirection.Clockwise);
+
+            Matrix4x4 matrix = default(Matrix4x4);
+            matrix.SetTRS(pos, new Quaternion(), vector3);
+            bool flip = this.cart.Rotation == Rot4.West;
+
+            Graphics.DrawMesh(flip ? MeshPool.plane10Flip :
+                                  MeshPool.plane10,
+                matrix,
+                this.cart.graphic_VehicleFront.MatAt(this.cart.Rotation),
+                0);
         }
 
         public void Dismount()
@@ -259,7 +285,7 @@ namespace ToolsForHaul.Components
 
             if (this.Driver.Faction != Faction.OfPlayer)
             {
-            //    this.parent.SetForbidden(true);
+                //    this.parent.SetForbidden(true);
                 if (this.Driver.Dead)
                 {
                     this.parent.SetFaction(Faction.OfInsects);
@@ -357,6 +383,11 @@ namespace ToolsForHaul.Components
                     {
                         this.DismountAt(
                             (this.Driver.Position - this.InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
+                    }
+                    else
+                    {
+                        this.Driver.TryAttachFire(0.1f);
+                        this.cart.TryAttachFire(0.1f);
                     }
                 }
 

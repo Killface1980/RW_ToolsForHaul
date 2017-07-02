@@ -15,7 +15,9 @@
     {
         // Constants
         private const TargetIndex HaulableInd = TargetIndex.A;
+
         private const TargetIndex StoreCellInd = TargetIndex.B;
+
         private const TargetIndex CartInd = TargetIndex.C;
 
         public override string GetReport()
@@ -67,11 +69,10 @@
             // Define Toil
             ///
 
-            Toil findStoreCellForCart = Toils_Cart.FindStoreCellForCart(CartInd);
             Toil findParkingSpaceForCart = Toils_Cart.FindParkingSpaceForCartForCart(CartInd);
 
             Toil checkStoreCellEmpty = Toils_Jump.JumpIf(
-                findStoreCellForCart,
+                findParkingSpaceForCart,
                 () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
             Toil checkHaulableEmpty = Toils_Jump.JumpIf(
                 checkStoreCellEmpty,
@@ -126,11 +127,14 @@
                 yield return Toils_Jump.JumpIfHaveTargetInQueue(StoreCellInd, extractB);
             }
 
-            yield return findParkingSpaceForCart;
+            if (this.pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().NullOrEmpty())
+            {
+                yield return findParkingSpaceForCart;
 
-            yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.OnCell);
+                yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.OnCell);
 
-            yield return Toils_Cart.DismountAt(CartInd, StoreCellInd);
+                yield return Toils_Cart.DismountAt(CartInd, StoreCellInd);
+            }
         }
     }
 }

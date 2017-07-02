@@ -58,10 +58,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Class1.cs" />
+    <None Include="AcEnhancedHauling.cs" />
+    <Compile Include="Alerts\Alert_NoParkingLot.cs" />
+    <Compile Include="Class2.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RaidFriendly.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_TraderCaravanArrival.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_TravelerGroup.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_VisitorGroup.cs" />
+    <Compile Include="JobDrivers\Class1.cs" />
+    <Compile Include="JobDrivers\JobDriver_MountAndDraft.cs" />
     <Compile Include="ThinkNode_JobGiver_Patch.cs" />
     <Compile Include="VehicleDefOf.cs" />
     <Compile Include="Components\CompGasTank.cs" />
@@ -167,6 +173,7 @@
     </Content>
     <Content Include="..\..\Defs\EffecterDefs\Effecter_Misc.xml">
       <Link>Defs\EffecterDefs\Effecter_Misc.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\IncidentDefs\Incidents_ThreatsBig.xml">
       <Link>Defs\NewFolder1\Incidents_ThreatsBig.xml</Link>

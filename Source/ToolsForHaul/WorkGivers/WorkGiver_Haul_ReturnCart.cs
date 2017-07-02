@@ -41,7 +41,13 @@
         {
             Vehicle_Cart cart = t as Vehicle_Cart;
 
-            return pawn.DismountAtParkingLot(cart, "WG Haul");
+            if (cart.RefuelableComp != null && !cart.RefuelableComp.HasFuel)
+            {
+                JobFailReason.Is("EmptyTank".Translate());
+                return null;
+            }
+
+            return pawn.DismountAtParkingLot("WG Haul", cart);
 
             // Vehicle selection
             if (pawn.IsDriver())
@@ -99,7 +105,7 @@
             // }
             if (cart.IsMountedOnAnimalAndAvailable() || pawn.IsAllowedToRide(cart))
             {
-                return TFH_Utility.HaulWithTools(pawn, cart, t);
+                return TFH_Utility.HaulWithToolsToCell(pawn, cart, t);
             }
 
             JobFailReason.Is(Static.NoAvailableCart);

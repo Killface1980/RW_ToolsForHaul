@@ -13,13 +13,14 @@ namespace ToolsForHaul
 
     using ToolsForHaul.Defs;
     using ToolsForHaul.Utilities;
+    using ToolsForHaul.Vehicles;
 
     [HarmonyPatch(typeof(ThinkNode_JobGiver))]
     [HarmonyPatch("TryIssueJobPackage")]
     [HarmonyPatch(new Type[] { typeof(Pawn), typeof(JobIssueParams) })]
     public static class ThinkNode_JobGiver_Patch
     {
-        private static float vehicleSearchRadius = 20f;
+        private static float vehicleSearchRadius = 12f;
 
         static void Postfix(Pawn pawn, JobIssueParams jobParams)
         {
@@ -31,44 +32,82 @@ namespace ToolsForHaul
             {
                 if (pawn.Faction.IsPlayer)
                 {
-                    if (job != null)
+                    if (job != null && !pawn.Drafted)
                     {
-
-                        if (job.def == JobDefOf.LayDown || job.def == JobDefOf.Arrest || job.def == JobDefOf.DeliverFood
-                            || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.EnterTransporter
-                            || job.def == JobDefOf.Ingest || job.def == JobDefOf.ManTurret
-                            || job.def == JobDefOf.Slaughter || job.def == JobDefOf.VisitSickPawn
-                            || job.def == JobDefOf.WaitWander || job.def == JobDefOf.DoBill)
+                        // if (job.def == JobDefOf.LayDown || job.def == JobDefOf.Arrest || job.def == JobDefOf.DeliverFood
+                        //     || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.EnterTransporter
+                        //     || job.def == JobDefOf.Ingest || job.def == JobDefOf.ManTurret
+                        //     || job.def == JobDefOf.Slaughter || job.def == JobDefOf.VisitSickPawn
+                        //     || job.def == JobDefOf.WaitWander || job.def == JobDefOf.DoBill)
+                        // {
+                        //     if (pawn.IsDriver())
+                        //     {
+                        //         job = pawn.DismountAtParkingLot("TN #1");
+                        //         newjob = true;
+                        //     }
+                        // }
+                        if (pawn.IsDriver())
                         {
-                            if (pawn.IsDriver())
+                            if (job.def == JobDefOf.LayDown || job.def == JobDefOf.WaitWander
+                                || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.FeedPatient
+                                || job.def == JobDefOf.TendPatient)
                             {
-                                job = pawn.DismountAtParkingLot(pawn.MountedVehicle(), "TN #1");
+                                job = pawn.DismountAtParkingLot("TN #1a");
                                 newjob = true;
                             }
                         }
-
-                        if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
+                        else
                         {
-                            List<Thing> availableVehicles = pawn.AvailableVehicles();
-                            if (availableVehicles.Count > 0 || availableVehicles.Count > 0)
+                            if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
                             {
-                                Thing vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Construction);
-                                if (vehicle != null && pawn.Position.DistanceToSquared(vehicle.Position)
-                                    < pawn.Position.DistanceToSquared(job.targetA.Cell))
+                                List<Thing> availableVehicles = pawn.AvailableVehicles();
+                                Vehicle_Cart vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Construction);
+
+                                if (vehicle != null)
                                 {
-                                    job = GetVehicle(pawn, job, WorkTypeDefOf.Construction);
-                                    newjob = true;
+                                    if (pawn.Position.DistanceToSquared(vehicle.Position)
+                                        < pawn.Position.DistanceToSquared(job.targetA.Cell))
+                                    {
+                                        job = MountOnOrReturnVehicle(pawn, job, vehicle);
+                                        newjob = true;
+                                    }
+                                }
+                            }
+                            if (job.def == JobDefOf.Hunt)
+                            {
+                                List<Thing> availableVehicles = pawn.AvailableVehicles();
+                                Vehicle_Cart vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hunting);
+                                {
+                                    if (vehicle != null)
+                                    {
+                                        if (pawn.Position.DistanceToSquared(vehicle.Position)
+                                            < pawn.Position.DistanceToSquared(job.targetA.Cell))
+                                        {
+                                            job = MountOnOrReturnVehicle(pawn, job, vehicle);
+                                            newjob = true;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (job.def == JobDefOf.Capture || job.def == JobDefOf.Rescue)
+                            {
+                                List<Thing> availableVehicles = pawn.AvailableVehicles();
+                                Vehicle_Cart vehicle =
+                                    TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Doctor);
+                                if (vehicle != null)
+                                {
+                                    if (pawn.Position.DistanceToSquared(vehicle.Position)
+                                        < pawn.Position.DistanceToSquared(job.targetA.Cell))
+                                    {
+                                        job = MountOnOrReturnVehicle(pawn, job, vehicle);
+                                        newjob = true;
+                                        oldJob = null;
+                                    }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        if (pawn.IsDriver() && !pawn.Drafted && pawn.mindState != null && pawn.mindState.IsIdle)
-                        {
-                            job = pawn.DismountAtParkingLot(pawn.MountedVehicle(), "TN #1a");
-                            newjob = true;
-                        }
+
                     }
                 }
                 else
@@ -118,28 +157,20 @@ namespace ToolsForHaul
 
         }
 
-        private static Job GetVehicle(Pawn pawn, Job job, WorkTypeDef workType)
+        private static Job MountOnOrReturnVehicle(Pawn pawn, Job job, Vehicle_Cart cart)
         {
-            List<Thing> availableVehicles = pawn.AvailableVehicles();
             if (!pawn.IsDriver())
             {
-                if (availableVehicles.Count > 0)
+                job = new Job(HaulJobDefOf.Mount)
                 {
-                    Thing vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, workType);
-                    if (vehicle != null)
-                    {
-                        job = new Job(HaulJobDefOf.Mount)
-                        {
-                            targetA = vehicle
-                        };
-                    }
-                }
+                    targetA = cart
+                };
             }
             else
             {
-                if (!TFH_Utility.IsDriverOfThisVehicle(pawn, TFH_Utility.GetRightVehicle(pawn, availableVehicles, workType)))
+                if (!TFH_Utility.IsDriverOfThisVehicle(pawn, cart))
                 {
-                    job = pawn.DismountAtParkingLot(pawn.MountedVehicle(), "TNJ 99");
+                    job = pawn.DismountAtParkingLot("TNJ 99");
                 }
             }
 

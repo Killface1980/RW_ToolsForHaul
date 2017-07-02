@@ -65,6 +65,12 @@
     <reportString>Mount on TargetA.</reportString>
   </JobDef>
   
+  <JobDef>
+    <defName>MountAndDraft</defName>
+    <driverClass>ToolsForHaul.JobDrivers.JobDriver_MountAndDraft</driverClass>
+    <reportString>Mount on TargetA, heading for TargetB.</reportString>
+  </JobDef>
+  
   
   <JobDef>
     <defName>MakeMount</defName>

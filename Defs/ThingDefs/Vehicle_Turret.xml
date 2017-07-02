@@ -95,8 +95,8 @@
         <startWickHitPointsPercent>0.1</startWickHitPointsPercent>
         <chanceNeverExplodeFromDamage>0.5</chanceNeverExplodeFromDamage>
         <wickTicks>
-          <min>300</min>
-          <max>600</max>
+          <min>100</min>
+          <max>120</max>
         </wickTicks>
         <postExplosionSpawnThingDef>FilthFuel</postExplosionSpawnThingDef>
         <postExplosionSpawnChance>1</postExplosionSpawnChance>
