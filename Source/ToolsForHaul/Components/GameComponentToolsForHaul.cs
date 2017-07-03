@@ -65,7 +65,7 @@
             {
                 foreach (Thing vehicle in map.MountedVehicles())
                 {
-                    ((Vehicle_Cart)vehicle).VehicleComp.StartSustainerVehicleIfInactive();
+                    ((Vehicle_Cart)vehicle).StartSustainerVehicleIfInactive();
                 }
             }
         }

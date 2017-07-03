@@ -1,5 +1,7 @@
 ﻿namespace ToolsForHaul
 {
+    using System;
+    using System.Collections.Generic;
     using System.Reflection;
 
     using Harmony;
@@ -28,28 +30,85 @@
         }
     }
 
-    [HarmonyPatch(typeof(ListerBuildingsRepairable), "Notify_BuildingRepaired")]
-    static class Notify_VehicleRepaired_Postfix
-    {
-        [HarmonyPostfix]
-        public static void Notify_VehicleRepaired(Building b)
-        {
-            var cart = b as Vehicle_Cart;
-            if (cart == null)
-                return;
+    /*
+     [HarmonyPatch(typeof(ListerBuildingsRepairable), "Notify_BuildingRepaired")]
+     static class Notify_VehicleRepaired_Postfix
+     {
+         [HarmonyPostfix]
+         public static void Notify_VehicleRepaired(Building b)
+         {
+             var cart = (Vehicle_Cart)b;
+             if (cart == null)
+                 return;
+    
+             if (!cart.HasGasTank())
+                 return;
+             if (cart.GasTankComp.tankLeaking)
+             {
+                 cart.GasTankComp.tankLeaking = false;
+                 cart.GasTankComp._tankHitPos = 1f;
+             }
+         }
+     }
+    */
 
-            if (!cart.HasGasTank())
-                return;
-            if (cart.GasTankComp.tankLeaking)
+
+    // Alloes Ordered Attacks
+    [HarmonyPatch(typeof(Targeter), "OrderVerbForceTarget")]
+    static class Targeter_Postfix
+    {
+        private static LocalTargetInfo target;
+
+        [HarmonyPostfix]
+        public static void Targeter(Targeter __instance)
+        {
+            if (!__instance.targetingVerb.CasterIsPawn)
             {
-                cart.GasTankComp.tankLeaking = false;
-                cart.GasTankComp._tankHitPos = 1f;
+                int numSelected = Find.Selector.NumSelected;
+                List<object> selectedObjects = Find.Selector.SelectedObjects;
+                for (int j = 0; j < numSelected; j++)
+                {
+                    Vehicle_CartTurretGun cartTurretGun = selectedObjects[j] as Vehicle_CartTurretGun;
+                    if (cartTurretGun != null && cartTurretGun.Map == Find.VisibleMap)
+                    {
+                        LocalTargetInfo targ = CurrentTargetUnderMouse(__instance, true);
+                        cartTurretGun.OrderAttack(targ);
+                    }
+                }
             }
         }
+
+        // RimWorld.Targeter
+        private static LocalTargetInfo CurrentTargetUnderMouse(Targeter __instance, bool mustBeHittableNowIfNotMelee)
+        {
+            if (!__instance.IsTargeting)
+            {
+                return LocalTargetInfo.Invalid;
+            }
+            TargetingParameters clickParams = __instance.targetingVerb.verbProps.targetParams;
+            LocalTargetInfo localTargetInfo = LocalTargetInfo.Invalid;
+            using (IEnumerator<LocalTargetInfo> enumerator = GenUI.TargetsAtMouse(clickParams, false).GetEnumerator())
+            {
+                if (enumerator.MoveNext())
+                {
+                    LocalTargetInfo current = enumerator.Current;
+                    localTargetInfo = current;
+                }
+            }
+            if (localTargetInfo.IsValid && mustBeHittableNowIfNotMelee && !(localTargetInfo.Thing is Pawn) && __instance.targetingVerb != null && !__instance.targetingVerb.verbProps.MeleeRange)
+            {
+                if (!__instance.targetingVerb.CanHitTarget(localTargetInfo))
+                {
+                    localTargetInfo = LocalTargetInfo.Invalid;
+                }
+            }
+            return localTargetInfo;
+        }
+
     }
 
 
-
+    // Faster movement for vehicles
     [HarmonyPatch(typeof(Pawn_PathFollower), "SetupMoveIntoNextCell")]
     static class SetupMoveIntoNextCell_Postfix
     {
@@ -66,11 +125,11 @@
             {
 
                 // TODO create own formula, wheel size??
-          //      Log.Message("Old cell cost: " + +__instance.nextCellCostLeft + " / " + __instance.nextCellCostTotal);
+                //      Log.Message("Old cell cost: " + +__instance.nextCellCostLeft + " / " + __instance.nextCellCostTotal);
                 float newCost = Mathf.Min(__instance.nextCellCostTotal, 20f);
 
-                   __instance.nextCellCostTotal = newCost;
-                   __instance.nextCellCostLeft = newCost;
+                __instance.nextCellCostTotal = newCost;
+                __instance.nextCellCostLeft = newCost;
             }
 
             //  int num;

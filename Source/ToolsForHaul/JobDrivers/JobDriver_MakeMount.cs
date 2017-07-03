@@ -105,7 +105,10 @@
                     }
 
                     if (cart != null && cart.MountableComp.IsMounted
-                        && cart.MountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy) cart.MountableComp.Driver.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
+                        && cart.MountableComp.Driver.CurJob.def == HaulJobDefOf.StandBy)
+                    {
+                        cart.MountableComp.Driver.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
+                    }
                     this.EndJobWith(JobCondition.Succeeded);
                 };
 

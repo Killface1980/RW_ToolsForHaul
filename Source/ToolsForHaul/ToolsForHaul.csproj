@@ -62,6 +62,8 @@
     <None Include="AcEnhancedHauling.cs" />
     <Compile Include="Alerts\Alert_NoParkingLot.cs" />
     <Compile Include="Class2.cs" />
+    <Compile Include="Components\CompFrontTex.cs" />
+    <Compile Include="Components\CompProperties_Axle.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RaidFriendly.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_TraderCaravanArrival.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_TravelerGroup.cs" />
@@ -75,6 +77,8 @@
     <Compile Include="JobGivers\JobGiver_MountSpawnedFactionVehicle.cs" />
     <Compile Include="Static.cs" />
     <None Include="WorkGivers\Class1.cs" />
+    <Compile Include="Vehicles\Cart_TurretTop.cs" />
+    <Compile Include="Vehicles\Vehicle_CartTurretGun.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_ReturnCart.cs" />
@@ -104,9 +108,8 @@
     <None Include="Things\SpotlightStuff.cs" />
     <Compile Include="Vehicles\Designator_Board.cs" />
     <Compile Include="Command_VerbTarget.cs" />
-    <Compile Include="Vehicles\Vehicle_CartGunTop.cs" />
     <Compile Include="Vehicles\Vehicle_Cart.cs" />
-    <Compile Include="Vehicles\Vehicle_CartGun.cs" />
+    <Compile Include="Vehicles\Vehicle_CartTurret.cs" />
     <None Include="Toils\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithVehicle.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
@@ -117,7 +120,7 @@
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
     <None Include="_inactive\Class1.cs" />
     <Compile Include="Components\CompAxles.cs" />
-    <Compile Include="Components\CompProperties_Axle.cs" />
+    <Compile Include="Components\CompProperties_Mountable.cs" />
     <Compile Include="Components\CompProperties_Vehicle.cs" />
     <Compile Include="Components\CompVehicle.cs" />
     <None Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />

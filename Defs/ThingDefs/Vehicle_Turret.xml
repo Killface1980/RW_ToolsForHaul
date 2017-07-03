@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ThingDefs>
 
-  <ThingDef Name="TFH_BaseBullet" Abstract="True">
-    <category>Projectile</category>
-    <tickerType>Normal</tickerType>
-    <altitudeLayer>Projectile</altitudeLayer>
-    <thingClass>Bullet</thingClass>
-    <label>bullet</label>
-    <useHitPoints>False</useHitPoints>
-    <neverMultiSelect>True</neverMultiSelect>
-    <graphicData>
-      <shaderType>Transparent</shaderType>
-    </graphicData>
-  </ThingDef>
-
-  <ThingDef Name="TFH_BaseGun" Abstract="True">
-    <category>Item</category>
+  <ThingDef Abstract="True" Name="TFH_BaseWeapon">
     <thingClass>ThingWithComps</thingClass>
-    <equipmentType>Primary</equipmentType>
-    <pathCost>10</pathCost>
-    <useHitPoints>True</useHitPoints>
-    <selectable>True</selectable>
-    <graphicData>
-      <onGroundRandomRotateAngle>35</onGroundRandomRotateAngle>
-    </graphicData>
+    <category>Item</category>
     <drawGUIOverlay>true</drawGUIOverlay>
+    <altitudeLayer>Item</altitudeLayer>
+    <alwaysHaulable>true</alwaysHaulable>
+    <tickerType>Never</tickerType>
+    <equipmentType>Primary</equipmentType>
+    <useHitPoints>true</useHitPoints>
+    <pathCost>10</pathCost>
+    <selectable>true</selectable>
     <statBases>
       <MaxHitPoints>100</MaxHitPoints>
       <Flammability>1.0</Flammability>
       <DeteriorationRate>2</DeteriorationRate>
-      <SellPriceFactor>0.5</SellPriceFactor>
+      <Beauty>-6</Beauty>
+      <SellPriceFactor>0.20</SellPriceFactor>
     </statBases>
-    <altitudeLayer>Item</altitudeLayer>
-    <alwaysHaulable>True</alwaysHaulable>
-    <tickerType>Never</tickerType>
-    <techLevel>Industrial</techLevel>
-    <thingCategories>
-      <li>WeaponsRanged</li>
-    </thingCategories>
     <comps>
       <li Class="CompProperties_Forbiddable"/>
       <li>
         <compClass>CompEquippable</compClass>
       </li>
+    </comps>
+    <graphicData>
+      <onGroundRandomRotateAngle>35</onGroundRandomRotateAngle>
+    </graphicData>
+  </ThingDef>
+
+
+  <ThingDef Name="TFH_BaseGun" Abstract="True" ParentName="TFH_BaseWeapon">
+    <techLevel>Industrial</techLevel>
+    <smeltable>true</smeltable>
+    <thingCategories>
+      <li>WeaponsRanged</li>
+    </thingCategories>
+    <inspectorTabs>
+      <li>ITab_Art</li>
+    </inspectorTabs>
+    <comps>
       <li>
         <compClass>CompQuality</compClass>
       </li>
@@ -61,12 +59,26 @@
     </weaponTags>
   </ThingDef>
 
+  <ThingDef Name="TFH_BaseBullet" Abstract="True">
+    <category>Projectile</category>
+    <tickerType>Normal</tickerType>
+    <altitudeLayer>Projectile</altitudeLayer>
+    <thingClass>Bullet</thingClass>
+    <label>bullet</label>
+    <useHitPoints>False</useHitPoints>
+    <neverMultiSelect>True</neverMultiSelect>
+    <graphicData>
+      <shaderType>Transparent</shaderType>
+    </graphicData>
+  </ThingDef>
+
+
   <!--=============== Improvised turret ===============-->
 
   <ThingDef ParentName="VehicleBase">
     <defName>VehicleCombatATV</defName>
     <label>CombatATV</label>
-    <thingClass>ToolsForHaul.Vehicles.Vehicle_CartGun</thingClass>
+    <thingClass>ToolsForHaul.Vehicles.Vehicle_CartTurretGun</thingClass>
     <graphicData>
       <texPath>Things/Vehicles/VehicleCombatATV/CombatATV</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
@@ -200,10 +212,12 @@
     </colorGenerator>
     <specialDisplayRadius>25.9</specialDisplayRadius>
     <building>
+      <ai_combatDangerous>true</ai_combatDangerous>
       <turretGunDef>Gun_VehicleTurretImprovised</turretGunDef>
       <turretBurstCooldownTime>1</turretBurstCooldownTime>
       <turretTopgraphicPath>Things/Building/Security/TurretImprovised_Top</turretTopgraphicPath>
     </building>
+    <designationHotKey>Misc2</designationHotKey>
     <researchPrerequisites>
       <li>GunTurrets</li>
     </researchPrerequisites>
@@ -218,7 +232,7 @@
     </graphicData>
     <projectile>
       <damageDef>Bullet</damageDef>
-      <damageAmountBase>5</damageAmountBase>
+      <damageAmountBase>11</damageAmountBase>
       <speed>70</speed>
     </projectile>
   </ThingDef>

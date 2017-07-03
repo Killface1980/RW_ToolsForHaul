@@ -118,10 +118,10 @@
                 this.wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.04f;
                 this.bodyLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.03f;
 
-                Vector2 drawSize = this.parent.def.graphic.drawSize;
-                int num = this.parent.Rotation == Rot4.West ? -1 : 1;
+                Vector2 drawSize = this.cart.def.graphic.drawSize;
+                int num = this.cart.Rotation == Rot4.West ? -1 : 1;
                 Vector3 vector3 = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
-                Quaternion asQuat = this.parent.Rotation.AsQuat;
+                Quaternion asQuat = this.cart.Rotation.AsQuat;
                 float x = 1f * Mathf.Sin(num * (this.wheelRotation * 0.1f) % (2 * Mathf.PI));
                 float z = 1f * Mathf.Cos(num * (this.wheelRotation * 0.1f) % (2 * Mathf.PI));
 

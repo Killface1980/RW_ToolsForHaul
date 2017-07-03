@@ -1,11 +1,12 @@
 ﻿using System;
 namespace ToolsForHaul.Vehicles
 {
+
     using UnityEngine;
-
     using Verse;
+    using RimWorld;
 
-    public class Vehicle_CartGunTop
+    public class Cart_TurretTop
     {
         private const float IdleTurnDegreesPerTick = 0.26f;
 
@@ -15,7 +16,7 @@ namespace ToolsForHaul.Vehicles
 
         private const int IdleTurnIntervalMax = 350;
 
-        private Vehicle_Cart parentCart;
+        private Vehicle_CartTurret parentCartTurret;
 
         private float curRotationInt;
 
@@ -45,17 +46,17 @@ namespace ToolsForHaul.Vehicles
             }
         }
 
-        public Vehicle_CartGunTop(Vehicle_Cart parentCart)
+        public Cart_TurretTop(Vehicle_CartTurret ParentTurret)
         {
-            this.parentCart = parentCart;
+            this.parentCartTurret = ParentTurret;
         }
 
-        public void CartTopTick()
+        public void CartTurretTopTick()
         {
-            LocalTargetInfo currentTarget = this.parentCart.CurrentTarget;
+            LocalTargetInfo currentTarget = this.parentCartTurret.CurrentTarget;
             if (currentTarget.IsValid)
             {
-                float curRotation = (currentTarget.Cell.ToVector3Shifted() - this.parentCart.DrawPos).AngleFlat();
+                float curRotation = (currentTarget.Cell.ToVector3Shifted() - this.parentCartTurret.DrawPos).AngleFlat();
                 this.CurRotation = curRotation;
                 this.ticksUntilIdleTurn = Rand.RangeInclusive(IdleTurnIntervalMin, IdleTurnIntervalMax);
             }
@@ -88,16 +89,16 @@ namespace ToolsForHaul.Vehicles
                 this.idleTurnTicksLeft--;
                 if (this.idleTurnTicksLeft <= 0)
                 {
-                    this.ticksUntilIdleTurn = Rand.RangeInclusive(150, 350);
+                    this.ticksUntilIdleTurn = Rand.RangeInclusive(IdleTurnIntervalMin, IdleTurnIntervalMax);
                 }
             }
         }
 
-        public void DrawLightTurret()
+        public void DrawTurret()
         {
             Matrix4x4 matrix = default(Matrix4x4);
-            matrix.SetTRS(this.parentCart.DrawPos + Altitudes.AltIncVect, this.CurRotation.ToQuat(), Vector3.one);
-            Graphics.DrawMesh(MeshPool.plane20, matrix, this.parentCart.def.building.turretTopMat, 0);
+            matrix.SetTRS(this.parentCartTurret.DrawPos + Altitudes.AltIncVect, this.CurRotation.ToQuat(), Vector3.one);
+            Graphics.DrawMesh(MeshPool.plane20, matrix, this.parentCartTurret.def.building.turretTopMat, 0);
         }
     }
 }

@@ -21,6 +21,9 @@
     <blockLight>true</blockLight>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
+    <castEdgeShadows>true</castEdgeShadows>
+    <staticSunShadowHeight>10</staticSunShadowHeight>
+    <stackLimit>1</stackLimit>
     <building>
       <preventDeterioration>true</preventDeterioration>
       <ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
@@ -71,20 +74,18 @@
     <designateHaulable>false</designateHaulable>
     <comps>
       <li Class="CompProperties_Forbiddable"/>
-      <li>
-        <compClass>ToolsForHaul.Components.CompMountable</compClass>
-      </li>
+
       <li>
         <compClass>CompQuality</compClass>
       </li>
       <li>
         <compClass>CompColorable</compClass>
       </li>
-      <!--
       <li Class="ToolsForHaul.Components.CompProperties_Mountable">
-        <driverPosOffset>(0,0,0)</driverPosOffset>
+        <seats>
+          <li>(0,0,0)</li>
+        </seats>
       </li>
-      -->
     </comps>
   </ThingDef>
 
@@ -94,7 +95,7 @@
     <repairEffect>ConstructWood</repairEffect>
     <description>A cart is an old-fashioned wooden vehicle that is used for transporting goods or people.</description>
     <thingClass>ToolsForHaul.Vehicles.Vehicle_Cart</thingClass>
-   <!--
+    <!--
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>
@@ -312,6 +313,15 @@
     <comps>
       <li>
         <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+      </li>
+      <li>
+        <compClass>ToolsForHaul.Components.CompFrontTex</compClass>
+      </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Mountable">
+        <seats>
+          <li>(-50,0,-37)</li>
+          <li>(57,0,-37)</li>
+        </seats>
       </li>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>3.6</explosiveRadius>

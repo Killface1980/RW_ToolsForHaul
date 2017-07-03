@@ -2,7 +2,7 @@
 <Defs>
   <!--================== Bases ==================-->
 
-  <ThingDef Name="ResourceBase" Abstract="True">
+  <ThingDef Name="TFH_ResourceBase" Abstract="True">
     <thingClass>ThingWithComps</thingClass>
     <label>unspecified resource</label>
     <category>Item</category>
@@ -10,7 +10,7 @@
     <useHitPoints>true</useHitPoints>
     <selectable>true</selectable>
     <altitudeLayer>Item</altitudeLayer>
-    <stackLimit>75</stackLimit>
+    <stackLimit>1</stackLimit>
     <comps>
       <li Class="CompProperties_Forbiddable"/>
     </comps>
@@ -23,7 +23,7 @@
   <!--================== Fuel ==================-->
   
 
-  <ThingDef ParentName="ResourceBase">
+  <ThingDef ParentName="TFH_ResourceBase">
     <defName>VehicleATVFrame</defName>
     <label>Vehicle ATV Frame</label>
     <description>vehicle ATV frame</description>

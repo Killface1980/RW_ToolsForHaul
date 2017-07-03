@@ -16,20 +16,16 @@
 
     using Verse;
     using Verse.AI;
+    using Verse.Sound;
 
-    public class Vehicle_Cart : Building_Turret, IThingHolder, IAttackTargetSearcher, IAttackTarget
+    public class Vehicle_Cart : ThingWithComps, IThingHolder, ILoadReferenceable
     {
         #region Tank
 
-        public Graphic graphic_VehicleFront;
 
-        private const float SightRadiusTurret = 13.4f;
 
-        protected StunHandler stunner;
 
-        public override LocalTargetInfo CurrentTarget { get; }
 
-        public override Verb AttackVerb { get; }
 
         #endregion
 
@@ -41,11 +37,6 @@
         public int MaxItemPerBodySize => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
 
         public bool instantiated;
-
-        // RimWorld.Building_TurretGun
-        public override void OrderAttack(LocalTargetInfo targ)
-        {
-        }
 
         public bool ThreatDisabled()
         {
@@ -64,7 +55,7 @@
             return false;
         }
 
-        public override bool ClaimableBy(Faction faction)
+        public virtual bool ClaimableBy(Faction by)
         {
             // Insect hack to forbid vehicles of non-dead enemies to player
             if (!this.MountableComp.IsMounted && (this.Faction.HostileTo(Faction.OfPlayer) || this.Faction == null))
@@ -92,7 +83,7 @@
                    || this.VehicleComp.MotorizedWithoutFuel();
         }
 
-        private bool CanExplode()
+        public bool CanExplode()
         {
             return this.ExplosiveComp != null;
         }
@@ -148,19 +139,23 @@
         // slotGroupParent Interface
         public ThingFilter allowances;
 
-        public CompMountable MountableComp => this.GetComp<CompMountable>();
+        public CompMountable MountableComp;
 
-        public CompRefuelable RefuelableComp => this.GetComp<CompRefuelable>();
+        public CompRefuelable RefuelableComp;
 
-        public CompExplosive ExplosiveComp => this.GetComp<CompExplosive>();
+        public CompExplosive ExplosiveComp;
 
-        public CompBreakdownable BreakdownableComp => this.GetComp<CompBreakdownable>();
+        public CompBreakdownable BreakdownableComp;
 
-        public CompAxles AxlesComp => this.GetComp<CompAxles>();
+        public CompAxles AxlesComp;
 
-        public CompVehicle VehicleComp => this.GetComp<CompVehicle>();
+        public CompVehicle VehicleComp;
 
-        public CompGasTank GasTankComp => this.GetComp<CompGasTank>();
+        public CompGasTank GasTankComp;
+
+        private Sustainer sustainerAmbient;
+
+        public Vector3 DriverOffset = new Vector3();
 
         public CompDriver DriverComp { get; set; }
 
@@ -174,22 +169,6 @@
 
         #region Setup Work
 
-        public Vehicle_Cart()
-        {
-            this.stunner = new StunHandler(this);
-        }
-
-        static Vehicle_Cart()
-        {
-        }
-
-        Thing IAttackTargetSearcher.Thing
-        {
-            get
-            {
-                return this;
-            }
-        }
 
         // public static ListerVehicles listerVehicles = new ListerVehicles();
 #if Headlights
@@ -200,25 +179,24 @@
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
-            string text = "Things/Vehicles/" + this.def.defName + "/Front";
-            //    if (false)
-            {
-                LongEventHandler.ExecuteWhenFinished(
-                delegate
-                    {
-                        this.graphic_VehicleFront =
-                            GraphicDatabase.Get<Graphic_Multi>(
-                                text,
-                                this.def.graphic.Shader,
-                                this.def.graphic.drawSize,
-                                this.def.graphic.color,
-                                this.def.graphic.colorTwo);
-                    });
-            }
+            this.MountableComp = this.TryGetComp<CompMountable>();
+
+            RefuelableComp = this.TryGetComp<CompRefuelable>();
+
+            ExplosiveComp = this.TryGetComp<CompExplosive>();
+
+            BreakdownableComp = this.TryGetComp<CompBreakdownable>();
+
+            AxlesComp = this.TryGetComp<CompAxles>();
+
+            VehicleComp = this.TryGetComp<CompVehicle>();
+
+            GasTankComp = this.TryGetComp<CompGasTank>();
+
 
             if (this.MountableComp.IsMounted && this.IsCurrentlyMotorized())
             {
-                this.VehicleComp.StartSustainerVehicleIfInactive();
+                this.StartSustainerVehicleIfInactive();
 
                 this.DriverComp = new CompDriver { Vehicle = this };
                 this.MountableComp.Driver?.AllComps?.Add(this.DriverComp);
@@ -233,10 +211,40 @@
                 this.allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
                 this.allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
             }
-
+            if (this.MountableComp.IsMounted)
+            {
+                this.StartSustainerVehicleIfInactive();
+            }
             // Spotlight
             // this.updateOffsetInTicks = Rand.RangeInclusive(0, updatePeriodInTicks);
             // spotlightMatrix.SetTRS(base.DrawPos + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightScale);
+        }
+
+        public void StartSustainerVehicleIfInactive()
+        {
+            CompVehicle vehicleComp = this.VehicleComp;
+            if (vehicleComp != null && (!vehicleComp.compProps.soundAmbient.NullOrUndefined() && this.sustainerAmbient == null))
+            {
+                SoundInfo info = SoundInfo.InMap(this, MaintenanceType.None);
+                this.sustainerAmbient = this.VehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
+            }
+        }
+
+        public void EndSustainerVehicleIfActive()
+        {
+            if (this.sustainerAmbient != null)
+            {
+                this.sustainerAmbient.End();
+                this.sustainerAmbient = null;
+            }
+        }
+
+        public override void DeSpawn()
+        {
+            base.DeSpawn();
+
+            this.EndSustainerVehicleIfActive();
+
         }
 
         public override void ExposeData()
@@ -246,7 +254,7 @@
             Scribe_Deep.Look(ref this.innerContainer, "innerContainer", this);
             Scribe_Deep.Look(ref this.allowances, "allowances");
 
-            Scribe_Deep.Look<StunHandler>(ref this.stunner, "stunner", new object[] { this });
+
 
             // Scribe_References.Look<Thing>(ref this.light, "light");
             // Scribe_Values.Look<LightMode>(ref this.lightMode, "lightMode");
@@ -262,8 +270,32 @@
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
+
+
             if (this.Faction != Faction.OfPlayer)
             {
+                Designator des = new Designator_Claim();
+
+                Command_Action command_Claim = new Command_Action();
+                command_Claim.defaultLabel = des.LabelCapReverseDesignating(this);
+                command_Claim.icon = des.IconReverseDesignating(this);
+                command_Claim.defaultDesc = des.DescReverseDesignating(this);
+                command_Claim.action = delegate
+                    {
+                        if (!TutorSystem.AllowAction(des.TutorTagDesignate))
+                        {
+                            return;
+                        }
+                        des.DesignateThing(this);
+                        des.Finalize(true);
+                    };
+                command_Claim.hotKey = des.hotKey;
+                command_Claim.groupKey = des.groupKey;
+
+                if (ClaimableBy(Faction.OfPlayer))
+                {
+                    yield return command_Claim;
+                }
                 yield break;
             }
 
@@ -307,7 +339,7 @@
 
             if (this.CanExplode())
             {
-                Command_Action command_Action =
+                Command_Action commandExplode =
                     new Command_Action
                     {
                         icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate"),
@@ -316,11 +348,11 @@
                     };
                 if (this.ExplosiveComp.wickStarted)
                 {
-                    command_Action.Disable();
+                    commandExplode.Disable();
                 }
 
-                command_Action.defaultLabel = "CommandDetonateLabel".Translate();
-                yield return command_Action;
+                commandExplode.defaultLabel = "CommandDetonateLabel".Translate();
+                yield return commandExplode;
             }
 
             // Spotlight
@@ -546,8 +578,6 @@
             {
                 return;
             }
-
-            this.stunner.Notify_DamageApplied(dinfo, true);
             absorbed = false;
 
 
@@ -560,7 +590,6 @@
         public override void Tick()
         {
             base.Tick();
-            this.stunner.StunHandlerTick();
 
             if (!this.instantiated)
             {
@@ -652,6 +681,7 @@
                 float num = this.MountableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
                 num *= this.MountableComp.Driver.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
                 Vector3 vector = new Vector3(0f, 0f, -num);
+    //            vector += DriverOffset;
                 return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Driver.Rotation.AsAngle);
             }
         }

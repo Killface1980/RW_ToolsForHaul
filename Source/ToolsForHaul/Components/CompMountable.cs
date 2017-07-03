@@ -27,6 +27,7 @@ namespace ToolsForHaul.Components
 
     public class CompMountable : ThingComp
     {
+
         public float lastDrawAsAngle;
 
         private Building_Door lastPassedDoor;
@@ -41,6 +42,7 @@ namespace ToolsForHaul.Components
 
         public Vector3 InteractionOffset => this.parent.def.interactionCellOffset.ToVector3().RotatedBy(this.lastDrawAsAngle);
 
+
         public bool IsMounted = false;
 
         public Vector3 Position
@@ -51,6 +53,17 @@ namespace ToolsForHaul.Components
 
                 position = this.Driver.DrawPos - this.InteractionOffset * 1.3f;
 
+                if (!this.cart.Rotation.IsHorizontal)
+                {
+                    if (this.cart.Rotation == Rot4.North)
+                    {
+                        position -= new Vector3(0, 0, 0.8f);
+                    }
+                    else
+                    {
+                        position += new Vector3(0, 0, -0.5f);
+                    }
+                }
                 // No Driver
                 if (this.Driver == null)
                 {
@@ -63,12 +76,14 @@ namespace ToolsForHaul.Components
                     return this.Driver.DrawPos;
                 }
 
-                if (!position.ToIntVec3().Walkable(this.parent.Map)) return this.Driver.DrawPos;
+                if (!position.ToIntVec3().Walkable(this.parent.Map))
+                {
+                    return this.Driver.DrawPos;
+                }
 
                 return position;
             }
         }
-
 
         public Pawn Driver;
 
@@ -242,30 +257,26 @@ namespace ToolsForHaul.Components
             }
         }
 
-        public override void PostDraw()
+        public CompProperties_Mountable Props => (CompProperties_Mountable)this.props;
+
+
+        private bool GetPassengerLocations(Vector2 drawSize, int flip, out List<Vector3> seatVecs)
         {
-            
-            base.PostDraw();
+            seatVecs = new List<Vector3>();
+            if (this.Props.seats.Count <= 0)
+            {
+                return false;
+            }
 
+            foreach (Vector2 current in this.Props.seats)
+            {
+                Vector3 item = new Vector3(current.x / 192f * drawSize.x * flip, 0f, current.y / 192f * drawSize.y);
+                seatVecs.Add(item);
+            }
 
-            Vector2 drawSize = this.cart.def.graphic.drawSize;
-            Vector3 vector3 = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
-            var pos = this.cart.DrawPos;
-            pos.y = Altitudes.AltitudeFor(AltitudeLayer.PawnUnused) + 0.05f;
-
-            // Rot4 rotation = this.Rotation;
-            // rotation.Rotate(RotationDirection.Clockwise);
-
-            Matrix4x4 matrix = default(Matrix4x4);
-            matrix.SetTRS(pos, new Quaternion(), vector3);
-            bool flip = this.cart.Rotation == Rot4.West;
-
-            Graphics.DrawMesh(flip ? MeshPool.plane10Flip :
-                                  MeshPool.plane10,
-                matrix,
-                this.cart.graphic_VehicleFront.MatAt(this.cart.Rotation),
-                0);
+            return true;
         }
+
 
         public void Dismount()
         {
@@ -296,7 +307,7 @@ namespace ToolsForHaul.Components
             this.Driver = null;
             this.IsMounted = false;
 
-            cart.VehicleComp.EndSustainerVehicleIfActive();
+            cart.EndSustainerVehicleIfActive();
 
             // Find.ListerBuildings.Add(parent as Building);
         }
@@ -354,7 +365,7 @@ namespace ToolsForHaul.Components
                 cart.SetFaction(this.Driver.Faction);
             }
 
-            cart.VehicleComp.StartSustainerVehicleIfInactive();
+            cart.StartSustainerVehicleIfInactive();
 
 
 
@@ -376,8 +387,8 @@ namespace ToolsForHaul.Components
             base.PostPostApplyDamage(dinfo, totalDamageDealt);
             if (this.IsMounted)
             {
-                if (this.parent.TryGetComp<CompExplosive>() != null
-                    && this.parent.TryGetComp<CompExplosive>().wickStarted)
+                if (this.cart.CanExplode()
+                    && this.cart.ExplosiveComp.wickStarted)
                 {
                     if (Rand.Value >= 0.1f)
                     {

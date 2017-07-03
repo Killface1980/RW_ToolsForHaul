@@ -1,12 +1,10 @@
-namespace ToolsForHaul
+using RimWorld;
+using System;
+using UnityEngine;
+using Verse.Sound;
+
+namespace Verse
 {
-    using RimWorld;
-
-    using UnityEngine;
-
-    using Verse;
-    using Verse.Sound;
-
     internal class Command_VerbTarget : Command
     {
         public Verb verb;
@@ -19,7 +17,6 @@ namespace ToolsForHaul
                 {
                     return this.verb.ownerEquipment.DrawColor;
                 }
-
                 return base.IconDrawColor;
             }
         }
@@ -27,21 +24,14 @@ namespace ToolsForHaul
         public override void ProcessInput(Event ev)
         {
             base.ProcessInput(ev);
-            SoundDefOf.TickTiny.PlayOneShotOnCamera();
+            SoundDefOf.TickTiny.PlayOneShotOnCamera(null);
             Targeter targeter = Find.Targeter;
-            if (this.verb.CasterIsPawn && targeter.targetingVerb != null)
+            if (this.verb.CasterIsPawn && targeter.targetingVerb != null && targeter.targetingVerb.verbProps == this.verb.verbProps)
             {
-                if (targeter.targetingVerb.verbProps == this.verb.verbProps)
+                Pawn casterPawn = this.verb.CasterPawn;
+                if (!targeter.IsPawnTargeting(casterPawn))
                 {
-                    Pawn casterPawn = this.verb.CasterPawn;
-                    if (!targeter.IsPawnTargeting(casterPawn))
-                    {
-                        targeter.targetingVerbAdditionalPawns.Add(casterPawn);
-                    }
-                }
-                else
-                {
-                    Find.Targeter.BeginTargeting(this.verb);
+                    targeter.targetingVerbAdditionalPawns.Add(casterPawn);
                 }
             }
             else

@@ -58,7 +58,6 @@
         public float VehicleSpeed;
         public bool despawnAtEdge;
 
-        private Sustainer sustainerAmbient;
 
 
         private Graphic_Shadow shadowGraphic;
@@ -74,23 +73,9 @@
         private Vehicle_Cart cart;
 
         // private HeadLights flooder;
-        public void StartSustainerVehicleIfInactive()
-        {
-            if (!this.compProps.soundAmbient.NullOrUndefined() && this.sustainerAmbient == null)
-            {
-                SoundInfo info = SoundInfo.InMap(this.parent, MaintenanceType.None);
-                this.sustainerAmbient = this.compProps.soundAmbient.TrySpawnSustainer(info);
-            }
-        }
 
-        public void EndSustainerVehicleIfActive()
-        {
-            if (this.sustainerAmbient != null)
-            {
-                this.sustainerAmbient.End();
-                this.sustainerAmbient = null;
-            }
-        }
+
+
 
         public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
@@ -166,13 +151,13 @@
             if (this.cart.MountableComp.IsMounted)
             {
                 Pawn_PathFollower pawnPathFollower = this.cart.MountableComp.Driver.pather;
-                var isMoving = pawnPathFollower != null && pawnPathFollower.Moving;
+                bool isMoving = pawnPathFollower != null && pawnPathFollower.Moving;
 
                 if (isMoving)
                 {
-                    Vector3 pos = this.parent.DrawPos;
-                    if (this.parent.Map.terrainGrid.TerrainAt(pos.ToIntVec3()).takeFootprints
-                        || this.parent.Map.snowGrid.GetDepth(pos.ToIntVec3()) > 0.2f)
+                    Vector3 pos = this.cart.DrawPos;
+                    if (this.cart.Map.terrainGrid.TerrainAt(pos.ToIntVec3()).takeFootprints
+                        || this.cart.Map.snowGrid.GetDepth(pos.ToIntVec3()) > 0.2f)
                     {
                         if (this.LeaveTrail())
                         {
@@ -250,22 +235,11 @@
 
 
         }
-
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
             this.cart = this.parent as Vehicle_Cart;
 
-            if (this.cart.MountableComp.IsMounted)
-            {
-                this.StartSustainerVehicleIfInactive();
-            }
-        }
-
-        public override void PostDeSpawn(Map map)
-        {
-            base.PostDeSpawn(map);
-            this.EndSustainerVehicleIfActive();
         }
 
         public override void PostDraw()
