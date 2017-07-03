@@ -165,9 +165,9 @@ namespace ToolsForHaul.Components
                             || this.Driver.CurJob.def == JobDefOf.Mate || this.Driver.health.HasHediffsNeedingTend())
                         && this.Driver.Position.Roofed(this.Driver.Map))
                     {
-                        this.parent.Position = this.Position.ToIntVec3();
-                        this.parent.Rotation = this.Driver.Rotation;
-                        if (!this.Driver.Position.InBounds(this.parent.Map))
+                        this.cart.Position = this.Position.ToIntVec3();
+                        this.cart.Rotation = this.Driver.Rotation;
+                        if (!this.Driver.Position.InBounds(this.cart.Map))
                         {
                             Log.Message("3");
                             this.DismountAt(this.Driver.Position);
@@ -230,6 +230,7 @@ namespace ToolsForHaul.Components
                 }
             }
 
+            // Keep the heading of the vehicle
             if (this.Driver.pather.Moving)
             {
                 if (this.Driver.Position != this.Driver.pather.Destination.Cell)
@@ -246,7 +247,6 @@ namespace ToolsForHaul.Components
             
             base.PostDraw();
 
-            return;
 
             Vector2 drawSize = this.cart.def.graphic.drawSize;
             Vector3 vector3 = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);

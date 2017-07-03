@@ -201,7 +201,8 @@
             base.SpawnSetup(map, respawningAfterLoad);
 
             string text = "Things/Vehicles/" + this.def.defName + "/Front";
-          if (false){
+            //    if (false)
+            {
                 LongEventHandler.ExecuteWhenFinished(
                 delegate
                     {
@@ -524,12 +525,12 @@
             {
                 mode = DestroyMode.KillFinalize;
             }
+            else if (this.CanExplode() && this.ExplosiveComp.wickStarted)
+            {
+                this.innerContainer.ClearAndDestroyContents();
+            }
+            this.innerContainer.TryDropAll(this.Position, Map, ThingPlaceMode.Near);
 
-            // else if (this.explosiveComp != null && this.explosiveComp.wickStarted)
-            // {
-            // this.storage.ClearAndDestroyContents();
-            // }
-            // this.storage.TryDropAll(this.Position, Map, ThingPlaceMode.Near);
             base.Destroy(mode);
         }
 

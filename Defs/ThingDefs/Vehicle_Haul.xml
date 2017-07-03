@@ -25,7 +25,7 @@
       <preventDeterioration>true</preventDeterioration>
       <ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
       <ai_combatDangerous>true</ai_combatDangerous>
-      <isEdifice>true</isEdifice>
+      <isEdifice>false</isEdifice>
       <repairable>true</repairable>
       <isSittable>true</isSittable>
       <expandHomeArea>false</expandHomeArea>
@@ -341,8 +341,8 @@
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
-          <li>(-25,-45)</li>
-          <li>(55,-45)</li>
+          <li>(-50,-37)</li>
+          <li>(57,-37)</li>
         </axles>
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
