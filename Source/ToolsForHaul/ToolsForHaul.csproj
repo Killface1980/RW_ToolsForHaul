@@ -61,7 +61,7 @@
     <None Include="Class1.cs" />
     <None Include="AcEnhancedHauling.cs" />
     <Compile Include="Alerts\Alert_NoParkingLot.cs" />
-    <Compile Include="Class2.cs" />
+    <Compile Include="Building_BattleBeacon.cs" />
     <Compile Include="Components\CompFrontTex.cs" />
     <Compile Include="Components\CompProperties_Axle.cs" />
     <Compile Include="IncidentWorker\IncidentWorker_RaidFriendly.cs" />
@@ -178,15 +178,6 @@
       <Link>Defs\EffecterDefs\Effecter_Misc.xml</Link>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="..\..\Defs\IncidentDefs\Incidents_ThreatsBig.xml">
-      <Link>Defs\NewFolder1\Incidents_ThreatsBig.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\IncidentDefs\Incidents_Various_Good.xml">
-      <Link>Defs\NewFolder1\Incidents_Various_Good.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\IncidentDefs\Incidents_Various_Neutral.xml">
-      <Link>Defs\NewFolder1\Incidents_Various_Neutral.xml</Link>
-    </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
       <Link>Defs\JobDefs\Jobs_Misc.xml</Link>
     </Content>
@@ -199,6 +190,15 @@
     <Content Include="..\..\Defs\StatDefs\Stats_Vehicle.xml">
       <Link>Defs\StatDefs\Stats_Vehicle.xml</Link>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\Storyteller\Incidents_Map_Misc.xml">
+      <Link>Defs\IncidentDefs\Incidents_Map_Misc.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\Storyteller\Incidents_Map_Special.xml">
+      <Link>Defs\IncidentDefs\Incidents_Map_Special.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\Storyteller\Incidents_Map_Threats.xml">
+      <Link>Defs\IncidentDefs\Incidents_Map_Threats.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingCategoryDefs\RA_ThingCategories.xml">
       <Link>Defs\ThingDefs\RA_ThingCategories.xml</Link>
@@ -230,6 +230,9 @@
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Turret.xml">
       <Link>Defs\ThingDefs\Vehicle_Turret.xml</Link>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs_Buildings\Buildings_Misc.xml">
+      <Link>Defs\Buildings_Misc.xml</Link>
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers.xml">
       <Link>Defs\WorkGivers.xml</Link>

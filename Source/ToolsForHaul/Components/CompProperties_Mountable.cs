@@ -15,7 +15,9 @@ namespace ToolsForHaul.Components
 
     public class CompProperties_Mountable : CompProperties
     {
-        public List<Vector3> seats = new List<Vector3>();
+        public Vector3 drawOffsetRotN = Vector3.zero;
+
+        public Vector3 drawOffsetRotS = Vector3.zero;
 
         public CompProperties_Mountable()
         {

@@ -16,7 +16,7 @@ namespace ToolsForHaul
     using Verse.AI;
 
     [StaticConstructorOnStartup]
-    public class Building_BattleSpot : Building
+    public class Building_BattleBeacon : Building
     {
         public override IEnumerable<Gizmo> GetGizmos()
         {

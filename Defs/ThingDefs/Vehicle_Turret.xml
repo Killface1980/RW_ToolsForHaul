@@ -144,6 +144,7 @@
           <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
     <pathCost>50</pathCost>

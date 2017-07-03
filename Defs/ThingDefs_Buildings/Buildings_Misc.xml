@@ -22,7 +22,7 @@
 		<defName>TFHSpot</defName>
 		<label>Tools for haul battle beacon</label>
 		<Description>Designates a spot where pawns can summoned with vehicles of war. After activation, pawns will grab their best combat gear and move to the spot. Despawns after usage</Description>
-		<thingClass>ToolsForHaul.Building_BattleSpot</thingClass>
+		<thingClass>ToolsForHaul.Building_BattleBeacon</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Misc/CaravanPackingSpot</texPath>
 			<graphicClass>Graphic_Single</graphicClass>

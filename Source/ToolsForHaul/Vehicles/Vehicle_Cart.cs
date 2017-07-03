@@ -57,10 +57,30 @@
 
         public virtual bool ClaimableBy(Faction by)
         {
-            // Insect hack to forbid vehicles of non-dead enemies to player
-            if (!this.MountableComp.IsMounted && (this.Faction.HostileTo(Faction.OfPlayer) || this.Faction == null))
+
+            if (this.Faction == null)
             {
                 return true;
+            }
+
+            // No vehicles if enemy near
+            if (this.Faction.HostileTo(Faction.OfPlayer))
+            {
+                foreach (var pawn in Find.VisibleMap.mapPawns.FreeColonists)
+                {
+                    if (pawn.Position.InHorDistOf(this.Position, 12f))
+                    {
+                        return true;
+                    }
+                }
+
+                foreach (IAttackTarget attackTarget in this.Map.attackTargetsCache.TargetsHostileToColony)
+                {
+                    if (attackTarget.Thing.Position.InHorDistOf(this.Position, 20f))
+                    {
+                        return false;
+                    }
+                }
             }
 
             // CompPowerTrader comp = this.GetComp<CompPowerTrader>();
@@ -193,6 +213,8 @@
 
             GasTankComp = this.TryGetComp<CompGasTank>();
 
+            // Get the vehicles away from buildings
+            //       map.designationManager.Notify_BuildingDespawned(this);
 
             if (this.MountableComp.IsMounted && this.IsCurrentlyMotorized())
             {
@@ -681,7 +703,7 @@
                 float num = this.MountableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
                 num *= this.MountableComp.Driver.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
                 Vector3 vector = new Vector3(0f, 0f, -num);
-    //            vector += DriverOffset;
+                //            vector += DriverOffset;
                 return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Driver.Rotation.AsAngle);
             }
         }

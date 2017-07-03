@@ -57,13 +57,14 @@ namespace ToolsForHaul.Components
                 {
                     if (this.cart.Rotation == Rot4.North)
                     {
-                        position -= new Vector3(0, 0, 0.8f);
+                        position += this.Props.drawOffsetRotN;
                     }
                     else
                     {
-                        position += new Vector3(0, 0, -0.5f);
+                        position += this.Props.drawOffsetRotS;
                     }
                 }
+
                 // No Driver
                 if (this.Driver == null)
                 {
@@ -246,37 +247,35 @@ namespace ToolsForHaul.Components
             }
 
             // Keep the heading of the vehicle
-            if (this.Driver.pather.Moving)
+            if (this.Driver.pather.Moving && !this.Position.ToIntVec3().CloseToEdge(this.cart.Map, 2))
             {
+                // Not there yet
                 if (this.Driver.Position != this.Driver.pather.Destination.Cell)
                 {
                     this.lastDrawAsAngle = this.Driver.Rotation.AsAngle;
                     this.cart.Position = this.Position.ToIntVec3();
-                    this.cart.Rotation = this.Driver.Rotation;
+
+                    // Check rotation
+                    if (this.Driver.Rotation != this.cart.Rotation)
+                    {
+                        if (this.Driver.Rotation.Opposite == this.cart.Rotation)
+                        {
+                            // Don't rotate if near tagert or short distance
+                            if (!this.Driver.pather.Destination.Cell.InHorDistOf(this.cart.Position, 12f))
+                            {
+                                this.cart.Rotation = this.Driver.Rotation;
+                            }
+                        }
+                        else
+                        {
+                            this.cart.Rotation = this.Driver.Rotation;
+                        }
+                    }
                 }
             }
         }
 
         public CompProperties_Mountable Props => (CompProperties_Mountable)this.props;
-
-
-        private bool GetPassengerLocations(Vector2 drawSize, int flip, out List<Vector3> seatVecs)
-        {
-            seatVecs = new List<Vector3>();
-            if (this.Props.seats.Count <= 0)
-            {
-                return false;
-            }
-
-            foreach (Vector2 current in this.Props.seats)
-            {
-                Vector3 item = new Vector3(current.x / 192f * drawSize.x * flip, 0f, current.y / 192f * drawSize.y);
-                seatVecs.Add(item);
-            }
-
-            return true;
-        }
-
 
         public void Dismount()
         {

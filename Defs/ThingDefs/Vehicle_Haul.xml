@@ -81,11 +81,6 @@
       <li>
         <compClass>CompColorable</compClass>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Mountable">
-        <seats>
-          <li>(0,0,0)</li>
-        </seats>
-      </li>
     </comps>
   </ThingDef>
 
@@ -177,6 +172,7 @@
           <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
     </comps>
   </ThingDef>
 
@@ -286,6 +282,7 @@
           <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
   </ThingDef>
@@ -318,10 +315,8 @@
         <compClass>ToolsForHaul.Components.CompFrontTex</compClass>
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Mountable">
-        <seats>
-          <li>(-50,0,-37)</li>
-          <li>(57,0,-37)</li>
-        </seats>
+        <drawOffsetRotN>(0,0,0.5)</drawOffsetRotN>
+        <drawOffsetRotS>(0,0,-0.5)</drawOffsetRotS>
       </li>
       <li Class="CompProperties_Explosive">
         <explosiveRadius>3.6</explosiveRadius>
@@ -489,6 +484,7 @@
           <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
     <pathCost>50</pathCost>
@@ -648,6 +644,7 @@
           <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
     <colorGenerator Class="ColorGenerator_Options">
@@ -771,6 +768,7 @@
           <offset>(0,0,-0.3)</offset>
         </specialshadowData>
       </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
     </comps>
     <colorGenerator Class="ColorGenerator_Options">
       <options>
