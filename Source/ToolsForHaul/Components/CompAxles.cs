@@ -103,11 +103,11 @@
         public override void PostDraw()
         {
             base.PostDraw();
-            this.wheelLoc = this.parent.DrawPos;
-            this.bodyLoc = this.parent.DrawPos;
+            this.wheelLoc = this.cart.DrawPos;
+            this.bodyLoc = this.cart.DrawPos;
 
             // Vertical
-            if (this.parent.Rotation.AsInt % 2 == 0)
+            if (this.cart.Rotation.AsInt % 2 == 0)
             {
                 this.wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
             }
@@ -119,7 +119,10 @@
                 this.bodyLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.03f;
 
                 Vector2 drawSize = this.cart.def.graphic.drawSize;
-                int num = this.cart.Rotation == Rot4.West ? -1 : 1;
+                int num = 0;
+                Rot4 rot;
+                rot = this.cart.MountableComp.IsMounted ? this.cart.MountableComp.Driver.Rotation : this.cart.Rotation;
+                num = rot == Rot4.West ? -1 : 1;
                 Vector3 vector3 = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
                 Quaternion asQuat = this.cart.Rotation.AsQuat;
                 float x = 1f * Mathf.Sin(num * (this.wheelRotation * 0.1f) % (2 * Mathf.PI));
@@ -152,6 +155,7 @@
         {
             base.Initialize(props);
 
+            // Don't change parent to cart!
             if (this.HasAxles())
             {
                 string text = "Things/Vehicles/" + this.parent.def.defName + "/Wheel";

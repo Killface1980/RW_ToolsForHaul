@@ -145,7 +145,7 @@
     <workType>Hauling</workType>
     <verb>refuel</verb>
     <gerund>refueling</gerund>
-    <priorityInType>86</priorityInType>
+    <priorityInType>87</priorityInType>
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
@@ -184,7 +184,7 @@
     <defName>ReturnCart</defName>
     <giverClass>ToolsForHaul.WorkGivers.WorkGiver_Haul_ReturnCart</giverClass>
     <workType>Hauling</workType>
-    <priorityInType>5</priorityInType>
+    <priorityInType>86</priorityInType>
     <scanThings>true</scanThings>
     <verb>return cart</verb>
     <gerund>returning cart</gerund>

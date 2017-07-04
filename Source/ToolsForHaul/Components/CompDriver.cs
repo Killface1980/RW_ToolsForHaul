@@ -20,33 +20,32 @@ namespace ToolsForHaul.Components
 
     public class CompDriver : ThingComp
     {
-        public Thing Vehicle { get; set; }
+        public Vehicle_Cart Cart { get; set; }
 
-        private Pawn Pawn => this.parent as Pawn;
+        public Pawn Pawn;
 
         public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
         {
-            var pawn = this.parent as Pawn;
 
-            if (pawn == null)
+            if (this.Pawn == null || this.Cart == null)
             {
                 absorbed = false;
                 return;
             }
 
-            if (pawn.RaceProps.Animal)
+            if (this.Pawn.RaceProps.Animal)
             {
                 absorbed = false;
                 return;
             }
 
-            float hitChance = 0.25f;
+            float hitChance = 0.65f;
             float hit = Rand.Value;
 
             if (hitChance <= hit)
             {
                 // apply damage to vehicle here
-                this.Vehicle?.TakeDamage(dinfo);
+                this.Cart?.TakeDamage(dinfo);
 
                 absorbed = true;
                 return;
@@ -58,14 +57,10 @@ namespace ToolsForHaul.Components
         // IMPORTANT: THE parent IS THE PAWN, NOT THE VEHICLE!!!!!!!
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {
-            if (this.parent == null || selPawn.Faction != Faction.OfPlayer)
+            if (selPawn == null || this.Cart == null || selPawn.Faction != Faction.OfPlayer)
             {
                 yield break;
             }
-
-            Vehicle_Cart cart = selPawn.MountedVehicle();
-            if (cart == null)
-                yield break;
 
             Action action_DismountInBase = () =>
                 {
@@ -78,12 +73,12 @@ namespace ToolsForHaul.Components
                 {
                     if (!selPawn.Position.InBounds(selPawn.Map))
                     {
-                        cart.MountableComp.DismountAt(selPawn.Position);
+                        this.Cart.MountableComp.DismountAt(selPawn.Position);
                         return;
                     }
 
-                    cart.MountableComp.DismountAt(
-                        selPawn.Position - this.parent.def.interactionCellOffset.RotatedBy(selPawn.Rotation));
+                    this.Cart.MountableComp.DismountAt(
+                        selPawn.Position - this.Cart.def.interactionCellOffset.RotatedBy(selPawn.Rotation));
                     selPawn.Position = selPawn.Position.RandomAdjacentCell8Way();
 
                     // mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
@@ -91,8 +86,8 @@ namespace ToolsForHaul.Components
             {
                 // if (cart.MountableComp.IsMounted && selPawn == cart.MountableComp.Driver)
                 // && !myPawn.health.hediffSet.HasHediff(HediffDef.Named("HediffWheelChair")))
-                yield return new FloatMenuOption("Dismount".Translate(this.parent.LabelShort), action_Dismount);
-                yield return new FloatMenuOption("DismountAtParkingLot".Translate(this.parent.LabelShort), action_DismountInBase);
+                yield return new FloatMenuOption("Dismount".Translate(selPawn.LabelShort), action_Dismount);
+                yield return new FloatMenuOption("DismountAtParkingLot".Translate(selPawn.LabelShort), action_DismountInBase);
             }
         }
 
@@ -103,12 +98,10 @@ namespace ToolsForHaul.Components
                 yield return c;
             }
 
-            if (this.parent == null)
+            if (this.Pawn == null)
             {
                 yield break;
             }
-
-            Vehicle_Cart cart = this.Pawn.MountedVehicle();
 
             yield return new Command_Action
             {

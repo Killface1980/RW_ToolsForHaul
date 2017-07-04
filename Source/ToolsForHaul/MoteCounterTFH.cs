@@ -1,13 +1,14 @@
 ﻿namespace ToolsForHaul
 {
-    public static class MoteCounterTFH
+    using Verse;
+    public class MoteCounterTFH : MapComponent
     {
         // vanilla = 250 motes + 250 TFH  => PC should handle this?
-        private const int SaturatedCount = 250;
+        private const int SaturatedCount = 1500;
 
-        private static int moteCount;
+        private  int moteCount = 0;
 
-        public static bool Saturated
+        public  bool Saturated
         {
             get
             {
@@ -15,7 +16,7 @@
             }
         }
 
-        public static bool SaturatedLowPriority
+        public bool SaturatedLowPriority
         {
             get
             {
@@ -23,8 +24,7 @@
             }
         }
 
-        // ToDo Detour the properties to get the higher motes count to work
-        public static float Saturation
+        public  float Saturation
         {
             get
             {
@@ -33,21 +33,21 @@
         }
 
         // [Detour(typeof(Verse.MoteCounter), bindingFlags = BindingFlags.Instance | BindingFlags.Public)]
-        public static void Notify_MoteDespawned()
+        public void Notify_MoteDespawned()
         {
             moteCount--;
         }
 
         // [Detour(typeof(Verse.MoteCounter), bindingFlags = BindingFlags.Instance | BindingFlags.Public)]
-        public static void Notify_MoteSpawned()
+        public void Notify_MoteSpawned()
         {
             moteCount++;
         }
 
-        // [Detour(typeof(Verse.MoteCounter), bindingFlags = BindingFlags.Instance | BindingFlags.Public)]
-        public static void Reinit()
+        public MoteCounterTFH(Map map)
+            : base(map)
         {
-            moteCount = 0;
+            //
         }
     }
 }

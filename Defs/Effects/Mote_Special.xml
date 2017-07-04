@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!--=============== Fuel puddle ==============-->
+
+  <ThingDef ParentName="MoteBase_TFH">
+    <defName>Mote_Track_ATV</defName>
+    
+    <isSaveable>true</isSaveable>
+    <rotatable>true</rotatable>
+    
+    <graphicData>
+      <texPath>Things/Mote/Mote_Track_ATV</texPath>
+    </graphicData>
+    <altitudeLayer>MoteLow</altitudeLayer>
+    <mote>
+      <fadeInTime>0.08</fadeInTime>
+      <solidTime>2.2</solidTime>
+      <fadeOutTime>2.6</fadeOutTime>
+    </mote>
+  </ThingDef>
+
+</Defs>

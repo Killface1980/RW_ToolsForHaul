@@ -18,7 +18,7 @@
     using Verse.AI;
     using Verse.Sound;
 
-    public class Vehicle_Cart : ThingWithComps, IThingHolder, ILoadReferenceable
+    public class Vehicle_Cart : Pawn, IThingHolder, ILoadReferenceable
     {
         #region Tank
 
@@ -216,14 +216,7 @@
             // Get the vehicles away from buildings
             //       map.designationManager.Notify_BuildingDespawned(this);
 
-            if (this.MountableComp.IsMounted && this.IsCurrentlyMotorized())
-            {
-                this.StartSustainerVehicleIfInactive();
 
-                this.DriverComp = new CompDriver { Vehicle = this };
-                this.MountableComp.Driver?.AllComps?.Add(this.DriverComp);
-                this.DriverComp.parent = this.MountableComp.Driver;
-            }
 
             this.innerContainer = new ThingOwner<Thing>(this, false);
 
@@ -235,13 +228,20 @@
             }
             if (this.MountableComp.IsMounted)
             {
+                this.AddDriverComp();
                 this.StartSustainerVehicleIfInactive();
             }
+
             // Spotlight
             // this.updateOffsetInTicks = Rand.RangeInclusive(0, updatePeriodInTicks);
             // spotlightMatrix.SetTRS(base.DrawPos + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightScale);
         }
 
+        public void AddDriverComp()
+        {
+            this.DriverComp = new CompDriver { Cart = this, Pawn = this.MountableComp.Driver, parent = this.MountableComp.Driver};
+            this.MountableComp.Driver.AllComps.Add(this.DriverComp);
+        }
         public void StartSustainerVehicleIfInactive()
         {
             CompVehicle vehicleComp = this.VehicleComp;
@@ -572,8 +572,6 @@
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
-            this.MountableComp.Driver?.AllComps?.Remove(this.DriverComp);
-
             // PowerOffLight();
             if (mode == DestroyMode.Deconstruct)
             {

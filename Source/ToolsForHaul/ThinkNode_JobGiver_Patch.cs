@@ -11,6 +11,7 @@ namespace ToolsForHaul
 {
     using System.Collections.Generic;
 
+    using ToolsForHaul.Components;
     using ToolsForHaul.Defs;
     using ToolsForHaul.Utilities;
     using ToolsForHaul.Vehicles;
@@ -20,141 +21,159 @@ namespace ToolsForHaul
     [HarmonyPatch(new Type[] { typeof(Pawn), typeof(JobIssueParams) })]
     public static class ThinkNode_JobGiver_Patch
     {
+
+        [HarmonyPostfix]
+        public static void ThinkNode_JobGiver_Postfix(ref ThinkResult __result, ThinkNode_JobGiver __instance, Pawn pawn, JobIssueParams jobParams)
+        {
+            VehicleThinker.VehicleThinkResult(ref __result, __instance, pawn);
+        }
+    }
+
+
+    [HarmonyPatch(typeof(ThinkNode_Priority))]
+    [HarmonyPatch("TryIssueJobPackage")]
+    [HarmonyPatch(new Type[] { typeof(Pawn), typeof(JobIssueParams) })]
+    public static class ThinkNode_Priority_Patch
+    {
+        [HarmonyPostfix]
+        public static void ThinkNode_Priority_Postfix(ref ThinkResult __result, ThinkNode_JobGiver __instance, Pawn pawn, JobIssueParams jobParams)
+        {
+            VehicleThinker.VehicleThinkResult(ref __result, __instance, pawn);
+        }
+    }
+
+    public static class VehicleThinker
+    {
         private static float vehicleSearchRadius = 12f;
 
-        static void Postfix(Pawn pawn, JobIssueParams jobParams)
+        public static void VehicleThinkResult(ref ThinkResult __result, ThinkNode_JobGiver __instance, Pawn pawn)
         {
-            Job job = pawn.CurJob;
-            Job oldJob = pawn.CurJob;
-            bool newjob = false;
+            Job job = null;
 
-            if (pawn != null && pawn.RaceProps.Humanlike && pawn.RaceProps.IsFlesh)
+            Job requestJob = __result.Job;
+
+            if (requestJob == null)
             {
-                if (pawn.Faction.IsPlayer)
+                return;
+            }
+
+            if (pawn == null || !pawn.RaceProps.Humanlike || !pawn.RaceProps.IsFlesh)
+            {
+                return;
+            }
+
+            if (pawn.Faction.IsPlayer)
+            {
+                if (!pawn.Drafted)
                 {
-                    if (job != null && !pawn.Drafted)
+                    // if (job.def == JobDefOf.LayDown || job.def == JobDefOf.Arrest || job.def == JobDefOf.DeliverFood
+                    //     || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.EnterTransporter
+                    //     || job.def == JobDefOf.Ingest || job.def == JobDefOf.ManTurret
+                    //     || job.def == JobDefOf.Slaughter || job.def == JobDefOf.VisitSickPawn
+                    //     || job.def == JobDefOf.WaitWander || job.def == JobDefOf.DoBill)
+                    // {
+                    //     if (pawn.IsDriver())
+                    //     {
+                    //         job = pawn.DismountAtParkingLot("TN #1");
+                    //         newjob = true;
+                    //     }
+                    // }
+                    if (pawn.IsDriver())
                     {
-                        // if (job.def == JobDefOf.LayDown || job.def == JobDefOf.Arrest || job.def == JobDefOf.DeliverFood
-                        //     || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.EnterTransporter
-                        //     || job.def == JobDefOf.Ingest || job.def == JobDefOf.ManTurret
-                        //     || job.def == JobDefOf.Slaughter || job.def == JobDefOf.VisitSickPawn
-                        //     || job.def == JobDefOf.WaitWander || job.def == JobDefOf.DoBill)
-                        // {
-                        //     if (pawn.IsDriver())
-                        //     {
-                        //         job = pawn.DismountAtParkingLot("TN #1");
-                        //         newjob = true;
-                        //     }
-                        // }
-                        if (pawn.IsDriver())
+                        if (requestJob.def == JobDefOf.LayDown || requestJob.def == JobDefOf.WaitWander
+                            || requestJob.def == JobDefOf.EnterCryptosleepCasket || requestJob.def == JobDefOf.FeedPatient
+                            || requestJob.def == JobDefOf.TendPatient)
                         {
-                            if (job.def == JobDefOf.LayDown || job.def == JobDefOf.WaitWander
-                                || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.FeedPatient
-                                || job.def == JobDefOf.TendPatient)
+                            job = pawn.DismountAtParkingLot("TN #1a");
+                        }
+                    }
+                    else
+                    {
+                        if (requestJob.def == JobDefOf.FinishFrame || requestJob.def == JobDefOf.Deconstruct
+                            || requestJob.def == JobDefOf.Repair || requestJob.def == JobDefOf.BuildRoof
+                            || requestJob.def == JobDefOf.RemoveRoof || requestJob.def == JobDefOf.RemoveFloor)
+                        {
+                            List<Thing> availableVehicles = pawn.AvailableVehicles();
+                            Vehicle_Cart vehicle =
+                                TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Construction);
+
+                            if (vehicle != null)
                             {
-                                job = pawn.DismountAtParkingLot("TN #1a");
-                                newjob = true;
+                                if (pawn.Position.DistanceToSquared(vehicle.Position)
+                                    < pawn.Position.DistanceToSquared(requestJob.targetA.Cell))
+                                {
+                                    job = MountOnOrReturnVehicle(pawn, requestJob, vehicle);
+                                }
                             }
+                        }
+                        if (requestJob.def == JobDefOf.Hunt)
+                        {
+                            List<Thing> availableVehicles = pawn.AvailableVehicles();
+                            Vehicle_Cart vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hunting);
+                            {
+                                if (vehicle != null)
+                                {
+                                    if (pawn.Position.DistanceToSquared(vehicle.Position)
+                                        < pawn.Position.DistanceToSquared(requestJob.targetA.Cell))
+                                    {
+                                        job = MountOnOrReturnVehicle(pawn, requestJob, vehicle);
+                                    }
+                                }
+                            }
+                        }
+
+                        if (requestJob.def == JobDefOf.Capture || requestJob.def == JobDefOf.Rescue)
+                        {
+                            List<Thing> availableVehicles = pawn.AvailableVehicles();
+                            Vehicle_Cart vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Doctor);
+                            if (vehicle != null)
+                            {
+                                if (pawn.Position.DistanceToSquared(vehicle.Position)
+                                    < pawn.Position.DistanceToSquared(requestJob.targetA.Cell))
+                                {
+                                    job = MountOnOrReturnVehicle(pawn, requestJob, vehicle);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Enemies & other
+
+                if (!pawn.IsDriver())
+                {
+                    if (requestJob.def == JobDefOf.Flee || requestJob.def == JobDefOf.FleeAndCower
+                        || requestJob.def == JobDefOf.Steal || requestJob.def == JobDefOf.Kidnap
+                        || requestJob.def == JobDefOf.CarryDownedPawnToExit || requestJob.def == JobDefOf.WaitCombat
+                        || requestJob.def == JobDefOf.AttackMelee || requestJob.def == JobDefOf.AttackStatic
+                        || requestJob.def == JobDefOf.Goto && pawn.CurJob.exitMapOnArrival)
+                    {
+                        List<Thing> availableVehicles;
+
+                        if (pawn.Faction.HostileTo(Faction.OfPlayer))
+                        {
+                            availableVehicles = pawn.AvailableVehiclesForSteeling(vehicleSearchRadius);
                         }
                         else
                         {
-                            if (job.def == JobDefOf.FinishFrame || job.def == JobDefOf.Deconstruct || job.def == JobDefOf.Repair || job.def == JobDefOf.BuildRoof || job.def == JobDefOf.RemoveRoof || job.def == JobDefOf.RemoveFloor)
-                            {
-                                List<Thing> availableVehicles = pawn.AvailableVehicles();
-                                Vehicle_Cart vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Construction);
-
-                                if (vehicle != null)
-                                {
-                                    if (pawn.Position.DistanceToSquared(vehicle.Position)
-                                        < pawn.Position.DistanceToSquared(job.targetA.Cell))
-                                    {
-                                        job = MountOnOrReturnVehicle(pawn, job, vehicle);
-                                        newjob = true;
-                                    }
-                                }
-                            }
-                            if (job.def == JobDefOf.Hunt)
-                            {
-                                List<Thing> availableVehicles = pawn.AvailableVehicles();
-                                Vehicle_Cart vehicle = TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hunting);
-                                {
-                                    if (vehicle != null)
-                                    {
-                                        if (pawn.Position.DistanceToSquared(vehicle.Position)
-                                            < pawn.Position.DistanceToSquared(job.targetA.Cell))
-                                        {
-                                            job = MountOnOrReturnVehicle(pawn, job, vehicle);
-                                            newjob = true;
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (job.def == JobDefOf.Capture || job.def == JobDefOf.Rescue)
-                            {
-                                List<Thing> availableVehicles = pawn.AvailableVehicles();
-                                Vehicle_Cart vehicle =
-                                    TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Doctor);
-                                if (vehicle != null)
-                                {
-                                    if (pawn.Position.DistanceToSquared(vehicle.Position)
-                                        < pawn.Position.DistanceToSquared(job.targetA.Cell))
-                                    {
-                                        job = MountOnOrReturnVehicle(pawn, job, vehicle);
-                                        newjob = true;
-                                        oldJob = null;
-                                    }
-                                }
-                            }
+                            availableVehicles = pawn.AvailableVehiclesForAllFactions(vehicleSearchRadius);
                         }
 
-                    }
-                }
-                else
-                {
-                    if (!pawn.IsDriver())
-                    {
-                        if (job != null)
+                        if (!availableVehicles.NullOrEmpty())
                         {
-                            if (job.def == JobDefOf.Flee || job.def == JobDefOf.FleeAndCower
-                                || job.def == JobDefOf.Steal || job.def == JobDefOf.Kidnap
-                                || job.def == JobDefOf.CarryDownedPawnToExit || job.def == JobDefOf.WaitCombat
-                                || job.def == JobDefOf.AttackMelee || job.def == JobDefOf.AttackStatic
-                                || job.def == JobDefOf.Goto && pawn.CurJob.exitMapOnArrival)
-                            {
-                                List<Thing> availableVehicles;
-
-                                if (pawn.Faction.HostileTo(Faction.OfPlayer))
-                                {
-                                    availableVehicles = pawn.AvailableVehiclesForSteeling(vehicleSearchRadius);
-                                }
-                                else
-                                {
-                                    availableVehicles = pawn.AvailableVehiclesForAllFactions(vehicleSearchRadius);
-                                }
-
-                                if (!availableVehicles.NullOrEmpty())
-                                {
-                                    job = new Job(HaulJobDefOf.Mount) { targetA = availableVehicles.FirstOrDefault(), };
-                                    newjob = true;
-                                }
-                            }
+                            job = new Job(HaulJobDefOf.Mount) { targetA = availableVehicles.FirstOrDefault(), };
                         }
-                    }
-                }
-                if (newjob)
-                {
-                    pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
-
-                    pawn.jobs.TryTakeOrderedJob(job);
-                    if (oldJob != null)
-                    {
-                        //   Log.Message("Job replaced " + pawn);
-                        pawn.jobs.jobQueue.EnqueueFirst(oldJob);
                     }
                 }
             }
 
+            if (job != null)
+            {
+                Log.Message("Thinknode accessed " + pawn + "\nNew thinknode, " + __result.Job + " -> " + job);
+                __result = new ThinkResult(job, __instance, null);
+            }
         }
 
         private static Job MountOnOrReturnVehicle(Pawn pawn, Job job, Vehicle_Cart cart)
@@ -178,4 +197,17 @@ namespace ToolsForHaul
         }
 
     }
+
+  //[HarmonyPatch(typeof(ThingDef), "CanHaveFaction")]
+  //public static class CanHaveFaction_Patch
+  //{
+  //    [HarmonyPostfix]
+  //    public static void CanHaveFaction_Postfix(ref bool __result, ThingDef __instance)
+  //    {
+  //        if (__instance.HasComp(typeof(CompMountable)))
+  //        {
+  //            __result = true;
+  //        }
+  //    }
+  //}
 }

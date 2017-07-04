@@ -326,8 +326,8 @@ namespace ToolsForHaul.Utilities
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
                 aV => aV is Vehicle_Cart && !aV.IsForbidden(pawn.Faction)
-                              && (!aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV) // Unmounted
-                                  || aV.TryGetComp<CompMountable>().Driver == pawn)); // or Driver is pawn himself
+                      && (!((Vehicle_Cart)aV).MountableComp.IsMounted && pawn.CanReserve(aV) // Unmounted
+                          || ((Vehicle_Cart)aV).MountableComp.Driver == pawn)); // or Driver is pawn himself
             return availableVehicles;
         }
 
@@ -414,16 +414,7 @@ namespace ToolsForHaul.Utilities
         {
 
             List<Thing> availableVehicles = pawn.AvailableVehicles();
-            foreach (var thing in availableVehicles)
-            {
-                var vehicle = (Vehicle_Cart)thing;
-                if (vehicle.MountableComp.Driver == pawn)
-                {
-                    return vehicle;
-                }
-            }
-
-            return null;
+            return availableVehicles.Cast<Vehicle_Cart>().FirstOrDefault(vehicle => vehicle.MountableComp.Driver == pawn);
         }
 
         public static Vehicle_Saddle GetSaddleByRider(Pawn pawn)
@@ -898,8 +889,8 @@ namespace ToolsForHaul.Utilities
 
         public static bool IsDriver(this Pawn pawn)
         {
-            List<Thing> availableVehicles = AvailableVehicles(pawn);
-            foreach (Vehicle_Cart vehicle in availableVehicles)
+            List<Thing> mountedVehicles = pawn.Map.MountedVehicles();
+            foreach (Vehicle_Cart vehicle in mountedVehicles)
             {
                 if (vehicle.MountableComp.Driver == pawn)
                 {
@@ -938,8 +929,35 @@ namespace ToolsForHaul.Utilities
 
             if (worktype.Equals(WorkTypeDefOf.Hunting))
             {
+                IOrderedEnumerable<Thing> armoured =
+                    availableVehicles.Where(x => x is Vehicle_CartTurretGun).OrderBy(x => ((Vehicle_Cart)x).HitPoints);
+
                 IOrderedEnumerable<Thing> orderedEnumerable =
                     availableVehicles.OrderBy(x => ((Vehicle_Cart)x).HitPoints);
+
+                foreach (Thing thing in armoured)
+                {
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart == null) continue;
+                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
+                    if (!pawn.IsAllowedToRide(vehicleCart)) continue;
+                    if (vehicleCart.HasGasTank())
+                    {
+                        if (vehicleCart.GasTankComp.tankLeaking) continue;
+                    }
+                    if (vehicleCart.IsAboutToBlowUp())
+                    {
+                        continue;
+                    }
+                    if (!vehicleCart.IsCurrentlyMotorized())
+                    {
+                        continue;
+                    }
+
+                    return vehicleCart;
+                }
+
+
                 foreach (Thing thing in orderedEnumerable)
                 {
                     Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;

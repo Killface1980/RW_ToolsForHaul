@@ -26,7 +26,5 @@ namespace ToolsForHaul
 
         public static readonly ThingDef VehicleSpeeder;
 
-        public static readonly ThingDef Mote_Track_ATV;
-
     }
 }
