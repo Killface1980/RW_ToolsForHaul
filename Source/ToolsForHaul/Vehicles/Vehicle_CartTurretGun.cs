@@ -33,7 +33,7 @@
 
         private Thing gunInt;
 
-        protected Cart_TurretTop top;
+        protected TurretTop top;
 
         protected CompPowerTrader powerComp;
 
@@ -126,7 +126,7 @@
 
         public Vehicle_CartTurretGun()
         {
-            this.top = new Cart_TurretTop(this);
+            this.top = new TurretTop(this);
         }
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
@@ -228,7 +228,7 @@
                             this.TryStartShootSomething(true);
                         }
                     }
-                    this.top.CartTurretTopTick();
+                    this.top.TurretTopTick();
                 }
             }
             else

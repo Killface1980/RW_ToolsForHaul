@@ -25,24 +25,46 @@
           <depth>Inside</depth>
         </li>
         <li>
-          <def>WheelFrontLeft</def>
-          <coverage>0.17</coverage>
-          <height>Bottom</height>
+          <def>AxleFront</def>
+          <height>Middle</height>
+          <coverage>0.10</coverage>
+          <depth>Inside</depth>
+          <groups>
+            <li>Axles</li>
+          </groups>
+          <parts>
+            <li>
+              <def>WheelFrontLeft</def>
+              <coverage>0.17</coverage>
+              <height>Bottom</height>
+            </li>
+            <li>
+              <def>WheelFrontRight</def>
+              <coverage>0.17</coverage>
+              <height>Bottom</height>
+            </li>
+          </parts>
         </li>
         <li>
-          <def>WheelFrontRight</def>
-          <coverage>0.17</coverage>
-          <height>Bottom</height>
-        </li>
-        <li>
-          <def>WheelRearLeft</def>
-          <coverage>0.2</coverage>
-          <height>Bottom</height>
-        </li>
-        <li>
-          <def>WheelRearRight</def>
-          <coverage>0.2</coverage>
-          <height>Bottom</height>
+          <def>AxleRear</def>
+          <height>Middle</height>
+          <coverage>0.10</coverage>
+          <depth>Inside</depth>
+          <groups>
+            <li>Axles</li>
+          </groups>
+          <parts>
+            <li>
+              <def>WheelRearLeft</def>
+              <coverage>0.2</coverage>
+              <height>Bottom</height>
+            </li>
+            <li>
+              <def>WheelRearRight</def>
+              <coverage>0.2</coverage>
+              <height>Bottom</height>
+            </li>
+          </parts>
         </li>
       </parts>
     </corePart>

@@ -90,7 +90,7 @@ namespace ToolsForHaul.Utilities
                 {
                     if (map.thingGrid.ThingsAt(cell).Any(
                         current => current.def.passability == Traversability.PassThroughOnly
-                                   || current.def.passability == Traversability.Impassable))
+                                   || current.def.passability == Traversability.Impassable || current is Vehicle_Cart))
                     {
                         continue;
                     }
@@ -119,7 +119,7 @@ namespace ToolsForHaul.Utilities
                     if (pawn.Map.thingGrid.ThingsAt(cell)
                         .Any(
                             current => current.def.passability == Traversability.PassThroughOnly
-                                       || current.def.passability == Traversability.Impassable))
+                                       || current.def.passability == Traversability.Impassable || current is Vehicle_Cart))
                     {
                         continue;
                     }

@@ -4,13 +4,16 @@
   <BodyPartDef>
     <defName>VehicleChassis</defName>
     <label>chassis</label>
-    <hitPoints>400</hitPoints>
+    <hitPoints>200</hitPoints>
     <oldInjuryBaseChance>0</oldInjuryBaseChance>
     <skinCovered>false</skinCovered>
     <isSolid>true</isSolid>
     <isAlive>false</isAlive>
-  </BodyPartDef>  
-  
+    <tags>
+      <li>ManipulationLimbCore</li>
+    </tags>
+  </BodyPartDef>
+
   <BodyPartDef>
     <defName>VehicleEngine</defName>
     <label>engine</label>
@@ -19,8 +22,15 @@
     <skinCovered>false</skinCovered>
     <isSolid>true</isSolid>
     <isAlive>false</isAlive>
-  </BodyPartDef> 
-  
+    <tags>
+      <li>ConsciousnessSource</li>
+      <li>ManipulationLimbCore</li>
+      <li>ManipulationLimbSegment</li>
+      <li>MovingLimbCore</li>
+      <li>MovingLimbSegment</li>
+    </tags>
+  </BodyPartDef>
+
   <BodyPartDef>
     <defName>VehicleTank</defName>
     <label>tank</label>
@@ -30,6 +40,40 @@
     <skinCovered>false</skinCovered>
     <isSolid>true</isSolid>
     <isAlive>false</isAlive>
+    <tags>
+      <li>BloodPumpingSource</li>
+      <li>MovingLimbCore</li>
+    </tags>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>HeadlightLeft</defName>
+    <label>left headlight</label>
+    <hitPoints>200</hitPoints>
+    <frostbiteVulnerability>10</frostbiteVulnerability>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+    <useDestroyedOutLabel>true</useDestroyedOutLabel>
+    <tags>
+      <li>SightSource</li>
+    </tags>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>HeadlightRight</defName>
+    <label>right headlight</label>
+    <hitPoints>200</hitPoints>
+    <frostbiteVulnerability>10</frostbiteVulnerability>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+    <useDestroyedOutLabel>true</useDestroyedOutLabel>
+    <tags>
+      <li>SightSource</li>
+    </tags>
   </BodyPartDef>
 
   <BodyPartDef>
@@ -54,8 +98,8 @@
     <isSolid>true</isSolid>
     <isAlive>false</isAlive>
     <spawnThingOnRemoved>ScytherBlade</spawnThingOnRemoved>
-  </BodyPartDef>  
-  
+  </BodyPartDef>
+
   <BodyPartDef>
     <defName>WheelRearLeft</defName>
     <label>left rear wheel</label>
@@ -80,6 +124,35 @@
     <spawnThingOnRemoved>ScytherBlade</spawnThingOnRemoved>
   </BodyPartDef>
 
+  <BodyPartDef>
+    <defName>AxleFront</defName>
+    <label>front axle</label>
+    <hitPoints>120</hitPoints>
+    <frostbiteVulnerability>5</frostbiteVulnerability>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+    <spawnThingOnRemoved>ScytherBlade</spawnThingOnRemoved>
+    <tags>
+      <li>MovingLimbSegment</li>
+    </tags>
+  </BodyPartDef>
 
-  
+  <BodyPartDef>
+    <defName>AxleRear</defName>
+    <label>rear axle</label>
+    <hitPoints>120</hitPoints>
+    <frostbiteVulnerability>5</frostbiteVulnerability>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+    <spawnThingOnRemoved>ScytherBlade</spawnThingOnRemoved>
+    <tags>
+      <li>MovingLimbSegment</li>
+    </tags>
+  </BodyPartDef>
+
+
 </Defs>

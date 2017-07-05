@@ -47,7 +47,7 @@
             return false;
         }
 
-        public virtual bool ClaimableBy(Faction by)
+        public virtual bool ClaimableByPlayer()
         {
 
             if (this.Faction == null)
@@ -58,9 +58,9 @@
             // No vehicles if enemy near
             if (this.Faction.HostileTo(Faction.OfPlayer))
             {
-                foreach (var pawn in Find.VisibleMap.mapPawns.FreeColonists)
+                foreach (var pawn in this.Map.mapPawns.FreeColonists)
                 {
-                    if (pawn.Position.InHorDistOf(this.Position, 12f))
+                    if (pawn.Position.InHorDistOf(this.Position, 6f))
                     {
                         return true;
                     }
@@ -155,7 +155,7 @@
 
         public CompRefuelable RefuelableComp;
 
-        public CompExplosive ExplosiveComp;
+        public CompExplosive_TFH ExplosiveComp;
 
         public CompBreakdownable BreakdownableComp;
 
@@ -191,11 +191,23 @@
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
+            // To allow the vehicle to be drafted -> Still not possible to draft, because 1. not humanlike and 2. the GetGizmos in Pawn_Drafter is internal! 
+            this.drafter = new Pawn_DraftController(this); // Maybe not needed because not usable?
+
+            if (this.equipment == null)
+            {
+                this.equipment = new Pawn_EquipmentTracker(this);
+            }
+
             this.MountableComp = this.TryGetComp<CompMountable>();
 
             RefuelableComp = this.TryGetComp<CompRefuelable>();
 
-            ExplosiveComp = this.TryGetComp<CompExplosive>();
+                ExplosiveComp = this.TryGetComp<CompExplosive_TFH>();
+
+         // if (this.health.hediffSet.HasHediff(HediffDef.Named("Bomb")))
+         // {
+         // }
 
             BreakdownableComp = this.TryGetComp<CompBreakdownable>();
 
@@ -284,8 +296,9 @@
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
+            // Getting the gizmos manually - no drafting, see SpawnSetup
 
-            if (ClaimableBy(Faction.OfPlayer))
+            if (this.ClaimableByPlayer())
             {
                 Designator des = new Designator_Claim();
 
@@ -305,16 +318,73 @@
                 command_Claim.hotKey = des.hotKey;
                 command_Claim.groupKey = des.groupKey;
 
-                if (ClaimableBy(Faction.OfPlayer))
+                if (this.ClaimableByPlayer())
                 {
                     yield return command_Claim;
                 }
                 yield break;
             }
-
-            foreach (Gizmo baseGizmo in ThisGetGizmos())
+            if (!this.Faction.IsPlayer)
             {
-                yield return baseGizmo;
+                yield break;
+            }
+            {
+                Command_Toggle draft = new Command_Toggle();
+                draft.hotKey = KeyBindingDefOf.CommandColonistDraft;
+                draft.isActive = (() => this.Drafted);
+                draft.toggleAction = delegate
+                    {
+                        this.drafter.Drafted = !this.Drafted;
+                        PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.Drafting, KnowledgeAmount.SpecificInteraction);
+                    };
+                draft.defaultDesc = "CommandToggleDraftDesc".Translate();
+                draft.icon = TexCommand.Draft;
+                draft.turnOnSound = SoundDefOf.DraftOn;
+                draft.turnOffSound = SoundDefOf.DraftOff;
+                if (!this.Drafted)
+                {
+                    draft.defaultLabel = "CommandDraftLabel".Translate();
+                }
+                if (this.Downed)
+                {
+                    draft.Disable("IsIncapped".Translate(new object[]
+                                                             {
+                                                                 this.NameStringShort
+                                                             }));
+                }
+                if (!this.Drafted)
+                {
+                    draft.tutorTag = "Draft";
+                }
+                else
+                {
+                    draft.tutorTag = "Undraft";
+                }
+                yield return draft;
+                if (this.Drafted && this.equipment.Primary != null && this.equipment.Primary.def.IsRangedWeapon)
+                {
+                    yield return new Command_Toggle
+                    {
+                        hotKey = KeyBindingDefOf.Misc6,
+                        isActive = (() => this.FireAtWill),
+                        toggleAction = delegate
+                            {
+                                this.FireAtWill = !this.FireAtWill;
+                            },
+                        icon = TexCommand.FireAtWill,
+                        defaultLabel = "CommandFireAtWillLabel".Translate(),
+                        defaultDesc = "CommandFireAtWillDesc".Translate(),
+                        tutorTag = "FireAtWillToggle"
+                    };
+                }
+            }
+
+            if (false)
+            {
+                foreach (Gizmo baseGizmo in ThisGetGizmos())
+                {
+                    yield return baseGizmo;
+                }
             }
 
             if (this.RefuelableComp != null)

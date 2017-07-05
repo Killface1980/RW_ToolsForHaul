@@ -80,14 +80,16 @@
     <label>waist</label>
     <listOrder>50</listOrder>
   </BodyPartGroupDef>
+  -->
   
   <BodyPartGroupDef>
-    <defName>Legs</defName>
-    <label>legs</label>
+    <defName>Axles</defName>
+    <label>wheels</label>
     <listOrder>10</listOrder>
   </BodyPartGroupDef>
 
-  <BodyPartGroupDef>
+  <!--
+<BodyPartGroupDef>
     <defName>Feet</defName>
     <label>feet</label>
     <listOrder>9</listOrder>

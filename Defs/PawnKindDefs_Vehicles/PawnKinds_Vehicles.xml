@@ -2,15 +2,18 @@
 <PawnKindDefs>
 
   <PawnKindDef Name="MotorizedVehicleBase" Abstract="True">
-    <bodyGraphicData>
+ <!--
       <shaderType>Cutout</shaderType>
     </bodyGraphicData>
     <dessicatedBodyGraphicData>
       <shaderType>Cutout</shaderType>
     </dessicatedBodyGraphicData>
+    <bodyGraphicData>
+ -->
+    <wildSpawn_spawnWild>false</wildSpawn_spawnWild>
   </PawnKindDef>
 
-	<PawnKindDef>
+	<PawnKindDef ParentName="MotorizedVehicleBase">
     <defName>ATV</defName>
     <label>ATV</label>
     <race>VehicleATV</race>
@@ -30,8 +33,8 @@
       </li>
     </lifeStages>
 	</PawnKindDef>
-  
-	<PawnKindDef>
+
+  <PawnKindDef ParentName="MotorizedVehicleBase">
     <defName>CombatATV</defName>
     <label>CombatATV</label>
     <race>VehicleCombatATV</race>

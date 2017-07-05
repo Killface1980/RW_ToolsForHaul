@@ -82,9 +82,10 @@ namespace ToolsForHaul.Components
                 return;
 
             bool makeHole = false;
-            float hitpointsPercent = (float)this.parent.HitPoints / this.parent.MaxHitPoints;
+            float hitpointsPercent = this.cart.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
+                // (float)this.parent.HitPoints / this.parent.MaxHitPoints;
 
-            if (!this.cart.VehicleComp.MotorizedWithoutFuel())
+            if (!this.cart.HasGasTank())
             {
                 if (dinfo.Def == DamageDefOf.Deterioration && Rand.Value > 0.5f)
                 {

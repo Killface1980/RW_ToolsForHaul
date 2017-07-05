@@ -1,6 +1,9 @@
 ﻿namespace ToolsForHaul
 {
     using System.Linq;
+
+    using ToolsForHaul.Vehicles;
+
     using UnityEngine;
 
     using Verse;
@@ -27,8 +30,9 @@
             {
                 if (this.Map.thingGrid.ThingsAt(cell).Any(
                     current => current.def.passability == Traversability.PassThroughOnly
-                               || current.def.passability == Traversability.Impassable))
+                               || current.def.passability == Traversability.Impassable || current is Vehicle_Cart))
                 {
+                    
                     blocked++;
                 }
             }

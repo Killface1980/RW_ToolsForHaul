@@ -62,6 +62,11 @@
     <None Include="AcEnhancedHauling.cs" />
     <Compile Include="Alerts\Alert_NoParkingLot.cs" />
     <Compile Include="Building_BattleBeacon.cs" />
+    <Compile Include="Class2.cs" />
+    <Compile Include="Class3.cs" />
+    <Compile Include="HediffGiver_Bomb.cs" />
+    <None Include="HediffCompProperties_Explosive.cs" />
+    <None Include="HediffCompExplosive.cs" />
     <Compile Include="JobGivers\Class1.cs" />
     <Compile Include="MoteThrown_TFH.cs" />
     <Compile Include="MoteDefOf.cs" />
@@ -80,8 +85,8 @@
     <Compile Include="JobGivers\JobGiver_MountSpawnedFactionVehicle.cs" />
     <Compile Include="Static.cs" />
     <None Include="WorkGivers\Class1.cs" />
-    <Compile Include="Vehicles\Cart_TurretTop.cs" />
-    <Compile Include="Vehicles\Vehicle_CartTurretGun.cs" />
+    <None Include="Vehicles\Cart_TurretTop.cs" />
+    <None Include="Vehicles\Vehicle_CartTurretGun.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_ReturnCart.cs" />
@@ -112,7 +117,7 @@
     <Compile Include="Vehicles\Designator_Board.cs" />
     <Compile Include="Command_VerbTarget.cs" />
     <Compile Include="Vehicles\Vehicle_Cart.cs" />
-    <Compile Include="Vehicles\Vehicle_CartTurret.cs" />
+    <None Include="Vehicles\Vehicle_CartTurret.cs" />
     <None Include="Toils\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithVehicle.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
@@ -167,6 +172,12 @@
     <Content Include="..\..\Defs\Bodies\Bodies_Vehicles_Mechanical.xml">
       <Link>Defs\Bodies_Vehicles_Mechanical.xml</Link>
     </Content>
+    <Content Include="..\..\Defs\Bodies\BodyPartGroups_Mechanical.xml">
+      <Link>Defs\BodyPartGroups_Mechanical.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\Bodies\BodyParts_Vehicles_Mechanical.xml">
+      <Link>Defs\BodyParts_Vehicles_Mechanical.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\DesignationDefs\Designations.xml">
       <Link>Defs\DesignationDefs\Designations.xml</Link>
     </Content>
@@ -188,6 +199,12 @@
     </Content>
     <Content Include="..\..\Defs\Effects\Mote_Visual.xml">
       <Link>Defs\Effects\Mote_Visual.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\HeDiffDefs\Hediffs_Local_AddedMechanicalParts.xml">
+      <Link>Defs\Hediffs_Local_AddedMechanicalParts.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\HediffGiverSetDefs\HediffGiverSets.xml">
+      <Link>Defs\HediffGiverSets.xml</Link>
     </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
       <Link>Defs\JobDefs\Jobs_Misc.xml</Link>

@@ -7,12 +7,25 @@
     <defName>Engine</defName>
     <thinkRoot Class="ThinkNode_Priority">
       <subNodes>
-        
+
+        <li Class="ThinkNode_Tagger">
+          <tagToGive>Idle</tagToGive>
+        </li>
+
+      </subNodes>
+    </thinkRoot>
+  </ThinkTreeDef>
+
+  <ThinkTreeDef>
+    <defName>EngineCombat</defName>
+    <thinkRoot Class="ThinkNode_Priority">
+      <subNodes>
+
         <li Class="ToolsForHaul.JobGivers.JobGiver_AIDefendPoint_TFH">
           <targetAcquireRadius>25</targetAcquireRadius>
           <targetKeepRadius>30</targetKeepRadius>
         </li>
-        
+
         <li Class="ThinkNode_Tagger">
           <tagToGive>Idle</tagToGive>
         </li>
