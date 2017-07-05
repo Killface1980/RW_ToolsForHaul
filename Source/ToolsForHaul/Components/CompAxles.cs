@@ -118,7 +118,7 @@
                 this.wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.04f;
                 this.bodyLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.03f;
 
-                Vector2 drawSize = this.cart.def.graphic.drawSize;
+                Vector2 drawSize = this.cart.DrawSize;
                 int num = 0;
                 Rot4 rot;
                 rot = this.cart.MountableComp.IsMounted ? this.cart.MountableComp.Driver.Rotation : this.cart.Rotation;
@@ -155,6 +155,14 @@
         {
             base.Initialize(props);
 
+
+        }
+
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            this.cart = this.parent as Vehicle_Cart;
+
             // Don't change parent to cart!
             if (this.HasAxles())
             {
@@ -166,18 +174,12 @@
                                 GraphicDatabase.Get<Graphic_Single>(
                                     text,
                                     this.parent.def.graphic.Shader,
-                                    this.parent.def.graphic.drawSize,
+                                    this.cart.DrawSize,
                                     this.parent.def.graphic.color,
                                     this.parent.def.graphic.colorTwo) as Graphic_Single;
                         });
 
             }
-        }
-
-        public override void PostSpawnSetup(bool respawningAfterLoad)
-        {
-            base.PostSpawnSetup(respawningAfterLoad);
-            this.cart = this.parent as Vehicle_Cart;
         }
     }
 }

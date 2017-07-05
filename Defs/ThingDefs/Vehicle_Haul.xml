@@ -167,10 +167,6 @@
         <!--
       <soundAmbient>VehicleATV_Ambience</soundAmbient>
         -->
-        <specialshadowData>
-          <volume>(0.65, 0.6, 0.5)</volume>
-          <offset>(0,0,-0.3)</offset>
-        </specialshadowData>
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
     </comps>
@@ -277,10 +273,6 @@
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleTruck_Ambience</soundAmbient>
-        <specialshadowData>
-          <volume>(0.65, 0.6, 0.5)</volume>
-          <offset>(0,0,-0.3)</offset>
-        </specialshadowData>
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
@@ -356,10 +348,6 @@
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
-        <specialshadowData>
-          <volume>(0.65, 0.6, 0.5)</volume>
-          <offset>(0,0,-0.3)</offset>
-        </specialshadowData>
       </li>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
@@ -418,7 +406,7 @@
 
 
   <ThingDef ParentName="VehicleBase">
-    <defName>VehicleATV</defName>
+    <defName>VehicleATV_Old</defName>
     <label>ATV</label>
     <graphicData>
       <texPath>Things/Vehicles/VehicleATV/ATV</texPath>
@@ -479,10 +467,6 @@
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
-        <specialshadowData>
-          <volume>(0.65, 0.6, 0.5)</volume>
-          <offset>(0,0,-0.3)</offset>
-        </specialshadowData>
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
@@ -639,10 +623,6 @@
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
         <soundAmbient>VehicleSpeeder_Ambience</soundAmbient>
         <leaveTrail>false</leaveTrail>
-        <specialshadowData>
-          <volume>(0.65, 0.6, 0.5)</volume>
-          <offset>(0,0,-0.3)</offset>
-        </specialshadowData>
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
@@ -763,10 +743,6 @@
         <motorizedWithoutFuel>true</motorizedWithoutFuel>
         <soundAmbient>VehicleSmackWay_Ambience</soundAmbient>
         <isMedical>true</isMedical>
-        <specialshadowData>
-          <volume>(0.65, 0.6, 0.5)</volume>
-          <offset>(0,0,-0.3)</offset>
-        </specialshadowData>
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
     </comps>

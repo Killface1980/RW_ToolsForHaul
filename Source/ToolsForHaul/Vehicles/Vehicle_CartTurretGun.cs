@@ -100,7 +100,7 @@
                     for (int i = 0; i < allVerbs.Count; i++)
                     {
                         Verb verb = allVerbs[i];
-                        verb.caster = this;
+                        verb.caster =this;
                         verb.castCompleteCallback = new Action(this.BurstComplete);
                     }
                 }

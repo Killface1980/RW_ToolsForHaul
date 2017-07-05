@@ -17,6 +17,7 @@ namespace ToolsForHaul.Components
     {
         public List<Vector2> axles = new List<Vector2>();
 
+
         public CompProperties_Axle()
         {
             this.compClass = typeof(CompAxles);

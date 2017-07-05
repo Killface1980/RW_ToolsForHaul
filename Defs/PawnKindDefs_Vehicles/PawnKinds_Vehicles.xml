@@ -11,11 +11,11 @@
   </PawnKindDef>
 
 	<PawnKindDef>
-    <defName>Vehicle_ATV_Test</defName>
-    <label>centipedeTFH</label>
-    <race>Vehicle_ATV</race>
+    <defName>ATV</defName>
+    <label>ATV</label>
+    <race>VehicleATV</race>
     <combatPower>290</combatPower>
-    <defaultFactionType>PlayerColony</defaultFactionType>
+    <defaultFactionType></defaultFactionType>
     <aiAvoidCover>true</aiAvoidCover>
     <lifeStages>
       <li>
@@ -29,10 +29,31 @@
         </bodyGraphicData>
       </li>
     </lifeStages>
-    <weaponMoney>
-      <min>8000</min>
-      <max>8000</max>
-    </weaponMoney>
+	</PawnKindDef>
+  
+	<PawnKindDef>
+    <defName>CombatATV</defName>
+    <label>CombatATV</label>
+    <race>VehicleCombatATV</race>
+    <combatPower>290</combatPower>
+    <defaultFactionType></defaultFactionType>
+    <aiAvoidCover>true</aiAvoidCover>
+    <lifeStages>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Vehicles/VehicleCombatATV/CombatATV</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>3</drawSize>
+          <shadowData>
+            <volume>(0.6, 0.8, 0.6)</volume>
+          </shadowData>
+        </bodyGraphicData>
+      </li>
+    </lifeStages>
+	  <weaponMoney>
+	    <min>8000</min>
+	    <max>8000</max>
+	  </weaponMoney>
     <weaponTags>
       <li>MechanoidGunHeavy</li>
     </weaponTags>

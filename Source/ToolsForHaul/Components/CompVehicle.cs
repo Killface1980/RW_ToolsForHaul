@@ -53,7 +53,7 @@
 
         public float currentDriverSpeed;
 
-        public float DesiredSpeed => this.parent.GetStatValue(HaulStatDefOf.VehicleSpeed);
+        public float DesiredSpeed => this.parent.GetStatValue(StatDefOf.MoveSpeed);
 
         public float VehicleSpeed;
         public bool despawnAtEdge;
@@ -241,21 +241,5 @@
             this.cart = this.parent as Vehicle_Cart;
 
         }
-
-        public override void PostDraw()
-        {
-            if (this.compProps.specialShadowData != null)
-            {
-                if (this.shadowGraphic == null)
-                {
-                    this.shadowGraphic = new Graphic_Shadow(this.compProps.specialShadowData);
-                }
-
-                this.shadowGraphic.Draw(this.parent.DrawPos, Rot4.North, this.parent);
-            }
-
-            base.PostDraw();
-        }
-
     }
 }

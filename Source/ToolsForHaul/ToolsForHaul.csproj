@@ -62,6 +62,7 @@
     <None Include="AcEnhancedHauling.cs" />
     <Compile Include="Alerts\Alert_NoParkingLot.cs" />
     <Compile Include="Building_BattleBeacon.cs" />
+    <Compile Include="JobGivers\Class1.cs" />
     <Compile Include="MoteThrown_TFH.cs" />
     <Compile Include="MoteDefOf.cs" />
     <Compile Include="Components\CompFrontTex.cs" />
@@ -163,6 +164,9 @@
     <Content Include="..\..\About\About.xml">
       <Link>About.xml</Link>
     </Content>
+    <Content Include="..\..\Defs\Bodies\Bodies_Vehicles_Mechanical.xml">
+      <Link>Defs\Bodies_Vehicles_Mechanical.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\DesignationDefs\Designations.xml">
       <Link>Defs\DesignationDefs\Designations.xml</Link>
     </Content>
@@ -246,6 +250,9 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs_Races\Races_Vehicle_Base.xml">
       <Link>Defs\Races_Vehicle_Base.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThinkTreeDefs\Vehicle_Mechanical.xml">
+      <Link>Defs\Vehicle_Mechanical.xml</Link>
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers.xml">
       <Link>Defs\WorkGivers.xml</Link>

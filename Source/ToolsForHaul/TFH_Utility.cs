@@ -930,7 +930,7 @@ namespace ToolsForHaul.Utilities
             if (worktype.Equals(WorkTypeDefOf.Hunting))
             {
                 IOrderedEnumerable<Thing> armoured =
-                    availableVehicles.Where(x => x is Vehicle_CartTurretGun).OrderBy(x => ((Vehicle_Cart)x).HitPoints);
+                    availableVehicles.Where(x => x is Vehicle_Cart).OrderBy(x => ((Vehicle_Cart)x).HitPoints);
 
                 IOrderedEnumerable<Thing> orderedEnumerable =
                     availableVehicles.OrderBy(x => ((Vehicle_Cart)x).HitPoints);

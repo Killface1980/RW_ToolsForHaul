@@ -20,14 +20,6 @@
 
     public class Vehicle_Cart : Pawn, IThingHolder, ILoadReferenceable
     {
-        #region Tank
-
-
-
-
-
-
-        #endregion
 
         #region Variables
 
@@ -95,7 +87,7 @@
             return false;
         }
 
-        public float DesiredSpeed => this.GetStatValue(HaulStatDefOf.VehicleSpeed);
+        public float DesiredSpeed => this.GetStatValue(StatDefOf.MoveSpeed);
 
         public bool IsCurrentlyMotorized()
         {
@@ -239,7 +231,7 @@
 
         public void AddDriverComp()
         {
-            this.DriverComp = new CompDriver { Cart = this, Pawn = this.MountableComp.Driver, parent = this.MountableComp.Driver};
+            this.DriverComp = new CompDriver { Cart = this, Pawn = this.MountableComp.Driver, parent = this.MountableComp.Driver };
             this.MountableComp.Driver.AllComps.Add(this.DriverComp);
         }
         public void StartSustainerVehicleIfInactive()
@@ -293,8 +285,7 @@
         public override IEnumerable<Gizmo> GetGizmos()
         {
 
-
-            if (this.Faction != Faction.OfPlayer)
+            if (ClaimableBy(Faction.OfPlayer))
             {
                 Designator des = new Designator_Claim();
 
@@ -321,9 +312,17 @@
                 yield break;
             }
 
-            foreach (Gizmo baseGizmo in base.GetGizmos())
+            foreach (Gizmo baseGizmo in ThisGetGizmos())
             {
                 yield return baseGizmo;
+            }
+
+            if (this.RefuelableComp != null)
+            {
+                foreach (Gizmo gizmo in this.RefuelableComp.CompGetGizmosExtra())
+                {
+                    yield return gizmo;
+                }
             }
 
             Designator_Mount designator =
@@ -449,6 +448,89 @@
             // },
             // hotKey = KeyBindingDefOf.Misc3
             // };
+        }
+
+        private IEnumerable<Gizmo> ThisGetGizmos()
+        {
+            //    if (this.IsColonistPlayerControlled)
+            {
+                if (this.drafter != null)
+                {
+                    foreach (Gizmo c2 in GetDraftedGizmos())
+                    {
+                        yield return c2;
+                    }
+                }
+                if (this.equipment != null)
+                {
+                    foreach (Gizmo g in this.equipment.GetGizmos())
+                    {
+                        yield return g;
+                    }
+                }
+
+                if (this.playerSettings != null)
+                {
+                    foreach (Gizmo g3 in this.playerSettings.GetGizmos())
+                    {
+                        yield return g3;
+                    }
+                }
+
+            }
+        }
+
+        private IEnumerable<Gizmo> GetDraftedGizmos()
+        {
+            Command_Toggle draft = new Command_Toggle();
+            draft.hotKey = KeyBindingDefOf.CommandColonistDraft;
+            draft.isActive = (() => this.Drafted);
+            draft.toggleAction = delegate
+                {
+                    this.drafter.Drafted = !this.Drafted;
+                    PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.Drafting, KnowledgeAmount.SpecificInteraction);
+                };
+            draft.defaultDesc = "CommandToggleDraftDesc".Translate();
+            draft.icon = TexCommand.Draft;
+            draft.turnOnSound = SoundDefOf.DraftOn;
+            draft.turnOffSound = SoundDefOf.DraftOff;
+            if (!this.Drafted)
+            {
+                draft.defaultLabel = "CommandDraftLabel".Translate();
+            }
+            if (this.Downed)
+            {
+                draft.Disable("IsIncapped".Translate(new object[]
+                                                         {
+                                                             this.NameStringShort
+                                                         }));
+            }
+            if (!this.Drafted)
+            {
+                draft.tutorTag = "Draft";
+            }
+            else
+            {
+                draft.tutorTag = "Undraft";
+            }
+            yield return draft;
+            if (this.Drafted && this.equipment.Primary != null && this.equipment.Primary.def.IsRangedWeapon)
+            {
+                yield return new Command_Toggle
+                {
+                    hotKey = KeyBindingDefOf.Misc6,
+                    isActive = (() => this.FireAtWill),
+                    toggleAction = delegate
+                        {
+                            this.FireAtWill = !this.FireAtWill;
+                        },
+                    icon = TexCommand.FireAtWill,
+                    defaultLabel = "CommandFireAtWillLabel".Translate(),
+                    defaultDesc = "CommandFireAtWillDesc".Translate(),
+                    tutorTag = "FireAtWillToggle"
+                };
+            }
+
         }
 
         private void Command_Detonate()
@@ -706,6 +788,25 @@
             }
         }
 
+        public Vector2 DrawSize;
+
+        private bool fireAtWillInt = true;
+
+        public bool FireAtWill
+        {
+            get
+            {
+                return this.fireAtWillInt;
+            }
+            set
+            {
+                this.fireAtWillInt = value;
+                if (!this.fireAtWillInt && this.stances.curStance is Stance_Warmup)
+                {
+                    this.stances.CancelBusyStanceSoft();
+                }
+            }
+        }
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             base.DrawAt(drawLoc);

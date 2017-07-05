@@ -88,19 +88,6 @@ namespace ToolsForHaul.Components
 
         public CompProperties_Mountable Props => (CompProperties_Mountable)this.props;
 
-        public override IEnumerable<Gizmo> CompGetGizmosExtra()
-        {
-            foreach (Gizmo compCom in base.CompGetGizmosExtra())
-            {
-                yield return compCom;
-            }
-
-            if (this.parent.Faction != Faction.OfPlayer)
-            {
-                yield break;
-            }
-        }
-
         public override void CompTick()
         {
             base.CompTick();
@@ -433,6 +420,8 @@ namespace ToolsForHaul.Components
             base.PostSpawnSetup(respawningAfterLoad);
 
             this.cart = this.parent as Vehicle_Cart;
+
+            this.cart.DrawSize = this.Props.drawSize;
 
             if (this.driver != null)
             {

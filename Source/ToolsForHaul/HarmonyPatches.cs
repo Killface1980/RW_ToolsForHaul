@@ -59,24 +59,24 @@
     {
         private static LocalTargetInfo target;
 
-        [HarmonyPostfix]
-        public static void Targeter(Targeter __instance)
-        {
-            if (!__instance.targetingVerb.CasterIsPawn)
-            {
-                int numSelected = Find.Selector.NumSelected;
-                List<object> selectedObjects = Find.Selector.SelectedObjects;
-                for (int j = 0; j < numSelected; j++)
-                {
-                    Vehicle_CartTurretGun cartTurretGun = selectedObjects[j] as Vehicle_CartTurretGun;
-                    if (cartTurretGun != null && cartTurretGun.Map == Find.VisibleMap)
-                    {
-                        LocalTargetInfo targ = CurrentTargetUnderMouse(__instance, true);
-                        cartTurretGun.OrderAttack(targ);
-                    }
-                }
-            }
-        }
+     // [HarmonyPostfix]
+     // public static void Targeter(Targeter __instance)
+     // {
+     //     if (!__instance.targetingVerb.CasterIsPawn)
+     //     {
+     //         int numSelected = Find.Selector.NumSelected;
+     //         List<object> selectedObjects = Find.Selector.SelectedObjects;
+     //         for (int j = 0; j < numSelected; j++)
+     //         {
+     //             Vehicle_CartTurretGun cartTurretGun = selectedObjects[j] as Vehicle_CartTurretGun;
+     //             if (cartTurretGun != null && cartTurretGun.Map == Find.VisibleMap)
+     //             {
+     //                 LocalTargetInfo targ = CurrentTargetUnderMouse(__instance, true);
+     //                 cartTurretGun.OrderAttack(targ);
+     //             }
+     //         }
+     //     }
+     // }
 
         // RimWorld.Targeter
         private static LocalTargetInfo CurrentTargetUnderMouse(Targeter __instance, bool mustBeHittableNowIfNotMelee)

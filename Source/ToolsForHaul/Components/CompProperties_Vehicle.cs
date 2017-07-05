@@ -27,8 +27,6 @@ namespace ToolsForHaul.Components
 
         public SoundDef soundAmbient;
 
-        public ShadowData specialShadowData;
-
         public CompProperties_Vehicle()
         {
             this.compClass = typeof(CompVehicle);

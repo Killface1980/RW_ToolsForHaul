@@ -76,7 +76,7 @@
   <!--=============== Improvised turret ===============-->
 
   <ThingDef ParentName="VehicleBase">
-    <defName>VehicleCombatATV</defName>
+    <defName>VehicleCombatATV_Old</defName>
     <label>CombatATV</label>
     <thingClass>ToolsForHaul.Vehicles.Vehicle_CartTurretGun</thingClass>
     <graphicData>
@@ -139,10 +139,6 @@
         <fuelCatchesFireHitPointsPercent>0.2</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleCombattATV_Ambience</soundAmbient>
-        <specialshadowData>
-          <volume>(0.65, 0.6, 0.5)</volume>
-          <offset>(0,0,-0.3)</offset>
-        </specialshadowData>
       </li>
       <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>

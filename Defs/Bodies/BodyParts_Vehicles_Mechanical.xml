@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <BodyPartDef>
+    <defName>VehicleChassis</defName>
+    <label>chassis</label>
+    <hitPoints>400</hitPoints>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+  </BodyPartDef>  
+  
+  <BodyPartDef>
+    <defName>VehicleEngine</defName>
+    <label>engine</label>
+    <hitPoints>250</hitPoints>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+  </BodyPartDef> 
+  
+  <BodyPartDef>
+    <defName>VehicleTank</defName>
+    <label>tank</label>
+    <hitPoints>200</hitPoints>
+    <frostbiteVulnerability>10</frostbiteVulnerability>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>WheelFrontLeft</defName>
+    <label>left front wheel</label>
+    <hitPoints>120</hitPoints>
+    <frostbiteVulnerability>5</frostbiteVulnerability>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+    <spawnThingOnRemoved>ScytherBlade</spawnThingOnRemoved>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>WheelFrontRight</defName>
+    <label>right front wheel</label>
+    <hitPoints>120</hitPoints>
+    <frostbiteVulnerability>5</frostbiteVulnerability>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+    <spawnThingOnRemoved>ScytherBlade</spawnThingOnRemoved>
+  </BodyPartDef>  
+  
+  <BodyPartDef>
+    <defName>WheelRearLeft</defName>
+    <label>left rear wheel</label>
+    <hitPoints>120</hitPoints>
+    <frostbiteVulnerability>5</frostbiteVulnerability>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+    <spawnThingOnRemoved>ScytherBlade</spawnThingOnRemoved>
+  </BodyPartDef>
+
+  <BodyPartDef>
+    <defName>WheelRearRight</defName>
+    <label>right rear wheel</label>
+    <hitPoints>120</hitPoints>
+    <frostbiteVulnerability>5</frostbiteVulnerability>
+    <oldInjuryBaseChance>0</oldInjuryBaseChance>
+    <skinCovered>false</skinCovered>
+    <isSolid>true</isSolid>
+    <isAlive>false</isAlive>
+    <spawnThingOnRemoved>ScytherBlade</spawnThingOnRemoved>
+  </BodyPartDef>
+
+
+  
+</Defs>

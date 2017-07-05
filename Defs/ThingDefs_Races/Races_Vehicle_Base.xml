@@ -2,7 +2,6 @@
 <Defs>
 
   <ThingDef Name="BasePawnTFH" Abstract="True">
-    <thingClass>ToolsForHaul.Vehicles.Vehicle_Cart</thingClass>
     <category>Pawn</category>
     <selectable>true</selectable>
     <tickerType>Normal</tickerType>
@@ -21,9 +20,6 @@
       <li>ITab_Pawn_Character</li>
       <li>ITab_Pawn_Training</li>
       <li>ITab_Pawn_Gear</li>
-      <li>ITab_Pawn_Guest</li>
-      <li>ITab_Pawn_Prisoner</li>
-      <li>ITab_Pawn_Social</li>
     </inspectorTabs>
     <comps>
       <li>

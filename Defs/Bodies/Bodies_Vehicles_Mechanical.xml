@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <BodyDef>
+    <defName>VehicleBody</defName>
+    <label>ATV body</label>
+    <corePart>
+      <def>VehicleChassis</def>
+      <height>Middle</height>
+      <depth>Outside</depth>
+      <groups>
+        <li>Chassis</li>
+      </groups>
+      <parts>
+        <li>
+          <def>VehicleEngine</def>
+          <height>Middle</height>
+          <coverage>0.10</coverage>
+          <depth>Inside</depth>
+        </li>
+        <li>
+          <def>VehicleTank</def>
+          <height>Middle</height>
+          <coverage>0.10</coverage>
+          <depth>Inside</depth>
+        </li>
+        <li>
+          <def>WheelFrontLeft</def>
+          <coverage>0.17</coverage>
+          <height>Bottom</height>
+        </li>
+        <li>
+          <def>WheelFrontRight</def>
+          <coverage>0.17</coverage>
+          <height>Bottom</height>
+        </li>
+        <li>
+          <def>WheelRearLeft</def>
+          <coverage>0.2</coverage>
+          <height>Bottom</height>
+        </li>
+        <li>
+          <def>WheelRearRight</def>
+          <coverage>0.2</coverage>
+          <height>Bottom</height>
+        </li>
+      </parts>
+    </corePart>
+  </BodyDef>
+
+</Defs>
