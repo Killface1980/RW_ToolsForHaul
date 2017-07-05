@@ -72,7 +72,12 @@ namespace ToolsForHaul.Alerts
                         }
                     }
                 }
-                if (this.count - this.blocked < currentMap.VehiclesOfPlayer().Count)
+                var count =0;
+                foreach (Thing thing in currentMap.VehiclesOfPlayer())
+                {
+                   count += thing.def.size.x * thing.def.size.z;
+                }
+                if (this.count - this.blocked < count)
                 {
                     return true;
                 }

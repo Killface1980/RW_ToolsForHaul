@@ -17,11 +17,15 @@ namespace ToolsForHaul.Components
 
         public Graphic graphic_VehicleFront;
 
+        private Vector2 drawSize;
+
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
 
             this.cart = this.parent as Vehicle_Cart;
+
+
 
      // if (this.Props != null)
      // {
@@ -32,13 +36,18 @@ namespace ToolsForHaul.Components
                 LongEventHandler.ExecuteWhenFinished(
                     delegate
                         {
+                            PawnKindLifeStage curKindLifeStage = ((Pawn)this.parent).ageTracker.CurKindLifeStage;
+                            var graphic = curKindLifeStage.bodyGraphicData.Graphic;
+
+                            this.drawSize = graphic.drawSize;
+
                             this.graphic_VehicleFront =
                                 GraphicDatabase.Get<Graphic_Multi>(
                                     text,
-                                    this.cart.def.graphic.Shader,
-                                    this.cart.def.graphic.drawSize,
-                                    this.cart.DrawColor,
-                                    this.cart.DrawColorTwo);
+                                    graphic.Shader,
+                                    graphic.drawSize,
+                                    graphic.color,
+                                    graphic.colorTwo);
                         });
             }
         }
@@ -48,7 +57,6 @@ namespace ToolsForHaul.Components
 
             base.PostDraw();
 
-            Vector2 drawSize = this.cart.def.graphic.drawSize;
             Vector3 vector3 = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
             var pos = this.cart.DrawPos;
             pos.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.05f;

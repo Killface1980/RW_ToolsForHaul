@@ -19,8 +19,6 @@ namespace ToolsForHaul.Components
 
         public Vector3 drawOffsetRotS = Vector3.zero;
 
-        public Vector2 drawSize = new Vector2(3,3);
-
         public CompProperties_Mountable()
         {
             this.compClass = typeof(CompMountable);

@@ -334,7 +334,7 @@ namespace ToolsForHaul.Utilities
         public static List<Thing> MountedVehicles(this Map map)
         {
             List<Thing> availableVehicles =
-                map.listerThings.AllThings.FindAll(
+               map.listerThings.AllThings.FindAll(
                     aV => aV is Vehicle_Cart && ((Vehicle_Cart)aV).MountableComp.IsMounted);
             return availableVehicles;
         }
@@ -890,8 +890,9 @@ namespace ToolsForHaul.Utilities
         public static bool IsDriver(this Pawn pawn)
         {
             List<Thing> mountedVehicles = pawn.Map.MountedVehicles();
-            foreach (Vehicle_Cart vehicle in mountedVehicles)
+            foreach (var thing in mountedVehicles)
             {
+                var vehicle = (Vehicle_Cart)thing;
                 if (vehicle.MountableComp.Driver == pawn)
                 {
                     return true;

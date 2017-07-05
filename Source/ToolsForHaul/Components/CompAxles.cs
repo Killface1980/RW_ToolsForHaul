@@ -31,6 +31,8 @@
 
         private Vehicle_Cart cart;
 
+        private Vector2 drawSize;
+
         public CompProperties_Axle Props => (CompProperties_Axle)this.props;
 
         public override void CompTick()
@@ -103,6 +105,12 @@
         public override void PostDraw()
         {
             base.PostDraw();
+
+            if (!this.HasAxles())
+            {
+                return;
+            }
+
             this.wheelLoc = this.cart.DrawPos;
             this.bodyLoc = this.cart.DrawPos;
 
@@ -113,17 +121,16 @@
             }
 
             // horizontal
-            if (this.HasAxles() && this.parent.Rotation.AsInt % 2 == 1)
+            if (this.parent.Rotation.AsInt % 2 == 1)
             {
                 this.wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.04f;
                 this.bodyLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.03f;
 
-                Vector2 drawSize = this.cart.DrawSize;
                 int num = 0;
                 Rot4 rot;
                 rot = this.cart.MountableComp.IsMounted ? this.cart.MountableComp.Driver.Rotation : this.cart.Rotation;
                 num = rot == Rot4.West ? -1 : 1;
-                Vector3 vector3 = new Vector3(1f * drawSize.x, 1f, 1f * drawSize.y);
+                Vector3 vector3 = new Vector3(1f * this.drawSize.x, 1f, 1f * this.drawSize.y);
                 Quaternion asQuat = this.cart.Rotation.AsQuat;
                 float x = 1f * Mathf.Sin(num * (this.wheelRotation * 0.1f) % (2 * Mathf.PI));
                 float z = 1f * Mathf.Cos(num * (this.wheelRotation * 0.1f) % (2 * Mathf.PI));
@@ -135,7 +142,7 @@
                 this.wheelLoc.z = this.wheelLoc.z + this.wheel_shake;
 
                 List<Vector3> list;
-                if (this.GetAxleLocations(drawSize, num, out list))
+                if (this.GetAxleLocations(this.drawSize, num, out list))
                 {
                     foreach (Vector3 current in list)
                     {
@@ -170,13 +177,17 @@
                 LongEventHandler.ExecuteWhenFinished(
                     delegate
                         {
+                            PawnKindLifeStage curKindLifeStage = ((Vehicle_Cart)this.parent).ageTracker.CurKindLifeStage;
+                            var graphic = curKindLifeStage.bodyGraphicData.Graphic;
+
+                            this.drawSize = graphic.drawSize;
                             this.graphic_Wheel_Single =
                                 GraphicDatabase.Get<Graphic_Single>(
                                     text,
-                                    this.parent.def.graphic.Shader,
-                                    this.cart.DrawSize,
-                                    this.parent.def.graphic.color,
-                                    this.parent.def.graphic.colorTwo) as Graphic_Single;
+                                    graphic.Shader,
+                                    graphic.drawSize,
+                                    graphic.color,
+                                    graphic.colorTwo) as Graphic_Single;
                         });
 
             }

@@ -421,8 +421,6 @@ namespace ToolsForHaul.Components
 
             this.cart = this.parent as Vehicle_Cart;
 
-            this.cart.DrawSize = this.Props.drawSize;
-
             if (this.driver != null)
             {
                 this.IsMounted = true;

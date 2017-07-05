@@ -12,7 +12,9 @@
       <ComfyTemperatureMin>-100</ComfyTemperatureMin>
       <ComfyTemperatureMax>250</ComfyTemperatureMax>
     </statBases>
-    <size>(2,2)</size>
+    <size>(1,2)</size>
+    <hasInteractionCell>True</hasInteractionCell>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <race>
       <thinkTreeMain>Engine</thinkTreeMain>
       <fleshType>Mechanoid</fleshType>
@@ -392,5 +394,184 @@
     <specialDisplayRadius>25.9</specialDisplayRadius>
 
   </ThingDef>
+
+  <ThingDef ParentName="BaseVehicleTFH">
+    <defName>VehicleBeetle</defName>
+    <label>Beetle</label>
+    <description>53</description>
+    <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
+    <statBases>
+      <MoveSpeed>20</MoveSpeed>
+      <ArmorRating_Blunt>0.2</ArmorRating_Blunt>
+      <ArmorRating_Sharp>0.7</ArmorRating_Sharp>
+      <MeatAmount>0</MeatAmount>
+      <!-- new -->
+      <VehicleMaxItem>4</VehicleMaxItem>
+      <Beauty>10</Beauty>
+      <Mass>500</Mass>
+    </statBases>
+    <hasInteractionCell>True</hasInteractionCell>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
+    <size>(2,3)</size>
+    <CostList>
+      <Steel>150</Steel>
+      <Plasteel>10</Plasteel>
+      <Component>10</Component>
+      <VehicleATVFrame>1</VehicleATVFrame>
+    </CostList>
+    <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <VehicleATVFrame>1</VehicleATVFrame>
+    </killedLeavings>
+    <race>
+      <lifeExpectancy>50</lifeExpectancy>
+      <litterSizeCurve>
+        <points>
+          <li>(0.5, 0)</li>
+          <li>(1, 1)</li>
+          <li>(1.01, 0.02)</li>
+          <li>(3.5, 0)</li>
+        </points>
+      </litterSizeCurve>
+      <makesFootprints>true</makesFootprints>
+      <intelligence>ToolUser</intelligence>
+      <body>VehicleBody</body>
+      <baseBodySize>2.0</baseBodySize>
+      <baseHealthScale>1.2</baseHealthScale>
+      <lifeStageAges>
+        <li>
+          <def>MechanoidFullyFormed</def>
+          <minAge>0</minAge>
+          <!--
+          <soundWounded>Pawn_Mech_Centipede_Wounded</soundWounded>
+          <soundDeath>Pawn_Mech_Centipede_Death</soundDeath>
+          <soundCall>Pawn_Mech_Centipede_Call</soundCall>
+        -->
+        </li>
+      </lifeStageAges>
+      <ageGenerationCurve>
+        <points>
+          <li>(14,0)</li>
+          <li>(16,100)</li>
+          <li>(50,100)</li>
+          <li>(60,30)</li>
+          <li>(70,18)</li>
+          <li>(80,10)</li>
+          <li>(90,3)</li>
+          <li>(100,0)</li>
+        </points>
+      </ageGenerationCurve>
+      <soundCallIntervalRange>
+        <min>1000</min>
+        <max>2000</max>
+      </soundCallIntervalRange>
+      <soundMeleeHitPawn>BulletImpactMetal</soundMeleeHitPawn>
+      <soundMeleeHitBuilding>BulletImpactMetal</soundMeleeHitBuilding>
+      <soundMeleeMiss>BulletImpactMetal</soundMeleeMiss>
+    </race>
+    <butcherProducts>
+      <Steel>80</Steel>
+      <Plasteel>50</Plasteel>
+      <Component>2</Component>
+    </butcherProducts>
+    <comps>
+      <li>
+        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+      </li>
+      <li>
+        <compClass>ToolsForHaul.Components.CompFrontTex</compClass>
+      </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Mountable">
+        <drawOffsetRotN>(0,0,0.5)</drawOffsetRotN>
+        <drawOffsetRotS>(0,0,-0.5)</drawOffsetRotS>
+      </li>
+      <li Class="ToolsForHaul.CompProperties_Explosive_TFH">
+        <explosiveRadius>3.6</explosiveRadius>
+        <explosiveDamageType>Stun</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+        <startWickHitPointsPercent>0</startWickHitPointsPercent>
+        <chanceNeverExplodeFromDamage>1</chanceNeverExplodeFromDamage>
+        <wickTicks>
+          <min>100</min>
+          <max>120</max>
+        </wickTicks>
+        <postExplosionSpawnThingDef>FilthFuel</postExplosionSpawnThingDef>
+        <postExplosionSpawnChance>1</postExplosionSpawnChance>
+        <postExplosionSpawnThingCount>3</postExplosionSpawnThingCount>
+        <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
+        <explosionEffect>VehicleExplosion</explosionEffect>
+      </li>
+      <li Class="CompProperties_Refuelable">
+        <!-- Fuel consumption only called once every 96 ticks -->
+        <fuelConsumptionRate>2000</fuelConsumptionRate>
+        <fuelCapacity>100.0</fuelCapacity>
+        <fuelFilter>
+          <thingDefs>
+            <li>Chemfuel</li>
+          </thingDefs>
+        </fuelFilter>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+      </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+        <axles>
+          <li>(-50,-37)</li>
+          <li>(57,-37)</li>
+        </axles>
+      </li>
+      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+        <showsStorage>true</showsStorage>
+        <animalsCanDrive>false</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>false</motorizedWithoutFuel>
+        <soundAmbient>VehicleATV_Ambience</soundAmbient>
+      </li>
+      <li Class="CompProperties_Breakdownable"/>
+    </comps>
+    <pathCost>50</pathCost>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Machining</soundWorking>
+      <recipeUsers>
+        <li>TableMachining</li>
+      </recipeUsers>
+      <workAmount>22000</workAmount>
+      <unfinishedThingDef>UnfinishedATV</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+    </recipeMaker>
+    <colorGenerator Class="ColorGenerator_Options">
+      <options>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.33,0.33,0.33,1)</only>
+        </li>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.65,0.65,0.65,1)</only>
+        </li>
+        <li>
+          <weight>30</weight>
+          <only>RGBA(0.4,0.3,0.15,1)</only>
+        </li>
+        <li>
+          <weight>6</weight>
+          <min>RGBA(0.3,0.3,0.3,1)</min>
+          <max>RGBA(0.5,0.5,0.5,1)</max>
+        </li>
+        <li>
+          <weight>2</weight>
+          <min>RGBA(0.5,0.5,0.5,1)</min>
+          <max>RGBA(1,1,1,1)</max>
+        </li>
+      </options>
+    </colorGenerator>
+  </ThingDef>
+
 
 </ThingDefs>

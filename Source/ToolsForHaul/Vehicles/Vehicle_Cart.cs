@@ -22,7 +22,22 @@
     {
 
         #region Variables
-
+        public override Color DrawColor
+        {
+            get
+            {
+                CompColorable comp = this.GetComp<CompColorable>();
+                if (comp != null && comp.Active)
+                {
+                    return comp.Color;
+                }
+                return base.DrawColor;
+            }
+            set
+            {
+                this.SetColor(value, true);
+            }
+        }
         // ==================================
         public int DefaultMaxItem => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
 
@@ -858,8 +873,6 @@
             }
         }
 
-        public Vector2 DrawSize;
-
         private bool fireAtWillInt = true;
 
         public bool FireAtWill
@@ -877,6 +890,7 @@
                 }
             }
         }
+
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             base.DrawAt(drawLoc);

@@ -62,4 +62,25 @@
     </weaponTags>
 	</PawnKindDef>
 
+  <PawnKindDef ParentName="MotorizedVehicleBase">
+    <defName>Beetle</defName>
+    <label>Beetle</label>
+    <race>VehicleBeetle</race>
+    <combatPower>290</combatPower>
+    <defaultFactionType></defaultFactionType>
+    <aiAvoidCover>true</aiAvoidCover>
+    <lifeStages>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Vehicles/VehicleBeetle/Vehicle_Beetle</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>4</drawSize>
+          <shadowData>
+            <volume>(0.6, 0.8, 0.6)</volume>
+          </shadowData>
+        </bodyGraphicData>
+      </li>
+    </lifeStages>
+  </PawnKindDef>
+
 </PawnKindDefs>
