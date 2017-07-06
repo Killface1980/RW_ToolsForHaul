@@ -180,14 +180,15 @@
                             PawnKindLifeStage curKindLifeStage = ((Vehicle_Cart)this.parent).ageTracker.CurKindLifeStage;
                             var graphic = curKindLifeStage.bodyGraphicData.Graphic;
 
+                            // don't use the vehicle color here
                             this.drawSize = graphic.drawSize;
                             this.graphic_Wheel_Single =
                                 GraphicDatabase.Get<Graphic_Single>(
                                     text,
                                     graphic.Shader,
                                     graphic.drawSize,
-                                    this.cart.DrawColor,
-                                    this.cart.DrawColorTwo) as Graphic_Single;
+                                    graphic.color,
+                                    graphic.colorTwo) as Graphic_Single;
                         });
 
             }

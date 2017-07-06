@@ -15,8 +15,9 @@
     <label>remove part</label>
     <description>Removes vehicle part.</description>
     <workerClass>Recipe_RemoveBodyPart</workerClass>
-    <jobString>Removing body part.</jobString>
+    <jobString>Removing vehicle part.</jobString>
     <workAmount>2000</workAmount>
+    <!--
     <ingredients>
       <li>
         <filter>
@@ -32,6 +33,8 @@
         <li>Medicine</li>
       </categories>
     </fixedIngredientFilter>
+  -->
+
   </RecipeDef>
 
   <!-- natural -->
@@ -44,6 +47,7 @@
     <jobString>Installing engine.</jobString>
     <workAmount>2000</workAmount>
     <ingredients>
+      <!--
       <li>
         <filter>
           <categories>
@@ -52,6 +56,7 @@
         </filter>
         <count>1</count>
       </li>
+      -->
       <li>
         <filter>
           <thingDefs>
@@ -62,13 +67,16 @@
       </li>
     </ingredients>
     <fixedIngredientFilter>
-      <categories>
+      <!--
+   <categories>
         <li>Medicine</li>
       </categories>
+      -->
       <thingDefs>
         <li>VehicleEngine</li>
       </thingDefs>
     </fixedIngredientFilter>
+    -->
     <appliedOnFixedBodyParts>
       <li>VehicleEngine</li>
     </appliedOnFixedBodyParts>
@@ -79,9 +87,10 @@
     <label>install tank</label>
     <description>Installs tank.</description>
     <workerClass>Recipe_InstallNaturalBodyPart</workerClass>
-    <jobString>Installing heart.</jobString>
+    <jobString>Installing tank.</jobString>
     <workAmount>2000</workAmount>
     <ingredients>
+      <!--
       <li>
         <filter>
           <categories>
@@ -90,6 +99,7 @@
         </filter>
         <count>1</count>
       </li>
+      -->
       <li>
         <filter>
           <thingDefs>
@@ -100,9 +110,11 @@
       </li>
     </ingredients>
     <fixedIngredientFilter>
+      <!-- 
       <categories>
         <li>Medicine</li>
       </categories>
+     -->
       <thingDefs>
         <li>VehicleTank</li>
       </thingDefs>
@@ -122,6 +134,7 @@
     <jobString>Installing rigged tank.</jobString>
     <workAmount>2000</workAmount>
     <ingredients>
+      <!-- 
       <li>
         <filter>
           <categories>
@@ -130,6 +143,7 @@
         </filter>
         <count>1</count>
       </li>
+        -->
       <li>
         <filter>
           <thingDefs>
@@ -140,9 +154,11 @@
       </li>
     </ingredients>
     <fixedIngredientFilter>
+      <!--
       <categories>
         <li>Medicine</li>
       </categories>
+  -->
       <thingDefs>
         <li>VehicleTankRigged</li>
       </thingDefs>
