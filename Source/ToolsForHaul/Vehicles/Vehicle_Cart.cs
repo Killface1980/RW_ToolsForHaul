@@ -206,7 +206,7 @@
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
-            if (false)
+            if (true)
             {
                 PawnTechHediffsGenerator.GeneratePartsAndImplantsFor(this);
             }
@@ -980,5 +980,7 @@
         {
             return this.innerContainer;
         }
+
+        public bool InParkingLot => this.Position.GetZone(this.Map) is Zone_ParkingLot;
     }
 }

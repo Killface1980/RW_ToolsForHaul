@@ -67,6 +67,7 @@
     <None Include="HediffGiver_Bomb.cs" />
     <None Include="HediffCompProperties_Explosive.cs" />
     <None Include="HediffCompExplosive.cs" />
+    <None Include="JobDrivers\JobDriver_TendVehicle.cs" />
     <Compile Include="JobGivers\JobGiver_AIDefendPoint_TFH.cs" />
     <Compile Include="MoteThrown_TFH.cs" />
     <Compile Include="MoteDefOf.cs" />
@@ -87,6 +88,7 @@
     <None Include="WorkGivers\Class1.cs" />
     <None Include="Vehicles\Cart_TurretTop.cs" />
     <None Include="Vehicles\Vehicle_CartTurretGun.cs" />
+    <None Include="WorkGivers\WorkGiver_DoBillVehicle.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_ReturnCart.cs" />

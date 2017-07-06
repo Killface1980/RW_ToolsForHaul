@@ -8,7 +8,6 @@
       <Flammability>1.0</Flammability>
       <PsychicSensitivity>0</PsychicSensitivity>
       <ToxicSensitivity>0</ToxicSensitivity>
-      <Flammability>0</Flammability>
       <ComfyTemperatureMin>-100</ComfyTemperatureMin>
       <ComfyTemperatureMax>250</ComfyTemperatureMax>
     </statBases>
@@ -23,34 +22,11 @@
       <foodType>None</foodType>
     </race>
     <recipes>
-      <li>InstallPowerClaw</li>
-      <li>InstallScytherBlade</li>
-      <li>InstallBionicEye</li>
-      <li>InstallBionicArm</li>
-      <li>InstallBionicLeg</li>
-      <li>InstallSimpleProstheticArm</li>
-      <li>InstallSimpleProstheticLeg</li>
-      <li>InstallPegLeg</li>
-      <li>InstallDenture</li>
-      <li>InstallJoywire</li>
-      <li>InstallPainstopper</li>
-      <li>InstallNaturalHeart</li>
-      <li>InstallNaturalLung</li>
-      <li>InstallNaturalKidney</li>
-      <li>InstallNaturalLiver</li>
-      <li>ExciseCarcinoma</li>
-      <li>RemoveBodyPart</li>
-      <li>Euthanize</li>
-      <li>Anesthetize</li>
+      <li>InstallNaturalEngine</li>
+      <li>InstallNaturalTank</li>
+      <li>InstallRiggedTank</li>
+      <li>RemoveVehiclePart</li>
     </recipes>
-    <!--
-    <recipes>
-      <li>RefillTank</li>
-      <li>RapairTire</li>
-      <li>RepairDamage</li>
-      <li>RepairAll</li>
-    </recipes>
-   -->
   </ThingDef>
 
   <ThingDef ParentName="BaseVehicleTFH">

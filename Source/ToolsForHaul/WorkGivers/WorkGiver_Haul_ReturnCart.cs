@@ -22,7 +22,7 @@
             // return TFH_Utility.Cart();
             // noParking.SortBy(x => pawn.Position.DistanceTo(x.Position));
             return pawn.AvailableVehiclesForPawnFaction(999f)
-                .Where(vehicle => !(vehicle.Position.GetZone(pawn.Map) is Zone_ParkingLot)).ToList();
+                .Where(vehicle => !((Vehicle_Cart)vehicle).InParkingLot).ToList();
 
             // pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling();
         }

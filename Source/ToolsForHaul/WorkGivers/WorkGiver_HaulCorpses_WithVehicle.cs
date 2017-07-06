@@ -34,7 +34,7 @@
                 return true;
             }
 
-            if (TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling, new Corpse())
+            if (TFH_Utility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling)
                 == null)
             {
                 return true;

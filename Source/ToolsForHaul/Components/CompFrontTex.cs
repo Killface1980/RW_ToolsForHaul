@@ -65,8 +65,8 @@ namespace ToolsForHaul.Components
             matrix.SetTRS(pos, new Quaternion(), vector3);
             bool flip = this.cart.Rotation == Rot4.West;
 
-            Graphics.DrawMesh(flip ? MeshPool.plane10Flip :
-                                  MeshPool.plane10,
+            Graphics.DrawMesh(
+                flip ? MeshPool.plane10Flip : MeshPool.plane10,
                 matrix,
                 this.graphic_VehicleFront.MatAt(this.cart.Rotation),
                 0);

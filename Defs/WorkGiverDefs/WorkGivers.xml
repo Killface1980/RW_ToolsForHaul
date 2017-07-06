@@ -2,7 +2,24 @@
 <WorkGivers>
 
     <!-- ============= Repair ============= -->
- <!--
+
+  <WorkGiverDef>
+    <defName>DoBillsMedicalVehicleOperation</defName>
+    <label>operate on vehicles</label>
+    <giverClass>WorkGiver_DoBill</giverClass>
+    <workType>Crafting</workType>
+    <verb>operate on</verb>
+    <gerund>tending to</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <priorityInType>70</priorityInType>
+    <billGiversAllMechanoids>true</billGiversAllMechanoids>
+    <billGiversAllMechanoidsCorpses>true</billGiversAllMechanoidsCorpses> 
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <!--
   <WorkGiverDef>
     <defName>Repair</defName>
     <label>repair damaged things</label>

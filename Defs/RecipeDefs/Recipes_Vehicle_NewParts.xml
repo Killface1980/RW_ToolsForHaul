@@ -10,7 +10,6 @@
   </RecipeDef>
 
   <!-- removing body parts -->
-
   <RecipeDef ParentName="SurgeryVehicle">
     <defName>RemoveVehiclePart</defName>
     <label>remove part</label>
@@ -22,7 +21,7 @@
       <li>
         <filter>
           <categories>
-          <li>Medicine</li>
+            <li>Medicine</li>
           </categories>
         </filter>
         <count>1</count>
@@ -33,13 +32,8 @@
         <li>Medicine</li>
       </categories>
     </fixedIngredientFilter>
-    <recipeUsers>
-      <li>VehicleATV</li>
-      <li>VehicleCombatATV</li>
-      <li>VehicleBeetle</li>
-    </recipeUsers>
   </RecipeDef>
-  
+
   <!-- natural -->
 
   <RecipeDef ParentName="SurgeryVehicle">
@@ -47,7 +41,7 @@
     <label>install engine</label>
     <description>Installs engine.</description>
     <workerClass>Recipe_InstallNaturalBodyPart</workerClass>
-    <jobString>Installing heart.</jobString>
+    <jobString>Installing engine.</jobString>
     <workAmount>2000</workAmount>
     <ingredients>
       <li>
@@ -78,11 +72,6 @@
     <appliedOnFixedBodyParts>
       <li>VehicleEngine</li>
     </appliedOnFixedBodyParts>
-    <recipeUsers>
-      <li>VehicleATV</li>
-      <li>VehicleCombatATV</li>
-      <li>VehicleBeetle</li>
-    </recipeUsers>
   </RecipeDef>
 
   <RecipeDef ParentName="SurgeryVehicle">
@@ -111,7 +100,6 @@
       </li>
     </ingredients>
     <fixedIngredientFilter>
-      
       <categories>
         <li>Medicine</li>
       </categories>
@@ -122,11 +110,6 @@
     <appliedOnFixedBodyParts>
       <li>VehicleTank</li>
     </appliedOnFixedBodyParts>
-    <recipeUsers>
-      <li>VehicleATV</li>
-      <li>VehicleCombatATV</li>
-      <li>VehicleBeetle</li>
-    </recipeUsers>
   </RecipeDef>
 
   <!-- artificial -->
@@ -168,11 +151,6 @@
       <li>VehicleTank</li>
     </appliedOnFixedBodyParts>
     <addsHediff>Bomb</addsHediff>
-    <recipeUsers>
-      <li>VehicleATV</li>
-      <li>VehicleCombatATV</li>
-      <li>VehicleBeetle</li>
-    </recipeUsers>
   </RecipeDef>
 
 
