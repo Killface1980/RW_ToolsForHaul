@@ -21,9 +21,6 @@
       <needsRest>false</needsRest>
       <hasGenders>false</hasGenders>
       <foodType>None</foodType>
-      <hediffGiverSets>
-        <li>VehicleStandard</li>
-      </hediffGiverSets>
     </race>
     <recipes>
       <li>InstallPowerClaw</li>
@@ -136,7 +133,7 @@
       <li>
         <compClass>ToolsForHaul.Components.CompGasTank</compClass>
       </li>
-      <li Class="ToolsForHaul.CompProperties_Explosive_TFH">
+      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
         <explosiveRadius>3.6</explosiveRadius>
         <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -304,7 +301,7 @@
       <li>
         <compClass>ToolsForHaul.Components.CompGasTank</compClass>
       </li>
-      <li Class="ToolsForHaul.CompProperties_Explosive_TFH">
+      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
         <explosiveRadius>2.4</explosiveRadius>
         <explosiveDamageType>Flame</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -485,7 +482,7 @@
         <drawOffsetRotN>(0,0,0.5)</drawOffsetRotN>
         <drawOffsetRotS>(0,0,-0.5)</drawOffsetRotS>
       </li>
-      <li Class="ToolsForHaul.CompProperties_Explosive_TFH">
+      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
         <explosiveRadius>3.6</explosiveRadius>
         <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>

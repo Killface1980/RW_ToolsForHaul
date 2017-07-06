@@ -32,6 +32,11 @@
         </bodyGraphicData>
       </li>
     </lifeStages>
+    <techHediffsTags>
+      <li>Advanced</li>
+    </techHediffsTags>
+    <techHediffsChance>1</techHediffsChance>
+    <techHediffsMoney>1000</techHediffsMoney>
 	</PawnKindDef>
 
   <PawnKindDef ParentName="MotorizedVehicleBase">

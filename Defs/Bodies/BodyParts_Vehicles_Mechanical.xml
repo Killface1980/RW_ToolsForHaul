@@ -29,6 +29,7 @@
       <li>MovingLimbCore</li>
       <li>MovingLimbSegment</li>
     </tags>
+    <spawnThingOnRemoved>VehicleEngine</spawnThingOnRemoved>
   </BodyPartDef>
 
   <BodyPartDef>
@@ -44,6 +45,7 @@
       <li>BloodPumpingSource</li>
       <li>MovingLimbCore</li>
     </tags>
+    <spawnThingOnRemoved>VehicleTank</spawnThingOnRemoved>
   </BodyPartDef>
 
   <BodyPartDef>

@@ -112,7 +112,7 @@
 
         public bool CanExplode()
         {
-            return this.ExplosiveComp != null;
+            return this.ExplosiveComp != null && this.ExplosiveComp.IsActive;
         }
 
         public bool IsAboutToBlowUp()
@@ -206,6 +206,23 @@
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
+            if (false)
+            {
+                PawnTechHediffsGenerator.GeneratePartsAndImplantsFor(this);
+            }
+
+            // Reload textures to get colored versions
+            LongEventHandler.ExecuteWhenFinished(
+                delegate
+                    {
+                        PawnKindLifeStage curKindLifeStage = this.ageTracker.CurKindLifeStage;
+                        this.Drawer.renderer.graphics.nakedGraphic =
+                            curKindLifeStage.bodyGraphicData.Graphic.GetColoredVersion(
+                                ShaderDatabase.Cutout,
+                                this.DrawColor,
+                                this.DrawColorTwo);
+                    });
+
             // To allow the vehicle to be drafted -> Still not possible to draft, because 1. not humanlike and 2. the GetGizmos in Pawn_Drafter is internal! 
             this.drafter = new Pawn_DraftController(this); // Maybe not needed because not usable?
 
@@ -218,11 +235,11 @@
 
             RefuelableComp = this.TryGetComp<CompRefuelable>();
 
-                ExplosiveComp = this.TryGetComp<CompExplosive_TFH>();
+            ExplosiveComp = this.TryGetComp<CompExplosive_TFH>();
 
-         // if (this.health.hediffSet.HasHediff(HediffDef.Named("Bomb")))
-         // {
-         // }
+            // if (this.health.hediffSet.HasHediff(HediffDef.Named("Bomb")))
+            // {
+            // }
 
             BreakdownableComp = this.TryGetComp<CompBreakdownable>();
 
@@ -339,67 +356,10 @@
                 }
                 yield break;
             }
+
             if (!this.Faction.IsPlayer)
             {
                 yield break;
-            }
-            {
-                Command_Toggle draft = new Command_Toggle();
-                draft.hotKey = KeyBindingDefOf.CommandColonistDraft;
-                draft.isActive = (() => this.Drafted);
-                draft.toggleAction = delegate
-                    {
-                        this.drafter.Drafted = !this.Drafted;
-                        PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.Drafting, KnowledgeAmount.SpecificInteraction);
-                    };
-                draft.defaultDesc = "CommandToggleDraftDesc".Translate();
-                draft.icon = TexCommand.Draft;
-                draft.turnOnSound = SoundDefOf.DraftOn;
-                draft.turnOffSound = SoundDefOf.DraftOff;
-                if (!this.Drafted)
-                {
-                    draft.defaultLabel = "CommandDraftLabel".Translate();
-                }
-                if (this.Downed)
-                {
-                    draft.Disable("IsIncapped".Translate(new object[]
-                                                             {
-                                                                 this.NameStringShort
-                                                             }));
-                }
-                if (!this.Drafted)
-                {
-                    draft.tutorTag = "Draft";
-                }
-                else
-                {
-                    draft.tutorTag = "Undraft";
-                }
-                yield return draft;
-                if (this.Drafted && this.equipment.Primary != null && this.equipment.Primary.def.IsRangedWeapon)
-                {
-                    yield return new Command_Toggle
-                    {
-                        hotKey = KeyBindingDefOf.Misc6,
-                        isActive = (() => this.FireAtWill),
-                        toggleAction = delegate
-                            {
-                                this.FireAtWill = !this.FireAtWill;
-                            },
-                        icon = TexCommand.FireAtWill,
-                        defaultLabel = "CommandFireAtWillLabel".Translate(),
-                        defaultDesc = "CommandFireAtWillDesc".Translate(),
-                        tutorTag = "FireAtWillToggle"
-                    };
-                }
-            }
-
-            if (false)
-            {
-                foreach (Gizmo baseGizmo in ThisGetGizmos())
-                {
-                    yield return baseGizmo;
-                }
             }
 
             if (this.RefuelableComp != null)
@@ -410,18 +370,17 @@
                 }
             }
 
-            Designator_Mount designator =
-                new Designator_Mount
-                {
-                    vehicle = this,
-                    defaultLabel = Static.TxtCommandMountLabel.Translate(),
-                    defaultDesc = Static.TxtCommandMountDesc.Translate(),
-                    icon = Static.IconMount,
-                    activateSound = Static.ClickSound
-                };
-
             if (!this.MountableComp.IsMounted)
             {
+                Designator_Mount designator =
+                    new Designator_Mount
+                    {
+                        vehicle = this,
+                        defaultLabel = Static.TxtCommandMountLabel.Translate(),
+                        defaultDesc = Static.TxtCommandMountDesc.Translate(),
+                        icon = Static.IconMount,
+                        activateSound = Static.ClickSound
+                    };
                 yield return designator;
             }
             else
@@ -460,6 +419,102 @@
                 commandExplode.defaultLabel = "CommandDetonateLabel".Translate();
                 yield return commandExplode;
             }
+
+            if (this.equipment.Primary != null)
+            {
+                if (this.equipment.Primary.def.IsRangedWeapon)
+                {
+                    Command_Toggle draft = new Command_Toggle();
+                    draft.hotKey = KeyBindingDefOf.CommandColonistDraft;
+                    draft.isActive = (() => this.Drafted);
+                    draft.toggleAction = delegate
+                        {
+                            this.drafter.Drafted = !this.Drafted;
+                            PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.Drafting, KnowledgeAmount.SpecificInteraction);
+                        };
+                    draft.defaultDesc = "CommandToggleDraftDesc".Translate();
+                    draft.icon = TexCommand.Draft;
+                    draft.turnOnSound = SoundDefOf.DraftOn;
+                    draft.turnOffSound = SoundDefOf.DraftOff;
+                    if (!this.Drafted)
+                    {
+                        draft.defaultLabel = "CommandDraftLabel".Translate();
+                    }
+                    if (this.Downed)
+                    {
+                        draft.Disable("IsIncapped".Translate(new object[]
+                                                                 {
+                                                                 this.NameStringShort
+                                                                 }));
+                    }
+                    if (!this.Drafted)
+                    {
+                        draft.tutorTag = "Draft";
+                    }
+                    else
+                    {
+                        draft.tutorTag = "Undraft";
+                    }
+                    yield return draft;
+
+                    if (!this.drafter.Drafted)
+                    {
+                        yield break;
+                    }
+
+
+                    Command_VerbTarget gizmos =
+                        new Command_VerbTarget
+                        {
+                            defaultLabel = "CommandSetForceAttackTarget".Translate(),
+                            defaultDesc = "CommandSetForceAttackTargetDesc".Translate(),
+                            icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack", true),
+                            verb = this.equipment.PrimaryEq.PrimaryVerb,
+                            hotKey = KeyBindingDefOf.Misc4
+                        };
+
+                    yield return gizmos;
+
+
+                    //  if (this.CurJob.targetA.IsValid)
+                    //  {
+                    //      Command_Action stop = new Command_Action
+                    //                                {
+                    //                                    defaultLabel = "CommandStopForceAttack".Translate(),
+                    //                                    defaultDesc = "CommandStopForceAttackDesc".Translate(),
+                    //                                    icon = ContentFinder<Texture2D>.Get(
+                    //                                        "UI/Commands/Halt",
+                    //                                        true),
+                    //                                    action = delegate
+                    //                                        {
+                    //                                            this.ResetForcedTarget();
+                    //                                            SoundDefOf.TickLow.PlayOneShotOnCamera(null);
+                    //                                        }
+                    //                                };
+                    //      if (!this.CurJob.targetA.IsValid)
+                    //      {
+                    //          stop.Disable("CommandStopAttackFailNotForceAttacking".Translate());
+                    //      }
+                    //      stop.hotKey = KeyBindingDefOf.Misc5;
+                    //      yield return stop;
+                    //  }
+
+                    yield return new Command_Toggle
+                    {
+                        hotKey = KeyBindingDefOf.Misc6,
+                        isActive = (() => this.drafter.FireAtWill),
+                        toggleAction = delegate
+                            {
+                                this.drafter.FireAtWill = !this.drafter.FireAtWill;
+                            },
+                        icon = TexCommand.FireAtWill,
+                        defaultLabel = "CommandFireAtWillLabel".Translate(),
+                        defaultDesc = "CommandFireAtWillDesc".Translate(),
+                        tutorTag = "FireAtWillToggle"
+                    };
+                }
+            }
+
 
             // Spotlight
             // int groupKeyBase = 700000102;
@@ -535,87 +590,9 @@
             // };
         }
 
-        private IEnumerable<Gizmo> ThisGetGizmos()
+        private void ResetForcedTarget()
         {
-            //    if (this.IsColonistPlayerControlled)
-            {
-                if (this.drafter != null)
-                {
-                    foreach (Gizmo c2 in GetDraftedGizmos())
-                    {
-                        yield return c2;
-                    }
-                }
-                if (this.equipment != null)
-                {
-                    foreach (Gizmo g in this.equipment.GetGizmos())
-                    {
-                        yield return g;
-                    }
-                }
-
-                if (this.playerSettings != null)
-                {
-                    foreach (Gizmo g3 in this.playerSettings.GetGizmos())
-                    {
-                        yield return g3;
-                    }
-                }
-
-            }
-        }
-
-        private IEnumerable<Gizmo> GetDraftedGizmos()
-        {
-            Command_Toggle draft = new Command_Toggle();
-            draft.hotKey = KeyBindingDefOf.CommandColonistDraft;
-            draft.isActive = (() => this.Drafted);
-            draft.toggleAction = delegate
-                {
-                    this.drafter.Drafted = !this.Drafted;
-                    PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.Drafting, KnowledgeAmount.SpecificInteraction);
-                };
-            draft.defaultDesc = "CommandToggleDraftDesc".Translate();
-            draft.icon = TexCommand.Draft;
-            draft.turnOnSound = SoundDefOf.DraftOn;
-            draft.turnOffSound = SoundDefOf.DraftOff;
-            if (!this.Drafted)
-            {
-                draft.defaultLabel = "CommandDraftLabel".Translate();
-            }
-            if (this.Downed)
-            {
-                draft.Disable("IsIncapped".Translate(new object[]
-                                                         {
-                                                             this.NameStringShort
-                                                         }));
-            }
-            if (!this.Drafted)
-            {
-                draft.tutorTag = "Draft";
-            }
-            else
-            {
-                draft.tutorTag = "Undraft";
-            }
-            yield return draft;
-            if (this.Drafted && this.equipment.Primary != null && this.equipment.Primary.def.IsRangedWeapon)
-            {
-                yield return new Command_Toggle
-                {
-                    hotKey = KeyBindingDefOf.Misc6,
-                    isActive = (() => this.FireAtWill),
-                    toggleAction = delegate
-                        {
-                            this.FireAtWill = !this.FireAtWill;
-                        },
-                    icon = TexCommand.FireAtWill,
-                    defaultLabel = "CommandFireAtWillLabel".Translate(),
-                    defaultDesc = "CommandFireAtWillDesc".Translate(),
-                    tutorTag = "FireAtWillToggle"
-                };
-            }
-
+            this.jobs.EndCurrentJob(JobCondition.InterruptForced);
         }
 
         private void Command_Detonate()
@@ -874,22 +851,6 @@
         }
 
         private bool fireAtWillInt = true;
-
-        public bool FireAtWill
-        {
-            get
-            {
-                return this.fireAtWillInt;
-            }
-            set
-            {
-                this.fireAtWillInt = value;
-                if (!this.fireAtWillInt && this.stances.curStance is Stance_Warmup)
-                {
-                    this.stances.CancelBusyStanceSoft();
-                }
-            }
-        }
 
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {

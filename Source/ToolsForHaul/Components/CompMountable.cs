@@ -26,7 +26,7 @@ namespace ToolsForHaul.Components
 
         public bool IsPrisonBreaking;
 
-        public float lastDrawAsAngle;
+        private float lastDrawAsAngle;
 
         private Vehicle_Cart cart;
 

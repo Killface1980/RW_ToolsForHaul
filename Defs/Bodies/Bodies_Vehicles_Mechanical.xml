@@ -20,9 +20,7 @@
         </li>
         <li>
           <def>VehicleTank</def>
-          <height>Middle</height>
           <coverage>0.10</coverage>
-          <depth>Inside</depth>
         </li>
         <li>
           <def>AxleFront</def>

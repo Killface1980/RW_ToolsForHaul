@@ -32,7 +32,12 @@
         // RimWorld.JobGiver_AIFightEnemy
         protected override Job TryGiveJob(Pawn pawn)
         {
-            var shooterPawn = pawn as Vehicle_Cart;
+            var vehicleCart = pawn as Vehicle_Cart;
+
+            if (!vehicleCart.MountableComp.IsMounted)
+            {
+                return null;
+            }
 
             this.UpdateEnemyTarget(pawn);
             Thing enemyTarget = pawn.mindState.enemyTarget;
@@ -41,7 +46,7 @@
                 return null;
             }
 
-            bool allowManualCastWeapons = shooterPawn != null;
+            bool allowManualCastWeapons = vehicleCart != null;
             //    bool allowManualCastWeapons = !pawn.IsColonist;
             Verb verb = pawn.TryGetAttackVerb(allowManualCastWeapons);
             if (verb == null)

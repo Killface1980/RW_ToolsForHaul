@@ -1,14 +1,24 @@
-﻿using System;
-using UnityEngine;
-using Verse;
-using Verse.Sound;
-
-namespace ToolsForHaul
+﻿namespace ToolsForHaul.Components
 {
     using RimWorld;
 
+    using ToolsForHaul.Vehicles;
+
+    using UnityEngine;
+
+    using Verse;
+    using Verse.Sound;
+
     public class CompExplosive_TFH : RimWorld.CompExplosive
     {
+        public bool IsActive
+        {
+            get
+            {
+                return ((Vehicle_Cart)this.parent).health.hediffSet.HasHediff(HediffDef.Named("Bomb"));
+            }
+        }
+
         public bool wickStarted;
 
         protected int wickTicksLeft;

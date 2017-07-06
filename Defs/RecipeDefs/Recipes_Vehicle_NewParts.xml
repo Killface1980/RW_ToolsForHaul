@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<RecipeDefs>
+
+  <RecipeDef Abstract="True" Name="SurgeryVehicle">
+    <soundWorking>Recipe_Surgery</soundWorking>
+    <workSpeedStat>ButcheryMechanoidSpeed</workSpeedStat>
+    <workSkill>Crafting</workSkill>
+    <effectWorking>Repair</effectWorking>
+    <workSkillLearnFactor>16</workSkillLearnFactor>
+  </RecipeDef>
+
+  <!-- removing body parts -->
+
+  <RecipeDef ParentName="SurgeryVehicle">
+    <defName>RemoveVehiclePart</defName>
+    <label>remove part</label>
+    <description>Removes vehicle part.</description>
+    <workerClass>Recipe_RemoveBodyPart</workerClass>
+    <jobString>Removing body part.</jobString>
+    <workAmount>2000</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+          <li>Medicine</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <categories>
+        <li>Medicine</li>
+      </categories>
+    </fixedIngredientFilter>
+    <recipeUsers>
+      <li>VehicleATV</li>
+      <li>VehicleCombatATV</li>
+      <li>VehicleBeetle</li>
+    </recipeUsers>
+  </RecipeDef>
+  
+  <!-- natural -->
+
+  <RecipeDef ParentName="SurgeryVehicle">
+    <defName>InstallNaturalEngine</defName>
+    <label>install engine</label>
+    <description>Installs engine.</description>
+    <workerClass>Recipe_InstallNaturalBodyPart</workerClass>
+    <jobString>Installing heart.</jobString>
+    <workAmount>2000</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>Medicine</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>VehicleEngine</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <categories>
+        <li>Medicine</li>
+      </categories>
+      <thingDefs>
+        <li>VehicleEngine</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>VehicleEngine</li>
+    </appliedOnFixedBodyParts>
+    <recipeUsers>
+      <li>VehicleATV</li>
+      <li>VehicleCombatATV</li>
+      <li>VehicleBeetle</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef ParentName="SurgeryVehicle">
+    <defName>InstallNaturalTank</defName>
+    <label>install tank</label>
+    <description>Installs tank.</description>
+    <workerClass>Recipe_InstallNaturalBodyPart</workerClass>
+    <jobString>Installing heart.</jobString>
+    <workAmount>2000</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>Medicine</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>VehicleTank</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      
+      <categories>
+        <li>Medicine</li>
+      </categories>
+      <thingDefs>
+        <li>VehicleTank</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>VehicleTank</li>
+    </appliedOnFixedBodyParts>
+    <recipeUsers>
+      <li>VehicleATV</li>
+      <li>VehicleCombatATV</li>
+      <li>VehicleBeetle</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <!-- artificial -->
+
+  <RecipeDef ParentName="SurgeryVehicle">
+    <defName>InstallRiggedTank</defName>
+    <label>install rigged tank</label>
+    <description>Installs rigged tank.</description>
+    <workerClass>Recipe_InstallArtificialBodyPart</workerClass>
+    <jobString>Installing rigged tank.</jobString>
+    <workAmount>2000</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>Medicine</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>VehicleTankRigged</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <categories>
+        <li>Medicine</li>
+      </categories>
+      <thingDefs>
+        <li>VehicleTankRigged</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>VehicleTank</li>
+    </appliedOnFixedBodyParts>
+    <addsHediff>Bomb</addsHediff>
+    <recipeUsers>
+      <li>VehicleATV</li>
+      <li>VehicleCombatATV</li>
+      <li>VehicleBeetle</li>
+    </recipeUsers>
+  </RecipeDef>
+
+
+
+
+</RecipeDefs>

@@ -198,15 +198,23 @@ namespace ToolsForHaul
 
     }
 
-  //[HarmonyPatch(typeof(ThingDef), "CanHaveFaction")]
+  //[HarmonyPatch(typeof(WorkGiver_DoBill), "ThingIsUsableBillGiver")]
+  //[HarmonyPatch(new Type[] { typeof(bool) })]
   //public static class CanHaveFaction_Patch
   //{
   //    [HarmonyPostfix]
-  //    public static void CanHaveFaction_Postfix(ref bool __result, ThingDef __instance)
+  //    public static void ThingIsUsableBillGiver_Postfix(ref bool __result, WorkGiver_DoBill __instance, Thing thing)
   //    {
-  //        if (__instance.HasComp(typeof(CompMountable)))
+  //        Vehicle_Cart pawn = thing as Vehicle_Cart;
+  //        if (pawn == null)
   //        {
-  //            __result = true;
+  //            return;
+  //            
+  //        }
+  //
+  //        if (__instance.def.billGiversAllMechanoids && pawn.RaceProps.IsMechanoid)
+  //        {
+  //            return true;
   //        }
   //    }
   //}

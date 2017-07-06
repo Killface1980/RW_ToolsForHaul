@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ThingDefs>
+
+  <ThingDef Name="VehiclePartBase" Abstract="True">
+    <thingClass>ThingWithComps</thingClass>
+    <category>Item</category>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+      <Beauty>-4</Beauty>
+    </statBases>
+    <altitudeLayer>Item</altitudeLayer>
+    <tickerType>Never</tickerType>
+    <alwaysHaulable>true</alwaysHaulable>
+    <isBodyPartOrImplant>true</isBodyPartOrImplant>
+    <tradeTags>
+      <li>BodyPartOrImplant</li>
+    </tradeTags>
+    <comps>
+      <li Class="CompProperties_Forbiddable"/>
+    </comps>
+    <pathCost>10</pathCost>
+  </ThingDef>
+
+  <ThingDef ParentName="VehiclePartBase" Name="VehiclePartNaturalBase" Abstract="True">
+    <thingCategories>
+      <li>VehiclePartsNatural</li>
+    </thingCategories>
+    <statBases>
+      <DeteriorationRate>4.0</DeteriorationRate>
+    </statBases>
+  </ThingDef>
+
+  <ThingDef ParentName="VehiclePartBase" Name="BodyPartArtificialBase" Abstract="True">
+    <thingCategories>
+      <li>VehiclePartsArtificial</li>
+    </thingCategories>
+    <statBases>
+      <DeteriorationRate>2.0</DeteriorationRate>
+    </statBases>
+  </ThingDef>
+
+  <!-- natural -->
+
+  <ThingDef ParentName="VehiclePartNaturalBase">
+    <defName>VehicleEngine</defName>
+    <label>engine</label>
+    <description>Supplies blood and oxygen to all parts of the body. Ready to find a new owner.</description>
+    <graphicData>
+      <texPath>Things/Item/BodyPart/Organ</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MarketValue>500</MarketValue>
+      <Mass>1</Mass>
+    </statBases>
+  </ThingDef>
+
+  <ThingDef ParentName="VehiclePartNaturalBase">
+    <defName>VehicleTank</defName>
+    <label>fuel tank</label>
+    <description>Supplies blood and oxygen to all parts of the body. Ready to find a new owner.</description>
+    <graphicData>
+      <texPath>Things/Item/BodyPart/Organ</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MarketValue>500</MarketValue>
+      <Mass>1</Mass>
+    </statBases>
+  </ThingDef>
+
+  <ThingDef ParentName="BodyPartArtificialBase">
+    <defName>VehicleTankRigged</defName>
+    <label>rigged fuel tank</label>
+    <description>One of the most sophisticated arm replacements. Gives extreme strength to its user.</description>
+    <graphicData>
+      <texPath>Things/Item/BodyPart/ArtificialOrgan</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MarketValue>800</MarketValue>
+      <Mass>5</Mass>
+    </statBases>
+    <techHediffsTags>
+      <li>Advanced</li>
+    </techHediffsTags>
+  </ThingDef>
+
+</ThingDefs>

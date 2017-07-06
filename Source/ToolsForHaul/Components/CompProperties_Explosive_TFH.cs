@@ -1,9 +1,8 @@
-﻿using System;
-using Verse;
-
-namespace ToolsForHaul
+﻿namespace ToolsForHaul.Components
 {
     using RimWorld;
+
+    using Verse;
 
     public class CompProperties_Explosive_TFH : CompProperties
     {

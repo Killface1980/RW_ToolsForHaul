@@ -5,6 +5,24 @@
     <defName>Vehicles</defName>
     <label>vehicles</label>
     <parent>Root</parent>
+  </ThingCategoryDef>  
+  
+  <ThingCategoryDef>
+    <defName>VehicleParts</defName>
+    <label>vehicle parts</label>
+    <parent>Vehicles</parent>
+  </ThingCategoryDef> 
+  
+  <ThingCategoryDef>
+    <defName>VehiclePartsNatural</defName>
+    <label>original parts</label>
+    <parent>VehicleParts</parent>
+  </ThingCategoryDef> 
+  
+  <ThingCategoryDef>
+    <defName>VehiclePartsArtificial</defName>
+    <label>pimped parts</label>
+    <parent>VehicleParts</parent>
   </ThingCategoryDef>
 
   <ThingCategoryDef>

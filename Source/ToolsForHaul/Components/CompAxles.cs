@@ -186,8 +186,8 @@
                                     text,
                                     graphic.Shader,
                                     graphic.drawSize,
-                                    graphic.color,
-                                    graphic.colorTwo) as Graphic_Single;
+                                    this.cart.DrawColor,
+                                    this.cart.DrawColorTwo) as Graphic_Single;
                         });
 
             }

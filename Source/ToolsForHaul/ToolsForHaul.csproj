@@ -62,12 +62,12 @@
     <None Include="AcEnhancedHauling.cs" />
     <Compile Include="Alerts\Alert_NoParkingLot.cs" />
     <Compile Include="Building_BattleBeacon.cs" />
-    <Compile Include="Class2.cs" />
-    <Compile Include="Class3.cs" />
-    <Compile Include="HediffGiver_Bomb.cs" />
+    <Compile Include="Components\CompExplosive_TFH.cs" />
+    <Compile Include="Components\CompProperties_Explosive_TFH.cs" />
+    <None Include="HediffGiver_Bomb.cs" />
     <None Include="HediffCompProperties_Explosive.cs" />
     <None Include="HediffCompExplosive.cs" />
-    <Compile Include="JobGivers\Class1.cs" />
+    <Compile Include="JobGivers\JobGiver_AIDefendPoint_TFH.cs" />
     <Compile Include="MoteThrown_TFH.cs" />
     <Compile Include="MoteDefOf.cs" />
     <Compile Include="Components\CompFrontTex.cs" />
@@ -203,9 +203,6 @@
     <Content Include="..\..\Defs\HeDiffDefs\Hediffs_Local_AddedMechanicalParts.xml">
       <Link>Defs\Hediffs_Local_AddedMechanicalParts.xml</Link>
     </Content>
-    <Content Include="..\..\Defs\HediffGiverSetDefs\HediffGiverSets.xml">
-      <Link>Defs\HediffGiverSets.xml</Link>
-    </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
       <Link>Defs\JobDefs\Jobs_Misc.xml</Link>
     </Content>
@@ -214,6 +211,9 @@
     </Content>
     <Content Include="..\..\Defs\PawnKindDefs_Vehicles\PawnKinds_Vehicles.xml">
       <Link>Defs\PawnKinds_Vehicles.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\RecipeDefs\Recipes_Vehicle_NewParts.xml">
+      <Link>Defs\Recipes_Vehicle_NewParts.xml</Link>
     </Content>
     <Content Include="..\..\Defs\SoundDefs\Vehicle_Sustainers_Ambiences.xml">
       <Link>Defs\SoundDefs\Vehicle_Sustainers_Ambiences.xml</Link>
@@ -261,6 +261,9 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs_Buildings\Buildings_Misc.xml">
       <Link>Defs\Buildings_Misc.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs_Items\Items_VehicleParts.xml">
+      <Link>Defs\Items_VehicleParts.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs_Races\Races_Vehicle.xml">
       <Link>Defs\Races_Vehicle.xml</Link>

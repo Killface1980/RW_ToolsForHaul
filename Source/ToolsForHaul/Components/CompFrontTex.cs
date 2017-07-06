@@ -25,8 +25,6 @@ namespace ToolsForHaul.Components
 
             this.cart = this.parent as Vehicle_Cart;
 
-
-
      // if (this.Props != null)
      // {
      // this.cart.DriverOffset = this.Props.driverOffset;
@@ -46,8 +44,8 @@ namespace ToolsForHaul.Components
                                     text,
                                     graphic.Shader,
                                     graphic.drawSize,
-                                    graphic.color,
-                                    graphic.colorTwo);
+                                    this.cart.DrawColor,
+                                    this.cart.DrawColorTwo);
                         });
             }
         }

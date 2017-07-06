@@ -240,7 +240,7 @@
       <li>
         <compClass>ToolsForHaul.Components.CompGasTank</compClass>
       </li>
-      <li Class="ToolsForHaul.CompProperties_Explosive_TFH">
+      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Extinguish</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -310,7 +310,7 @@
         <drawOffsetRotN>(0,0,0.5)</drawOffsetRotN>
         <drawOffsetRotS>(0,0,-0.5)</drawOffsetRotS>
       </li>
-      <li Class="ToolsForHaul.CompProperties_Explosive_TFH">
+      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
         <explosiveRadius>3.6</explosiveRadius>
         <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -428,7 +428,7 @@
       <li>
         <compClass>ToolsForHaul.Components.CompGasTank</compClass>
       </li>
-      <li Class="ToolsForHaul.CompProperties_Explosive_TFH">
+      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
         <explosiveRadius>3.6</explosiveRadius>
         <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -602,7 +602,7 @@
       <researchPrerequisite>PoweredArmor</researchPrerequisite>
     </recipeMaker>
     <comps>
-      <li Class="ToolsForHaul.CompProperties_Explosive_TFH">
+      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Bomb</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -721,7 +721,7 @@
       <researchPrerequisite>PoweredArmor</researchPrerequisite>
     </recipeMaker>
     <comps>
-      <li Class="ToolsForHaul.CompProperties_Explosive_TFH">
+      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Extinguish</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
