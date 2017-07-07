@@ -82,8 +82,9 @@
                 JobFailReason.Is("Cart does not allow that thing");
                 return null;
             }
+            var storage = cart.TryGetInnerInteractableThingOwner();
 
-            if (cart.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && cart.innerContainer.Count == 0)
+            if (cart.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0 && storage.Count == 0)
             {
                 JobFailReason.Is("NoHaulable".Translate());
                 return null;
@@ -103,7 +104,7 @@
             // JobFailReason.Is(TFH_Utility.NoEmptyPlaceLowerTrans);
             // return null;
             // }
-            if (cart.IsMountedOnAnimalAndAvailable() || pawn.IsAllowedToRide(cart))
+            if (cart.IsMountedOnAnimalAndAvailable() || pawn.IsPlayerAllowedToRide(cart))
             {
                 return TFH_Utility.HaulWithToolsToCell(pawn, cart, t);
             }

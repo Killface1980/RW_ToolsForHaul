@@ -106,7 +106,8 @@ namespace ToolsForHaul.ITabs
             Vehicle_Cart cart = this.SelThing as Vehicle_Cart;
             if (cart != null)
             {
-                foreach (Thing thing in cart.innerContainer)
+                var storage = cart.TryGetInnerInteractableThingOwner();
+                foreach (Thing thing in storage)
                 {
                     if (thing.ThingID.IndexOf("Human_Corpse") > -1)
                     {
@@ -128,15 +129,21 @@ namespace ToolsForHaul.ITabs
                     if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
                     {
                         List<FloatMenuOption> options = new List<FloatMenuOption>();
-                        options.Add(new FloatMenuOption("ThingInfo".Translate(), () =>
-                        {
-                            Find.WindowStack.Add(new Dialog_InfoCard(thing));
-                        }));
-                        options.Add(new FloatMenuOption("DropThing".Translate(), () =>
-                        {
-                            Thing dummy;
-                            cart.innerContainer.TryDrop(thing, this.SelThing.Position, cart.Map, ThingPlaceMode.Near, out dummy);
-                        }));
+                        options.Add(
+                            new FloatMenuOption(
+                                "ThingInfo".Translate(),
+                                () =>
+                                    {
+                                        Find.WindowStack.Add(new Dialog_InfoCard(thing));
+                                    }));
+                        options.Add(
+                            new FloatMenuOption(
+                                "DropThing".Translate(),
+                                () =>
+                                    {
+                                        Thing dummy;
+                                        storage.TryDrop(thing, this.SelThing.Position, cart.Map, ThingPlaceMode.Near, out dummy);
+                                    }));
 
                         Find.WindowStack.Add(new FloatMenu(options, thing.LabelCap));
                     }
@@ -150,7 +157,7 @@ namespace ToolsForHaul.ITabs
                 }
 
                 if (Widgets.ButtonText(new Rect(180f, 400f, 100f, 30f), "Drop All"))
-                    cart.innerContainer.TryDropAll(this.SelThing.Position, cart.Map, ThingPlaceMode.Near);
+                    storage.TryDropAll(this.SelThing.Position, cart.Map, ThingPlaceMode.Near);
             }
 
 

@@ -65,6 +65,11 @@
     <weaponTags>
       <li>MechanoidGunHeavy</li>
     </weaponTags>
+    <techHediffsTags>
+      <li>VehicleAdvanced</li>
+    </techHediffsTags>
+    <techHediffsChance>1</techHediffsChance>
+    <techHediffsMoney>1000</techHediffsMoney>
 	</PawnKindDef>
 
   <PawnKindDef ParentName="MotorizedVehicleBase">
@@ -86,6 +91,11 @@
         </bodyGraphicData>
       </li>
     </lifeStages>
+    <techHediffsTags>
+      <li>VehicleAdvanced</li>
+    </techHediffsTags>
+    <techHediffsChance>1</techHediffsChance>
+    <techHediffsMoney>1000</techHediffsMoney>
   </PawnKindDef>
 
 </PawnKindDefs>

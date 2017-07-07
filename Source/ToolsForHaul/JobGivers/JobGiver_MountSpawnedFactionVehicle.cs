@@ -14,7 +14,7 @@
 
     public class JobGiver_MountSpawnedFactionVehicle : ThinkNode_JobGiver
     {
-        private float vehicleSearchRadius = 10f;
+        private float vehicleSearchRadius = 3f;
 
         protected override Job TryGiveJob(Pawn pawn)
         {

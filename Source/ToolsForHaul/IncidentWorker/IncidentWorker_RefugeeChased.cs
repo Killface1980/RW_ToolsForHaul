@@ -95,21 +95,21 @@
                     if (value >= 0.2f)
                     {
                         CellFinder.RandomClosewalkCellNear(refugee.Position, refugee.Map, 5);
-                        Thing thing = ThingMaker.MakeThing(VehicleDefOf.VehicleSmackWay);
-                        if (Rand.Value > 0.7f)
-                        {
-                            thing = ThingMaker.MakeThing(VehicleDefOf.VehicleSpeeder);
-                        }
 
-                        GenSpawn.Spawn(thing, refugee.Position, refugee.Map);
+                        Pawn cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.SmackWay, parms.faction);
+
+                        if (value >= 0.7f)
+                        {
+                            cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.Speeder, parms.faction);
+                        }
+                        GenSpawn.Spawn(cart, refugee.Position, map, Rot4.Random, false);
+                        refugee.Reserve(cart);
 
                         Job job = new Job(HaulJobDefOf.Mount);
-                        thing.Map.reservationManager.ReleaseAllForTarget(thing);
-                        job.targetA = thing;
+                        refugee.Map.reservationManager.ReleaseAllForTarget(cart);
+                        job.targetA = cart;
                         refugee.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
-                        int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
-                        thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
                     }
                 }
             }

@@ -128,10 +128,12 @@
 
                 int num = 0;
                 Rot4 rot;
-                rot = this.cart.MountableComp.IsMounted ? this.cart.MountableComp.Driver.Rotation : this.cart.Rotation;
+                // TODO: check rotation
+                //    rot = this.cart.MountableComp.IsMounted ? this.cart.MountableComp.Driver.Rotation  : this.cart.Rotation;
+                rot = this.cart.Rotation;
                 num = rot == Rot4.West ? -1 : 1;
                 Vector3 vector3 = new Vector3(1f * this.drawSize.x, 1f, 1f * this.drawSize.y);
-                Quaternion asQuat = this.cart.Rotation.AsQuat;
+                Quaternion asQuat = rot.AsQuat;
                 float x = 1f * Mathf.Sin(num * (this.wheelRotation * 0.1f) % (2 * Mathf.PI));
                 float z = 1f * Mathf.Cos(num * (this.wheelRotation * 0.1f) % (2 * Mathf.PI));
 

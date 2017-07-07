@@ -5,6 +5,7 @@
     using RimWorld;
 
     using Verse;
+    using Verse.AI;
     using Verse.AI.Group;
 
     public class IncidentWorker_TraderCaravanArrival : IncidentWorker_NeutralGroup
@@ -65,19 +66,21 @@
                     && current.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && current.RaceProps.ToolUser && Rand.Value > 0.5f)
                 {
                     CellFinder.RandomClosewalkCellNear(current.Position, current.Map, 5);
-                    Thing thing = ThingMaker.MakeThing(VehicleDefOf.VehicleATV);
                     var rand = Rand.Value;
+
+                    Pawn cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.ATV, parms.faction);
 
                     if (rand >= 0.9f)
                     {
-                        thing = ThingMaker.MakeThing(VehicleDefOf.VehicleCart);
+                        cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.Cart, parms.faction);
                     }
-                    else if (Rand.Value >= 0.8f)
+                    else if (rand >= 0.8f)
                     {
-                        thing = ThingMaker.MakeThing(VehicleDefOf.VehicleTruck);
+                        cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.Truck, parms.faction);
                     }
-                    GenSpawn.Spawn(thing, current.Position, current.Map);
-                    thing.SetFaction(parms.faction);
+                    GenSpawn.Spawn(cart, current.Position, map, Rot4.Random, false);
+                    current.Reserve(cart);
+
                 }
             }
 

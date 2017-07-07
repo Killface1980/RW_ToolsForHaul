@@ -10,6 +10,7 @@ using Harmony;
 namespace ToolsForHaul
 {
     using System.Collections.Generic;
+    using System.Reflection;
 
     using ToolsForHaul.Components;
     using ToolsForHaul.Defs;
@@ -25,7 +26,7 @@ namespace ToolsForHaul
         [HarmonyPostfix]
         public static void ThinkNode_JobGiver_Postfix(ref ThinkResult __result, ThinkNode_JobGiver __instance, Pawn pawn, JobIssueParams jobParams)
         {
-            VehicleThinker.VehicleThinkResult(ref __result, __instance, pawn);
+            __result = VehicleThinker.VehicleThinkResult(__result, __instance, pawn);
         }
     }
 
@@ -38,28 +39,40 @@ namespace ToolsForHaul
         [HarmonyPostfix]
         public static void ThinkNode_Priority_Postfix(ref ThinkResult __result, ThinkNode_JobGiver __instance, Pawn pawn, JobIssueParams jobParams)
         {
-            VehicleThinker.VehicleThinkResult(ref __result, __instance, pawn);
+            __result = VehicleThinker.VehicleThinkResult(__result, __instance, pawn);
         }
     }
 
     public static class VehicleThinker
     {
+        private static Type PawnRendererType;
+        private static MethodInfo PawnFieldInfo;
         private static float vehicleSearchRadius = 12f;
 
-        public static void VehicleThinkResult(ref ThinkResult __result, ThinkNode_JobGiver __instance, Pawn pawn)
+        private static void GetReflections()
         {
+            if (PawnRendererType == null)
+            {
+                PawnRendererType = typeof(ThinkNode_JobGiver);
+                PawnFieldInfo = PawnRendererType.GetMethod("TryGiveJob", BindingFlags.NonPublic | BindingFlags.Instance);
+            }
+        }
+
+        public static ThinkResult VehicleThinkResult(ThinkResult __result, ThinkNode_JobGiver __instance, Pawn pawn)
+        {
+
             Job job = null;
+
+            if (__result.Job == null)
+            {
+                return __result;
+            }
 
             Job requestJob = __result.Job;
 
-            if (requestJob == null)
+            if (!pawn.RaceProps.Humanlike || !pawn.RaceProps.IsFlesh)
             {
-                return;
-            }
-
-            if (pawn == null || !pawn.RaceProps.Humanlike || !pawn.RaceProps.IsFlesh)
-            {
-                return;
+                return __result;
             }
 
             if (pawn.Faction.IsPlayer)
@@ -142,14 +155,20 @@ namespace ToolsForHaul
             {
                 // Enemies & other
 
+            //    Log.Message("Non-player faction");
+
                 if (!pawn.IsDriver())
                 {
+                 // Log.Message("no driver");
+                 // Log.Message("job " + __result + " - " + requestJob);
+
                     if (requestJob.def == JobDefOf.Flee || requestJob.def == JobDefOf.FleeAndCower
                         || requestJob.def == JobDefOf.Steal || requestJob.def == JobDefOf.Kidnap
                         || requestJob.def == JobDefOf.CarryDownedPawnToExit || requestJob.def == JobDefOf.WaitCombat
                         || requestJob.def == JobDefOf.AttackMelee || requestJob.def == JobDefOf.AttackStatic
-                        || requestJob.def == JobDefOf.Goto && pawn.CurJob.exitMapOnArrival)
+                        || requestJob.def == JobDefOf.Goto && requestJob.exitMapOnArrival)
                     {
+                     //   Log.Message("job " + requestJob.def);
                         List<Thing> availableVehicles;
 
                         if (pawn.Faction.HostileTo(Faction.OfPlayer))
@@ -160,10 +179,13 @@ namespace ToolsForHaul
                         {
                             availableVehicles = pawn.AvailableVehiclesForAllFactions(vehicleSearchRadius);
                         }
+                  //      Log.Message("vehicles " + availableVehicles.ToList());
 
                         if (!availableVehicles.NullOrEmpty())
                         {
-                            job = new Job(HaulJobDefOf.Mount) { targetA = availableVehicles.FirstOrDefault(), };
+                            var cart = availableVehicles.FirstOrDefault();
+                            pawn.Reserve(cart);
+                            job = new Job(HaulJobDefOf.Mount) { targetA = cart };
                         }
                     }
                 }
@@ -174,6 +196,8 @@ namespace ToolsForHaul
                 Log.Message("Thinknode accessed " + pawn + "\nNew thinknode, " + __result.Job + " -> " + job);
                 __result = new ThinkResult(job, __instance, null);
             }
+
+            return __result;
         }
 
         private static Job MountOnOrReturnVehicle(Pawn pawn, Job job, Vehicle_Cart cart)
@@ -228,7 +252,7 @@ namespace ToolsForHaul
             {
                 return;
             }
-          //  if (vehicleCart.InParkingLot)
+            //  if (vehicleCart.InParkingLot)
             {
                 __result = false;
             }

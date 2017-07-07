@@ -60,10 +60,11 @@
                         toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                         return;
                     }
+                    var storage = cart.TryGetInnerInteractableThingOwner();
 
-                    int curItemCount = cart.innerContainer.Count
+                    int curItemCount = storage.Count
                                        + targetQueue.Count;
-                    int curItemStack = cart.innerContainer.TotalStackCount
+                    int curItemStack = storage.TotalStackCount
                                        + targetQueue.Sum(item => item.Thing.stackCount);
                     int maxItem = cart.MaxItem;
                     int maxStack = cart.MaxStack;
@@ -180,7 +181,9 @@
                         // Collecting TargetIndex ind
                         // if
                         // haulThing.DeSpawn();
-                        haulThing.holdingOwner.TryTransferToContainer(haulThing, carrier.innerContainer, haulThing.stackCount);// carrier.innerContainer.TryAdd(haulThing);
+                        var storage = carrier.TryGetInnerInteractableThingOwner();
+
+                        haulThing.holdingOwner.TryTransferToContainer(haulThing, storage, haulThing.stackCount);// carrier.innerContainer.TryAdd(haulThing);
                     }
                     {
                         // haulThing.holdingOwner = carrier.innerContainer;
@@ -191,8 +194,9 @@
                         if (actor.Position.AdjacentTo8Way(thingList[i].Thing.Position))
                         {
                             // thingList[i].Thing.DeSpawn();
+                var storage = carrier.TryGetInnerInteractableThingOwner();
                             thingList[i].Thing.holdingOwner
-                                .TryTransferToContainer(thingList[i].Thing, carrier.innerContainer, thingList[i].Thing.stackCount);
+                                .TryTransferToContainer(thingList[i].Thing, storage, thingList[i].Thing.stackCount);
                             {
                                 // carrier.innerContainer.TryAdd(thingList[i].Thing);
                                 // thingList[i].Thing.holdingOwner = carrier.innerContainer;
@@ -209,8 +213,9 @@
                         Job curJob = actor.jobs.curJob;
                         Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
                         Vehicle_Cart carrier = curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
+                        var storage = carrier.TryGetInnerInteractableThingOwner();
 
-                        if (!carrier.innerContainer.CanAcceptAnyOf(haulThing)
+                        if (!storage.CanAcceptAnyOf(haulThing)
                             && actor.Position.InHorDistOf(
                                 haulThing.Position, 1f))
                             return true;
@@ -237,13 +242,14 @@
                         Log.Error(actor.LabelCap + " Report: Don't have Carrier");
                         toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                     }
+                    var storage = cart.TryGetInnerInteractableThingOwner();
 
-                    if (cart.innerContainer.Count == 0)
+                    if (storage.Count == 0)
                     {
                         return;
                     }
 
-                    IntVec3 cell = TFH_Utility.FindStorageCell(actor, cart.innerContainer.First());
+                    IntVec3 cell = TFH_Utility.FindStorageCell(actor, storage.First());
                     if (cell != IntVec3.Invalid)
                     {
                         toil.actor.jobs.curJob.SetTarget(StoreCellInd, cell);
@@ -348,12 +354,13 @@
                     Pawn actor = toil.actor;
                     Job curJob = actor.jobs.curJob;
                     Vehicle_Cart carrier = actor.jobs.curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
-                    if (carrier.innerContainer.Count <= 0)
+                var storage = carrier.TryGetInnerInteractableThingOwner();
+                    if (storage.Count <= 0)
                     {
                         return;
                     }
 
-                    toil.actor.jobs.curJob.SetTarget(TargetIndex.A, carrier.innerContainer.First());
+                    toil.actor.jobs.curJob.SetTarget(TargetIndex.A, storage.First());
                     Thing dropThing = toil.actor.jobs.curJob.targetA.Thing;
                     IntVec3 destLoc = actor.jobs.curJob.GetTarget(StoreCellInd).Cell;
                     Thing dummy;
@@ -364,17 +371,17 @@
                     if (slotGroup != null && slotGroup.Settings.AllowedToAccept(dropThing))
                     {
                         actor.Map.designationManager.RemoveAllDesignationsOn(dropThing);
-                        carrier.innerContainer.TryDrop(dropThing, destLoc, actor.Map, placeMode, out dummy);
+                        storage.TryDrop(dropThing, destLoc, actor.Map, placeMode, out dummy);
                     }
 
                     // Check cell queue is adjacent
                     List<LocalTargetInfo> cells = curJob.GetTargetQueue(StoreCellInd);
-                    for (int i = 0; i < cells.Count && i < carrier.innerContainer.Count; i++)
+                    for (int i = 0; i < cells.Count && i < storage.Count; i++)
                     {
                         if (destLoc.AdjacentTo8Way(cells[i].Cell) && cells[i].Cell.GetStorable(actor.Map) == null)
                         {
-                            actor.Map.designationManager.RemoveAllDesignationsOn(carrier.innerContainer[i]);
-                            carrier.innerContainer.TryDrop(carrier.innerContainer[i], cells[i].Cell, actor.Map, ThingPlaceMode.Direct, out dummy);
+                            actor.Map.designationManager.RemoveAllDesignationsOn(storage[i]);
+                            storage.TryDrop(storage[i], cells[i].Cell, actor.Map, ThingPlaceMode.Direct, out dummy);
                             cells.RemoveAt(i);
                             i--;
                         }
@@ -383,11 +390,11 @@
                     // Check item queue is valid storage for adjacent cell
                     foreach (IntVec3 adjCell in GenAdj.CellsAdjacent8Way(destLoc, Rot4.Random, new IntVec2()))
                     {
-                        if (carrier.innerContainer.Count > 0 && adjCell.GetStorable(actor.Map) == null
-                            && adjCell.IsValidStorageFor(actor.Map, carrier.innerContainer.First()))
+                        if (storage.Count > 0 && adjCell.GetStorable(actor.Map) == null
+                            && adjCell.IsValidStorageFor(actor.Map, storage.First()))
                         {
-                            actor.Map.designationManager.RemoveAllDesignationsOn(carrier.innerContainer.First());
-                            carrier.innerContainer.TryDrop(carrier.innerContainer.First(), adjCell, actor.Map, ThingPlaceMode.Direct, out dummy);
+                            actor.Map.designationManager.RemoveAllDesignationsOn(storage.First());
+                            storage.TryDrop(storage.First(), adjCell, actor.Map, ThingPlaceMode.Direct, out dummy);
                         }
                     }
                 };

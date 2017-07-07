@@ -21,6 +21,7 @@
     public class Vehicle_Cart : Pawn, IThingHolder, ILoadReferenceable
     {
         #region Variables
+
         public override Color DrawColor
         {
             get
@@ -30,13 +31,16 @@
                 {
                     return comp.Color;
                 }
+
                 return base.DrawColor;
             }
+
             set
             {
                 this.SetColor(value, true);
             }
         }
+
         // ==================================
         public int DefaultMaxItem => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
 
@@ -64,22 +68,10 @@
         public virtual bool ClaimableByPlayer()
         {
 
-            if (this.Faction == null)
-            {
-                return true;
-            }
 
             // No vehicles if enemy near
             if (this.Faction.HostileTo(Faction.OfPlayer))
             {
-                foreach (var pawn in this.Map.mapPawns.FreeColonists)
-                {
-                    if (pawn.Position.InHorDistOf(this.Position, 6f))
-                    {
-                        return true;
-                    }
-                }
-
                 foreach (IAttackTarget attackTarget in this.Map.attackTargetsCache.TargetsHostileToColony)
                 {
                     if (attackTarget.Thing.Position.InHorDistOf(this.Position, 20f))
@@ -87,8 +79,18 @@
                         return false;
                     }
                 }
+                foreach (var pawn in this.Map.mapPawns.FreeColonists)
+                {
+                    if (pawn.Position.InHorDistOf(this.Position, 6f))
+                    {
+                        return true;
+                    }
+                }
             }
-
+            if (this.Faction == null)
+            {
+                return true;
+            }
             // CompPowerTrader comp = this.GetComp<CompPowerTrader>();
             // if (comp == null || !comp.PowerOn)
             // {
@@ -111,6 +113,17 @@
 
         public bool CanExplode()
         {
+            if (!this.ExplosiveTickers.NullOrEmpty())
+            {
+                for (int index = this.ExplosiveTickers.Count - 1; index >= 0; index--)
+                {
+                    HediffCompExplosive_TFH ticker = this.ExplosiveTickers[index];
+                    if (ticker.CompShouldRemove)
+                    {
+                        this.ExplosiveTickers.Remove(ticker);
+                    }
+                }
+            }
             return !this.ExplosiveTickers.NullOrEmpty();
         }
 
@@ -118,6 +131,7 @@
         {
             if (this.CanExplode())
             {
+                // TODO place hitpoints & maxhitpoints with calls to vehocle part health
                 bool maximumDamage = this.HitPoints / this.MaxHitPoints < 0.4f;
                 if ((this.IsBurning() && maximumDamage) || this.wickStarted)
                 {
@@ -150,11 +164,11 @@
         private int tickCooldown = 60;
 
         // mount and storage data
-        public ThingOwner<Thing> innerContainer;
+        private ThingOwner<ThingWithComps> storage;
 
         public ThingOwner GetContainer()
         {
-            return this.innerContainer;
+            return this.storage;
         }
 
         public IntVec3 GetPosition()
@@ -193,7 +207,6 @@
 
         #region Setup Work
 
-
         // public static ListerVehicles listerVehicles = new ListerVehicles();
 #if Headlights
         HeadLights flooder;
@@ -202,11 +215,6 @@
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-
-            if (this.ExplosiveTickers.NullOrEmpty())
-            {
-                this.ExplosiveTickers = new List<HediffCompExplosive_TFH>();
-            }
 
             // Reload textures to get colored versions
             LongEventHandler.ExecuteWhenFinished(
@@ -230,26 +238,22 @@
 
             this.MountableComp = this.TryGetComp<CompMountable>();
 
-            RefuelableComp = this.TryGetComp<CompRefuelable>();
+            this.RefuelableComp = this.TryGetComp<CompRefuelable>();
 
             // if (this.health.hediffSet.HasHediff(HediffDef.Named("Bomb")))
             // {
             // }
+            this.BreakdownableComp = this.TryGetComp<CompBreakdownable>();
 
-            BreakdownableComp = this.TryGetComp<CompBreakdownable>();
+            this.AxlesComp = this.TryGetComp<CompAxles>();
 
-            AxlesComp = this.TryGetComp<CompAxles>();
+            this.VehicleComp = this.TryGetComp<CompVehicle>();
 
-            VehicleComp = this.TryGetComp<CompVehicle>();
-
-            GasTankComp = this.TryGetComp<CompGasTank>();
+            this.GasTankComp = this.TryGetComp<CompGasTank>();
 
             // Get the vehicles away from buildings
-            //       map.designationManager.Notify_BuildingDespawned(this);
-
-
-
-            this.innerContainer = new ThingOwner<Thing>(this, false);
+            // map.designationManager.Notify_BuildingDespawned(this);
+            this.storage = new ThingOwner<ThingWithComps>(this, false);
 
             if (this.allowances == null)
             {
@@ -257,6 +261,7 @@
                 this.allowances.SetFromPreset(StorageSettingsPreset.DefaultStockpile);
                 this.allowances.SetFromPreset(StorageSettingsPreset.DumpingStockpile);
             }
+
             if (this.MountableComp.IsMounted)
             {
                 this.AddDriverComp();
@@ -270,13 +275,20 @@
 
         public void AddDriverComp()
         {
-            this.DriverComp = new CompDriver { Cart = this, Pawn = this.MountableComp.Driver, parent = this.MountableComp.Driver };
+            this.DriverComp = new CompDriver
+                                  {
+                                      Cart = this,
+                                      Pawn = this.MountableComp.Driver,
+                                      parent = this.MountableComp.Driver
+                                  };
             this.MountableComp.Driver.AllComps.Add(this.DriverComp);
         }
+
         public void StartSustainerVehicleIfInactive()
         {
             CompVehicle vehicleComp = this.VehicleComp;
-            if (vehicleComp != null && (!vehicleComp.compProps.soundAmbient.NullOrUndefined() && this.sustainerAmbient == null))
+            if (vehicleComp != null && (!vehicleComp.compProps.soundAmbient.NullOrUndefined()
+                                        && this.sustainerAmbient == null))
             {
                 SoundInfo info = SoundInfo.InMap(this, MaintenanceType.None);
                 this.sustainerAmbient = this.VehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
@@ -297,14 +309,13 @@
             base.DeSpawn();
 
             this.EndSustainerVehicleIfActive();
-
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
 
-            Scribe_Deep.Look(ref this.innerContainer, "innerContainer", this);
+            Scribe_Deep.Look(ref this.storage, "storage", this);
             Scribe_Deep.Look(ref this.allowances, "allowances");
 
             Scribe_Deep.Look(ref this.ExplosiveTickers, "explosiveTickers");
@@ -325,7 +336,6 @@
         public override IEnumerable<Gizmo> GetGizmos()
         {
             // Getting the gizmos manually - no drafting, see SpawnSetup
-
             if (this.ClaimableByPlayer())
             {
                 Designator des = new Designator_Claim();
@@ -340,6 +350,7 @@
                         {
                             return;
                         }
+
                         des.DesignateThing(this);
                         des.Finalize(true);
                     };
@@ -350,12 +361,19 @@
                 {
                     yield return command_Claim;
                 }
+
                 yield break;
             }
 
             if (!this.Faction.IsPlayer)
             {
                 yield break;
+            }
+            CompForbiddable forbid = this.GetComp<CompForbiddable>();
+
+            foreach (Gizmo gizmo in forbid.CompGetGizmosExtra())
+            {
+                yield return gizmo;
             }
 
             if (this.RefuelableComp != null)
@@ -370,13 +388,13 @@
             {
                 Designator_Mount designator =
                     new Designator_Mount
-                    {
-                        vehicle = this,
-                        defaultLabel = Static.TxtCommandMountLabel.Translate(),
-                        defaultDesc = Static.TxtCommandMountDesc.Translate(),
-                        icon = Static.IconMount,
-                        activateSound = Static.ClickSound
-                    };
+                        {
+                            vehicle = this,
+                            defaultLabel = Static.TxtCommandMountLabel.Translate(),
+                            defaultDesc = Static.TxtCommandMountDesc.Translate(),
+                            icon = Static.IconMount,
+                            activateSound = Static.ClickSound
+                        };
                 yield return designator;
             }
             else
@@ -384,48 +402,32 @@
                 if (this.MountableComp.Driver != null)
                 {
                     yield return new Command_Action
-                    {
-                        defaultLabel = Static.TxtCommandDismountLabel.Translate(),
-                        defaultDesc = Static.TxtCommandDismountDesc.Translate(),
-                        icon = Static.IconUnmount,
-                        activateSound = Static.ClickSound,
-                        action = delegate
-                            {
-                                TFH_Utility.DismountGizmoFloatMenu(
-                                    this.MountableComp.Driver);
-                            }
-                    };
+                                     {
+                                         defaultLabel = Static.TxtCommandDismountLabel.Translate(),
+                                         defaultDesc = Static.TxtCommandDismountDesc.Translate(),
+                                         icon = Static.IconUnmount,
+                                         activateSound = Static.ClickSound,
+                                         action = delegate
+                                             {
+                                                 TFH_Utility.DismountGizmoFloatMenu(
+                                                     this.MountableComp.Driver);
+                                             }
+                                     };
                 }
             }
 
-            CompForbiddable forbid = this.GetComp<CompForbiddable>();
 
-            foreach (Gizmo gizmo in forbid.CompGetGizmosExtra())
-            {
-                yield return gizmo;
-            }
 
+            // Get explosive Gizmos
             if (this.CanExplode())
             {
                 foreach (HediffCompExplosive_TFH ticker in this.ExplosiveTickers)
                 {
-                    Command_Action commandExplode =
-                        new Command_Action
-                        {
-                            icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate"),
-                            defaultDesc = "CommandDetonateDesc".Translate() + ticker.parent.Part,
-                            action = ticker.Command_Detonate
-                        };
-
-                    if (this.wickStarted)
+                    foreach (Gizmo c in ticker.ActionExplode())
                     {
-                        commandExplode.Disable();
+                        yield return c;
                     }
-
-                    commandExplode.defaultLabel = "CommandDetonateLabel".Translate();
-                    yield return commandExplode;
                 }
-
             }
 
             if (this.equipment.Primary != null)
@@ -433,32 +435,31 @@
                 if (this.equipment.Primary.def.IsRangedWeapon)
                 {
                     Command_Toggle draft = new Command_Toggle
-                    {
-                        hotKey = KeyBindingDefOf.CommandColonistDraft,
-                        isActive = (() => this.Drafted),
-                        toggleAction = delegate
-                            {
-                                this.drafter.Drafted = !this.Drafted;
-                                PlayerKnowledgeDatabase.KnowledgeDemonstrated(
-                                    ConceptDefOf.Drafting,
-                                    KnowledgeAmount.SpecificInteraction);
-                            },
-                        defaultDesc = "CommandToggleDraftDesc".Translate(),
-                        icon = TexCommand.Draft,
-                        turnOnSound = SoundDefOf.DraftOn,
-                        turnOffSound = SoundDefOf.DraftOff
-                    };
+                                               {
+                                                   hotKey = KeyBindingDefOf.CommandColonistDraft,
+                                                   isActive = () => this.Drafted,
+                                                   toggleAction = delegate
+                                                       {
+                                                           this.drafter.Drafted = !this.Drafted;
+                                                           PlayerKnowledgeDatabase.KnowledgeDemonstrated(
+                                                               ConceptDefOf.Drafting,
+                                                               KnowledgeAmount.SpecificInteraction);
+                                                       },
+                                                   defaultDesc = "CommandToggleDraftDesc".Translate(),
+                                                   icon = TexCommand.Draft,
+                                                   turnOnSound = SoundDefOf.DraftOn,
+                                                   turnOffSound = SoundDefOf.DraftOff
+                                               };
                     if (!this.Drafted)
                     {
                         draft.defaultLabel = "CommandDraftLabel".Translate();
                     }
+
                     if (this.Downed)
                     {
-                        draft.Disable("IsIncapped".Translate(new object[]
-                                                                 {
-                                                                 this.NameStringShort
-                                                                 }));
+                        draft.Disable("IsIncapped".Translate(new object[] { this.NameStringShort }));
                     }
+
                     if (!this.Drafted)
                     {
                         draft.tutorTag = "Draft";
@@ -467,6 +468,7 @@
                     {
                         draft.tutorTag = "Undraft";
                     }
+
                     yield return draft;
 
                     if (!this.drafter.Drafted)
@@ -474,59 +476,56 @@
                         yield break;
                     }
 
-
                     Command_VerbTarget gizmos =
                         new Command_VerbTarget
-                        {
-                            defaultLabel = "CommandSetForceAttackTarget".Translate(),
-                            defaultDesc = "CommandSetForceAttackTargetDesc".Translate(),
-                            icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack", true),
-                            verb = this.equipment.PrimaryEq.PrimaryVerb,
-                            hotKey = KeyBindingDefOf.Misc4
-                        };
+                            {
+                                defaultLabel = "CommandSetForceAttackTarget".Translate(),
+                                defaultDesc = "CommandSetForceAttackTargetDesc".Translate(),
+                                icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack", true),
+                                verb = this.equipment.PrimaryEq.PrimaryVerb,
+                                hotKey = KeyBindingDefOf.Misc4
+                            };
 
                     yield return gizmos;
 
-
-                    //  if (this.CurJob.targetA.IsValid)
-                    //  {
-                    //      Command_Action stop = new Command_Action
-                    //                                {
-                    //                                    defaultLabel = "CommandStopForceAttack".Translate(),
-                    //                                    defaultDesc = "CommandStopForceAttackDesc".Translate(),
-                    //                                    icon = ContentFinder<Texture2D>.Get(
-                    //                                        "UI/Commands/Halt",
-                    //                                        true),
-                    //                                    action = delegate
-                    //                                        {
-                    //                                            this.ResetForcedTarget();
-                    //                                            SoundDefOf.TickLow.PlayOneShotOnCamera(null);
-                    //                                        }
-                    //                                };
-                    //      if (!this.CurJob.targetA.IsValid)
-                    //      {
-                    //          stop.Disable("CommandStopAttackFailNotForceAttacking".Translate());
-                    //      }
-                    //      stop.hotKey = KeyBindingDefOf.Misc5;
-                    //      yield return stop;
-                    //  }
-
+                    // if (this.CurJob.targetA.IsValid)
+                    // {
+                    // Command_Action stop = new Command_Action
+                    // {
+                    // defaultLabel = "CommandStopForceAttack".Translate(),
+                    // defaultDesc = "CommandStopForceAttackDesc".Translate(),
+                    // icon = ContentFinder<Texture2D>.Get(
+                    // "UI/Commands/Halt",
+                    // true),
+                    // action = delegate
+                    // {
+                    // this.ResetForcedTarget();
+                    // SoundDefOf.TickLow.PlayOneShotOnCamera(null);
+                    // }
+                    // };
+                    // if (!this.CurJob.targetA.IsValid)
+                    // {
+                    // stop.Disable("CommandStopAttackFailNotForceAttacking".Translate());
+                    // }
+                    // stop.hotKey = KeyBindingDefOf.Misc5;
+                    // yield return stop;
+                    // }
                     yield return new Command_Toggle
-                    {
-                        hotKey = KeyBindingDefOf.Misc6,
-                        isActive = (() => this.drafter.FireAtWill),
-                        toggleAction = delegate
-                            {
-                                this.drafter.FireAtWill = !this.drafter.FireAtWill;
-                            },
-                        icon = TexCommand.FireAtWill,
-                        defaultLabel = "CommandFireAtWillLabel".Translate(),
-                        defaultDesc = "CommandFireAtWillDesc".Translate(),
-                        tutorTag = "FireAtWillToggle"
-                    };
+                                     {
+                                         hotKey = KeyBindingDefOf.Misc6,
+                                         isActive = () => this.drafter.FireAtWill,
+                                         toggleAction =
+                                             delegate
+                                                 {
+                                                     this.drafter.FireAtWill = !this.drafter.FireAtWill;
+                                                 },
+                                         icon = TexCommand.FireAtWill,
+                                         defaultLabel = "CommandFireAtWillLabel".Translate(),
+                                         defaultDesc = "CommandFireAtWillDesc".Translate(),
+                                         tutorTag = "FireAtWillToggle"
+                                     };
                 }
             }
-
 
             // Spotlight
             // int groupKeyBase = 700000102;
@@ -606,7 +605,6 @@
         {
             this.jobs.EndCurrentJob(JobCondition.InterruptForced);
         }
-
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
         {
@@ -729,11 +727,12 @@
             {
                 mode = DestroyMode.KillFinalize;
             }
-            else if (this.CanExplode() && this.wickStarted)
+            else if ( this.wickStarted)
             {
-                this.innerContainer.ClearAndDestroyContents();
+                this.storage.ClearAndDestroyContents();
             }
-            this.innerContainer.TryDropAll(this.Position, Map, ThingPlaceMode.Near);
+
+            this.storage.TryDropAll(this.Position, this.Map, ThingPlaceMode.Near);
 
             base.Destroy(mode);
         }
@@ -848,21 +847,21 @@
                 float num = this.MountableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
                 num *= this.MountableComp.Driver.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
                 Vector3 vector = new Vector3(0f, 0f, -num);
-                //            vector += DriverOffset;
+
+                // vector += DriverOffset;
                 return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Driver.Rotation.AsAngle);
             }
         }
+
         public bool wickStarted;
 
         private bool fireAtWillInt = true;
 
         public List<HediffCompExplosive_TFH> ExplosiveTickers;
 
-
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             base.DrawAt(drawLoc);
-
 
             if (!this.Spawned)
             {
@@ -871,7 +870,7 @@
 
             if (this.VehicleComp.ShowsStorage())
             {
-                if (this.innerContainer.Any() || (this.MountableComp.IsMounted
+                if (!this.storage.InnerListForReading.NullOrEmpty() || (this.MountableComp.IsMounted
                                                   && this.MountableComp.Driver.RaceProps.packAnimal
                                                   && this.MountableComp.Driver.RaceProps.Animal))
                 {
@@ -906,9 +905,9 @@
                             }
                         }
                     }
-                    else if (this.innerContainer.Count > 0)
+                    else if (!this.storage.InnerListForReading.NullOrEmpty())
                     {
-                        foreach (Thing mountThing in this.innerContainer)
+                        foreach (Thing mountThing in this.storage.InnerListForReading)
                         {
                             mountThing.Rotation = this.Rotation;
                             mountThing.DrawAt(mountThingLoc + mountThingOffset);
@@ -917,9 +916,9 @@
                 }
             }
 
-            if (!this.ExplosiveTickers.NullOrEmpty())
+            if (this.CanExplode())
             {
-                if (wickStarted)
+                if (this.wickStarted)
                 {
                     this.Map.overlayDrawer.DrawOverlay(this, OverlayTypes.BurningWick);
                 }
@@ -993,7 +992,7 @@
 
         public ThingOwner GetDirectlyHeldThings()
         {
-            return this.innerContainer;
+            return this.storage;
         }
 
         public bool InParkingLot => this.Position.GetZone(this.Map) is Zone_ParkingLot;

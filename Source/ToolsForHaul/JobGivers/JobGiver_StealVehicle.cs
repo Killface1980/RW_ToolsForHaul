@@ -55,15 +55,16 @@
             }
 
 
-            if (steelVehicle.Any() )
+            if (steelVehicle.Any())
             {
                 // && !GenAI.InDangerousCombat(pawn))
                 IOrderedEnumerable<Thing> orderedEnumerable =
                     steelVehicle.OrderBy(x => x.Position.DistanceToSquared(pawn.Position));
-                Job job = new Job(HaulJobDefOf.Mount);
+                var cart = orderedEnumerable.First();
+                pawn.Reserve(cart);
+                Job job = new Job(HaulJobDefOf.Mount) { targetA = cart };
 
                 // orderedEnumerable.First().SetFaction(null);
-                job.targetA = orderedEnumerable.First();
 
                 return job;
             }

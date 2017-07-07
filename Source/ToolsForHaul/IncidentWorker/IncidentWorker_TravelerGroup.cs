@@ -5,6 +5,7 @@
     using RimWorld;
 
     using Verse;
+    using Verse.AI;
     using Verse.AI.Group;
 
     // Vanilla copy with edited base class
@@ -38,14 +39,14 @@
                     && current.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && current.RaceProps.ToolUser && Rand.Value > 0.5f)
                 {
                     CellFinder.RandomClosewalkCellNear(current.Position, current.Map, 5);
-                    Thing thing = ThingMaker.MakeThing(VehicleDefOf.VehicleATV);
+                    Pawn cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.ATV, parms.faction);
 
-                    if (Rand.Value >= 0.9f)
+                    if (Rand.Value >= 0.9f )
                     {
-                        thing = ThingMaker.MakeThing(VehicleDefOf.VehicleCombatATV);
+                        cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.CombatATV, parms.faction);
                     }
-                    GenSpawn.Spawn(thing, current.Position, current.Map);
-                    thing.SetFaction(parms.faction);
+                    GenSpawn.Spawn(cart, current.Position, map, Rot4.Random, false);
+                                    current.Reserve(cart);
                 }
             }
 

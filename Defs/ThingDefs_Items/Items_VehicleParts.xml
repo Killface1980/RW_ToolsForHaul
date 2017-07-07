@@ -53,7 +53,7 @@
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
-      <MarketValue>100</MarketValue>
+      <MarketValue>500</MarketValue>
       <Mass>1</Mass>
     </statBases>
   </ThingDef>
@@ -67,7 +67,7 @@
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
-      <MarketValue>100</MarketValue>
+      <MarketValue>500</MarketValue>
       <Mass>1</Mass>
     </statBases>
   </ThingDef>
@@ -83,7 +83,7 @@
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
-      <MarketValue>100</MarketValue>
+      <MarketValue>800</MarketValue>
       <Mass>5</Mass>
     </statBases>
     <techHediffsTags>

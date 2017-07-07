@@ -47,7 +47,7 @@ namespace ToolsForHaul
                     state = string.Concat(state, "CanReserveAndReach ");
                 }
 
-                if (pawn.IsAllowedToRide(cart))
+                if (pawn.IsPlayerAllowedToRide(cart))
                 {
                     state = string.Concat(state, "AvailableCart ");
                 }

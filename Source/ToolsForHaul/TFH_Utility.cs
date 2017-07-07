@@ -6,6 +6,8 @@ namespace ToolsForHaul.Utilities
     using System.Collections.Generic;
     using System.Linq;
 
+    using Harmony;
+
     using RimWorld;
 
     using ToolsForHaul.Components;
@@ -37,13 +39,13 @@ namespace ToolsForHaul.Utilities
                    && driver.needs.rest.CurCategory < RestCategory.VeryTired && !HealthAIUtility.ShouldBeTendedNow(driver);
         }
 
-        public static bool IsAllowedToRide(this Pawn pawn, Vehicle_Cart cart)
+        public static bool IsPlayerAllowedToRide(this Pawn pawn, Vehicle_Cart cart)
         {
             if (cart.Faction != Faction.OfPlayer) return false;
             if (cart.IsForbidden(pawn.Faction)) return false;
             if (cart.Position.IsForbidden(pawn)) return false;
             if (cart.IsBurning()) return false;
-            if (!pawn.CanReserveAndReach(cart, PathEndMode.ClosestTouch, Danger.Some)) return false;
+            if (!pawn.CanReserveAndReach(cart, PathEndMode.InteractionCell, Danger.Some)) return false;
 
             if (!cart.MountableComp.IsMounted) return true;
             if (cart.MountableComp.Driver == pawn) return true;
@@ -111,23 +113,43 @@ namespace ToolsForHaul.Utilities
         public static bool FindParkingSpace(this Pawn pawn, IntVec3 searchPos, out IntVec3 parkingSpace)
         {
             List<IntVec3> parkingLot = new List<IntVec3>();
+            List<IntVec3> blockers = new List<IntVec3>();
+
             foreach (IntVec3 cell in pawn.Map.AllCells)
             {
                 Zone zone = pawn.Map.zoneManager.ZoneAt(cell);
                 if (zone is Zone_ParkingLot)
                 {
+
                     if (pawn.Map.thingGrid.ThingsAt(cell)
                         .Any(
                             current => current.def.passability == Traversability.PassThroughOnly
-                                       || current.def.passability == Traversability.Impassable || current is Vehicle_Cart))
+                                       || current.def.passability == Traversability.Impassable))
                     {
                         continue;
                     }
-
+                    if (pawn.Map.thingGrid.ThingsAt(cell)
+                        .Any(current => current is Vehicle_Cart))
+                    {
+                        IEnumerable<IntVec3> test = cell.GetThingList(pawn.Map).Find(x => x is Vehicle_Cart).OccupiedRect().Cells;
+                        foreach (IntVec3 vec3 in test)
+                        {
+                            blockers.Add(vec3);
+                        }
+                        continue;
+                    }
                     if (!pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, pawn.NormalMaxDanger()))
                         continue;
 
                     parkingLot.Add(cell);
+                }
+            }
+
+            foreach (IntVec3 blocker in blockers)
+            {
+                if (parkingLot.Contains(blocker))
+                {
+                    parkingLot.Remove(blocker);
                 }
             }
 
@@ -326,7 +348,7 @@ namespace ToolsForHaul.Utilities
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
                 aV => aV is Vehicle_Cart && !aV.IsForbidden(pawn.Faction)
-                      && (!((Vehicle_Cart)aV).MountableComp.IsMounted && pawn.CanReserve(aV) // Unmounted
+                      && (!((Vehicle_Cart)aV).MountableComp.IsMounted && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Some) // Unmounted
                           || ((Vehicle_Cart)aV).MountableComp.Driver == pawn)); // or Driver is pawn himself
             return availableVehicles;
         }
@@ -510,11 +532,12 @@ namespace ToolsForHaul.Utilities
             Zone zone = pawn.Map.zoneManager.ZoneAt(cart.Position);
 
             targetC = cart;
+            var storage = cart.TryGetInnerInteractableThingOwner();
 
             maxItem = cart.MaxItem;
             thresholdItem = (int)Math.Ceiling(maxItem * 0.25);
-            reservedMaxItem = cart.innerContainer.Count;
-            remainingItems = cart.innerContainer;
+            reservedMaxItem = storage.Count;
+            remainingItems = storage;
 
             shouldDrop = reservedMaxItem > 0 ? true : false;
 
@@ -713,11 +736,12 @@ namespace ToolsForHaul.Utilities
             Zone zone = pawn.Map.zoneManager.ZoneAt(cart.Position);
 
             targetC = cart;
+            var storage = cart.TryGetInnerInteractableThingOwner();
 
             maxItem = cart.MaxItem;
             thresholdItem = (int)Math.Ceiling(maxItem * 0.25);
-            reservedMaxItem = cart.innerContainer.Count;
-            remainingItems = cart.innerContainer;
+            reservedMaxItem = storage.Count;
+            remainingItems = storage;
 
             shouldDrop = reservedMaxItem > 0 ? true : false;
 
@@ -941,7 +965,7 @@ namespace ToolsForHaul.Utilities
                     Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
                     if (vehicleCart == null) continue;
                     if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
-                    if (!pawn.IsAllowedToRide(vehicleCart)) continue;
+                    if (!pawn.IsPlayerAllowedToRide(vehicleCart)) continue;
                     if (vehicleCart.HasGasTank())
                     {
                         if (vehicleCart.GasTankComp.tankLeaking) continue;
@@ -964,7 +988,7 @@ namespace ToolsForHaul.Utilities
                     Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
                     if (vehicleCart == null) continue;
                     if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
-                    if (!pawn.IsAllowedToRide(vehicleCart)) continue;
+                    if (!pawn.IsPlayerAllowedToRide(vehicleCart)) continue;
                     if (vehicleCart.HasGasTank())
                     {
                         if (vehicleCart.GasTankComp.tankLeaking) continue;
@@ -996,7 +1020,7 @@ namespace ToolsForHaul.Utilities
                     }
                     if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
 
-                    if (!pawn.IsAllowedToRide(vehicleCart)) continue;
+                    if (!pawn.IsPlayerAllowedToRide(vehicleCart)) continue;
                     if (vehicleCart.HasGasTank())
                     {
                         if (vehicleCart.GasTankComp.tankLeaking) continue;
@@ -1025,7 +1049,7 @@ namespace ToolsForHaul.Utilities
                     if (vehicleCart == null)
                         continue;
                     if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
-                    if (!pawn.IsAllowedToRide(vehicleCart)) continue;
+                    if (!pawn.IsPlayerAllowedToRide(vehicleCart)) continue;
                     if (vehicleCart.HasGasTank())
                     {
                         if (vehicleCart.GasTankComp.tankLeaking) continue;
@@ -1050,7 +1074,7 @@ namespace ToolsForHaul.Utilities
                     if (vehicleCart == null)
                         continue;
                     if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
-                    if (!pawn.IsAllowedToRide(vehicleCart)) continue;
+                    if (!pawn.IsPlayerAllowedToRide(vehicleCart)) continue;
                     if (vehicleCart.HasGasTank())
                     {
                         if (vehicleCart.GasTankComp.tankLeaking) continue;

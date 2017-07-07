@@ -35,9 +35,10 @@
             {
                 return null;
             }
+            var storage = carrier.TryGetInnerInteractableThingOwner();
 
-            IEnumerable<Thing> remainingItems = carrier.innerContainer;
-            int reservedMaxItem = carrier.innerContainer.Count;
+            IEnumerable<Thing> remainingItems = storage;
+            int reservedMaxItem = storage.Count;
             Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("HaulWithAnimalCart"));
 
             // jobNew.maxNumToCarry = 99999;
@@ -157,7 +158,7 @@
         {
             availableVehicle = this.PotentialWorkThingsGlobal(pawn) as List<Thing>;
 
-            return availableVehicle.Find(aV => ((Vehicle_Cart)aV).innerContainer.TotalStackCount > 0)
+            return availableVehicle.Find(aV => ((Vehicle_Cart)aV).TryGetInnerInteractableThingOwner().TotalStackCount > 0)
                     == null // Need to drop
                     && pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0; // No Haulable
         }

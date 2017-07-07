@@ -86,10 +86,10 @@
     <Compile Include="JobDrivers\Class1.cs" />
     <Compile Include="JobDrivers\JobDriver_MountAndDraft.cs" />
     <Compile Include="ThinkNode_JobGiver_Patch.cs" />
-    <Compile Include="VehicleDefOf.cs" />
+    <Compile Include="VehicleKindDefOf.cs" />
     <Compile Include="Components\CompGasTank.cs" />
     <Compile Include="JobGivers\JobGiver_ReturnVehicleIfMounted.cs" />
-    <Compile Include="JobGivers\JobGiver_MountSpawnedFactionVehicle.cs" />
+    <None Include="JobGivers\JobGiver_MountSpawnedFactionVehicle.cs" />
     <Compile Include="Static.cs" />
     <None Include="WorkGivers\Class1.cs" />
     <None Include="Vehicles\Cart_TurretTop.cs" />

@@ -169,23 +169,14 @@
                                 if (value >= 0.66f && !isShieldUser || isShieldUser && value > 0.9f)
                                 {
                                     CellFinder.RandomClosewalkCellNear(current.Position, current.Map, 5);
-                                    Thing thing = ThingMaker.MakeThing(VehicleDefOf.VehicleATV);
+                                    Pawn cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.ATV, parms.faction);
 
                                     if (value >= 0.9f && !isShieldUser)
                                     {
-                                        thing = ThingMaker.MakeThing(VehicleDefOf.VehicleCombatATV);
+                                        cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.CombatATV, parms.faction);
                                     }
-                                    GenSpawn.Spawn(thing, current.Position, current.Map);
-                                    thing.SetFaction(parms.faction);
-
-
-                                    // Job job = new Job(HaulJobDefOf.Mount);
-                                    // thing.Map.reservationManager.ReleaseAllForTarget(thing);
-                                    // job.targetA = thing;
-                                    // current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
-
-                                    int num2 = Mathf.FloorToInt(Rand.Value * 0.2f * thing.MaxHitPoints);
-                                    thing.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, num2, -1));
+                                    GenSpawn.Spawn(cart, current.Position, map, Rot4.Random, false);
+                                    current.Reserve(cart);
                                 }
                             }
                         }
