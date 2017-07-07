@@ -20,7 +20,6 @@
 
     public class Vehicle_Cart : Pawn, IThingHolder, ILoadReferenceable
     {
-
         #region Variables
         public override Color DrawColor
         {
@@ -112,7 +111,7 @@
 
         public bool CanExplode()
         {
-            return this.ExplosiveComp != null && this.ExplosiveComp.IsActive;
+            return !this.ExplosiveTickers.NullOrEmpty();
         }
 
         public bool IsAboutToBlowUp()
@@ -120,7 +119,7 @@
             if (this.CanExplode())
             {
                 bool maximumDamage = this.HitPoints / this.MaxHitPoints < 0.4f;
-                if ((this.IsBurning() && maximumDamage) || this.ExplosiveComp.wickStarted)
+                if ((this.IsBurning() && maximumDamage) || this.wickStarted)
                 {
                     return true;
                 }
@@ -170,8 +169,6 @@
 
         public CompRefuelable RefuelableComp;
 
-        public CompExplosive_TFH ExplosiveComp;
-
         public CompBreakdownable BreakdownableComp;
 
         public CompAxles AxlesComp;
@@ -206,9 +203,9 @@
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
-            if (true)
+            if (this.ExplosiveTickers.NullOrEmpty())
             {
-                PawnTechHediffsGenerator.GeneratePartsAndImplantsFor(this);
+                this.ExplosiveTickers = new List<HediffCompExplosive_TFH>();
             }
 
             // Reload textures to get colored versions
@@ -234,8 +231,6 @@
             this.MountableComp = this.TryGetComp<CompMountable>();
 
             RefuelableComp = this.TryGetComp<CompRefuelable>();
-
-            ExplosiveComp = this.TryGetComp<CompExplosive_TFH>();
 
             // if (this.health.hediffSet.HasHediff(HediffDef.Named("Bomb")))
             // {
@@ -312,7 +307,8 @@
             Scribe_Deep.Look(ref this.innerContainer, "innerContainer", this);
             Scribe_Deep.Look(ref this.allowances, "allowances");
 
-
+            Scribe_Deep.Look(ref this.ExplosiveTickers, "explosiveTickers");
+            Scribe_Values.Look<bool>(ref this.wickStarted, "wickStarted", false, false);
 
             // Scribe_References.Look<Thing>(ref this.light, "light");
             // Scribe_Values.Look<LightMode>(ref this.lightMode, "lightMode");
@@ -402,40 +398,56 @@
                 }
             }
 
+            CompForbiddable forbid = this.GetComp<CompForbiddable>();
+
+            foreach (Gizmo gizmo in forbid.CompGetGizmosExtra())
+            {
+                yield return gizmo;
+            }
+
             if (this.CanExplode())
             {
-                Command_Action commandExplode =
-                    new Command_Action
-                    {
-                        icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate"),
-                        defaultDesc = "CommandDetonateDesc".Translate(),
-                        action = this.Command_Detonate
-                    };
-                if (this.ExplosiveComp.wickStarted)
+                foreach (HediffCompExplosive_TFH ticker in this.ExplosiveTickers)
                 {
-                    commandExplode.Disable();
+                    Command_Action commandExplode =
+                        new Command_Action
+                        {
+                            icon = ContentFinder<Texture2D>.Get("UI/Commands/Detonate"),
+                            defaultDesc = "CommandDetonateDesc".Translate() + ticker.parent.Part,
+                            action = ticker.Command_Detonate
+                        };
+
+                    if (this.wickStarted)
+                    {
+                        commandExplode.Disable();
+                    }
+
+                    commandExplode.defaultLabel = "CommandDetonateLabel".Translate();
+                    yield return commandExplode;
                 }
 
-                commandExplode.defaultLabel = "CommandDetonateLabel".Translate();
-                yield return commandExplode;
             }
 
             if (this.equipment.Primary != null)
             {
                 if (this.equipment.Primary.def.IsRangedWeapon)
                 {
-                    Command_Toggle draft = new Command_Toggle();
-                    draft.hotKey = KeyBindingDefOf.CommandColonistDraft;
-                    draft.isActive = (() => this.Drafted);
-                    draft.toggleAction = delegate
-                        {
-                            this.drafter.Drafted = !this.Drafted;
-                            PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.Drafting, KnowledgeAmount.SpecificInteraction);
-                        };
-                    draft.defaultDesc = "CommandToggleDraftDesc".Translate();
-                    draft.icon = TexCommand.Draft;
-                    draft.turnOnSound = SoundDefOf.DraftOn;
-                    draft.turnOffSound = SoundDefOf.DraftOff;
+                    Command_Toggle draft = new Command_Toggle
+                    {
+                        hotKey = KeyBindingDefOf.CommandColonistDraft,
+                        isActive = (() => this.Drafted),
+                        toggleAction = delegate
+                            {
+                                this.drafter.Drafted = !this.Drafted;
+                                PlayerKnowledgeDatabase.KnowledgeDemonstrated(
+                                    ConceptDefOf.Drafting,
+                                    KnowledgeAmount.SpecificInteraction);
+                            },
+                        defaultDesc = "CommandToggleDraftDesc".Translate(),
+                        icon = TexCommand.Draft,
+                        turnOnSound = SoundDefOf.DraftOn,
+                        turnOffSound = SoundDefOf.DraftOff
+                    };
                     if (!this.Drafted)
                     {
                         draft.defaultLabel = "CommandDraftLabel".Translate();
@@ -595,10 +607,6 @@
             this.jobs.EndCurrentJob(JobCondition.InterruptForced);
         }
 
-        private void Command_Detonate()
-        {
-            this.ExplosiveComp.StartWick();
-        }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
         {
@@ -721,7 +729,7 @@
             {
                 mode = DestroyMode.KillFinalize;
             }
-            else if (this.CanExplode() && this.ExplosiveComp.wickStarted)
+            else if (this.CanExplode() && this.wickStarted)
             {
                 this.innerContainer.ClearAndDestroyContents();
             }
@@ -730,26 +738,21 @@
             base.Destroy(mode);
         }
 
-        /// <summary>
-        /// PreApplyDamage from Building_Turret - not sure what the stunner does
-        /// </summary>
-        /// <param name="dinfo"></param>
-        /// <param name="absorbed"></param>
-        public override void PreApplyDamage(DamageInfo dinfo, out bool absorbed)
-        {
-            base.PreApplyDamage(dinfo, out absorbed);
-            if (absorbed)
-            {
-                return;
-            }
-            absorbed = false;
-
-
-        }
-
         #endregion
 
         #region Ticker
+
+        public override void PostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
+        {
+            base.PostApplyDamage(dinfo, totalDamageDealt);
+            if (!this.ExplosiveTickers.NullOrEmpty())
+            {
+                foreach (HediffCompExplosive_TFH ticker in this.ExplosiveTickers)
+                {
+                    ticker.PostPostApplyDamage(dinfo);
+                }
+            }
+        }
 
         public override void Tick()
         {
@@ -849,8 +852,12 @@
                 return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Driver.Rotation.AsAngle);
             }
         }
+        public bool wickStarted;
 
         private bool fireAtWillInt = true;
+
+        public List<HediffCompExplosive_TFH> ExplosiveTickers;
+
 
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
@@ -907,6 +914,14 @@
                             mountThing.DrawAt(mountThingLoc + mountThingOffset);
                         }
                     }
+                }
+            }
+
+            if (!this.ExplosiveTickers.NullOrEmpty())
+            {
+                if (wickStarted)
+                {
+                    this.Map.overlayDrawer.DrawOverlay(this, OverlayTypes.BurningWick);
                 }
             }
 

@@ -4,7 +4,7 @@
 
     using Verse;
 
-    public class CompProperties_Explosive_TFH : CompProperties
+    public class HediffCompProperties_Explosive_TFH : HediffCompProperties
     {
         public float explosiveRadius = 1.9f;
 
@@ -38,9 +38,9 @@
 
         public float chanceNeverExplodeFromDamage;
 
-        public CompProperties_Explosive_TFH()
+        public HediffCompProperties_Explosive_TFH()
         {
-            this.compClass = typeof(CompExplosive_TFH);
+            this.compClass = typeof(HediffCompExplosive_TFH);
         }
     }
 }

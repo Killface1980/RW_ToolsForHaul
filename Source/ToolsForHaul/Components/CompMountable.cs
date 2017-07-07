@@ -376,7 +376,7 @@ namespace ToolsForHaul.Components
             base.PostPostApplyDamage(dinfo, totalDamageDealt);
             if (this.IsMounted)
             {
-                if (this.cart.CanExplode() && this.cart.ExplosiveComp.wickStarted)
+                if (this.cart.CanExplode() && this.cart.wickStarted)
                 {
                     if (Rand.Value >= 0.1f)
                     {

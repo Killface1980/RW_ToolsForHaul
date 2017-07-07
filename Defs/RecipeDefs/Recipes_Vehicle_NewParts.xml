@@ -14,9 +14,9 @@
     <defName>RemoveVehiclePart</defName>
     <label>remove part</label>
     <description>Removes vehicle part.</description>
-    <workerClass>Recipe_RemoveBodyPart</workerClass>
+    <workerClass>ToolsForHaul.Recipe_RemoveVehiclePart</workerClass>
     <jobString>Removing vehicle part.</jobString>
-    <workAmount>2000</workAmount>
+    <workAmount>200</workAmount>
     <!--
     <ingredients>
       <li>
@@ -43,9 +43,9 @@
     <defName>InstallNaturalEngine</defName>
     <label>install engine</label>
     <description>Installs engine.</description>
-    <workerClass>Recipe_InstallNaturalBodyPart</workerClass>
+    <workerClass>ToolsForHaul.Recipe_InstallNaturalVehiclePart</workerClass>
     <jobString>Installing engine.</jobString>
-    <workAmount>2000</workAmount>
+    <workAmount>200</workAmount>
     <ingredients>
       <!--
       <li>
@@ -76,7 +76,6 @@
         <li>VehicleEngine</li>
       </thingDefs>
     </fixedIngredientFilter>
-    -->
     <appliedOnFixedBodyParts>
       <li>VehicleEngine</li>
     </appliedOnFixedBodyParts>
@@ -86,9 +85,9 @@
     <defName>InstallNaturalTank</defName>
     <label>install tank</label>
     <description>Installs tank.</description>
-    <workerClass>Recipe_InstallNaturalBodyPart</workerClass>
+    <workerClass>ToolsForHaul.Recipe_InstallNaturalVehiclePart</workerClass>
     <jobString>Installing tank.</jobString>
-    <workAmount>2000</workAmount>
+    <workAmount>200</workAmount>
     <ingredients>
       <!--
       <li>
@@ -127,12 +126,12 @@
   <!-- artificial -->
 
   <RecipeDef ParentName="SurgeryVehicle">
-    <defName>InstallRiggedTank</defName>
-    <label>install rigged tank</label>
-    <description>Installs rigged tank.</description>
-    <workerClass>Recipe_InstallArtificialBodyPart</workerClass>
-    <jobString>Installing rigged tank.</jobString>
-    <workAmount>2000</workAmount>
+    <defName>InstallBigTank</defName>
+    <label>install big tank</label>
+    <description>Installs big tank.</description>
+    <workerClass>ToolsForHaul.Recipe_InstallArtificialVehiclePart</workerClass>
+    <jobString>Installing big tank.</jobString>
+    <workAmount>200</workAmount>
     <ingredients>
       <!-- 
       <li>
@@ -147,7 +146,7 @@
       <li>
         <filter>
           <thingDefs>
-            <li>VehicleTankRigged</li>
+            <li>VehicleTankBig</li>
           </thingDefs>
         </filter>
         <count>1</count>
@@ -160,16 +159,14 @@
       </categories>
   -->
       <thingDefs>
-        <li>VehicleTankRigged</li>
+        <li>VehicleTankBig</li>
       </thingDefs>
     </fixedIngredientFilter>
     <appliedOnFixedBodyParts>
       <li>VehicleTank</li>
     </appliedOnFixedBodyParts>
-    <addsHediff>Bomb</addsHediff>
+    <addsHediff>VehicleBigTank</addsHediff>
   </RecipeDef>
-
-
 
 
 </RecipeDefs>

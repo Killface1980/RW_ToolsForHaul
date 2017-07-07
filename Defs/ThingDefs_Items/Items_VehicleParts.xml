@@ -53,7 +53,7 @@
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
-      <MarketValue>500</MarketValue>
+      <MarketValue>100</MarketValue>
       <Mass>1</Mass>
     </statBases>
   </ThingDef>
@@ -67,26 +67,29 @@
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
-      <MarketValue>500</MarketValue>
+      <MarketValue>100</MarketValue>
       <Mass>1</Mass>
     </statBases>
   </ThingDef>
 
+  <!-- artificial -->
+  
   <ThingDef ParentName="BodyPartArtificialBase">
-    <defName>VehicleTankRigged</defName>
-    <label>rigged fuel tank</label>
+    <defName>VehicleTankBig</defName>
+    <label>big fuel tank</label>
     <description>One of the most sophisticated arm replacements. Gives extreme strength to its user.</description>
     <graphicData>
       <texPath>Things/Item/BodyPart/ArtificialOrgan</texPath>
       <graphicClass>Graphic_Single</graphicClass>
     </graphicData>
     <statBases>
-      <MarketValue>800</MarketValue>
+      <MarketValue>100</MarketValue>
       <Mass>5</Mass>
     </statBases>
     <techHediffsTags>
-      <li>Advanced</li>
+      <li>VehicleAdvanced</li>
     </techHediffsTags>
   </ThingDef>
+  
 
 </ThingDefs>

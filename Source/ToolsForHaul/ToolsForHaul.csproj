@@ -58,12 +58,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Class1.cs" />
+    <Compile Include="Recipe_InstallArtificialBodyPart.cs" />
+    <Compile Include="Recipe_InstallNaturalVehiclePart.cs" />
     <None Include="AcEnhancedHauling.cs" />
     <Compile Include="Alerts\Alert_NoParkingLot.cs" />
     <Compile Include="Building_BattleBeacon.cs" />
-    <Compile Include="Components\CompExplosive_TFH.cs" />
-    <Compile Include="Components\CompProperties_Explosive_TFH.cs" />
+    <Compile Include="Recipe_RemoveVehiclePart.cs" />
+    <Compile Include="Recipe_InstallVehicleImplant.cs" />
+    <Compile Include="Recipe_VehicleSurgery.cs" />
+    <Compile Include="VehicleRecipesUtility.cs" />
+    <Compile Include="Hediff_ImplantExplosive.cs" />
+    <Compile Include="Components\HediffCompExplosive_TFH.cs" />
+    <Compile Include="Components\HediffCompProperties_Explosive_TFH.cs" />
     <None Include="HediffGiver_Bomb.cs" />
     <None Include="HediffCompProperties_Explosive.cs" />
     <None Include="HediffCompExplosive.cs" />
@@ -205,6 +211,9 @@
     <Content Include="..\..\Defs\HeDiffDefs\Hediffs_Local_AddedMechanicalParts.xml">
       <Link>Defs\Hediffs_Local_AddedMechanicalParts.xml</Link>
     </Content>
+    <Content Include="..\..\Defs\HeDiffDefs\Hediffs_Local_MechanicalImplants.xml">
+      <Link>Defs\Hediffs_Local_MechanicalImplants.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Misc.xml">
       <Link>Defs\JobDefs\Jobs_Misc.xml</Link>
     </Content>
@@ -213,6 +222,9 @@
     </Content>
     <Content Include="..\..\Defs\PawnKindDefs_Vehicles\PawnKinds_Vehicles.xml">
       <Link>Defs\PawnKinds_Vehicles.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\RecipeDefs\Recipes_Vehicle_Implants.xml">
+      <Link>Defs\Recipes_Vehicle_Implants.xml</Link>
     </Content>
     <Content Include="..\..\Defs\RecipeDefs\Recipes_Vehicle_NewParts.xml">
       <Link>Defs\Recipes_Vehicle_NewParts.xml</Link>
@@ -263,6 +275,9 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs_Buildings\Buildings_Misc.xml">
       <Link>Defs\Buildings_Misc.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs_Items\Items_VehicleImplants.xml">
+      <Link>Defs\Items_VehicleImplants.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs_Items\Items_VehicleParts.xml">
       <Link>Defs\Items_VehicleParts.xml</Link>

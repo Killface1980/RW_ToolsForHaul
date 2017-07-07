@@ -240,16 +240,18 @@
       <li>
         <compClass>ToolsForHaul.Components.CompGasTank</compClass>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
+      <!-- 
+     <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Extinguish</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
-        <!-- 				<startWickHitPointsPercent>0.10</startWickHitPointsPercent>
+      				<startWickHitPointsPercent>0.10</startWickHitPointsPercent>
 				<wickTicks>
 					<min>300</min>
 					<max>600</max>
-				</wickTicks> -->
+				</wickTicks>
       </li>
+      -->
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
         <fuelConsumptionRate>3000</fuelConsumptionRate>
@@ -310,7 +312,7 @@
         <drawOffsetRotN>(0,0,0.5)</drawOffsetRotN>
         <drawOffsetRotS>(0,0,-0.5)</drawOffsetRotS>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
+      <!-- <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
         <explosiveRadius>3.6</explosiveRadius>
         <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -325,6 +327,7 @@
         <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
         <explosionEffect>VehicleExplosion</explosionEffect>
       </li>
+  -->
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
         <fuelConsumptionRate>2000</fuelConsumptionRate>
@@ -428,7 +431,7 @@
       <li>
         <compClass>ToolsForHaul.Components.CompGasTank</compClass>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
+      <!--  <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
         <explosiveRadius>3.6</explosiveRadius>
         <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -443,6 +446,7 @@
         <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
         <explosionEffect>VehicleExplosion</explosionEffect>
       </li>
+   -->
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
         <fuelConsumptionRate>2000</fuelConsumptionRate>
@@ -539,7 +543,7 @@
     </colorGenerator>
   </ThingDef>
 
-  
+
   <ThingDef ParentName="VehicleBase">
     <defName>VehicleSpeeder</defName>
     <label>Speeder</label>
@@ -602,7 +606,7 @@
       <researchPrerequisite>PoweredArmor</researchPrerequisite>
     </recipeMaker>
     <comps>
-      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
+      <!--   <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Bomb</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -612,6 +616,7 @@
           <max>120</max>
         </wickTicks>
       </li>
+  -->
       <li Class="ToolsForHaul.Components.CompProperties_Axle">
         <axles>
         </axles>
@@ -682,7 +687,7 @@
       <Mass>60</Mass>
     </statBases>
     <techHediffsTags>
-      <li>Advanced</li>
+      <li>VehicleAdvanced</li>
     </techHediffsTags>
     <size>(1,1)</size>
     <!--
@@ -721,7 +726,8 @@
       <researchPrerequisite>PoweredArmor</researchPrerequisite>
     </recipeMaker>
     <comps>
-      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
+      <!--
+      <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Extinguish</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -736,6 +742,7 @@
           <li>(-25,-40)</li>
         </axles>
       </li>
+   -->
       <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>

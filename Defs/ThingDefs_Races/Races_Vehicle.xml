@@ -24,7 +24,8 @@
     <recipes>
       <li>InstallNaturalEngine</li>
       <li>InstallNaturalTank</li>
-      <li>InstallRiggedTank</li>
+      <li>InstallBigTank</li>
+      <li>InstallCarBomb</li>
       <li>RemoveVehiclePart</li>
     </recipes>
   </ThingDef>
@@ -108,22 +109,6 @@
     <comps>
       <li>
         <compClass>ToolsForHaul.Components.CompGasTank</compClass>
-      </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
-        <explosiveRadius>3.6</explosiveRadius>
-        <explosiveDamageType>Stun</explosiveDamageType>
-        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
-        <startWickHitPointsPercent>0</startWickHitPointsPercent>
-        <chanceNeverExplodeFromDamage>1</chanceNeverExplodeFromDamage>
-        <wickTicks>
-          <min>100</min>
-          <max>120</max>
-        </wickTicks>
-        <postExplosionSpawnThingDef>FilthFuel</postExplosionSpawnThingDef>
-        <postExplosionSpawnChance>1</postExplosionSpawnChance>
-        <postExplosionSpawnThingCount>3</postExplosionSpawnThingCount>
-        <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
-        <explosionEffect>VehicleExplosion</explosionEffect>
       </li>
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
@@ -276,22 +261,6 @@
     <comps>
       <li>
         <compClass>ToolsForHaul.Components.CompGasTank</compClass>
-      </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
-        <explosiveRadius>2.4</explosiveRadius>
-        <explosiveDamageType>Flame</explosiveDamageType>
-        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
-        <startWickHitPointsPercent>0</startWickHitPointsPercent>
-        <chanceNeverExplodeFromDamage>1</chanceNeverExplodeFromDamage>
-        <wickTicks>
-          <min>100</min>
-          <max>120</max>
-        </wickTicks>
-        <postExplosionSpawnThingDef>FilthFuel</postExplosionSpawnThingDef>
-        <postExplosionSpawnChance>1</postExplosionSpawnChance>
-        <postExplosionSpawnThingCount>3</postExplosionSpawnThingCount>
-        <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
-        <explosionEffect>VehicleExplosion</explosionEffect>
       </li>
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
@@ -457,22 +426,6 @@
       <li Class="ToolsForHaul.Components.CompProperties_Mountable">
         <drawOffsetRotN>(0,0,0.5)</drawOffsetRotN>
         <drawOffsetRotS>(0,0,-0.5)</drawOffsetRotS>
-      </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Explosive_TFH">
-        <explosiveRadius>3.6</explosiveRadius>
-        <explosiveDamageType>Stun</explosiveDamageType>
-        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
-        <startWickHitPointsPercent>0</startWickHitPointsPercent>
-        <chanceNeverExplodeFromDamage>1</chanceNeverExplodeFromDamage>
-        <wickTicks>
-          <min>100</min>
-          <max>120</max>
-        </wickTicks>
-        <postExplosionSpawnThingDef>FilthFuel</postExplosionSpawnThingDef>
-        <postExplosionSpawnChance>1</postExplosionSpawnChance>
-        <postExplosionSpawnThingCount>3</postExplosionSpawnThingCount>
-        <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
-        <explosionEffect>VehicleExplosion</explosionEffect>
       </li>
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->

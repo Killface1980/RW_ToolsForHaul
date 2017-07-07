@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <!-- Added body parts -->
+
+  <HediffDef Name="VehicleImplantHediffBase" Abstract="True">
+    <hediffClass>ToolsForHaul.Hediff_ImplantExplosive</hediffClass>
+    <defaultLabelColor>(0.65, 0.3, 0.9)</defaultLabelColor>
+    <isBad>false</isBad>
+  </HediffDef>
+
+  <HediffDef ParentName="VehicleImplantHediffBase">
+    <defName>CarBomb</defName>
+    <label>bomb</label>
+    <!--
+    <stages>
+      <li>
+        <partEfficiencyOffset>1</partEfficiencyOffset>
+      </li>
+    </stages>
+    -->
+    <comps>
+    <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
+      <explosiveRadius>2.4</explosiveRadius>
+      <explosiveDamageType>Flame</explosiveDamageType>
+      <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+      <startWickHitPointsPercent>0</startWickHitPointsPercent>
+      <chanceNeverExplodeFromDamage>1</chanceNeverExplodeFromDamage>
+      <wickTicks>
+        <min>100</min>
+        <max>120</max>
+      </wickTicks>
+      <postExplosionSpawnThingDef>FilthFuel</postExplosionSpawnThingDef>
+      <postExplosionSpawnChance>1</postExplosionSpawnChance>
+      <postExplosionSpawnThingCount>3</postExplosionSpawnThingCount>
+      <applyDamageToExplosionCellsNeighbors>true</applyDamageToExplosionCellsNeighbors>
+      <explosionEffect>VehicleExplosion</explosionEffect>
+    </li>
+    </comps>
+    
+  </HediffDef>
+
+</Defs>

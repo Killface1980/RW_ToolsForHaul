@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<RecipeDefs>
+
+  <!-- implants -->
+
+  <RecipeDef ParentName="SurgeryVehicle">
+    <defName>InstallCarBomb</defName>
+    <label>install car bomb (incendiary)</label>
+    <description>Installs car bomb.</description>
+    <workerClass>ToolsForHaul.Recipe_InstallVehicleImplant</workerClass>
+    <jobString>Installing car bomb.</jobString>
+    <workAmount>200</workAmount>
+    <ingredients>
+      <!-- 
+      <li>
+        <filter>
+          <categories>
+            <li>Medicine</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+        -->
+      <li>
+        <filter>
+          <thingDefs>
+            <li>VehicleBomb</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <!--
+      <categories>
+        <li>Medicine</li>
+      </categories>
+  -->
+      <thingDefs>
+        <li>VehicleBomb</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>VehicleTank</li>
+      <li>VehicleEngine</li>
+    </appliedOnFixedBodyParts>
+    <addsHediff>CarBomb</addsHediff>
+  </RecipeDef>
+
+</RecipeDefs>

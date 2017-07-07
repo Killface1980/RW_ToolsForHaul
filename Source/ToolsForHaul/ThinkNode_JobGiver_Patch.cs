@@ -198,21 +198,40 @@ namespace ToolsForHaul
 
     }
 
-  [HarmonyPatch(typeof(Pawn), "CurrentlyUsable")]
-  public static class CurrentlyUsable_Patch
+    // Makes vehicles available for recipes - medical
+    [HarmonyPatch(typeof(Pawn), "CurrentlyUsable")]
+    public static class CurrentlyUsable_Patch
     {
-      [HarmonyPostfix]
-      public static void CurrentlyUsable_Postfix(ref bool __result, Pawn __instance)
-      {
-          Vehicle_Cart vehicleCart = __instance as Vehicle_Cart;
-          if (vehicleCart == null)
-          {
-              return;
-          }
-          if (vehicleCart.InParkingLot)
-          {
-              __result = true;
-          }
-      }
-  }
+        [HarmonyPostfix]
+        public static void CurrentlyUsable_Postfix(ref bool __result, Pawn __instance)
+        {
+            Vehicle_Cart vehicleCart = __instance as Vehicle_Cart;
+            if (vehicleCart == null)
+            {
+                return;
+            }
+            if (vehicleCart.InParkingLot)
+            {
+                __result = true;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Recipe_VehicleSurgery), "CheckSurgeryFail")]
+    public static class CheckSurgeryFail_Patch
+    {
+        [HarmonyPostfix]
+        public static void CheckSurgeryFail_Postfix(ref bool __result, Recipe_VehicleSurgery __instance, Pawn surgeon, Pawn patient, List<Thing> ingredients, BodyPartRecord part)
+        {
+            Vehicle_Cart vehicleCart = patient as Vehicle_Cart;
+            if (vehicleCart == null)
+            {
+                return;
+            }
+          //  if (vehicleCart.InParkingLot)
+            {
+                __result = false;
+            }
+        }
+    }
 }

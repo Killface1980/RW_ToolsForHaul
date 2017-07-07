@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ThingDefs>
+
+  <ThingDef Name="VehicleImplantBase" Abstract="True">
+    <label>implant</label>
+    <thingClass>ThingWithComps</thingClass>
+    <category>Item</category>
+    <useHitPoints>true</useHitPoints>
+    <selectable>true</selectable>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+			<DeteriorationRate>2.0</DeteriorationRate>
+			<Beauty>-4</Beauty>
+		</statBases>
+    <altitudeLayer>Item</altitudeLayer>
+    <tickerType>Never</tickerType>
+    <alwaysHaulable>true</alwaysHaulable>
+    <isBodyPartOrImplant>true</isBodyPartOrImplant>
+    <tradeTags>
+      <li>BodyPartOrImplant</li>
+    </tradeTags>
+    <comps>
+      <li Class="CompProperties_Forbiddable"/>
+    </comps>
+    <thingCategories>
+      <li>BodyPartsArtificial</li>
+    </thingCategories>
+    <pathCost>10</pathCost>
+  </ThingDef>
+
+  <ThingDef ParentName="VehicleImplantBase">
+    <defName>VehicleBomb</defName>
+    <label>car bomb</label>
+    <description>One of the most sophisticated vehicle attachments. Goes off with a boom.</description>
+    <graphicData>
+      <texPath>Things/Item/Implant/Implant</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MarketValue>800</MarketValue>
+      <Mass>5</Mass>
+    </statBases>
+    <techHediffsTags>
+      <li>VehicleAdvanced</li>
+    </techHediffsTags>
+  </ThingDef>
+    
+</ThingDefs>
