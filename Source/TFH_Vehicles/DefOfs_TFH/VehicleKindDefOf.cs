@@ -1,4 +1,4 @@
-﻿namespace TFH_VehicleHauling.DefOf_TFH
+﻿namespace TFH_Vehicles.DefOfs_TFH
 {
     using RimWorld;
 

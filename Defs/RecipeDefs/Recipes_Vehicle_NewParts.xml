@@ -14,7 +14,7 @@
     <defName>RemoveVehiclePart</defName>
     <label>remove part</label>
     <description>Removes vehicle part.</description>
-    <workerClass>TFH_VehicleBase.Recipe_RemoveVehiclePart</workerClass>
+    <workerClass>TFH_VehicleBase.Recipes.Recipe_RemoveVehiclePart</workerClass>
     <jobString>Removing vehicle part.</jobString>
     <workAmount>200</workAmount>
     <!--
@@ -43,7 +43,7 @@
     <defName>InstallNaturalEngine</defName>
     <label>install engine</label>
     <description>Installs engine.</description>
-    <workerClass>TFH_VehicleBase.Recipe_InstallNaturalVehiclePart</workerClass>
+    <workerClass>TFH_VehicleBase.Recipes.Recipe_InstallNaturalVehiclePart</workerClass>
     <jobString>Installing engine.</jobString>
     <workAmount>200</workAmount>
     <ingredients>
@@ -85,7 +85,7 @@
     <defName>InstallNaturalTank</defName>
     <label>install tank</label>
     <description>Installs tank.</description>
-    <workerClass>TFH_VehicleBase.Recipe_InstallNaturalVehiclePart</workerClass>
+    <workerClass>TFH_VehicleBase.Recipes.Recipe_InstallNaturalVehiclePart</workerClass>
     <jobString>Installing tank.</jobString>
     <workAmount>200</workAmount>
     <ingredients>
@@ -129,7 +129,7 @@
     <defName>InstallBigTank</defName>
     <label>install big tank</label>
     <description>Installs big tank.</description>
-    <workerClass>TFH_VehicleBase.Recipe_InstallArtificialVehiclePart</workerClass>
+    <workerClass>TFH_VehicleBase.Recipes.Recipe_InstallArtificialVehiclePart</workerClass>
     <jobString>Installing big tank.</jobString>
     <workAmount>200</workAmount>
     <ingredients>

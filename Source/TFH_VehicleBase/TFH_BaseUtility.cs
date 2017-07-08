@@ -9,6 +9,7 @@ namespace TFH_VehicleBase
     using RimWorld;
 
     using TFH_VehicleBase.Components;
+    using TFH_VehicleBase.DefOfs_TFH;
 
     using UnityEngine;
 

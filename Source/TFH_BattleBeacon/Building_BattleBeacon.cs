@@ -5,6 +5,7 @@
     using RimWorld;
 
     using TFH_VehicleBase;
+    using TFH_VehicleBase.DefOfs_TFH;
 
     using Verse;
     using Verse.AI;

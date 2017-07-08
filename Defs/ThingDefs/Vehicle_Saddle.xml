@@ -38,7 +38,7 @@
     <passability>PassThroughOnly</passability>
     <altitudeLayer>Item</altitudeLayer>
     <description>A saddle is a leather seat that you put on the back of an animal so that you can ride the animal.</description>
-    <thingClass>ToolsForHaul.Vehicles.Vehicle_Saddle</thingClass>
+    <thingClass>TFH_VehicleBase.Vehicle_Saddle</thingClass>
     <thingCategories>
       <li>Vehicles</li>
     </thingCategories>

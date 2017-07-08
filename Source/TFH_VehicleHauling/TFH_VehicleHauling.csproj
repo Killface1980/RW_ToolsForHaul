@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -65,7 +65,7 @@
     <None Include="HediffGiver_Bomb.cs" />
     <None Include="HediffCompProperties_Explosive.cs" />
     <None Include="HediffCompExplosive.cs" />
-    <Compile Include="JobDrivers\Class1.cs" />
+    <None Include="JobDrivers\Class1.cs" />
     <None Include="WorkGivers\Class1.cs" />
     <None Include="WorkGivers\WorkGiver_DoBillVehicle.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
@@ -76,9 +76,7 @@
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
-    <None Include="NoCCL\Class1.cs" />
     <Compile Include="HaulJobDefOf.cs" />
-    <Compile Include="NoCCL\DetourAttribute.cs" />
     <None Include="Things\SpotlightStuff.cs" />
     <None Include="Toils\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithVehicle.cs" />
@@ -89,7 +87,6 @@
     <None Include="Things\IncendiaryFuel.cs" />
     <None Include="_inactive\CompWeaponExtensions.cs" />
     <None Include="_inactive\CompTool.cs" />
-    <Compile Include="NoCCL\Detours.cs" />
     <Compile Include="Trace.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithCart.cs" />
@@ -103,23 +100,11 @@
     <Content Include="..\..\About\About.xml">
       <Link>About.xml</Link>
     </Content>
-    <Content Include="..\..\Defs\Effects\Mote_Special.xml">
-      <Link>Defs\Effects\Mote_Special.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\Effects\Mote_Visual.xml">
-      <Link>Defs\Effects\Mote_Visual.xml</Link>
-    </Content>
     <Content Include="..\..\Defs\JobDefs\Jobs_Haul.xml">
       <Link>Defs\Jobs_Haul.xml</Link>
     </Content>
-    <Content Include="..\..\Defs\JoyGiverDefs\JoyGivers.xml">
-      <Link>Defs\JoyGivers\JoyGivers.xml</Link>
-    </Content>
     <Content Include="..\..\Defs\ThingCategoryDefs\RA_ThingCategories.xml">
       <Link>Defs\ThingDefs\RA_ThingCategories.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\ThingCategoryDefs\ThingCategories.xml">
-      <Link>Defs\ThingCategories.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
       <Link>Defs\ThingDefs\Items_IRResources.xml</Link>
@@ -142,22 +127,6 @@
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers.xml">
       <Link>WorkGivers\WorkGivers.xml</Link>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="..\..\Languages\English\Keyed\Designators.xml">
-      <Link>Languages\English\Designators.xml</Link>
-    </Content>
-    <Content Include="..\..\Languages\English\Keyed\FloatMenu.xml">
-      <Link>Languages\English\FloatMenu.xml</Link>
-    </Content>
-    <Content Include="..\..\Languages\English\Keyed\GameplayCommands.xml">
-      <Link>Languages\English\GameplayCommands.xml</Link>
-    </Content>
-    <Content Include="..\..\Languages\English\Keyed\ITabs.xml">
-      <Link>Languages\English\ITabs.xml</Link>
-    </Content>
-    <Content Include="..\..\Languages\English\Keyed\Misc_Gameplay.xml">
-      <Link>Languages\English\Misc_Gameplay.xml</Link>
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>

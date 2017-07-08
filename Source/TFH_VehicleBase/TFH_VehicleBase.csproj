@@ -47,7 +47,7 @@
     <Compile Include="Components\HediffCompExplosive_TFH.cs" />
     <Compile Include="Components\HediffCompProperties_Explosive_TFH.cs" />
     <Compile Include="HarmonyPatches.cs" />
-    <Compile Include="HaulStatDefOf.cs" />
+    <Compile Include="DefOfs_TFH\HaulStatDefOf.cs" />
     <Compile Include="Hediff_ImplantExplosive.cs" />
     <Compile Include="ITabs\ITab_Pawn_VehicleGear.cs" />
     <Compile Include="ITabs\ITab_Vehicle_Storage.cs" />
@@ -66,7 +66,7 @@
     <None Include="JobGivers\JobGiver_StealVehicle.cs" />
     <None Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
-    <Compile Include="MoteDefOf.cs" />
+    <Compile Include="DefOfs_TFH\MoteDefOf.cs" />
     <Compile Include="Recipes\Recipe_InstallArtificialBodyPart.cs" />
     <Compile Include="Recipes\Recipe_InstallNaturalVehiclePart.cs" />
     <Compile Include="Recipes\Recipe_InstallVehicleImplant.cs" />
@@ -78,22 +78,22 @@
     <Compile Include="Toils_Cart.cs" />
     <Compile Include="VehicleRecipesUtility.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_ReturnCart.cs" />
-    <Compile Include="WorkGiver_Refuel.cs" />
+    <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
     <Compile Include="Zone_ParkingLot.cs" />
-    <None Include="Designators\Designator_Board.cs" />
+    <None Include="Designators\Designator_Board1.cs" />
     <Compile Include="Designators\Designator_ClaimVehicle.cs" />
     <Compile Include="Designators\Designator_Mount.cs" />
     <None Include="Designators\Designator_Move.cs" />
     <Compile Include="Designators\Designator_ZoneAddParkingLot.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
-    <Compile Include="HaulJobDefOf.cs" />
+    <Compile Include="DefOfs_TFH\HaulJobDefOf.cs" />
     <Compile Include="MoteCounterTFH.cs" />
     <Compile Include="MoteMakerTFH.cs" />
     <Compile Include="MoteThrown_TFH.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Designator_Board.cs" />
+    <Compile Include="Designators\Designator_Board.cs" />
     <Compile Include="TFH_BaseUtility.cs" />
-    <Compile Include="ThingDefOf_TFH.cs" />
+    <Compile Include="DefOfs_TFH\ThingDefOf_TFH.cs" />
     <Compile Include="Vehicle_Cart.cs" />
     <Compile Include="Vehicle_Saddle.cs" />
     <None Include="_old\Vehicle_CartTurretGun.cs" />
@@ -124,8 +124,17 @@
       <Link>EffecterDefs\Effecter_Misc.xml</Link>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="..\..\defs\effects\Mote_Special.xml">
+      <Link>Defs\Effects\Mote_Special.xml</Link>
+    </Content>
+    <Content Include="..\..\defs\effects\Mote_Visual.xml">
+      <Link>Defs\Effects\Mote_Visual.xml</Link>
+    </Content>
     <Content Include="..\..\defs\jobdefs\Jobs_Misc.xml">
       <Link>JobDefs\Jobs_Misc.xml</Link>
+    </Content>
+    <Content Include="..\..\defs\joygiverdefs\JoyGivers.xml">
+      <Link>Defs\JoyGivers\JoyGivers.xml</Link>
     </Content>
     <Content Include="..\..\defs\recipedefs\Recipes_Vehicle_Implants.xml">
       <Link>Recipes\Recipes_Vehicle_Implants.xml</Link>
@@ -137,11 +146,33 @@
       <Link>StatDefs\Stats_Vehicle.xml</Link>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="..\..\Defs\Stats\Stats_Pawns_General.xml">
+      <Link>Defs\Stats\Stats_Pawns_General.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingCategoryDefs\ThingCategories.xml">
+      <Link>Defs\ThingCategories.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\ThingDefs\Filth_Various.xml">
       <Link>Defs\Filth_Various.xml</Link>
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers_Base.xml">
-      <Link>WorkGivers\WorkGivers_Base.xml</Link>
+      <Link>Defs\WorkGivers_Base.xml</Link>
+    </Content>
+    <Content Include="..\..\languages\english\keyed\Designators.xml">
+      <Link>Languages\English\Designators.xml</Link>
+    </Content>
+    <Content Include="..\..\languages\english\keyed\FloatMenu.xml">
+      <Link>Languages\English\FloatMenu.xml</Link>
+    </Content>
+    <Content Include="..\..\languages\english\keyed\GameplayCommands.xml">
+      <Link>Languages\English\GameplayCommands.xml</Link>
+    </Content>
+    <Content Include="..\..\languages\english\keyed\ITabs.xml">
+      <Link>Languages\English\ITabs.xml</Link>
+    </Content>
+    <Content Include="..\..\languages\english\keyed\Misc_Gameplay.xml">
+      <Link>Languages\English\Misc_Gameplay.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Patches\Patches_Core.xml">
       <Link>Patches_Core.xml</Link>

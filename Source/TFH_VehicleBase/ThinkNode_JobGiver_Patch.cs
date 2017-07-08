@@ -9,6 +9,7 @@
 
     using RimWorld;
 
+    using TFH_VehicleBase.DefOfs_TFH;
     using TFH_VehicleBase.Recipes;
 
     using Verse;

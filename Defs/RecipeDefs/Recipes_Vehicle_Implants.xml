@@ -7,7 +7,7 @@
     <defName>InstallCarBomb</defName>
     <label>install car bomb (incendiary)</label>
     <description>Installs car bomb.</description>
-    <workerClass>TFH_VehicleBase.Recipe_InstallVehicleImplant</workerClass>
+    <workerClass>TFH_VehicleBase.Recipes.Recipe_InstallVehicleImplant</workerClass>
     <jobString>Installing car bomb.</jobString>
     <workAmount>200</workAmount>
     <ingredients>

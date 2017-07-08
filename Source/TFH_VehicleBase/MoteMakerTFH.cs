@@ -9,6 +9,8 @@
 
 namespace TFH_VehicleBase
 {
+    using TFH_VehicleBase.DefOfs_TFH;
+
     using UnityEngine;
 
     using Verse;

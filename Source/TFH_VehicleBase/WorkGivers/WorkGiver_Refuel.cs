@@ -1,4 +1,4 @@
-﻿namespace TFH_VehicleBase
+﻿namespace TFH_VehicleBase.WorkGivers
 {
     using System;
 
