@@ -1,0 +1,54 @@
+﻿namespace TFH_VehicleBase
+{
+    using Verse;
+
+    public class MoteCounterTFH : MapComponent
+    {
+        // vanilla = 250 motes + 250 TFH  => PC should handle this?
+        private const int SaturatedCount = 1500;
+
+        private  int moteCount = 0;
+
+        public  bool Saturated
+        {
+            get
+            {
+                return this.Saturation > 1f;
+            }
+        }
+
+        public bool SaturatedLowPriority
+        {
+            get
+            {
+                return this.Saturation > 0.8f;
+            }
+        }
+
+        public  float Saturation
+        {
+            get
+            {
+                return this.moteCount / SaturatedCount;
+            }
+        }
+
+        // [Detour(typeof(Verse.MoteCounter), bindingFlags = BindingFlags.Instance | BindingFlags.Public)]
+        public void Notify_MoteDespawned()
+        {
+            this.moteCount--;
+        }
+
+        // [Detour(typeof(Verse.MoteCounter), bindingFlags = BindingFlags.Instance | BindingFlags.Public)]
+        public void Notify_MoteSpawned()
+        {
+            this.moteCount++;
+        }
+
+        public MoteCounterTFH(Map map)
+            : base(map)
+        {
+            //
+        }
+    }
+}

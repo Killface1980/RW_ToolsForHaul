@@ -85,7 +85,7 @@
   </ThingDef>
 
   <ThingDef ParentName="VehicleBase">
-    <defName>VehicleCart</defName>
+    <defName>VehicleCart_Old</defName>
     <label>cart</label>
     <repairEffect>ConstructWood</repairEffect>
     <description>A cart is an old-fashioned wooden vehicle that is used for transporting goods or people.</description>
@@ -114,8 +114,8 @@
     <size>(1,1)</size>
     <fillPercent>0.99</fillPercent>
     <inspectorTabs>
-      <li>ToolsForHaul.Itabs.Itab_Pawn_Vehicle_Storage</li>
-      <li>ToolsForHaul.Itabs.ITab_Pawn_VehicleGear</li>
+      <li>TFH_VehicleBase.ITabs.Itab_Pawn_Vehicle_Storage</li>
+      <li>TFH_VehicleBase.ITabs.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     <CostList>
       <Steel>40</Steel>
@@ -154,12 +154,12 @@
       </skillRequirements>
     </recipeMaker>
     <comps>
-      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
         <axles>
           <li>(-20,-40)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
         <showsStorage>true</showsStorage>
         <animalsCanDrive>true</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
@@ -168,12 +168,12 @@
       <soundAmbient>VehicleATV_Ambience</soundAmbient>
         -->
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
     </comps>
   </ThingDef>
 
   <ThingDef ParentName="VehicleBase">
-    <defName>VehicleTruck</defName>
+    <defName>VehicleTruck_Old</defName>
     <label>truck</label>
     <repairEffect>Repair</repairEffect>
     <hasInteractionCell>True</hasInteractionCell>
@@ -203,8 +203,8 @@
     <size>(1,1)</size>
     <fillPercent>0.99</fillPercent>
     <inspectorTabs>
-      <li>ToolsForHaul.ITabs.Itab_Pawn_Vehicle_Storage</li>
-      <li>ToolsForHaul.ITabs.ITab_Pawn_VehicleGear</li>
+      <li>TFH_VehicleBase.ITabs.Itab_Pawn_Vehicle_Storage</li>
+      <li>TFH_VehicleBase.ITabs.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     <CostList>
       <Steel>200</Steel>
@@ -238,10 +238,10 @@
     </recipeMaker>
     <comps>
       <li>
-        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+        <compClass>TFH_VehicleBase.Components.CompGasTank</compClass>
       </li>
       <!-- 
-     <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
+     <li Class="TFH_VehicleBase.Components.HediffCompProperties_Explosive_TFH">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Extinguish</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -263,20 +263,20 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
         <axles>
           <li>(-35,-45)</li>
           <li>(85,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
         <showsStorage>true</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleTruck_Ambience</soundAmbient>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
   </ThingDef>
@@ -303,16 +303,16 @@
     </statBases>
     <comps>
       <li>
-        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+        <compClass>TFH_VehicleBase.Components.CompGasTank</compClass>
       </li>
       <li>
-        <compClass>ToolsForHaul.Components.CompFrontTex</compClass>
+        <compClass>TFH_VehicleBase.Components.CompFrontTex</compClass>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Mountable">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable">
         <drawOffsetRotN>(0,0,0.5)</drawOffsetRotN>
         <drawOffsetRotS>(0,0,-0.5)</drawOffsetRotS>
       </li>
-      <!-- <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
+      <!-- <li Class="TFH_VehicleBase.Components.HediffCompProperties_Explosive_TFH">
         <explosiveRadius>3.6</explosiveRadius>
         <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -339,13 +339,13 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
         <axles>
           <li>(-50,-37)</li>
           <li>(57,-37)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
         <showsStorage>true</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
@@ -365,8 +365,8 @@
     -->
     <size>(2,3)</size>
     <inspectorTabs>
-      <li>ToolsForHaul.ITabs.Itab_Pawn_Vehicle_Storage</li>
-      <li>ToolsForHaul.ITabs.ITab_Pawn_VehicleGear</li>
+      <li>TFH_VehicleBase.ITabs.Itab_Pawn_Vehicle_Storage</li>
+      <li>TFH_VehicleBase.ITabs.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     <CostList>
       <Steel>150</Steel>
@@ -429,9 +429,9 @@
     </statBases>
     <comps>
       <li>
-        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+        <compClass>TFH_VehicleBase.Components.CompGasTank</compClass>
       </li>
-      <!--  <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
+      <!--  <li Class="TFH_VehicleBase.Components.HediffCompProperties_Explosive_TFH">
         <explosiveRadius>3.6</explosiveRadius>
         <explosiveDamageType>Stun</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -458,20 +458,20 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
     <pathCost>50</pathCost>
@@ -485,8 +485,8 @@
     -->
     <size>(1,1)</size>
     <inspectorTabs>
-      <li>ToolsForHaul.ITabs.Itab_Pawn_Vehicle_Storage</li>
-      <li>ToolsForHaul.ITabs.ITab_Pawn_VehicleGear</li>
+      <li>TFH_VehicleBase.ITabs.Itab_Pawn_Vehicle_Storage</li>
+      <li>TFH_VehicleBase.ITabs.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     <CostList>
       <Steel>150</Steel>
@@ -545,7 +545,7 @@
 
 
   <ThingDef ParentName="VehicleBase">
-    <defName>VehicleSpeeder</defName>
+    <defName>VehicleSpeeder_Old</defName>
     <label>Speeder</label>
     <graphicData>
       <texPath>Things/Vehicles/VehicleSpeeder/Speeder</texPath>
@@ -573,8 +573,8 @@
     </statBases>
     <size>(1,1)</size>
     <inspectorTabs>
-      <li>ToolsForHaul.ITabs.Itab_Pawn_Vehicle_Storage</li>
-      <li>ToolsForHaul.ITabs.ITab_Pawn_VehicleGear</li>
+      <li>TFH_VehicleBase.ITabs.Itab_Pawn_Vehicle_Storage</li>
+      <li>TFH_VehicleBase.ITabs.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     <CostList>
       <Steel>150</Steel>
@@ -606,7 +606,7 @@
       <researchPrerequisite>PoweredArmor</researchPrerequisite>
     </recipeMaker>
     <comps>
-      <!--   <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
+      <!--   <li Class="TFH_VehicleBase.Components.HediffCompProperties_Explosive_TFH">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Bomb</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -617,11 +617,11 @@
         </wickTicks>
       </li>
   -->
-      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
         <axles>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
@@ -629,7 +629,7 @@
         <soundAmbient>VehicleSpeeder_Ambience</soundAmbient>
         <leaveTrail>false</leaveTrail>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
     <colorGenerator Class="ColorGenerator_Options">
@@ -663,7 +663,7 @@
 
 
   <ThingDef ParentName="VehicleBase">
-    <defName>VehicleSmackWay</defName>
+    <defName>VehicleSmackWay_Old</defName>
     <label>SmackWay</label>
     <repairEffect>Repair</repairEffect>
     <description>For those who have some disability to walk</description>
@@ -692,8 +692,8 @@
     <size>(1,1)</size>
     <!--
   <inspectorTabs>
-      <li>ToolsForHaul.Itab_Pawn_Vehicle_Storage</li>
-      <li>ToolsForHaul.ITab_Pawn_VehicleGear</li>
+      <li>TFH_VehicleBase.Itab_Pawn_Vehicle_Storage</li>
+      <li>TFH_VehicleBase.ITab_Pawn_VehicleGear</li>
     </inspectorTabs>
     -->
     <CostList>
@@ -727,7 +727,7 @@
     </recipeMaker>
     <comps>
       <!--
-      <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
+      <li Class="TFH_VehicleBase.Components.HediffCompProperties_Explosive_TFH">
         <explosiveRadius>2.9</explosiveRadius>
         <explosiveDamageType>Extinguish</explosiveDamageType>
         <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
@@ -737,13 +737,13 @@
           <max>120</max>
         </wickTicks>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
         <axles>
           <li>(-25,-40)</li>
         </axles>
       </li>
    -->
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
@@ -751,7 +751,7 @@
         <soundAmbient>VehicleSmackWay_Ambience</soundAmbient>
         <isMedical>true</isMedical>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
     </comps>
     <colorGenerator Class="ColorGenerator_Options">
       <options>

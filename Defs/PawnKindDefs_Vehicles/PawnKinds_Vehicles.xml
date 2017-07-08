@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <PawnKindDefs>
 
+  <!-- base -->
+
   <PawnKindDef Name="MotorizedVehicleBase" Abstract="True">
  <!--
       <shaderType>Cutout</shaderType>
@@ -13,9 +15,65 @@
     <wildSpawn_spawnWild>false</wildSpawn_spawnWild>
   </PawnKindDef>
 
-	<PawnKindDef ParentName="MotorizedVehicleBase">
-    <defName>ATV</defName>
-    <label>ATV</label>
+  <!-- animal vehicles -->
+	
+  <PawnKindDef ParentName="MotorizedVehicleBase">
+    <defName>Cart</defName>
+    <label>cart</label>
+    <race>VehicleCart</race>
+    <combatPower>290</combatPower>
+    <defaultFactionType></defaultFactionType>
+    <aiAvoidCover>true</aiAvoidCover>
+    <lifeStages>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Vehicles/VehicleCart/Cart</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>3</drawSize>
+          <shadowData>
+            <volume>(0.8, 0.8, 0.8)</volume>
+          </shadowData>
+        </bodyGraphicData>
+      </li>
+    </lifeStages>
+    <techHediffsTags>
+      <li>VehicleAdvanced</li>
+    </techHediffsTags>
+    <techHediffsChance>1</techHediffsChance>
+    <techHediffsMoney>1000</techHediffsMoney>
+	</PawnKindDef>
+
+  <!-- motorized -->
+
+  <PawnKindDef ParentName="MotorizedVehicleBase">
+    <defName>TFH_SmackWay</defName>
+    <label>TFH_SmackWay</label>
+    <race>VehicleSmackWay</race>
+    <combatPower>290</combatPower>
+    <defaultFactionType></defaultFactionType>
+    <aiAvoidCover>true</aiAvoidCover>
+    <lifeStages>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Vehicles/VehicleSmackWay/SmackWay</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>3</drawSize>
+          <shadowData>
+            <volume>(0.3, 0.3, 0.3)</volume>
+          </shadowData>
+        </bodyGraphicData>
+      </li>
+    </lifeStages>
+    <techHediffsTags>
+      <li>VehicleAdvanced</li>
+    </techHediffsTags>
+    <techHediffsChance>1</techHediffsChance>
+    <techHediffsMoney>1000</techHediffsMoney>
+	</PawnKindDef>
+ 
+  <PawnKindDef ParentName="MotorizedVehicleBase">
+    <defName>TFH_ATV</defName>
+    <label>TFH_ATV</label>
     <race>VehicleATV</race>
     <combatPower>290</combatPower>
     <defaultFactionType></defaultFactionType>
@@ -27,7 +85,7 @@
           <graphicClass>Graphic_Multi</graphicClass>
           <drawSize>3</drawSize>
           <shadowData>
-            <volume>(0.6, 0.8, 0.6)</volume>
+            <volume>(0.8, 0.8, 0.8)</volume>
           </shadowData>
         </bodyGraphicData>
       </li>
@@ -40,8 +98,8 @@
 	</PawnKindDef>
 
   <PawnKindDef ParentName="MotorizedVehicleBase">
-    <defName>CombatATV</defName>
-    <label>CombatATV</label>
+    <defName>TFH_CombatATV</defName>
+    <label>TFH_CombatATV</label>
     <race>VehicleCombatATV</race>
     <combatPower>290</combatPower>
     <defaultFactionType></defaultFactionType>
@@ -53,7 +111,7 @@
           <graphicClass>Graphic_Multi</graphicClass>
           <drawSize>3</drawSize>
           <shadowData>
-            <volume>(0.6, 0.8, 0.6)</volume>
+            <volume>(1, 1, 0.6)</volume>
           </shadowData>
         </bodyGraphicData>
       </li>
@@ -73,8 +131,8 @@
 	</PawnKindDef>
 
   <PawnKindDef ParentName="MotorizedVehicleBase">
-    <defName>Beetle</defName>
-    <label>Beetle</label>
+    <defName>TFH_Beetle</defName>
+    <label>TFH_Beetle</label>
     <race>VehicleBeetle</race>
     <combatPower>290</combatPower>
     <defaultFactionType></defaultFactionType>
@@ -86,7 +144,61 @@
           <graphicClass>Graphic_Multi</graphicClass>
           <drawSize>4</drawSize>
           <shadowData>
-            <volume>(0.6, 0.8, 0.6)</volume>
+            <volume>(1.8, 1.8, 0.6)</volume>
+          </shadowData>
+        </bodyGraphicData>
+      </li>
+    </lifeStages>
+    <techHediffsTags>
+      <li>VehicleAdvanced</li>
+    </techHediffsTags>
+    <techHediffsChance>1</techHediffsChance>
+    <techHediffsMoney>1000</techHediffsMoney>
+  </PawnKindDef>
+ 
+  <PawnKindDef ParentName="MotorizedVehicleBase">
+    <defName>TFH_Truck</defName>
+    <label>TFH_Truck</label>
+    <race>VehicleTruck</race>
+    <combatPower>290</combatPower>
+    <defaultFactionType></defaultFactionType>
+    <aiAvoidCover>true</aiAvoidCover>
+    <lifeStages>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Vehicles/VehicleTruck/Truck</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>3</drawSize>
+          <shadowData>
+            <volume>(0.8, 8.8, 0.6)</volume>
+          </shadowData>
+        </bodyGraphicData>
+      </li>
+    </lifeStages>
+    <techHediffsTags>
+      <li>VehicleAdvanced</li>
+    </techHediffsTags>
+    <techHediffsChance>1</techHediffsChance>
+    <techHediffsMoney>1000</techHediffsMoney>
+  </PawnKindDef>
+
+  <!-- without fuel -->
+
+  <PawnKindDef ParentName="MotorizedVehicleBase">
+    <defName>TFH_Speeder</defName>
+    <label>TFH_Speeder</label>
+    <race>VehicleSpeeder</race>
+    <combatPower>290</combatPower>
+    <defaultFactionType></defaultFactionType>
+    <aiAvoidCover>true</aiAvoidCover>
+    <lifeStages>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Vehicles/VehicleSpeeder/Speeder</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>3</drawSize>
+          <shadowData>
+            <volume>(0.8, 0.8, 0.6)</volume>
           </shadowData>
         </bodyGraphicData>
       </li>

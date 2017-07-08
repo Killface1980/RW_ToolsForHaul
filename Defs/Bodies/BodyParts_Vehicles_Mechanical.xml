@@ -5,6 +5,7 @@
     <defName>VehicleChassis</defName>
     <label>chassis</label>
     <hitPoints>200</hitPoints>
+    <frostbiteVulnerability>10</frostbiteVulnerability>
     <oldInjuryBaseChance>0</oldInjuryBaseChance>
     <skinCovered>false</skinCovered>
     <isSolid>true</isSolid>

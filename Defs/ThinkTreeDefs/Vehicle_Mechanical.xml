@@ -21,7 +21,7 @@
     <thinkRoot Class="ThinkNode_Priority">
       <subNodes>
 
-        <li Class="ToolsForHaul.JobGivers.JobGiver_AIDefendPoint_TFH">
+        <li Class="TFH_VehicleBase.JobGivers.JobGiver_AIDefendPoint_TFH">
           <targetAcquireRadius>25</targetAcquireRadius>
           <targetKeepRadius>30</targetKeepRadius>
         </li>

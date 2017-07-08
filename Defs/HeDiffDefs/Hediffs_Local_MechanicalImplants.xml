@@ -3,7 +3,7 @@
   <!-- Added body parts -->
 
   <HediffDef Name="VehicleImplantHediffBase" Abstract="True">
-    <hediffClass>ToolsForHaul.Hediff_ImplantExplosive</hediffClass>
+    <hediffClass>TFH_VehicleBase.Hediff_ImplantExplosive</hediffClass>
     <defaultLabelColor>(0.65, 0.3, 0.9)</defaultLabelColor>
     <isBad>false</isBad>
   </HediffDef>
@@ -19,7 +19,7 @@
     </stages>
     -->
     <comps>
-    <li Class="ToolsForHaul.Components.HediffCompProperties_Explosive_TFH">
+    <li Class="TFH_VehicleBase.Components.HediffCompProperties_Explosive_TFH">
       <explosiveRadius>2.4</explosiveRadius>
       <explosiveDamageType>Flame</explosiveDamageType>
       <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>

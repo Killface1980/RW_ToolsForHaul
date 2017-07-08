@@ -7,7 +7,7 @@
     <defName>TraderCaravanArrival</defName>
     <label>trader caravan arrival</label>
     <targetType>MapPlayerHome</targetType>
-    <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_TraderCaravanArrival</workerClass>
+    <workerClass>TFH_Incidents.IncidentWorker_TraderCaravanArrival</workerClass>
     <category>AllyArrival</category>
     <baseChance>4</baseChance>
   </IncidentDef>
@@ -16,7 +16,7 @@
     <defName>VisitorGroup</defName>
     <label>visitor group</label>
     <targetType>MapPlayerHome</targetType>
-    <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_VisitorGroup</workerClass>
+    <workerClass>TFH_Incidents.IncidentWorker_VisitorGroup</workerClass>
     <category>AllyArrival</category>
     <baseChance>4</baseChance>
     <pointsScaleable>true</pointsScaleable>
@@ -26,7 +26,7 @@
     <defName>TravelerGroup</defName>
     <label>traveler group</label>
     <targetType>MapPlayerHome</targetType>
-    <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_TravelerGroup</workerClass>
+    <workerClass>TFH_Incidents.IncidentWorker_TravelerGroup</workerClass>
     <category>AllyArrival</category>
     <baseChance>4</baseChance>
     <pointsScaleable>true</pointsScaleable>
@@ -39,7 +39,7 @@
     <label>friendly raid</label>
     <category>AllyAssistance</category>
     <targetType>MapPlayerHome</targetType>
-    <workerClass>ToolsForHaul.IncidentWorker.IncidentWorker_RaidFriendly</workerClass>
+    <workerClass>TFH_Incidents.IncidentWorker_RaidFriendly</workerClass>
     <baseChance>3.0</baseChance>
     <pointsScaleable>true</pointsScaleable>
   </IncidentDef>

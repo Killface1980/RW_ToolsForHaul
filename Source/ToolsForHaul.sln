@@ -1,9 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolsForHaul", "ToolsForHaul\ToolsForHaul.csproj", "{D8E37818-F1A0-4C90-930D-4F04B21614E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_VehicleHauling", "TFH_VehicleHauling\TFH_VehicleHauling.csproj", "{D8E37818-F1A0-4C90-930D-4F04B21614E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_VehicleBase", "TFH_VehicleBase\TFH_VehicleBase.csproj", "{BBEADC75-7F91-4397-86BC-A4981FDA42B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_Incidents", "TFH_Incidents\TFH_Incidents.csproj", "{E8DED0EF-7F75-4BCA-A81C-6174D9C7A3BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_Vehicles", "TFH_Vehicles\TFH_Vehicles.csproj", "{68FC1E5F-0823-44E7-A5D4-841512D46939}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_BattleBeacon", "TFH_BattleBeacon\TFH_BattleBeacon.csproj", "{2ABBB5A7-833F-4851-96D0-7DBFF1C1DEE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{D8E37818-F1A0-4C90-930D-4F04B21614E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8E37818-F1A0-4C90-930D-4F04B21614E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8E37818-F1A0-4C90-930D-4F04B21614E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBEADC75-7F91-4397-86BC-A4981FDA42B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBEADC75-7F91-4397-86BC-A4981FDA42B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBEADC75-7F91-4397-86BC-A4981FDA42B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBEADC75-7F91-4397-86BC-A4981FDA42B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8DED0EF-7F75-4BCA-A81C-6174D9C7A3BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8DED0EF-7F75-4BCA-A81C-6174D9C7A3BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8DED0EF-7F75-4BCA-A81C-6174D9C7A3BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8DED0EF-7F75-4BCA-A81C-6174D9C7A3BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68FC1E5F-0823-44E7-A5D4-841512D46939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68FC1E5F-0823-44E7-A5D4-841512D46939}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68FC1E5F-0823-44E7-A5D4-841512D46939}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68FC1E5F-0823-44E7-A5D4-841512D46939}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ABBB5A7-833F-4851-96D0-7DBFF1C1DEE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ABBB5A7-833F-4851-96D0-7DBFF1C1DEE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ABBB5A7-833F-4851-96D0-7DBFF1C1DEE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ABBB5A7-833F-4851-96D0-7DBFF1C1DEE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

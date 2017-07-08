@@ -27,7 +27,7 @@
 
   <JobDef>
     <defName>GoForRide</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_GoForRide</driverClass>
+    <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_GoForRide</driverClass>
     <reportString>going for a ride.</reportString>
     <joyDuration>8000</joyDuration>
     <joyMaxParticipants>1</joyMaxParticipants>
@@ -40,53 +40,40 @@
   <!--=================== Work with tools =====================-->
   <!-- redefined, to set alwaysShowWeapon as true -->
 
-
-  <JobDef>
-    <defName>HaulWithAnimalCart</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_HaulWithAnimalCart</driverClass>
-    <reportString>Collecting TargetA with targetC.</reportString>
-  </JobDef>
-  
-  <JobDef>
-    <defName>HaulWithCart</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_HaulWithCart</driverClass>
-    <reportString>Collecting TargetA with targetC.</reportString>
-  </JobDef>
-  
   <JobDef>
     <defName>DismountAtParkingLot</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_DismountAtParkingLot</driverClass>
+    <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_DismountAtParkingLot</driverClass>
     <reportString>Dismount TargetA.</reportString>
   </JobDef>
   
   <JobDef>
     <defName>Mount</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_Mount</driverClass>
+    <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_Mount</driverClass>
     <reportString>Mount on TargetA.</reportString>
   </JobDef>
   
   <JobDef>
     <defName>MountAndDraft</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_MountAndDraft</driverClass>
+    <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_MountAndDraft</driverClass>
     <reportString>Mount on TargetA, heading for TargetB.</reportString>
   </JobDef>
   
   
   <JobDef>
     <defName>MakeMount</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_MakeMount</driverClass>
+    <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_MakeMount</driverClass>
     <reportString>Mount on TargetB.</reportString>
   </JobDef>
   
   <JobDef>
     <defName>Board</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_Board</driverClass>
+    <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_Board</driverClass>
     <reportString>Board on TargetA.</reportString>
   </JobDef>
   
   <JobDef>
     <defName>StandBy</defName>
-    <driverClass>ToolsForHaul.JobDrivers.JobDriver_StandBy</driverClass>
+    <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_StandBy</driverClass>
     <reportString>Standing by</reportString>
   </JobDef>
  

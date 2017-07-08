@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D8E37818-F1A0-4C90-930D-4F04B21614E9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TFH_VehicleHauling</RootNamespace>
+    <AssemblyName>TFH_VehicleHauling</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Assemblies\</OutputPath>
+    <DefineConstants>LOGGING</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\818773962\Assemblies\0Harmony.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\RimWorldWin_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Class2.cs" />
+    <None Include="Class3.cs" />
+    <None Include="AcEnhancedHauling.cs" />
+    <Compile Include="TFH_HaulUtility.cs" />
+    <None Include="HediffGiver_Bomb.cs" />
+    <None Include="HediffCompProperties_Explosive.cs" />
+    <None Include="HediffCompExplosive.cs" />
+    <Compile Include="JobDrivers\Class1.cs" />
+    <None Include="WorkGivers\Class1.cs" />
+    <None Include="WorkGivers\WorkGiver_DoBillVehicle.cs" />
+    <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
+    <Compile Include="WorkGivers\WorkGiver_Haul_WithAnimalCart.cs" />
+    <None Include="SpotlightTurret.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToWheelChair.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\JobGiver_TakeToWheelChair.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />
+    <None Include="_inactive\_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
+    <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
+    <None Include="NoCCL\Class1.cs" />
+    <Compile Include="HaulJobDefOf.cs" />
+    <Compile Include="NoCCL\DetourAttribute.cs" />
+    <None Include="Things\SpotlightStuff.cs" />
+    <None Include="Toils\Class1.cs" />
+    <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithVehicle.cs" />
+    <None Include="_inactive\_TESTING\Class1.cs" />
+    <None Include="_inactive\_TESTING\Class2.cs" />
+    <None Include="_inactive\_TESTING\HeadLights.cs" />
+    <None Include="_inactive\Class1.cs" />
+    <None Include="Things\IncendiaryFuel.cs" />
+    <None Include="_inactive\CompWeaponExtensions.cs" />
+    <None Include="_inactive\CompTool.cs" />
+    <Compile Include="NoCCL\Detours.cs" />
+    <Compile Include="Trace.cs" />
+    <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
+    <Compile Include="WorkGivers\WorkGiver_Haul_WithCart.cs" />
+    <Compile Include="JobDrivers\JobDriver_HaulWithCart.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Toils\Toils_Collect.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\About\About.xml">
+      <Link>About.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\Effects\Mote_Special.xml">
+      <Link>Defs\Effects\Mote_Special.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\Effects\Mote_Visual.xml">
+      <Link>Defs\Effects\Mote_Visual.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\JobDefs\Jobs_Haul.xml">
+      <Link>Defs\Jobs_Haul.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\JoyGiverDefs\JoyGivers.xml">
+      <Link>Defs\JoyGivers\JoyGivers.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingCategoryDefs\RA_ThingCategories.xml">
+      <Link>Defs\ThingDefs\RA_ThingCategories.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingCategoryDefs\ThingCategories.xml">
+      <Link>Defs\ThingCategories.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Items_IRResources.xml">
+      <Link>Defs\ThingDefs\Items_IRResources.xml</Link>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Items_Unfinished.xml">
+      <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Vehicle_Haul.xml">
+      <Link>Defs\ThingDefs\Vehicle_Haul.xml</Link>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Vehicle_Saddle.xml">
+      <Link>Defs\ThingDefs\Vehicle_Saddle.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Vehicle_Turret.xml">
+      <Link>Defs\ThingDefs\Vehicle_Turret.xml</Link>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers.xml">
+      <Link>WorkGivers\WorkGivers.xml</Link>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\Languages\English\Keyed\Designators.xml">
+      <Link>Languages\English\Designators.xml</Link>
+    </Content>
+    <Content Include="..\..\Languages\English\Keyed\FloatMenu.xml">
+      <Link>Languages\English\FloatMenu.xml</Link>
+    </Content>
+    <Content Include="..\..\Languages\English\Keyed\GameplayCommands.xml">
+      <Link>Languages\English\GameplayCommands.xml</Link>
+    </Content>
+    <Content Include="..\..\Languages\English\Keyed\ITabs.xml">
+      <Link>Languages\English\ITabs.xml</Link>
+    </Content>
+    <Content Include="..\..\Languages\English\Keyed\Misc_Gameplay.xml">
+      <Link>Languages\English\Misc_Gameplay.xml</Link>
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TFH_VehicleBase\TFH_VehicleBase.csproj">
+      <Project>{BBEADC75-7F91-4397-86BC-A4981FDA42B1}</Project>
+      <Name>TFH_VehicleBase</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E8DED0EF-7F75-4BCA-A81C-6174D9C7A3BB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TFH_Incidents</RootNamespace>
+    <AssemblyName>TFH_Incidents</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\RimWorldWin_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IncidentWorker_RaidEnemy.cs" />
+    <Compile Include="IncidentWorker_RaidFriendly.cs" />
+    <Compile Include="IncidentWorker_Raid_TFH.cs" />
+    <Compile Include="IncidentWorker_RefugeeChased.cs" />
+    <Compile Include="IncidentWorker_TraderCaravanArrival.cs" />
+    <Compile Include="IncidentWorker_TravelerGroup.cs" />
+    <Compile Include="IncidentWorker_VisitorGroup.cs" />
+    <Compile Include="IncidentWorker_WandererJoin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\defs\storyteller\Incidents_Map_Misc.xml">
+      <Link>IncidentDefs\Incidents_Map_Misc.xml</Link>
+    </Content>
+    <Content Include="..\..\defs\storyteller\Incidents_Map_Special.xml">
+      <Link>IncidentDefs\Incidents_Map_Special.xml</Link>
+    </Content>
+    <Content Include="..\..\defs\storyteller\Incidents_Map_Threats.xml">
+      <Link>IncidentDefs\Incidents_Map_Threats.xml</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TFH_VehicleBase\TFH_VehicleBase.csproj">
+      <Project>{bbeadc75-7f91-4397-86bc-a4981fda42b1}</Project>
+      <Name>TFH_VehicleBase</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\TFH_Vehicles\TFH_Vehicles.csproj">
+      <Project>{68fc1e5f-0823-44e7-a5d4-841512d46939}</Project>
+      <Name>TFH_Vehicles</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

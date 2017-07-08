@@ -13,8 +13,8 @@
       <Mass>350</Mass>
     </statBases>
     <inspectorTabs>
-      <li>ToolsForHaul.Itabs.Itab_Pawn_Vehicle_Storage</li>
-      <li>ToolsForHaul.Itabs.ITab_Pawn_VehicleGear</li>
+      <li>TFH_VehicleBase.ITabs.Itab_Pawn_Vehicle_Storage</li>
+      <li>TFH_VehicleBase.ITabs.ITab_Pawn_VehicleGear</li>
       <li>ITab_Pawn_Health</li>
       <li>ITab_Pawn_Needs</li>
       <li>ITab_Pawn_Character</li>

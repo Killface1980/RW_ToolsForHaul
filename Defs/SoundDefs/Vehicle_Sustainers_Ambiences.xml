@@ -190,6 +190,40 @@
     </subSounds>
   </SoundDef>
 
+  <SoundDef>
+    <defName>VehicleBeetle_Ambience</defName>
+    <context>MapOnly</context>
+    <sustain>True</sustain>
+    <eventNames />
+    <maxSimultaneous>10</maxSimultaneous>
+    <priorityMode>PrioritizeNearest</priorityMode>
+    <sustainStartSound>VehicleATV_Ambience_Start</sustainStartSound>
+    <sustainStopSound>VehicleATV_Ambience_Stop</sustainStopSound>
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Vehicles/VehicleATV/Run/VehicleATVRun_Loop1a</clipPath>
+          </li>
+        </grains>
+        <volumeRange>
+          <min>15</min>
+          <max>25</max>
+        </volumeRange>
+        <pitchRange>
+          <min>0.9</min>
+          <max>1.1</max>
+        </pitchRange>
+        <sustainLoopDurationRange>
+          <min>999</min>
+          <max>999</max>
+        </sustainLoopDurationRange>
+        <sustainAttack>0.1</sustainAttack>
+      </li>
+    </subSounds>
+  </SoundDef>
+
 
   <SoundDef>
     <defName>VehicleCombattATV_Ambience</defName>

@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ThingDefs>
 
+  <!-- base -->
+  
   <ThingDef ParentName="BasePawnTFH" Name="BaseVehicleTFH" Abstract="True">
-    <thingClass>ToolsForHaul.Vehicles.Vehicle_Cart</thingClass>
+    <thingClass>TFH_VehicleBase.Vehicle_Cart</thingClass>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
     <statBases>
       <Flammability>1.0</Flammability>
@@ -11,7 +13,7 @@
       <ComfyTemperatureMin>-100</ComfyTemperatureMin>
       <ComfyTemperatureMax>250</ComfyTemperatureMax>
     </statBases>
-    <size>(1,2)</size>
+    <size>(1,1)</size>
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <race>
@@ -30,6 +32,286 @@
     </recipes>
   </ThingDef>
 
+  <!-- animal vehicles -->
+
+  <ThingDef ParentName="BaseVehicleTFH">
+    <defName>VehicleCart</defName>
+    <label>cart</label>
+    <description>A cart is an old-fashioned wooden vehicle that is used for transporting goods or people.</description>
+    <isAutoAttackableMapObject>false</isAutoAttackableMapObject>
+    <statBases>
+      <MoveSpeed>0.75</MoveSpeed>
+      <ArmorRating_Blunt>0.2</ArmorRating_Blunt>
+      <ArmorRating_Sharp>0.7</ArmorRating_Sharp>
+      <MeatAmount>0</MeatAmount>
+      <!-- new -->
+      <VehicleMaxItem>4</VehicleMaxItem>
+      <Beauty>10</Beauty>
+      <Mass>100</Mass>
+    </statBases>
+    <interactionCellOffset>(0,0,1)</interactionCellOffset>
+    <CostList>
+      <Steel>40</Steel>
+      <WoodLog>120</WoodLog>
+    </CostList>
+    <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <Steel>40</Steel>
+    </killedLeavings>
+    <race>
+      <lifeExpectancy>50</lifeExpectancy>
+      <litterSizeCurve>
+        <points>
+          <li>(0.5, 0)</li>
+          <li>(1, 1)</li>
+          <li>(1.01, 0.02)</li>
+          <li>(3.5, 0)</li>
+        </points>
+      </litterSizeCurve>
+      <makesFootprints>true</makesFootprints>
+      <intelligence>ToolUser</intelligence>
+      <body>VehicleCartBody</body>
+      <baseBodySize>2.0</baseBodySize>
+      <baseHealthScale>1.2</baseHealthScale>
+      <lifeStageAges>
+        <li>
+          <def>MechanoidFullyFormed</def>
+          <minAge>0</minAge>
+          <!--
+          <soundWounded>Pawn_Mech_Centipede_Wounded</soundWounded>
+          <soundDeath>Pawn_Mech_Centipede_Death</soundDeath>
+          <soundCall>Pawn_Mech_Centipede_Call</soundCall>
+        -->
+        </li>
+      </lifeStageAges>
+      <ageGenerationCurve>
+        <points>
+          <li>(14,0)</li>
+          <li>(16,100)</li>
+          <li>(50,100)</li>
+          <li>(60,30)</li>
+          <li>(70,18)</li>
+          <li>(80,10)</li>
+          <li>(90,3)</li>
+          <li>(100,0)</li>
+        </points>
+      </ageGenerationCurve>
+      <soundCallIntervalRange>
+        <min>1000</min>
+        <max>2000</max>
+      </soundCallIntervalRange>
+      <soundMeleeHitPawn>BulletImpactMetal</soundMeleeHitPawn>
+      <soundMeleeHitBuilding>BulletImpactMetal</soundMeleeHitBuilding>
+      <soundMeleeMiss>BulletImpactMetal</soundMeleeMiss>
+    </race>
+    <butcherProducts>
+      <Steel>80</Steel>
+      <Plasteel>50</Plasteel>
+      <Component>2</Component>
+    </butcherProducts>
+    <comps>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
+        <axles>
+          <li>(-20,-40)</li>
+        </axles>
+      </li>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
+        <showsStorage>true</showsStorage>
+        <animalsCanDrive>true</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>false</motorizedWithoutFuel>
+        <!--
+      <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        -->
+      </li>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
+    </comps>
+    <pathCost>50</pathCost>
+    <recipeMaker>
+      <defaultIngredientFilter>
+        <categories>
+          <li>Root</li>
+        </categories>
+        <exceptedThingDefs>
+          <li>Silver</li>
+          <li>Gold</li>
+        </exceptedThingDefs>
+      </defaultIngredientFilter>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Smith</soundWorking>
+      <recipeUsers>
+        <li>FueledSmithy</li>
+        <li>ElectricSmithy</li>
+        <li>TableMachining</li>
+      </recipeUsers>
+      <workAmount>2400</workAmount>
+      <unfinishedThingDef>UnfinishedCart</unfinishedThingDef>
+      <skillRequirements>
+        <!-- <li>
+		  <skill>Crafting</skill>
+		  <minLevel>8</minLevel>
+		</li> -->
+      </skillRequirements>
+    </recipeMaker>
+  </ThingDef>
+
+  <!-- motorized -->
+  
+  <ThingDef ParentName="BaseVehicleTFH">
+    <defName>VehicleSmackWay</defName>
+    <label>SmackWay</label>
+    <description>For those who have some disability to walk</description>
+    <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
+    <statBases>
+      <MoveSpeed>8</MoveSpeed>
+      <ArmorRating_Blunt>0.2</ArmorRating_Blunt>
+      <ArmorRating_Sharp>0.7</ArmorRating_Sharp>
+      <MeatAmount>0</MeatAmount>
+      <!-- new -->
+      <VehicleMaxItem>0</VehicleMaxItem>
+      <Beauty>10</Beauty>
+      <Comfort>0.5</Comfort>
+      <Mass>80</Mass>
+    </statBases>
+    <CostList>
+      <Steel>150</Steel>
+      <Plasteel>15</Plasteel>
+      <Component>1</Component>
+    </CostList>
+    <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <Steel>75</Steel>
+      <Plasteel>7</Plasteel>
+      <Component>1</Component>
+    </killedLeavings>
+    <race>
+      <lifeExpectancy>50</lifeExpectancy>
+      <litterSizeCurve>
+        <points>
+          <li>(0.5, 0)</li>
+          <li>(1, 1)</li>
+          <li>(1.01, 0.02)</li>
+          <li>(3.5, 0)</li>
+        </points>
+      </litterSizeCurve>
+      <makesFootprints>true</makesFootprints>
+      <intelligence>ToolUser</intelligence>
+      <body>SmackWayBody</body>
+      <baseBodySize>1.0</baseBodySize>
+      <baseHealthScale>1.2</baseHealthScale>
+      <lifeStageAges>
+        <li>
+          <def>MechanoidFullyFormed</def>
+          <minAge>0</minAge>
+          <!--
+          <soundWounded>Pawn_Mech_Centipede_Wounded</soundWounded>
+          <soundDeath>Pawn_Mech_Centipede_Death</soundDeath>
+          <soundCall>Pawn_Mech_Centipede_Call</soundCall>
+        -->
+        </li>
+      </lifeStageAges>
+      <ageGenerationCurve>
+        <points>
+          <li>(14,0)</li>
+          <li>(16,100)</li>
+          <li>(50,100)</li>
+          <li>(60,30)</li>
+          <li>(70,18)</li>
+          <li>(80,10)</li>
+          <li>(90,3)</li>
+          <li>(100,0)</li>
+        </points>
+      </ageGenerationCurve>
+      <soundCallIntervalRange>
+        <min>1000</min>
+        <max>2000</max>
+      </soundCallIntervalRange>
+      <soundMeleeHitPawn>BulletImpactMetal</soundMeleeHitPawn>
+      <soundMeleeHitBuilding>BulletImpactMetal</soundMeleeHitBuilding>
+      <soundMeleeMiss>BulletImpactMetal</soundMeleeMiss>
+    </race>
+    <butcherProducts>
+      <Steel>80</Steel>
+      <Plasteel>50</Plasteel>
+      <Component>2</Component>
+    </butcherProducts>
+    <comps>
+      <!--
+      <li Class="TFH_VehicleBase.Components.HediffCompProperties_Explosive_TFH">
+        <explosiveRadius>2.9</explosiveRadius>
+        <explosiveDamageType>Extinguish</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+        <startWickHitPointsPercent>0.10</startWickHitPointsPercent>
+        <wickTicks>
+          <min>100</min>
+          <max>120</max>
+        </wickTicks>
+      </li>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
+        <axles>
+          <li>(-25,-40)</li>
+        </axles>
+      </li>
+   -->
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
+        <showsStorage>false</showsStorage>
+        <animalsCanDrive>false</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>true</motorizedWithoutFuel>
+        <soundAmbient>VehicleSmackWay_Ambience</soundAmbient>
+        <isMedical>true</isMedical>
+      </li>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
+    </comps>
+    <pathCost>50</pathCost>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Machining</soundWorking>
+      <recipeUsers>
+        <li>ComponentAssemblyBench</li>
+      </recipeUsers>
+      <workAmount>22000</workAmount>
+      <unfinishedThingDef>UnfinishedWheelChair</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+      <researchPrerequisite>PoweredArmor</researchPrerequisite>
+    </recipeMaker>
+    <colorGenerator Class="ColorGenerator_Options">
+      <options>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.33,0.33,0.33,1)</only>
+        </li>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.65,0.65,0.65,1)</only>
+        </li>
+        <li>
+          <weight>30</weight>
+          <only>RGBA(0.4,0.3,0.15,1)</only>
+        </li>
+        <li>
+          <weight>6</weight>
+          <min>RGBA(0.3,0.3,0.3,1)</min>
+          <max>RGBA(0.5,0.5,0.5,1)</max>
+        </li>
+        <li>
+          <weight>2</weight>
+          <min>RGBA(0.5,0.5,0.5,1)</min>
+          <max>RGBA(1,1,1,1)</max>
+        </li>
+      </options>
+    </colorGenerator>
+  </ThingDef>
+  
   <ThingDef ParentName="BaseVehicleTFH">
     <defName>VehicleATV</defName>
     <label>ATV</label>
@@ -108,7 +390,7 @@
     </butcherProducts>
     <comps>
       <li>
-        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+        <compClass>TFH_VehicleBase.Components.CompGasTank</compClass>
       </li>
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
@@ -121,20 +403,20 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleATV_Ambience</soundAmbient>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
     <pathCost>50</pathCost>
@@ -260,7 +542,7 @@
     </butcherProducts>
     <comps>
       <li>
-        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+        <compClass>TFH_VehicleBase.Components.CompGasTank</compClass>
       </li>
       <li Class="CompProperties_Refuelable">
         <!-- Fuel consumption only called once every 96 ticks -->
@@ -273,20 +555,20 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.2</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
         <soundAmbient>VehicleCombattATV_Ambience</soundAmbient>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Mountable"/>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
     <pathCost>50</pathCost>
@@ -418,12 +700,12 @@
     </butcherProducts>
     <comps>
       <li>
-        <compClass>ToolsForHaul.Components.CompGasTank</compClass>
+        <compClass>TFH_VehicleBase.Components.CompGasTank</compClass>
       </li>
       <li>
-        <compClass>ToolsForHaul.Components.CompFrontTex</compClass>
+        <compClass>TFH_VehicleBase.Components.CompFrontTex</compClass>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Mountable">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable">
         <drawOffsetRotN>(0,0,0.5)</drawOffsetRotN>
         <drawOffsetRotS>(0,0,-0.5)</drawOffsetRotS>
       </li>
@@ -438,18 +720,18 @@
         </fuelFilter>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Axle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
         <axles>
           <li>(-50,-37)</li>
           <li>(57,-37)</li>
         </axles>
       </li>
-      <li Class="ToolsForHaul.Components.CompProperties_Vehicle">
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
         <showsStorage>true</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
         <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
         <motorizedWithoutFuel>false</motorizedWithoutFuel>
-        <soundAmbient>VehicleATV_Ambience</soundAmbient>
+        <soundAmbient>VehicleBeetle_Ambience</soundAmbient>
       </li>
       <li Class="CompProperties_Breakdownable"/>
     </comps>
@@ -498,6 +780,302 @@
           <weight>10</weight>
           <min>RGBA(0.55,0.65,0.33,1)</min>
           <max>RGBA(0.33,0.5,0.1,1)</max>
+        </li>
+      </options>
+    </colorGenerator>
+  </ThingDef>
+
+  <ThingDef ParentName="BaseVehicleTFH">
+    <defName>VehicleTruck</defName>
+    <label>truck</label>
+    <description>A truck is what you drive when you're done taking shit off of other people.</description>
+    <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
+    <statBases>
+      <MoveSpeed>9</MoveSpeed>
+      <ArmorRating_Blunt>0.2</ArmorRating_Blunt>
+      <ArmorRating_Sharp>0.7</ArmorRating_Sharp>
+      <MeatAmount>0</MeatAmount>
+      <!-- new -->
+      <VehicleMaxItem>8</VehicleMaxItem>
+      <Beauty>10</Beauty>
+      <Mass>900</Mass>
+    </statBases>
+    <interactionCellOffset>(0,0,1)</interactionCellOffset>
+    <size>(1,2)</size>
+    <CostList>
+      <Steel>200</Steel>
+      <WoodLog>200</WoodLog>
+      <Plasteel>10</Plasteel>
+      <Component>10</Component>
+    </CostList>
+    <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <Steel>100</Steel>
+      <WoodLog>100</WoodLog>
+      <Plasteel>5</Plasteel>
+      <Component>5</Component>
+    </killedLeavings>
+    <race>
+      <lifeExpectancy>50</lifeExpectancy>
+      <litterSizeCurve>
+        <points>
+          <li>(0.5, 0)</li>
+          <li>(1, 1)</li>
+          <li>(1.01, 0.02)</li>
+          <li>(3.5, 0)</li>
+        </points>
+      </litterSizeCurve>
+      <makesFootprints>true</makesFootprints>
+      <intelligence>ToolUser</intelligence>
+      <body>VehicleBody</body>
+      <baseBodySize>2.0</baseBodySize>
+      <baseHealthScale>1.2</baseHealthScale>
+      <lifeStageAges>
+        <li>
+          <def>MechanoidFullyFormed</def>
+          <minAge>0</minAge>
+          <!--
+          <soundWounded>Pawn_Mech_Centipede_Wounded</soundWounded>
+          <soundDeath>Pawn_Mech_Centipede_Death</soundDeath>
+          <soundCall>Pawn_Mech_Centipede_Call</soundCall>
+        -->
+        </li>
+      </lifeStageAges>
+      <ageGenerationCurve>
+        <points>
+          <li>(14,0)</li>
+          <li>(16,100)</li>
+          <li>(50,100)</li>
+          <li>(60,30)</li>
+          <li>(70,18)</li>
+          <li>(80,10)</li>
+          <li>(90,3)</li>
+          <li>(100,0)</li>
+        </points>
+      </ageGenerationCurve>
+      <soundCallIntervalRange>
+        <min>1000</min>
+        <max>2000</max>
+      </soundCallIntervalRange>
+      <soundMeleeHitPawn>BulletImpactMetal</soundMeleeHitPawn>
+      <soundMeleeHitBuilding>BulletImpactMetal</soundMeleeHitBuilding>
+      <soundMeleeMiss>BulletImpactMetal</soundMeleeMiss>
+    </race>
+    <butcherProducts>
+      <Steel>80</Steel>
+      <Plasteel>50</Plasteel>
+      <Component>2</Component>
+    </butcherProducts>
+    <comps>
+      <li>
+        <compClass>TFH_VehicleBase.Components.CompGasTank</compClass>
+      </li>
+      <!-- 
+     <li Class="TFH_VehicleBase.Components.HediffCompProperties_Explosive_TFH">
+        <explosiveRadius>2.9</explosiveRadius>
+        <explosiveDamageType>Extinguish</explosiveDamageType>
+        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+      				<startWickHitPointsPercent>0.10</startWickHitPointsPercent>
+				<wickTicks>
+					<min>300</min>
+					<max>600</max>
+				</wickTicks>
+      </li>
+      -->
+      <li Class="CompProperties_Refuelable">
+        <!-- Fuel consumption only called once every 96 ticks -->
+        <fuelConsumptionRate>3000</fuelConsumptionRate>
+        <fuelCapacity>50.0</fuelCapacity>
+        <fuelFilter>
+          <thingDefs>
+            <li>Chemfuel</li>
+          </thingDefs>
+        </fuelFilter>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+      </li>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
+        <axles>
+          <li>(-35,-45)</li>
+          <li>(85,-45)</li>
+        </axles>
+      </li>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
+        <showsStorage>true</showsStorage>
+        <animalsCanDrive>false</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.33</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>false</motorizedWithoutFuel>
+        <soundAmbient>VehicleTruck_Ambience</soundAmbient>
+      </li>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
+      <li Class="CompProperties_Breakdownable"/>
+    </comps>
+    <pathCost>50</pathCost>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Machining</soundWorking>
+      <recipeUsers>
+        <li>TableMachining</li>
+      </recipeUsers>
+      <workAmount>24000</workAmount>
+      <unfinishedThingDef>UnfinishedTruck</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+    </recipeMaker>
+  </ThingDef>
+
+  <!-- without fuel -->
+
+  <ThingDef ParentName="BaseVehicleTFH">
+    <defName>VehicleSpeeder</defName>
+    <label>Speeder</label>
+    <description>Keep out of reach of lightsabers.</description>
+    <isAutoAttackableMapObject>true</isAutoAttackableMapObject>
+    <statBases>
+      <MoveSpeed>30</MoveSpeed>
+      <ArmorRating_Blunt>0.2</ArmorRating_Blunt>
+      <ArmorRating_Sharp>0.7</ArmorRating_Sharp>
+      <MeatAmount>0</MeatAmount>
+      <!-- new -->
+      <VehicleMaxItem>2</VehicleMaxItem>
+      <Beauty>10</Beauty>
+      <Mass>350</Mass>
+    </statBases>
+    <hasInteractionCell>True</hasInteractionCell>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
+    <size>(1,2)</size>
+    <CostList>
+      <Steel>150</Steel>
+      <Plasteel>15</Plasteel>
+      <Component>15</Component>
+      <VehicleATVFrame>1</VehicleATVFrame>
+    </CostList>
+    <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+    <killedLeavings>
+      <VehicleATVFrame>1</VehicleATVFrame>
+      <Steel>75</Steel>
+      <Plasteel>7</Plasteel>
+      <Component>7</Component>
+    </killedLeavings>
+    <race>
+      <lifeExpectancy>50</lifeExpectancy>
+      <litterSizeCurve>
+        <points>
+          <li>(0.5, 0)</li>
+          <li>(1, 1)</li>
+          <li>(1.01, 0.02)</li>
+          <li>(3.5, 0)</li>
+        </points>
+      </litterSizeCurve>
+      <makesFootprints>true</makesFootprints>
+      <intelligence>ToolUser</intelligence>
+      <body>VehicleSpeeder</body>
+      <baseBodySize>2.0</baseBodySize>
+      <baseHealthScale>1.2</baseHealthScale>
+      <lifeStageAges>
+        <li>
+          <def>MechanoidFullyFormed</def>
+          <minAge>0</minAge>
+          <!--
+          <soundWounded>Pawn_Mech_Centipede_Wounded</soundWounded>
+          <soundDeath>Pawn_Mech_Centipede_Death</soundDeath>
+          <soundCall>Pawn_Mech_Centipede_Call</soundCall>
+        -->
+        </li>
+      </lifeStageAges>
+      <ageGenerationCurve>
+        <points>
+          <li>(14,0)</li>
+          <li>(16,100)</li>
+          <li>(50,100)</li>
+          <li>(60,30)</li>
+          <li>(70,18)</li>
+          <li>(80,10)</li>
+          <li>(90,3)</li>
+          <li>(100,0)</li>
+        </points>
+      </ageGenerationCurve>
+      <soundCallIntervalRange>
+        <min>1000</min>
+        <max>2000</max>
+      </soundCallIntervalRange>
+      <soundMeleeHitPawn>BulletImpactMetal</soundMeleeHitPawn>
+      <soundMeleeHitBuilding>BulletImpactMetal</soundMeleeHitBuilding>
+      <soundMeleeMiss>BulletImpactMetal</soundMeleeMiss>
+    </race>
+    <butcherProducts>
+      <Steel>80</Steel>
+      <Plasteel>50</Plasteel>
+      <Component>2</Component>
+    </butcherProducts>
+    <comps>
+      <!--
+      <li>
+        <compClass>TFH_VehicleBase.Components.CompFrontTex</compClass>
+      </li>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable">
+        <drawOffsetRotN>(0,0,0.5)</drawOffsetRotN>
+        <drawOffsetRotS>(0,0,-0.5)</drawOffsetRotS>
+      </li>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Axle"/>
+      -->
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
+        <showsStorage>true</showsStorage>
+        <animalsCanDrive>false</animalsCanDrive>
+        <fuelCatchesFireHitPointsPercent>0.0</fuelCatchesFireHitPointsPercent>
+        <motorizedWithoutFuel>true</motorizedWithoutFuel>
+        <soundAmbient>VehicleSpeeder_Ambience</soundAmbient>
+        <leaveTrail>false</leaveTrail>
+      </li>
+      <li Class="CompProperties_Breakdownable"/>
+    </comps>
+    <pathCost>50</pathCost>
+    <recipeMaker>
+      <workSpeedStat>SmithingSpeed</workSpeedStat>
+      <workSkill>Crafting</workSkill>
+      <effectWorking>Smith</effectWorking>
+      <soundWorking>Recipe_Machining</soundWorking>
+      <recipeUsers>
+        <li>TableMachining</li>
+      </recipeUsers>
+      <workAmount>22000</workAmount>
+      <unfinishedThingDef>UnfinishedSpeeder</unfinishedThingDef>
+      <skillRequirements>
+        <li>
+          <skill>Crafting</skill>
+          <minLevel>10</minLevel>
+        </li>
+      </skillRequirements>
+    </recipeMaker>
+    <colorGenerator Class="ColorGenerator_Options">
+      <options>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.33,0.33,0.33,1)</only>
+        </li>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.65,0.65,0.65,1)</only>
+        </li>
+        <li>
+          <weight>30</weight>
+          <only>RGBA(0.4,0.3,0.15,1)</only>
+        </li>
+        <li>
+          <weight>6</weight>
+          <min>RGBA(0.3,0.3,0.3,1)</min>
+          <max>RGBA(0.5,0.5,0.5,1)</max>
+        </li>
+        <li>
+          <weight>2</weight>
+          <min>RGBA(0.5,0.5,0.5,1)</min>
+          <max>RGBA(1,1,1,1)</max>
         </li>
       </options>
     </colorGenerator>

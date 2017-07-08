@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<WorkGivers>
+
+    <!-- ============= Repair ============= -->
+
+  <WorkGiverDef>
+    <defName>DoBillsMedicalVehicleOperation</defName>
+    <label>operate on vehicles</label>
+    <giverClass>WorkGiver_DoBill</giverClass>
+    <workType>Crafting</workType>
+    <verb>operate on</verb>
+    <gerund>tending to</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <priorityInType>70</priorityInType>
+    <billGiversAllMechanoids>true</billGiversAllMechanoids>
+    <billGiversAllMechanoidsCorpses>true</billGiversAllMechanoidsCorpses> 
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <!--
+  <WorkGiverDef>
+    <defName>Repair</defName>
+    <label>repair damaged things</label>
+    <giverClass>TFH_VehicleHauling.WorkGivers.WorkGiver_Repair</giverClass>
+    <workType>Construction</workType>
+    <priorityInType>80</priorityInType>
+    <verb>repair</verb>
+    <gerund>repairing</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <canBeDoneByNonColonists>true</canBeDoneByNonColonists>
+  </WorkGiverDef>
+  -->
+  <!--
+
+    <defName>RepairVehicles</defName>
+    <label>repair damaged things</label>
+    <giverClass>ToolsForHaul.WorkGiver_RepairVehicles</giverClass>
+    <workType>Repair</workType>
+    <priorityInType>5</priorityInType>
+    <verb>repair</verb>
+    <gerund>repairing</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <canBeDoneByNonColonists>true</canBeDoneByNonColonists>
+  </WorkGiverDef>
+-->
+  <!--
+    <WorkGiverDef>
+    <defName>TakeToWheelChair</defName>
+    <label>take an immovable pawn to a wheel chair</label>
+    <giverClass>ToolsForHaul.WorkGiver_TakeToWheelChair</giverClass>
+    <workType>Doctor</workType>
+    <verb>take</verb>
+    <gerund>taking</gerund>
+    <priorityInType>60</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  -->
+  <!-- ============= Hunting ============= -->
+
+  <!--
+  <WorkGiverDef>
+    <defName>HunterHuntWithVehicle</defName>
+    <label>hunt</label>
+    <giverClass>TFH_VehicleHauling.WorkGivers.WorkGiver_HunterHuntWithVehicle</giverClass>
+    <workType>Hunting</workType>
+    <priorityInType>500</priorityInType>  
+    <verb>hunt</verb>
+    <gerund>hunting</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <WorkGiverDef>
+    <defName>HunterHunt</defName>
+    <label>hunt</label>
+    <giverClass>WorkGiver_HunterHunt</giverClass>
+    <workType>Hunting</workType>
+    <priorityInType>350</priorityInType>
+    <verb>hunt</verb>
+    <gerund>hunting</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  -->
+
+
+  <!-- ============= Hauling ============= -->
+<!--
+  <WorkGiverDef>
+    <defName>ConstructDeliverResourcesToFramesWithVehicle</defName>
+    <label>deliver resources to frames</label>
+    <giverClass>TFH_VehicleHauling.WorkGivers.WorkGiver_WithVehilce_ConstructDeliverResourcesToFrames</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>45</priorityInType>
+    <verb>work on</verb>
+    <gerund>working on</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <canBeDoneByNonColonists>true</canBeDoneByNonColonists>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+  -->
+  
+  <!--  <WorkGiverDef>
+    <defName>ConstructDeliverResourcesToBlueprintsWithVehicle</defName>
+    <label>deliver resources to blueprints</label>
+    <giverClass>TFH_VehicleHauling.WorkGivers.WorkGiver_WithVehicle_ConstructDeliverResourcesToBlueprints</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>35</priorityInType>
+    <verb>work on</verb>
+    <gerund>working on</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <canBeDoneByNonColonists>true</canBeDoneByNonColonists>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+  -->
+
+
+
+  
+  <WorkGiverDef>
+    <defName>RefuelVehicle</defName>
+    <label>refuel motorized vehicles</label>
+    <giverClass>TFH_VehicleBase.WorkGivers.WorkGiver_Refuel_Vehicle</giverClass>
+    <workType>Hauling</workType>
+    <verb>refuel</verb>
+    <gerund>refueling</gerund>
+    <priorityInType>87</priorityInType>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+
+  <!-- ============= Driver ============= -->
+ 
+  
+  <WorkGiverDef>
+    <defName>ReturnCart</defName>
+    <giverClass>TFH_VehicleBase.WorkGivers.WorkGiver_Haul_ReturnCart</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>86</priorityInType>
+    <scanThings>true</scanThings>
+    <verb>return cart</verb>
+    <gerund>returning cart</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+  
+</WorkGivers>

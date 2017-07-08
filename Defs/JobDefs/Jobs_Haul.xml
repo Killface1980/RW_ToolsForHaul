@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<JobDefs>
+
+  <!--=================== Work with tools =====================-->
+  <!-- redefined, to set alwaysShowWeapon as true -->
+
+
+  <JobDef>
+    <defName>HaulWithAnimalCart</defName>
+    <driverClass>TFH_VehicleHauling.JobDrivers.JobDriver_HaulWithAnimalCart</driverClass>
+    <reportString>Collecting TargetA with targetC.</reportString>
+  </JobDef>
+  
+  <JobDef>
+    <defName>HaulWithCart</defName>
+    <driverClass>TFH_VehicleHauling.JobDrivers.JobDriver_HaulWithCart</driverClass>
+    <reportString>Collecting TargetA with targetC.</reportString>
+  </JobDef>
+  
+ 
+ 
+</JobDefs>
