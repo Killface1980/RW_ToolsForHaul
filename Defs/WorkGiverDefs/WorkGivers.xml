@@ -3,7 +3,19 @@
 
     <!-- ============= Hauling ============= -->
 
-
+  <WorkGiverDef>
+    <defName>DoctorVehicleRescue</defName>
+    <label>rescue downed allies to bed</label>
+    <giverClass>TFH_VehicleHauling.WorkGivers.WorkGiver_RescueVehicleDowned</giverClass>
+    <workType>Doctor</workType>
+    <verb>rescue</verb>
+    <gerund>rescuing</gerund>
+    <priorityInType>95</priorityInType>
+    <directOrderable>false</directOrderable>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
 
   <WorkGiverDef>
     <defName>HaulCorpsesWithCart</defName>

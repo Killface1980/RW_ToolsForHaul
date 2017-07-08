@@ -25,16 +25,15 @@
 
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced)
         {
-            Vehicle_Cart carrier = t as Vehicle_Cart;
-            if (carrier == null)
-            {
-                return null;
-            }
+            // TO DO Corpses with animal carts?
+            return null;
 
             if (!(t is Corpse))
             {
                 return null;
             }
+            var carrier=new Vehicle_Cart();
+
             var storage = carrier.GetContainer();
 
             IEnumerable<Thing> remainingItems = storage;
@@ -120,19 +119,6 @@
             return null;
         }
 
-        /*
-        public virtual PathEndMode PathEndMode { get; }
-        public virtual ThingRequest PotentialWorkThingRequest { get; }
-
-        public virtual bool HasJobOnCell(Pawn pawn, IntVec3 c);
-        public virtual bool HasJobOnThing(Pawn pawn, Thing t);
-        public virtual Job JobOnCell(Pawn pawn, IntVec3 cell);
-        public virtual Job JobOnThing(Pawn pawn, Thing t);
-        public PawnActivityDef MissingRequiredActivity(Pawn pawn);
-        public virtual IEnumerable<IntVec3> PotentialWorkCellsGlobal(Pawn pawn);
-        public virtual IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn Pawn);
-        public virtual bool ShouldSkip(Pawn pawn);
-         */
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
             availableVehicle = pawn.Map.listerThings.AllThings.FindAll(

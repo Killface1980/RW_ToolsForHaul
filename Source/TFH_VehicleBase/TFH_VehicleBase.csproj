@@ -74,6 +74,8 @@
     <Compile Include="Recipes\Recipe_VehicleSurgery.cs" />
     <Compile Include="Static.cs" />
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
+    <None Include="Things\IncendiaryFuel.cs" />
+    <None Include="Things\SpotlightStuff.cs" />
     <Compile Include="ThinkNode_JobGiver_Patch.cs" />
     <Compile Include="Toils_Cart.cs" />
     <Compile Include="VehicleRecipesUtility.cs" />
