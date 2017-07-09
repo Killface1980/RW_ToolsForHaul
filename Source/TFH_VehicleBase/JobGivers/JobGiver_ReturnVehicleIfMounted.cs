@@ -19,7 +19,7 @@
         protected override Job TryGiveJob(Pawn pawn)
         {
 
-            if (!pawn.IsDriver())
+            if (!pawn.IsDriver(out Vehicle_Cart drivenCart))
             {
                 return null;
             }

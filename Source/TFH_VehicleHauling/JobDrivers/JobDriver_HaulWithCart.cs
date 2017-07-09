@@ -51,7 +51,7 @@
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            Vehicle_Cart cart = this.CurJob.GetTarget(CartInd).Thing as Vehicle_Cart;
+            Vehicle_Cart cart = (Vehicle_Cart)this.CurJob.GetTarget(CartInd).Thing;
 
             ///
             // Set fail conditions

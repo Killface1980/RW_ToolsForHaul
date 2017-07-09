@@ -18,15 +18,23 @@
         {
             // return TFH_Utility.Cart();
             // noParking.SortBy(x => pawn.Position.DistanceTo(x.Position));
-            return pawn.AvailableVehiclesForPawnFaction(999f)
-                .Where(vehicle => !((Vehicle_Cart)vehicle).InParkingLot).ToList();
+            List<Thing> things = new List<Thing>();
+            foreach (Vehicle_Cart vehicleCart in pawn.AvailableVehiclesForPawnFaction(999f))
+            {
+                if (vehicleCart.InParkingLot)
+                {
+                    continue;
+                }
+                things.Add(vehicleCart);
+            }
+            return things;
 
             // pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling();
         }
 
         public override bool ShouldSkip(Pawn pawn)
         {
-            if (pawn.IsDriver())
+            if (pawn.IsDriver(out Vehicle_Cart drivenCart))
             {
                 return true;
             }

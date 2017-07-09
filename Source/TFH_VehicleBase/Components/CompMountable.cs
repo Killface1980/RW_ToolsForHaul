@@ -180,31 +180,31 @@ namespace TFH_VehicleBase.Components
                 this.tickCheck = Find.TickManager.TicksGame;
                 this.tickCooldown = Rand.RangeInclusive(60, 180);
 
-                // bring vehicles home
-                if (this.cart.VehicleComp != null && !this.cart.VehicleComp.MotorizedWithoutFuel())
-                {
-                    float hitPointsPercent = this.parent.HitPoints / this.parent.MaxHitPoints;
-
-                    if (this.cart.Faction == Faction.OfPlayer)
-                    {
-                        if (!GenAI.EnemyIsNear(this.Driver, 120f))
-                        {
-                            if (!this.Driver.drafter.Drafted)
-                            {
-                                var flag = this.cart.HasGasTank() && this.cart.GasTankComp.tankLeaking;
-
-                                if (hitPointsPercent < 0.65f
-
-                                    // || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
-                                    || flag || !this.cart.RefuelableComp.HasFuel)
-                                {
-                                    Job jobNew = this.Driver.DismountAtParkingLot("CM");
-                                    this.Driver.jobs.TryTakeOrderedJob(jobNew);
-                                }
-                            }
-                        }
-                    }
-                }
+                // // bring vehicles home
+                // if (this.cart.VehicleComp != null && !this.cart.VehicleComp.MotorizedWithoutFuel())
+                // {
+                //     float hitPointsPercent = this.cart.health.summaryHealth.SummaryHealthPercent;
+                //
+                //     if (this.cart.Faction == Faction.OfPlayer)
+                //     {
+                //         if (!GenAI.EnemyIsNear(this.Driver, 120f))
+                //         {
+                //             if (!this.Driver.drafter.Drafted)
+                //             {
+                //                 var flag = this.cart.HasGasTank() && this.cart.GasTankComp.tankLeaking;
+                //
+                //                 if (hitPointsPercent < 0.65f
+                //
+                //                     // || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
+                //                     || flag || !this.cart.RefuelableComp.HasFuel)
+                //                 {
+                //                     Job jobNew = this.Driver.DismountAtParkingLot("CM");
+                //                     this.Driver.jobs.TryTakeOrderedJob(jobNew);
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
             }
 
             if (Find.TickManager.TicksGame - this.tickLastDoorCheck >= 96
@@ -288,7 +288,7 @@ namespace TFH_VehicleBase.Components
             if (this.driver == null)
             {
                 return;
-                
+
             }
             if (this.driver.AllComps.Contains(this.cart.DriverComp))
             {
@@ -325,12 +325,9 @@ namespace TFH_VehicleBase.Components
             }
 
             // Check to make pawns not mount two vehicles at once
-            if (pawn.IsDriver())
+            if (pawn.IsDriver(out Vehicle_Cart drivenCart))
             {
-                if (pawn.MountedVehicle() != null)
-                {
-                    pawn.MountedVehicle().MountableComp.Dismount();
-                }
+                drivenCart.MountableComp.Dismount();
             }
 
             this.driver = pawn;
@@ -382,7 +379,7 @@ namespace TFH_VehicleBase.Components
                     {
                         if (this.cart.Spawned)
                         {
-                       //     this.driver.TryAttachFire(0.1f);
+                            //     this.driver.TryAttachFire(0.1f);
                             this.cart.TryAttachFire(0.1f);
                         }
                     }

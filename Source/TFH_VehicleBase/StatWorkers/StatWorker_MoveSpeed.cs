@@ -24,16 +24,14 @@ namespace TFH_VehicleBase.StatWorkers
 
                 if (thisPawn?.RaceProps.intelligence >= Intelligence.ToolUser)
                 {
+                    if (thisPawn.IsDriver(out Vehicle_Cart vehicleCart))
                     {
-                        Vehicle_Cart vehicleCart = thisPawn.MountedVehicle();
-                        if (vehicleCart != null)
+                        if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Driver == thisPawn)
                         {
-                            if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Driver == thisPawn)
-                            {
-                                stringBuilder.AppendLine();
-                                stringBuilder.AppendLine("VehicleSpeed".Translate() + ": x" + vehicleCart.VehicleComp.VehicleSpeed);
-                                return stringBuilder.ToString();
-                            }
+                            stringBuilder.AppendLine();
+                            stringBuilder.AppendLine(
+                                "VehicleSpeed".Translate() + ": x" + vehicleCart.VehicleComp.VehicleSpeed);
+                            return stringBuilder.ToString();
                         }
                     }
                 }
@@ -48,7 +46,7 @@ namespace TFH_VehicleBase.StatWorkers
 
             if (req.HasThing && req.Thing is Pawn)
             {
-                Pawn pawn = req.Thing as Pawn;
+                Pawn pawn = (Pawn)req.Thing;
 
                 if (pawn.RaceProps.intelligence >= Intelligence.ToolUser)
 
@@ -70,24 +68,20 @@ namespace TFH_VehicleBase.StatWorkers
         {
             float result = 1f;
 
-            if (thisPawn.IsDriver())
+            if (thisPawn.IsDriver(out Vehicle_Cart drivenCart))
             {
-                Vehicle_Cart cart = thisPawn.MountedVehicle();
-                if (cart != null)
+                if (!drivenCart.MountableComp.Driver.RaceProps.Animal && drivenCart.MountableComp.Driver == thisPawn)
                 {
-                    if (cart.MountableComp.IsMounted && !cart.MountableComp.Driver.RaceProps.Animal && cart.MountableComp.Driver == thisPawn)
+                    if (drivenCart.IsCurrentlyMotorized())
                     {
-                        if (cart.IsCurrentlyMotorized())
-                        {
-                            result = Mathf.Clamp(cart.VehicleComp.VehicleSpeed, 2f, 100f);
-                        }
-                        else
-                        {
-                            result = Mathf.Clamp(cart.VehicleComp.VehicleSpeed, 0.5f, 1f);
-                        }
-
-                        return result;
+                        result = Mathf.Clamp(drivenCart.VehicleComp.VehicleSpeed, 2f, 100f);
                     }
+                    else
+                    {
+                        result = Mathf.Clamp(drivenCart.VehicleComp.VehicleSpeed, 0.5f, 1f);
+                    }
+
+                    return result;
                 }
             }
 

@@ -1,14 +1,12 @@
 ﻿#define LOGGING
 
-namespace TFH_VehicleHauling
+namespace TFH_VehicleBase
 {
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Text;
 
     using RimWorld;
-
-    using TFH_VehicleBase;
 
     using Verse;
     using Verse.AI;
@@ -29,7 +27,7 @@ namespace TFH_VehicleHauling
         [Conditional("LOGGING")]
         public static void DebugWriteHaulingPawn(Pawn pawn)
         {
-            List<Thing> availableVehicles = pawn.AvailableVehicles();
+            pawn.AvailableVehicles(out List<Thing> availableVehicles);
 
             foreach (var thing in availableVehicles)
             {
@@ -46,7 +44,7 @@ namespace TFH_VehicleHauling
                     state = string.Concat(state, "CanReserveAndReach ");
                 }
 
-                if (TFH_Utility.IsPlayerAllowedToRide(pawn, cart))
+                if (pawn.IsPlayerAllowedToRide(cart))
                 {
                     state = string.Concat(state, "AvailableCart ");
                 }

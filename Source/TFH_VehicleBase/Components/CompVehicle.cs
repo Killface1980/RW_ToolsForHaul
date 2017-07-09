@@ -48,9 +48,6 @@
         public float VehicleSpeed;
         public bool despawnAtEdge;
 
-
-
-        private Graphic_Shadow shadowGraphic;
         private int tickCheck = Find.TickManager.TicksGame;
         private readonly int tickCooldown = 60;
 

@@ -62,7 +62,7 @@
     <Compile Include="JobGivers\JobGiver_AIDefendPoint_TFH.cs" />
     <None Include="JobGivers\JobGiver_Kidnap.cs" />
     <None Include="JobGivers\JobGiver_MountSpawnedFactionVehicle.cs" />
-    <Compile Include="JobGivers\JobGiver_ReturnVehicleIfMounted.cs" />
+    <None Include="JobGivers\JobGiver_ReturnVehicleIfMounted.cs" />
     <None Include="JobGivers\JobGiver_StealVehicle.cs" />
     <None Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
@@ -76,8 +76,8 @@
     <Compile Include="StatWorkers\StatWorker_MoveSpeed.cs" />
     <None Include="Things\IncendiaryFuel.cs" />
     <None Include="Things\SpotlightStuff.cs" />
-    <Compile Include="ThinkNode_JobGiver_Patch.cs" />
     <Compile Include="Toils_Cart.cs" />
+    <Compile Include="Trace.cs" />
     <Compile Include="VehicleRecipesUtility.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_ReturnCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />

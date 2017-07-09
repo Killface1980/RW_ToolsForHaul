@@ -13,21 +13,24 @@
     {
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-
             // return TFH_Utility.Cart();
             return pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling();
         }
 
         public override bool ShouldSkip(Pawn pawn)
         {
-            List<Thing> availabeVehicles = pawn.AvailableVehicles();
-
-            Trace.DebugWriteHaulingPawn(pawn);
-            if (TFH_BaseUtility.GetRightVehicle(pawn, availabeVehicles, WorkTypeDefOf.Hauling) == null)
-                return true;
-
             if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                 return true;
+
+
+            pawn.AvailableVehicles(out List<Thing> availableVehicles);
+
+            if (availableVehicles.NullOrEmpty())
+            {
+                return true;
+            }
+
+            Trace.DebugWriteHaulingPawn(pawn);
 
             return false;
         }
@@ -42,21 +45,25 @@
             }
 
             // Vehicle selection
-            if (pawn.IsDriver())
+
+            pawn.AvailableVehicles(out List<Thing> availableVehicles);
+
+            if (availableVehicles.NullOrEmpty())
             {
-                cart = pawn.MountedVehicle();
+                return null;
             }
 
-            if (cart == null)
+            if (!pawn.IsDriver(out cart))
             {
-                List<Thing> availableVehicles = pawn.AvailableVehicles();
-                if (availableVehicles.Count == 0) return null;
-
-                cart = TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, DefDatabase<WorkTypeDef>.GetNamed("Hauling"), t) as Vehicle_Cart;
-
-                if (cart == null)
-                    return null;
+                cart = TFH_BaseUtility.GetRightVehicle(
+                           pawn,
+                           availableVehicles,
+                           DefDatabase<WorkTypeDef>.GetNamed("Hauling"),
+                           t) as Vehicle_Cart;
             }
+
+            if (cart == null) return null;
+
             var storage = cart.GetContainer();
 
             if (cart.IsBurning())
@@ -79,7 +86,13 @@
 
             StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(t.Position, t);
             IntVec3 storeCell;
-            if (!StoreUtility.TryFindBestBetterStoreCellFor(t, pawn, pawn.Map, currentPriority, pawn.Faction, out storeCell))
+            if (!StoreUtility.TryFindBestBetterStoreCellFor(
+                    t,
+                    pawn,
+                    pawn.Map,
+                    currentPriority,
+                    pawn.Faction,
+                    out storeCell))
             {
                 Log.Message("WorkGiver_Haul_WithCart " + Static.NoEmptyPlaceLowerTrans);
                 JobFailReason.Is(Static.NoEmptyPlaceLowerTrans);
@@ -99,7 +112,6 @@
             JobFailReason.Is(Static.NoAvailableCart);
             return null;
         }
-
     }
 
 }

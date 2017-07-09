@@ -17,7 +17,7 @@
     using Verse.AI;
     using Verse.Sound;
 
-    public class Vehicle_Cart : Pawn, IThingHolder, ILoadReferenceable
+    public class Vehicle_Cart : Pawn
     {
         #region Variables
 
@@ -670,7 +670,7 @@
             {
                 if (!this.IsForbidden(Faction.OfPlayer))
                 {
-                    if (myPawn.RaceProps.Humanlike && !TFH_BaseUtility.IsDriverOfThisVehicle(myPawn, this))
+                    if (myPawn.RaceProps.Humanlike && !myPawn.IsDriver(out Vehicle_Cart drivenCart,this))
                     {
                         yield return new FloatMenuOption("MountOn".Translate(this.LabelShort), action_Mount);
                     }

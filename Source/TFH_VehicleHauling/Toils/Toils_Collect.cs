@@ -212,9 +212,8 @@
                         Job curJob = actor.jobs.curJob;
                         Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
                         Vehicle_Cart carrier = curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
-                        var storage = carrier.GetContainer();
 
-                        if (!storage.CanAcceptAnyOf(haulThing)
+                        if (!carrier.allowances.Allows(haulThing)
                             && actor.Position.InHorDistOf(
                                 haulThing.Position, 1f))
                             return true;
@@ -248,7 +247,7 @@
                         return;
                     }
 
-                    IntVec3 cell = TFH_Utility.FindStorageCell(actor, storage.First());
+                    IntVec3 cell = TFH_BaseUtility.FindStorageCell(actor, storage.First());
                     if (cell != IntVec3.Invalid)
                     {
                         toil.actor.jobs.curJob.SetTarget(StoreCellInd, cell);

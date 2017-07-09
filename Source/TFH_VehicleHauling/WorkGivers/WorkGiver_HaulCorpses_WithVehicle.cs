@@ -25,15 +25,14 @@
                 return true;
             }
 
-            List<Thing> availableVehicles = pawn.AvailableVehicles();
+            pawn.AvailableVehicles(out List<Thing> availableVehicles);
 
-            if (availableVehicles.Count < 1)
+            if (availableVehicles.NullOrEmpty())
             {
                 return true;
             }
 
-            if (TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling)
-                == null)
+            if (TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling) == null)
             {
                 return true;
             }
@@ -66,15 +65,14 @@
             }
 
             // Vehicle selection
-            if (pawn.IsDriver())
+            if (pawn.IsDriver(out Vehicle_Cart drivenCart))
             {
-                cart = pawn.MountedVehicle();
+                cart = drivenCart;
             }
 
             if (cart == null)
             {
-                List<Thing> availableVehicles = pawn.AvailableVehicles();
-
+                pawn.AvailableVehicles(out List<Thing> availableVehicles);
                 cart = TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling, t) as Vehicle_Cart;
 
                 if (cart == null)

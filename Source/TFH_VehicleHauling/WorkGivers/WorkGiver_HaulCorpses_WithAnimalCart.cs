@@ -25,7 +25,7 @@
 
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced)
         {
-            // TO DO Corpses with animal carts?
+            // TODO Corpses with animal carts?
             return null;
 
             if (!(t is Corpse))

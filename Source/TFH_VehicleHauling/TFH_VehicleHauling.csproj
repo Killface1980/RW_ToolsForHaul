@@ -20,7 +20,7 @@
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -73,7 +73,6 @@
     <None Include="_inactive\_TESTING\WheelChairSitter\WorkGiver_TakeToVehicle.cs" />
     <None Include="_inactive\_TESTING\WheelChairSitter\JobDriver_TakeToWheelChair.cs" />
     <None Include="_inactive\_TESTING\IncidentWorker_Raid_Sanity.cs" />
-    <Compile Include="HaulJobDefOf.cs" />
     <None Include="Toils\Class1.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithVehicle.cs" />
     <None Include="_inactive\_TESTING\Class1.cs" />
@@ -82,7 +81,6 @@
     <None Include="_inactive\Class1.cs" />
     <None Include="_inactive\CompWeaponExtensions.cs" />
     <None Include="_inactive\CompTool.cs" />
-    <Compile Include="Trace.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithCart.cs" />
     <Compile Include="JobDrivers\JobDriver_HaulWithCart.cs">

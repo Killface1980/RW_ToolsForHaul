@@ -7,8 +7,11 @@
     [DefOf]
     public static class VehicleJobDefOf
     {
+        public static readonly JobDef HaulWithAnimalCart;
+
+        public static readonly JobDef HaulWithCart;
         // public static readonly JobDef HuntWithVehicle = DefDatabase<JobDef>.GetNamed("HuntWithVehicle");
-      //  public static readonly JobDef TendVehicle;
+        //  public static readonly JobDef TendVehicle;
 
         public static readonly JobDef DismountAtParkingLot;
 

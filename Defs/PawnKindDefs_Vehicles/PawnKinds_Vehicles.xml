@@ -19,7 +19,7 @@
 	
   <PawnKindDef ParentName="MotorizedVehicleBase">
     <defName>TFH_Cart</defName>
-    <label>cart</label>
+    <label>Cart</label>
     <race>VehicleCart</race>
     <combatPower>290</combatPower>
     <defaultFactionType></defaultFactionType>
@@ -47,7 +47,7 @@
 
   <PawnKindDef ParentName="MotorizedVehicleBase">
     <defName>TFH_SmackWay</defName>
-    <label>TFH_SmackWay</label>
+    <label>SmackWay</label>
     <race>VehicleSmackWay</race>
     <combatPower>290</combatPower>
     <defaultFactionType></defaultFactionType>
@@ -73,7 +73,7 @@
  
   <PawnKindDef ParentName="MotorizedVehicleBase">
     <defName>TFH_ATV</defName>
-    <label>TFH_ATV</label>
+    <label>ATV</label>
     <race>VehicleATV</race>
     <combatPower>290</combatPower>
     <defaultFactionType></defaultFactionType>
@@ -99,7 +99,7 @@
 
   <PawnKindDef ParentName="MotorizedVehicleBase">
     <defName>TFH_CombatATV</defName>
-    <label>TFH_CombatATV</label>
+    <label>Combat ATV</label>
     <race>VehicleCombatATV</race>
     <combatPower>290</combatPower>
     <defaultFactionType></defaultFactionType>
@@ -132,7 +132,7 @@
 
   <PawnKindDef ParentName="MotorizedVehicleBase">
     <defName>TFH_Beetle</defName>
-    <label>TFH_Beetle</label>
+    <label>Beetle</label>
     <race>VehicleBeetle</race>
     <combatPower>290</combatPower>
     <defaultFactionType></defaultFactionType>
@@ -158,7 +158,7 @@
  
   <PawnKindDef ParentName="MotorizedVehicleBase">
     <defName>TFH_Truck</defName>
-    <label>TFH_Truck</label>
+    <label>Truck</label>
     <race>VehicleTruck</race>
     <combatPower>290</combatPower>
     <defaultFactionType></defaultFactionType>
@@ -186,7 +186,7 @@
 
   <PawnKindDef ParentName="MotorizedVehicleBase">
     <defName>TFH_Speeder</defName>
-    <label>TFH_Speeder</label>
+    <label>Speeder</label>
     <race>VehicleSpeeder</race>
     <combatPower>290</combatPower>
     <defaultFactionType></defaultFactionType>

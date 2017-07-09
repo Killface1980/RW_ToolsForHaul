@@ -52,39 +52,42 @@
 
                 }
 
-                if (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !pawn.IsDriver())
+                if (pawn.Faction == Faction.OfPlayer)
                 {
-                    Job jobNew = new Job(VehicleJobDefOf.Mount);
-                    this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
-                    jobNew.targetA = this.vehicle;
-                    pawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
-                    break;
-                }
-
-                if (pawn.Faction == Faction.OfPlayer && pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !pawn.IsDriver())
-                {
-                    Pawn worker = null;
-                    Job jobNew = new Job(VehicleJobDefOf.MakeMount);
-                    this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
-                    jobNew.count = 1;
-                    jobNew.targetA = this.vehicle;
-                    jobNew.targetB = pawn;
-                    foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
-                        if (colonyPawn.CurJob.def != jobNew.def
-                            && (worker == null || (worker.Position - pawn.Position).LengthHorizontal
-                                > (colonyPawn.Position - pawn.Position).LengthHorizontal))
-                        {
-                            worker = colonyPawn;
-                        }
-
-                    if (worker == null)
+                    if ((pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !pawn.IsDriver(out Vehicle_Cart drivenCart))
                     {
-                        Messages.Message("NoWorkForMakeMount".Translate(), MessageSound.RejectInput);
+                        Job jobNew = new Job(VehicleJobDefOf.Mount);
+                        this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
+                        jobNew.targetA = this.vehicle;
+                        pawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                         break;
                     }
 
-                    worker.jobs.StartJob(jobNew, JobCondition.InterruptForced);
-                    break;
+                    if (pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !pawn.IsDriver(out Vehicle_Cart drivenCart2))
+                    {
+                        Pawn worker = null;
+                        Job jobNew = new Job(VehicleJobDefOf.MakeMount);
+                        this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
+                        jobNew.count = 1;
+                        jobNew.targetA = this.vehicle;
+                        jobNew.targetB = pawn;
+                        foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
+                            if (colonyPawn.CurJob.def != jobNew.def
+                                && (worker == null || (worker.Position - pawn.Position).LengthHorizontal
+                                    > (colonyPawn.Position - pawn.Position).LengthHorizontal))
+                            {
+                                worker = colonyPawn;
+                            }
+
+                        if (worker == null)
+                        {
+                            Messages.Message("NoWorkForMakeMount".Translate(), MessageSound.RejectInput);
+                            break;
+                        }
+
+                        worker.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                        break;
+                    }
                 }
             }
 
