@@ -34,7 +34,7 @@
 
         public override bool ShouldSkip(Pawn pawn)
         {
-            if (pawn.IsDriver(out BasicVehicle drivenCart))
+            if (pawn.IsDriver(out Vehicle_Cart drivenCart))
             {
                 return true;
             }

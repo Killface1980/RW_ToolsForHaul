@@ -58,5 +58,11 @@
       <Link>AnimalRideable.xml</Link>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TFH_VehicleBase\TFH_VehicleBase.csproj">
+      <Project>{BBEADC75-7F91-4397-86BC-A4981FDA42B1}</Project>
+      <Name>TFH_VehicleBase</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

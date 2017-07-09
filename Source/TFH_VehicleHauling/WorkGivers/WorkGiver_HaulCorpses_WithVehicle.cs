@@ -65,7 +65,7 @@
             }
 
             // Vehicle selection
-            if (pawn.IsDriver(out BasicVehicle drivenCart) && drivenCart is Vehicle_Cart)
+            if (pawn.IsDriver(out Vehicle_Cart drivenCart) && drivenCart is Vehicle_Cart)
             {
                 cart = drivenCart as Vehicle_Cart;
             }

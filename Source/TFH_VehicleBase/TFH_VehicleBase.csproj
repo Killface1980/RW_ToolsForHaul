@@ -60,6 +60,7 @@
     <Compile Include="JobDrivers\JobDriver_DismountAtParkingLot.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
+    <Compile Include="JobDrivers\JobDriver_MountAnimal.cs" />
     <Compile Include="JobDrivers\JobDriver_Mount.cs" />
     <Compile Include="JobDrivers\JobDriver_MountAndDraft.cs" />
     <Compile Include="JobDrivers\JobDriver_StandBy.cs" />

@@ -18,6 +18,7 @@
         public static readonly JobDef StandBy;
 
         public static readonly JobDef Mount;
+        public static readonly JobDef MountAnimal;
 
         public static readonly JobDef MountAndDraft;
 

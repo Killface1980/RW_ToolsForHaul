@@ -17,7 +17,7 @@ namespace TFH_VehicleBase.Components
 
     public class CompDriver : ThingComp
     {
-        public BasicVehicle Vehicle { get; set; }
+        public Vehicle_Cart Vehicle { get; set; }
 
         public Pawn Pawn;
 

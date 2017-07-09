@@ -44,37 +44,37 @@
             List<Thing> thingList = c.GetThingList(this.Map);
             foreach (Thing thing in thingList)
             {
-                Pawn pawn = thing as Pawn;
+                Pawn vehicle = thing as Pawn;
 
-                if (pawn == null)
+                if (vehicle == null)
                 {
                     return;
 
                 }
 
-                if (pawn.Faction == Faction.OfPlayer)
+                if (vehicle.Faction == Faction.OfPlayer)
                 {
-                    if ((pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !pawn.IsDriver(out BasicVehicle drivenCart))
+                    if (vehicle.RaceProps.IsMechanoid && !vehicle.IsDriver(out Vehicle_Cart drivenCart))
                     {
                         Job jobNew = new Job(VehicleJobDefOf.Mount);
                         this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
                         jobNew.targetA = this.vehicle;
-                        pawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+                        vehicle.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                         break;
                     }
 
-                    if (pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !pawn.IsDriver(out BasicVehicle drivenCart2))
+                    if (vehicle.RaceProps.Animal) ;// && vehicle.training.IsCompleted(TrainableDefOf.Obedience) && vehicle.RaceProps.baseBodySize >= 1.0 && !vehicle.IsDriver(out Vehicle_Cart drivenCart2))
                     {
                         Pawn worker = null;
-                        Job jobNew = new Job(VehicleJobDefOf.MakeMount);
+                        Job jobNew = new Job(VehicleJobDefOf.MountAnimal);
                         this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
                         jobNew.count = 1;
                         jobNew.targetA = this.vehicle;
-                        jobNew.targetB = pawn;
+                        jobNew.targetB = vehicle;
                         foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
                             if (colonyPawn.CurJob.def != jobNew.def
-                                && (worker == null || (worker.Position - pawn.Position).LengthHorizontal
-                                    > (colonyPawn.Position - pawn.Position).LengthHorizontal))
+                                && (worker == null || (worker.Position - vehicle.Position).LengthHorizontal
+                                    > (colonyPawn.Position - vehicle.Position).LengthHorizontal))
                             {
                                 worker = colonyPawn;
                             }

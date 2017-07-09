@@ -19,6 +19,9 @@
 
     public class Vehicle_Animal : BasicVehicle
     {
+
+        public CompRideable RideableComp;
+
         #region Variables
 
         public override Color DrawColor
@@ -49,7 +52,12 @@
 
         public float DesiredSpeed => this.GetStatValue(StatDefOf.MoveSpeed);
 
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        {
+            base.SpawnSetup(map, respawningAfterLoad);
+            this.RideableComp = this.TryGetComp<CompRideable>();
 
+        }
 
         private int tickCheck = Find.TickManager.TicksGame;
 
@@ -90,7 +98,42 @@
             {
                 yield return c;
             }
-
+            if (this.Faction != Faction.OfPlayer)
+            {
+                yield break;
+                
+            }
+            if (!this.RideableComp.IsMounted)
+            {
+                Designator_Mount designator =
+                    new Designator_Mount
+                        {
+                            vehicle = this,
+                            defaultLabel = Static.TxtCommandMountLabel.Translate(),
+                            defaultDesc = Static.TxtCommandMountDesc.Translate(),
+                            icon = Static.IconMount,
+                            activateSound = Static.ClickSound
+                        };
+                yield return designator;
+            }
+            else
+            {
+                if (this.RideableComp.Driver != null)
+                {
+                    yield return new Command_Action
+                                     {
+                                         defaultLabel = Static.TxtCommandDismountLabel.Translate(),
+                                         defaultDesc = Static.TxtCommandDismountDesc.Translate(),
+                                         icon = Static.IconUnmount,
+                                         activateSound = Static.ClickSound,
+                                         action = delegate
+                                             {
+                                                 TFH_BaseUtility.DismountGizmoFloatMenu(
+                                                     this.RideableComp.Driver);
+                                             }
+                                     };
+                }
+            }
         }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
@@ -150,7 +193,7 @@
 
             Action action_Mount = () =>
                 {
-                    Job jobNew = new Job(VehicleJobDefOf.Mount);
+                    Job jobNew = new Job(VehicleJobDefOf.MountAnimal);
                     myPawn.Map.reservationManager.ReleaseAllForTarget(this);
                     myPawn.Map.reservationManager.Reserve(myPawn, this);
                     jobNew.targetA = this;
@@ -164,11 +207,11 @@
                     myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
 
-            if (!this.MountableComp.IsMounted)
+            if (!this.RideableComp.IsMounted)
             {
                 if (!this.IsForbidden(Faction.OfPlayer))
                 {
-                    if (myPawn.RaceProps.Humanlike && !myPawn.IsDriver(out BasicVehicle drivenCart, this))
+                    if (myPawn.RaceProps.Humanlike && !myPawn.IsDriver())
                     {
                         yield return new FloatMenuOption("MountOn".Translate(this.LabelShort), action_Mount);
                     }
@@ -205,26 +248,6 @@
 
         #region Ticker
 
-
-
-        public override void Tick()
-        {
-            base.Tick();
-
-            if (!this.Spawned || this.Dead)
-            {
-                return;
-
-            }
-
-            if (!this.instantiated)
-            {
-                this.VehicleComp.currentDriverSpeed = this.VehicleComp.VehicleSpeed;
-                this.instantiated = true;
-            }
-
-        }
-
         #endregion
 
         #region Graphics / Inspections
@@ -238,17 +261,17 @@
                     return base.DrawPos;
                 }
 
-                if (!this.MountableComp.IsMounted)
+                if (!this.RideableComp.IsMounted)
                 {
                     return base.DrawPos;
                 }
 
-                float num = this.MountableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
-                num *= this.MountableComp.Driver.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
+                float num = this.RideableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
+                num *= this.RideableComp.Driver.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
                 Vector3 vector = new Vector3(0f, 0f, -num);
 
                 // vector += DriverOffset;
-                return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Driver.Rotation.AsAngle);
+                return this.RideableComp.Position + vector.RotatedBy(this.RideableComp.Driver.Rotation.AsAngle);
             }
         }
 
@@ -293,16 +316,16 @@
             stringBuilder.Append(base.GetInspectString());
 
             string currentDriverString;
-            if (this.MountableComp.IsMounted)
+            if (this.RideableComp.IsMounted)
             {
-                currentDriverString = "Rider".Translate() + ": " + this.MountableComp.Driver.LabelCap;
+                currentDriverString = "Rider".Translate() + ": " + this.RideableComp.Driver.LabelCap;
             }
             else
             {
                 currentDriverString = "NoRider".Translate();
             }
 
-            stringBuilder.AppendLine(currentDriverString);
+            stringBuilder.Append(currentDriverString);
 
             // string text = storage.ContentsString;
             // stringBuilder.AppendLine(string.Concat(new object[]
@@ -315,11 +338,6 @@
         }
 
         #endregion
-
-        public void GetChildHolders(List<IThingHolder> outChildren)
-        {
-            ThingOwnerUtility.AppendThingHoldersFromThings(outChildren, this.GetDirectlyHeldThings());
-        }
 
 
         public bool InParkingLot => this.Position.GetZone(this.Map) is Zone_ParkingLot;

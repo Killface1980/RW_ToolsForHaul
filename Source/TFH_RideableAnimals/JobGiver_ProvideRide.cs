@@ -6,36 +6,23 @@ using Verse;
 
 namespace TFH_RideableAnimals
 {
-    public class JobGiver_ProvideRide : JobGiver_AIFollowPawn
+    using TFH_VehicleBase;
+
+    using Verse.AI;
+    public class JobGiver_ProvideRide : ThinkNode_JobGiver
     {
-        public const float RadiusUnreleased = 3f;
+        public int ticks = 300;
 
-        public const float RadiusReleased = 50f;
-
-        protected override int FollowJobExpireInterval
+        protected override Job TryGiveJob(Pawn pawn)
         {
-            get
+            if (((Vehicle_Animal)pawn).RideableComp.IsMounted)
             {
-                return 200;
+                return new Job(JobDefOf.Wait)
+                {
+                    expiryInterval = this.ticks
+                };
             }
-        }
-
-        protected override Pawn GetFollowee(Pawn pawn)
-        {
-            if (pawn.playerSettings == null)
-            {
-                return null;
-            }
-            return pawn.playerSettings.master;
-        }
-
-        protected override float GetRadius(Pawn pawn)
-        {
-            if (pawn.playerSettings.master.playerSettings.animalsReleased && pawn.training.IsCompleted(TrainableDefOf.Release))
-            {
-                return 50f;
-            }
-            return 3f;
+            return null;
         }
     }
 }

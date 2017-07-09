@@ -119,7 +119,7 @@
             Pawn pawn = (Pawn)PawnField?.GetValue(__instance);
             //Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
 
-            if (pawn.IsDriver(out BasicVehicle cart))
+            if (pawn.IsDriver(out Vehicle_Cart cart))
             {
 
                 // TODO create own formula, wheel size??
@@ -253,7 +253,7 @@
                     //         newjob = true;
                     //     }
                     // }
-                    if (pawn.IsDriver(out BasicVehicle drivenCart))
+                    if (pawn.IsDriver(out Vehicle_Cart drivenCart))
                     {
                         if (requestJob.def == JobDefOf.LayDown || requestJob.def == JobDefOf.WaitWander
                             || requestJob.def == JobDefOf.EnterCryptosleepCasket || requestJob.def == JobDefOf.FeedPatient
@@ -320,7 +320,7 @@
 
                 //    Log.Message("Non-player faction");
 
-                if (!pawn.IsDriver(out BasicVehicle drivenCart))
+                if (!pawn.IsDriver(out Vehicle_Cart drivenCart))
                 {
                     // Log.Message("no driver");
                     // Log.Message("job " + __result + " - " + requestJob);
@@ -364,7 +364,7 @@
 
         private static Job MountOnOrReturnVehicle(Pawn pawn, Job job, Vehicle_Cart cart)
         {
-            if (!pawn.IsDriver(out BasicVehicle drivenCart))
+            if (!pawn.IsDriver(out Vehicle_Cart drivenCart))
             {
                 job = new Job(VehicleJobDefOf.Mount)
                 {

@@ -15,60 +15,8 @@ namespace TFH_VehicleBase
 
     public class BasicVehicle : Pawn
     {
-        public CompMountable MountableComp { get; set; }
-
-        public override void SpawnSetup(Map map, bool respawningAfterLoad)
-        {
-            base.SpawnSetup(map, respawningAfterLoad);
-            this.MountableComp = this.TryGetComp<CompMountable>();
-        }
-
-        public override IEnumerable<Gizmo> GetGizmos()
-        {
-            foreach (Gizmo c in base.GetGizmos())
-            {
-                yield return c;
-            }
-
-            if (this.Faction != Faction.OfPlayer)
-            {
-                yield break;
-            }
-
-            if (!this.MountableComp.IsMounted)
-            {
-                Designator_Mount designator =
-                    new Designator_Mount
-                        {
-                            vehicle = this,
-                            defaultLabel = Static.TxtCommandMountLabel.Translate(),
-                            defaultDesc = Static.TxtCommandMountDesc.Translate(),
-                            icon = Static.IconMount,
-                            activateSound = Static.ClickSound
-                        };
-                yield return designator;
-            }
-            else
-            {
-                if (this.MountableComp.Driver != null)
-                {
-                    yield return new Command_Action
-                                     {
-                                         defaultLabel = Static.TxtCommandDismountLabel.Translate(),
-                                         defaultDesc = Static.TxtCommandDismountDesc.Translate(),
-                                         icon = Static.IconUnmount,
-                                         activateSound = Static.ClickSound,
-                                         action = delegate
-                                             {
-                                                 TFH_BaseUtility.DismountGizmoFloatMenu(
-                                                     this.MountableComp.Driver);
-                                             }
-                                     };
-                }
-            }
 
 
-        }
 
         public virtual bool ClaimableBy(Faction claimee)
         {

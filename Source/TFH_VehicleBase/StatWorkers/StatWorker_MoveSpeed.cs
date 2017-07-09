@@ -24,7 +24,7 @@ namespace TFH_VehicleBase.StatWorkers
 
                 if (thisPawn?.RaceProps.intelligence >= Intelligence.ToolUser)
                 {
-                    if (thisPawn.IsDriver(out BasicVehicle vehicleCart) && !vehicleCart.RaceProps.Animal)
+                    if (thisPawn.IsDriver(out Vehicle_Cart vehicleCart) && !vehicleCart.RaceProps.Animal)
                     {
                         var cart = vehicleCart as Vehicle_Cart;
                         if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Driver == thisPawn)
@@ -69,7 +69,7 @@ namespace TFH_VehicleBase.StatWorkers
         {
             float result = 1f;
 
-            if (thisPawn.IsDriver(out BasicVehicle drivenCart))
+            if (thisPawn.IsDriver(out Vehicle_Cart drivenCart))
             {
                 if (!drivenCart.RaceProps.Animal)
                 {

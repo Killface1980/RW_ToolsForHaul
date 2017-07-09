@@ -328,7 +328,7 @@ namespace TFH_VehicleBase
             {
                 Vehicle_Cart cart = thing as Vehicle_Cart;
                 if (!cart.MountableComp.IsMounted && !pawn.CanReserve(cart)) { continue; }
-                if (cart.MountableComp.IsMounted && !pawn.IsDriver(out BasicVehicle drivenCart, cart)) { continue; }
+                if (cart.MountableComp.IsMounted && !pawn.IsDriver(out Vehicle_Cart drivenCart, cart)) { continue; }
                 if (cart.Faction != pawn.Faction) { continue; }
                 if (cart.IsAboutToBlowUp()) { continue; }
                 availableVehicles.Add(cart);
@@ -357,12 +357,12 @@ namespace TFH_VehicleBase
             return pawn.Map.listerThings.AllThings.FindAll(x => x is Vehicle_Cart && ((Vehicle_Cart)x).MountableComp.Driver == pawn).FirstOrDefault() as Vehicle_Cart;
         }
 
-        public static void MountedVehicle(this Pawn pawn, out BasicVehicle cart)
+        public static void MountedVehicle(this Pawn pawn, out Vehicle_Cart cart)
         {
             cart = pawn.Map.listerThings.AllThings.FindAll(x => x is BasicVehicle && ((Vehicle_Cart)x).MountableComp.Driver == pawn).FirstOrDefault() as Vehicle_Cart;
         }
 
-        public static Job DismountAtParkingLot(this Pawn pawn, string caller, BasicVehicle cart = null)
+        public static Job DismountAtParkingLot(this Pawn pawn, string caller, Vehicle_Cart cart = null)
         {
             if (cart == null)
             {
@@ -903,7 +903,7 @@ namespace TFH_VehicleBase
             return 60 / movePerTick;
         }
 
-        public static bool IsDriver(this Pawn pawn, BasicVehicle cart = null)
+        public static bool IsDriver(this Pawn pawn, Vehicle_Cart cart = null)
         {
             if (cart != null)
             {
@@ -926,7 +926,7 @@ namespace TFH_VehicleBase
             return false;
         }
 
-        public static bool IsDriver(this Pawn pawn, out BasicVehicle mountedCart, BasicVehicle cart = null)
+        public static bool IsDriver(this Pawn pawn, out Vehicle_Cart mountedCart, Vehicle_Cart cart = null)
         {
             if (cart != null)
             {
@@ -949,6 +949,25 @@ namespace TFH_VehicleBase
             }
 
             mountedCart = null;
+            return false;
+        }
+
+        public static bool IsDriver(this Pawn pawn)
+        {
+
+            List<Thing> mountedVehicles = pawn.Map.MountedVehicles();
+            if (!mountedVehicles.NullOrEmpty())
+            {
+                foreach (Thing thing in mountedVehicles)
+                {
+                    Vehicle_Cart vehicle = (Vehicle_Cart)thing;
+                    if (vehicle.MountableComp.Driver == pawn)
+                    {
+                        return true;
+                    }
+                }
+            }
+
             return false;
         }
 
@@ -981,7 +1000,7 @@ namespace TFH_VehicleBase
 
         public static void DismountGizmoFloatMenu(Pawn pawn)
         {
-            if (!pawn.IsDriver(out BasicVehicle pawnCart))
+            if (!pawn.IsDriver(out Vehicle_Cart pawnCart))
             {
                 return;
 
@@ -1023,7 +1042,7 @@ namespace TFH_VehicleBase
                     Pawn selPawn = selectedObject as Pawn;
                     if (selPawn != null)
                     {
-                        if (selPawn.IsDriver(out BasicVehicle drivenCart))
+                        if (selPawn.IsDriver(out Vehicle_Cart drivenCart))
                         {
                             allPawnsDriving.Add(selPawn);
                         }
@@ -1035,7 +1054,7 @@ namespace TFH_VehicleBase
                 {
                     foreach (Pawn driverPawn in allPawnsDriving)
                     {
-                        driverPawn.MountedVehicle(out BasicVehicle pawnCart2);
+                        driverPawn.MountedVehicle(out Vehicle_Cart pawnCart2);
 
                         options.Add(
                             new FloatMenuOption(
@@ -1072,7 +1091,7 @@ namespace TFH_VehicleBase
                                 {
                                     foreach (Pawn driverPawn in allPawnsDriving)
                                     {
-                                        driverPawn.MountedVehicle(out BasicVehicle pawnCart3);
+                                        driverPawn.MountedVehicle(out Vehicle_Cart pawnCart3);
                                         if (!driverPawn.Position.InBounds(driverPawn.Map))
                                         {
                                             pawnCart3.MountableComp.DismountAt(driverPawn.Position);

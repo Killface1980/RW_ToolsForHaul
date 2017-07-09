@@ -324,7 +324,7 @@ namespace TFH_VehicleBase.Components
             }
 
             // Check to make pawns not mount two vehicles at once
-            if (pawn.IsDriver(out BasicVehicle drivenCart))
+            if (pawn.IsDriver(out Vehicle_Cart drivenCart))
             {
                 drivenCart.MountableComp.Dismount();
             }

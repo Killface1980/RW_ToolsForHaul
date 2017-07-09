@@ -19,6 +19,8 @@
 
     public class Vehicle_Cart : BasicVehicle
     {
+        public CompMountable MountableComp;
+    
         #region Variables
 
         public override Color DrawColor
@@ -176,6 +178,7 @@
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
+            this.MountableComp = this.TryGetComp<CompMountable>();
             // Reload textures to get colored versions
             LongEventHandler.ExecuteWhenFinished(
                 delegate
@@ -292,7 +295,6 @@
             Scribe_Deep.Look(ref this.storage, "storage", this);
             Scribe_Deep.Look(ref this.allowances, "allowances");
 
-            Scribe_Deep.Look(ref this.ExplosiveTickers, "explosiveTickers");
             Scribe_Values.Look<bool>(ref this.wickStarted, "wickStarted", false, false);
 
             // Scribe_References.Look<Thing>(ref this.light, "light");
@@ -313,7 +315,6 @@
             {
                 yield return c;
             }
-            // Getting the gizmos manually - no drafting, see SpawnSetup?
 
             Designator_ClaimVehicle des = new Designator_ClaimVehicle();
 
@@ -337,6 +338,42 @@
                 }
                 yield break;
             }
+
+
+            if (!this.MountableComp.IsMounted)
+            {
+                Designator_Mount designator =
+                    new Designator_Mount
+                        {
+                            vehicle = this,
+                            defaultLabel = Static.TxtCommandMountLabel.Translate(),
+                            defaultDesc = Static.TxtCommandMountDesc.Translate(),
+                            icon = Static.IconMount,
+                            activateSound = Static.ClickSound
+                        };
+                yield return designator;
+            }
+            else
+            {
+                if (this.MountableComp.Driver != null)
+                {
+                    yield return new Command_Action
+                                     {
+                                         defaultLabel = Static.TxtCommandDismountLabel.Translate(),
+                                         defaultDesc = Static.TxtCommandDismountDesc.Translate(),
+                                         icon = Static.IconUnmount,
+                                         activateSound = Static.ClickSound,
+                                         action = delegate
+                                             {
+                                                 TFH_BaseUtility.DismountGizmoFloatMenu(
+                                                     this.MountableComp.Driver);
+                                             }
+                                     };
+                }
+            }
+            // Getting the gizmos manually - no drafting, see SpawnSetup?
+
+
 
             CompForbiddable forbid = this.GetComp<CompForbiddable>();
 
@@ -625,7 +662,7 @@
             {
                 if (!this.IsForbidden(Faction.OfPlayer))
                 {
-                    if (myPawn.RaceProps.Humanlike && !myPawn.IsDriver(out BasicVehicle drivenCart, this))
+                    if (myPawn.RaceProps.Humanlike && !myPawn.IsDriver(out Vehicle_Cart drivenCart, this))
                     {
                         yield return new FloatMenuOption("MountOn".Translate(this.LabelShort), action_Mount);
                     }
@@ -914,7 +951,7 @@
                 currentDriverString = "NoDriver".Translate();
             }
 
-            stringBuilder.AppendLine(currentDriverString);
+            stringBuilder.Append(currentDriverString);
 
             // string text = storage.ContentsString;
             // stringBuilder.AppendLine(string.Concat(new object[]

@@ -52,7 +52,7 @@
             {
                 return null;
             }
-            BasicVehicle drivenCart;
+            Vehicle_Cart drivenCart;
             if (!pawn.IsDriver(out drivenCart))
             {
                 cart = TFH_BaseUtility.GetRightVehicle(
