@@ -28,7 +28,6 @@ namespace TFH_VehicleBase
         public static void DebugWriteHaulingPawn(Pawn pawn)
         {
             pawn.AvailableVehicles(out List<Thing> availableVehicles);
-
             foreach (var thing in availableVehicles)
             {
                 var cart = (Vehicle_Cart)thing;

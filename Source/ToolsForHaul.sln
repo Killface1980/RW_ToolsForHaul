@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_Vehicles", "TFH_Vehicle
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_BattleBeacon", "TFH_BattleBeacon\TFH_BattleBeacon.csproj", "{2ABBB5A7-833F-4851-96D0-7DBFF1C1DEE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_RideableAnimals", "TFH_RideableAnimals\TFH_RideableAnimals.csproj", "{F1C893D1-5162-483E-952E-FC2D023D6550}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2ABBB5A7-833F-4851-96D0-7DBFF1C1DEE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ABBB5A7-833F-4851-96D0-7DBFF1C1DEE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ABBB5A7-833F-4851-96D0-7DBFF1C1DEE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1C893D1-5162-483E-952E-FC2D023D6550}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1C893D1-5162-483E-952E-FC2D023D6550}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1C893D1-5162-483E-952E-FC2D023D6550}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1C893D1-5162-483E-952E-FC2D023D6550}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

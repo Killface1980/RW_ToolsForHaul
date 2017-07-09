@@ -91,7 +91,7 @@
             // JumpIf already mounted
             yield return Toils_Jump.JumpIf(
                 checkHaulableEmpty,
-                () => { return (cart.GetComp<CompMountable>().Driver == this.pawn) ? true : false; });
+                () => { return (cart.MountableComp.Driver == this.pawn) ? true : false; });
 
             // Mount on Target
             yield return Toils_Goto.GotoThing(CartInd, PathEndMode.ClosestTouch)

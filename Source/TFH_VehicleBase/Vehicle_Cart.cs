@@ -17,7 +17,7 @@
     using Verse.AI;
     using Verse.Sound;
 
-    public class Vehicle_Cart : Pawn
+    public class Vehicle_Cart : BasicVehicle
     {
         #region Variables
 
@@ -62,39 +62,6 @@
             }
 
             return false;
-        }
-
-        public virtual bool ClaimableBy(Faction claimee)
-        {
-            // No vehicles if enemy near
-            if (base.Faction != null)
-            {
-                if (claimee != base.Faction)
-                {
-                    if (base.Faction.HostileTo(claimee))
-                    {
-                        foreach (IAttackTarget attackTarget in this.Map.attackTargetsCache.TargetsHostileToFaction(claimee))
-                        {
-                            if (attackTarget.Thing.Position.InHorDistOf(this.Position, 20f))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
-
-            // CompPowerTrader comp = this.GetComp<CompPowerTrader>();
-            // if (comp == null || !comp.PowerOn)
-            // {
-            // CompMannable comp2 = this.GetComp<CompMannable>();
-            // if (comp2 == null || !comp2.MannedNow)
-            // {
-            // return true;
-            // }
-            // }
         }
 
         public float DesiredSpeed => this.GetStatValue(StatDefOf.MoveSpeed);
@@ -173,7 +140,6 @@
         // slotGroupParent Interface
         public ThingFilter allowances;
 
-        public CompMountable MountableComp;
 
         public CompRefuelable RefuelableComp;
 
@@ -222,6 +188,21 @@
                                 this.DrawColorTwo);
                     });
 
+            List<Hediff> hediffSetHediffs = this.health?.hediffSet?.hediffs;
+            if (!hediffSetHediffs.NullOrEmpty())
+            {
+                this.ExplosiveTickers = new List<HediffCompExplosive_TFH>();
+                foreach (var hediff in hediffSetHediffs)
+                {
+                    HediffCompExplosive_TFH exploder = hediff.TryGetComp<HediffCompExplosive_TFH>();
+
+                    if (exploder != null)
+                    {
+                        this.ExplosiveTickers.Add(exploder);
+                    }
+                }
+            }
+
             // To allow the vehicle to be drafted -> Still not possible to draft, because 1. not humanlike and 2. the GetGizmos in Pawn_Drafter is internal! 
             this.drafter = new Pawn_DraftController(this); // Maybe not needed because not usable?
 
@@ -230,7 +211,6 @@
                 this.equipment = new Pawn_EquipmentTracker(this);
             }
 
-            this.MountableComp = this.TryGetComp<CompMountable>();
 
             this.RefuelableComp = this.TryGetComp<CompRefuelable>();
 
@@ -271,7 +251,7 @@
         {
             this.DriverComp = new CompDriver
             {
-                Cart = this,
+                Vehicle = this,
                 Pawn = this.MountableComp.Driver,
                 parent = this.MountableComp.Driver
             };
@@ -329,6 +309,10 @@
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
+            foreach (Gizmo c in base.GetGizmos())
+            {
+                yield return c;
+            }
             // Getting the gizmos manually - no drafting, see SpawnSetup?
 
             Designator_ClaimVehicle des = new Designator_ClaimVehicle();
@@ -353,6 +337,7 @@
                 }
                 yield break;
             }
+
             CompForbiddable forbid = this.GetComp<CompForbiddable>();
 
             foreach (Gizmo gizmo in forbid.CompGetGizmosExtra())
@@ -368,37 +353,7 @@
                 }
             }
 
-            if (!this.MountableComp.IsMounted)
-            {
-                Designator_Mount designator =
-                    new Designator_Mount
-                    {
-                        vehicle = this,
-                        defaultLabel = Static.TxtCommandMountLabel.Translate(),
-                        defaultDesc = Static.TxtCommandMountDesc.Translate(),
-                        icon = Static.IconMount,
-                        activateSound = Static.ClickSound
-                    };
-                yield return designator;
-            }
-            else
-            {
-                if (this.MountableComp.Driver != null)
-                {
-                    yield return new Command_Action
-                    {
-                        defaultLabel = Static.TxtCommandDismountLabel.Translate(),
-                        defaultDesc = Static.TxtCommandDismountDesc.Translate(),
-                        icon = Static.IconUnmount,
-                        activateSound = Static.ClickSound,
-                        action = delegate
-                            {
-                                TFH_BaseUtility.DismountGizmoFloatMenu(
-                                    this.MountableComp.Driver);
-                            }
-                    };
-                }
-            }
+
 
             // Get explosive Gizmos
             if (this.CanExplode())
@@ -670,7 +625,7 @@
             {
                 if (!this.IsForbidden(Faction.OfPlayer))
                 {
-                    if (myPawn.RaceProps.Humanlike && !myPawn.IsDriver(out Vehicle_Cart drivenCart,this))
+                    if (myPawn.RaceProps.Humanlike && !myPawn.IsDriver(out BasicVehicle drivenCart, this))
                     {
                         yield return new FloatMenuOption("MountOn".Translate(this.LabelShort), action_Mount);
                     }

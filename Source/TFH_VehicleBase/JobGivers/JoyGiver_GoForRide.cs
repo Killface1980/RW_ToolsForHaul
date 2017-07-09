@@ -20,7 +20,7 @@
                 return null;
             }
 
-            if (cart.MountableComp.IsMounted && !pawn.IsDriver(out Vehicle_Cart drivenCart, cart))
+            if (cart.MountableComp.IsMounted && !pawn.IsDriver(out BasicVehicle drivenCart, cart))
             {
                 return null;
             }

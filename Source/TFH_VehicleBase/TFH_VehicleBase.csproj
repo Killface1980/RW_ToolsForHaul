@@ -33,6 +33,9 @@
   <ItemGroup>
     <Compile Include="Alerts\Alert_NoParkingLot.cs" />
     <Compile Include="Alerts\Alert_TankIsLeaking.cs" />
+    <Compile Include="BasicVehicle.cs" />
+    <None Include="Class1.cs" />
+    <None Include="Class2.cs" />
     <Compile Include="Command_VerbTarget.cs" />
     <Compile Include="Components\CompAxles.cs" />
     <Compile Include="Components\CompDriver.cs" />
@@ -41,7 +44,9 @@
     <Compile Include="Components\CompMountable.cs" />
     <Compile Include="Components\CompProperties_Axle.cs" />
     <Compile Include="Components\CompProperties_Mountable.cs" />
+    <Compile Include="Components\CompProperties_Rideable.cs" />
     <Compile Include="Components\CompProperties_Vehicle.cs" />
+    <Compile Include="Components\CompRideable.cs" />
     <Compile Include="Components\CompVehicle.cs" />
     <Compile Include="Components\GameComponentToolsForHaul.cs" />
     <Compile Include="Components\HediffCompExplosive_TFH.cs" />
@@ -78,7 +83,9 @@
     <None Include="Things\SpotlightStuff.cs" />
     <Compile Include="Toils_Cart.cs" />
     <Compile Include="Trace.cs" />
+    <Compile Include="VehicleInfo.cs" />
     <Compile Include="VehicleRecipesUtility.cs" />
+    <Compile Include="Vehicle_Animal.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_ReturnCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
     <Compile Include="Zone_ParkingLot.cs" />

@@ -44,7 +44,7 @@ namespace TFH_VehicleBase
             if (cart.IsForbidden(pawn.Faction)) return false;
             if (cart.Position.IsForbidden(pawn)) return false;
             if (cart.IsBurning()) return false;
-            if (!pawn.CanReserveAndReach(cart, PathEndMode.InteractionCell, Danger.Some)) return false;
+            if (!pawn.CanReserve(cart)) return false;
 
             if (!cart.MountableComp.IsMounted) return true;
             if (cart.MountableComp.Driver == pawn) return true;
@@ -244,37 +244,18 @@ namespace TFH_VehicleBase
             return lastItem;
         }
         */
-        public static void AvailableVehicles(this Pawn pawn, out List<Thing> availableVehicles,  Thing allowedThing = null, float distance = 999f)
+        public static void AvailableVehicles(this Pawn pawn, out List<Thing> availableVehicles, Thing allowedThing = null, float distance = 999f)
         {
-            availableVehicles = new List<Thing>();
-            IEnumerable<Thing> things = pawn.Map.listerThings.AllThings.FindAll(
-                cart => (cart is Vehicle_Cart) && !cart.IsForbidden(pawn.Faction)
-                        && pawn.Position.InHorDistOf(cart.Position, distance));
 
-            foreach (Thing thing in things)
-            {
-                Vehicle_Cart cart = thing as Vehicle_Cart;
+            availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
+                cart => cart is Vehicle_Cart && !cart.IsForbidden(pawn.Faction)
+                        && pawn.Position.InHorDistOf(cart.Position, distance) && pawn.CanReserve(cart)
+                        && (!(cart as Vehicle_Cart).MountableComp.IsMounted
+                            || ((cart as Vehicle_Cart).MountableComp.Driver == pawn
+                                || (cart as Vehicle_Cart).MountableComp.Driver.RaceProps.Animal))
+                        && (allowedThing == null || (cart as Vehicle_Cart).allowances.Allows(allowedThing))
+                        && !(cart as Vehicle_Cart).IsAboutToBlowUp());
 
-                if (!cart.MountableComp.IsMounted
-                    && !pawn.CanReserveAndReach(cart, PathEndMode.InteractionCell, Danger.Deadly))
-                {
-                    continue;
-                }
-                if (allowedThing != null && !cart.allowances.Allows(allowedThing))
-                {
-                    continue;
-                }
-                if (cart.MountableComp.IsMounted && (!pawn.IsDriver(out Vehicle_Cart drivenCart, cart))
-                    || cart.MountableComp.Driver.RaceProps.Animal)
-                {
-                    continue;
-                }
-                if (cart.IsAboutToBlowUp())
-                {
-                    continue;
-                }
-                availableVehicles.Add(cart);
-            }
         }
 
         public static List<Thing> MountedVehicles(this Map map)
@@ -306,7 +287,7 @@ namespace TFH_VehicleBase
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
                 aV => aV is Vehicle_Cart && !((Vehicle_Cart)aV).MountableComp.IsMounted
-                      && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
+                      && pawn.CanReserve(aV)
                       && aV.Position.InHorDistOf(pawn.Position, distance)
                       && ((Vehicle_Cart)aV).ClaimableBy(pawn.Faction)
                       && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
@@ -322,7 +303,7 @@ namespace TFH_VehicleBase
         {
             List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
                 aV => aV is Vehicle_Cart && !((Vehicle_Cart)aV).MountableComp.IsMounted
-                      && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
+                      && pawn.CanReserve(aV)
                       && aV.Position.InHorDistOf(pawn.Position, distance)
                       && (aV.Faction == pawn.Faction || aV.Faction == null || pawn.Faction.HostileTo(aV.Faction))
                       && ((Vehicle_Cart)aV).ClaimableBy(pawn.Faction)
@@ -346,8 +327,8 @@ namespace TFH_VehicleBase
             foreach (Thing thing in things)
             {
                 Vehicle_Cart cart = thing as Vehicle_Cart;
-                if (!cart.MountableComp.IsMounted && !pawn.CanReserveAndReach(cart, PathEndMode.InteractionCell, Danger.Deadly)) { continue; }
-                if (cart.MountableComp.IsMounted && !pawn.IsDriver(out Vehicle_Cart drivenCart, cart)) { continue; }
+                if (!cart.MountableComp.IsMounted && !pawn.CanReserve(cart)) { continue; }
+                if (cart.MountableComp.IsMounted && !pawn.IsDriver(out BasicVehicle drivenCart, cart)) { continue; }
                 if (cart.Faction != pawn.Faction) { continue; }
                 if (cart.IsAboutToBlowUp()) { continue; }
                 availableVehicles.Add(cart);
@@ -361,27 +342,27 @@ namespace TFH_VehicleBase
             return availableVehicles;
         }
 
-        public static List<Thing> AvailableVehicleAt(this Pawn pawn)
-        {
-            List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                aV => aV is Vehicle_Cart && !((Vehicle_Cart)aV).MountableComp.IsMounted
-                      && aV.Position == pawn.Position
-                      && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
-                      && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
-            return availableVehicles;
-        }
+     // public static List<Thing> AvailableVehicleAt(this Pawn pawn)
+     // {
+     //     List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
+     //         aV => aV is Vehicle_Cart && !((Vehicle_Cart)aV).MountableComp.IsMounted
+     //               && aV.Position == pawn.Position
+     //               && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
+     //               && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
+     //     return availableVehicles;
+     // }
 
         public static Vehicle_Cart MountedVehicle(this Pawn pawn)
         {
             return pawn.Map.listerThings.AllThings.FindAll(x => x is Vehicle_Cart && ((Vehicle_Cart)x).MountableComp.Driver == pawn).FirstOrDefault() as Vehicle_Cart;
         }
 
-        public static void MountedVehicle(this Pawn pawn, out Vehicle_Cart cart)
+        public static void MountedVehicle(this Pawn pawn, out BasicVehicle cart)
         {
-            cart = pawn.Map.listerThings.AllThings.FindAll(x => x is Vehicle_Cart && ((Vehicle_Cart)x).MountableComp.Driver == pawn).FirstOrDefault() as Vehicle_Cart;
+            cart = pawn.Map.listerThings.AllThings.FindAll(x => x is BasicVehicle && ((Vehicle_Cart)x).MountableComp.Driver == pawn).FirstOrDefault() as Vehicle_Cart;
         }
 
-        public static Job DismountAtParkingLot(this Pawn pawn, string caller, Vehicle_Cart cart = null)
+        public static Job DismountAtParkingLot(this Pawn pawn, string caller, BasicVehicle cart = null)
         {
             if (cart == null)
             {
@@ -566,13 +547,12 @@ namespace TFH_VehicleBase
                     // continue;
                     // }
                     // }
-                    IntVec3 storageCell = FindStorageCell(pawn, remainingItems.ElementAt(i), job.targetQueueB);
-                    if (storageCell == IntVec3.Invalid)
-                    {
-                        break;
-                    }
+                    Thing t2 = RestUtility.FindBedFor(pawn, pawn2Downee, pawn2Downee.HostFaction == pawn.Faction, false, false); ;
 
-                    job.targetQueueB.Add(storageCell);
+                    if (t2 == null) break;
+
+
+                    job.targetQueueB.Add(t2);
                 }
 
                 if (!job.targetQueueB.NullOrEmpty())
@@ -598,8 +578,7 @@ namespace TFH_VehicleBase
 
             // ClosestThing_Global_Reachable Configuration
             Predicate<Thing> predicate = item => !job.targetQueueA.Contains(item)
-                                                 && !item.IsBurning() // && !deniedThings.Contains(item)
-                                                 && cart.allowances.Allows(item) && pawn.CanReserveAndReach(
+                                                 && pawn.CanReserveAndReach(
                                                      item,
                                                      PathEndMode.Touch,
                                                      pawn.NormalMaxDanger());
@@ -924,7 +903,7 @@ namespace TFH_VehicleBase
             return 60 / movePerTick;
         }
 
-        public static bool IsDriver(this Pawn pawn, Vehicle_Cart cart = null)
+        public static bool IsDriver(this Pawn pawn, BasicVehicle cart = null)
         {
             if (cart != null)
             {
@@ -947,7 +926,7 @@ namespace TFH_VehicleBase
             return false;
         }
 
-        public static bool IsDriver(this Pawn pawn, out Vehicle_Cart mountedCart, Vehicle_Cart cart = null)
+        public static bool IsDriver(this Pawn pawn, out BasicVehicle mountedCart, BasicVehicle cart = null)
         {
             if (cart != null)
             {
@@ -1002,7 +981,7 @@ namespace TFH_VehicleBase
 
         public static void DismountGizmoFloatMenu(Pawn pawn)
         {
-            if (!pawn.IsDriver(out Vehicle_Cart pawnCart))
+            if (!pawn.IsDriver(out BasicVehicle pawnCart))
             {
                 return;
 
@@ -1044,7 +1023,7 @@ namespace TFH_VehicleBase
                     Pawn selPawn = selectedObject as Pawn;
                     if (selPawn != null)
                     {
-                        if (selPawn.IsDriver(out Vehicle_Cart drivenCart))
+                        if (selPawn.IsDriver(out BasicVehicle drivenCart))
                         {
                             allPawnsDriving.Add(selPawn);
                         }
@@ -1056,7 +1035,7 @@ namespace TFH_VehicleBase
                 {
                     foreach (Pawn driverPawn in allPawnsDriving)
                     {
-                        driverPawn.MountedVehicle(out Vehicle_Cart pawnCart2);
+                        driverPawn.MountedVehicle(out BasicVehicle pawnCart2);
 
                         options.Add(
                             new FloatMenuOption(
@@ -1093,7 +1072,7 @@ namespace TFH_VehicleBase
                                 {
                                     foreach (Pawn driverPawn in allPawnsDriving)
                                     {
-                                        driverPawn.MountedVehicle(out Vehicle_Cart pawnCart3);
+                                        driverPawn.MountedVehicle(out BasicVehicle pawnCart3);
                                         if (!driverPawn.Position.InBounds(driverPawn.Map))
                                         {
                                             pawnCart3.MountableComp.DismountAt(driverPawn.Position);

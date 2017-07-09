@@ -10,6 +10,8 @@
     using Verse;
     using Verse.AI;
 
+    // TODO properly add the downee to the container, not working like HaulWithCart
+
     public class WorkGiver_RescueVehicleDowned : WorkGiver_TakeToBed
     {
         private const float MinDistFromEnemy = 40f;

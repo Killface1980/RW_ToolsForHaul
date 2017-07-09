@@ -11,7 +11,7 @@
 
     public class Designator_Mount : Designator
     {
-        public Vehicle_Cart vehicle;
+        public BasicVehicle vehicle;
 
         public Designator_Mount()
         {
@@ -54,7 +54,7 @@
 
                 if (pawn.Faction == Faction.OfPlayer)
                 {
-                    if ((pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !pawn.IsDriver(out Vehicle_Cart drivenCart))
+                    if ((pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike) && !pawn.IsDriver(out BasicVehicle drivenCart))
                     {
                         Job jobNew = new Job(VehicleJobDefOf.Mount);
                         this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
@@ -63,7 +63,7 @@
                         break;
                     }
 
-                    if (pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !pawn.IsDriver(out Vehicle_Cart drivenCart2))
+                    if (pawn.RaceProps.Animal && pawn.training.IsCompleted(TrainableDefOf.Obedience) && pawn.RaceProps.baseBodySize >= 1.0 && !pawn.IsDriver(out BasicVehicle drivenCart2))
                     {
                         Pawn worker = null;
                         Job jobNew = new Job(VehicleJobDefOf.MakeMount);

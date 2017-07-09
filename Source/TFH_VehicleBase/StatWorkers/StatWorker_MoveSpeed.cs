@@ -24,13 +24,14 @@ namespace TFH_VehicleBase.StatWorkers
 
                 if (thisPawn?.RaceProps.intelligence >= Intelligence.ToolUser)
                 {
-                    if (thisPawn.IsDriver(out Vehicle_Cart vehicleCart))
+                    if (thisPawn.IsDriver(out BasicVehicle vehicleCart) && !vehicleCart.RaceProps.Animal)
                     {
+                        var cart = vehicleCart as Vehicle_Cart;
                         if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Driver == thisPawn)
                         {
                             stringBuilder.AppendLine();
                             stringBuilder.AppendLine(
-                                "VehicleSpeed".Translate() + ": x" + vehicleCart.VehicleComp.VehicleSpeed);
+                                "VehicleSpeed".Translate() + ": x" + cart.VehicleComp.VehicleSpeed);
                             return stringBuilder.ToString();
                         }
                     }
@@ -68,20 +69,28 @@ namespace TFH_VehicleBase.StatWorkers
         {
             float result = 1f;
 
-            if (thisPawn.IsDriver(out Vehicle_Cart drivenCart))
+            if (thisPawn.IsDriver(out BasicVehicle drivenCart))
             {
-                if (!drivenCart.MountableComp.Driver.RaceProps.Animal && drivenCart.MountableComp.Driver == thisPawn)
+                if (!drivenCart.RaceProps.Animal)
                 {
-                    if (drivenCart.IsCurrentlyMotorized())
+                    var cart = drivenCart as Vehicle_Cart;
+                    if (!cart.MountableComp.Driver.RaceProps.Animal && cart.MountableComp.Driver == thisPawn)
                     {
-                        result = Mathf.Clamp(drivenCart.VehicleComp.VehicleSpeed, 2f, 100f);
-                    }
-                    else
-                    {
-                        result = Mathf.Clamp(drivenCart.VehicleComp.VehicleSpeed, 0.5f, 1f);
-                    }
+                        if (cart.IsCurrentlyMotorized())
+                        {
+                            result = Mathf.Clamp(cart.VehicleComp.VehicleSpeed, 2f, 100f);
+                        }
+                        else
+                        {
+                            result = Mathf.Clamp(cart.VehicleComp.VehicleSpeed, 0.5f, 1f);
+                        }
 
-                    return result;
+                        return result;
+                    }
+                }
+                else
+                {
+                    result = drivenCart.GetStatValue(StatDefOf.MoveSpeed);
                 }
             }
 

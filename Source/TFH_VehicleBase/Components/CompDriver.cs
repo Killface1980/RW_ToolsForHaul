@@ -17,14 +17,14 @@ namespace TFH_VehicleBase.Components
 
     public class CompDriver : ThingComp
     {
-        public Vehicle_Cart Cart { get; set; }
+        public BasicVehicle Vehicle { get; set; }
 
         public Pawn Pawn;
 
         public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
         {
 
-            if (this.Pawn == null || this.Cart == null)
+            if (this.Pawn == null || this.Vehicle == null)
             {
                 absorbed = false;
                 return;
@@ -42,7 +42,7 @@ namespace TFH_VehicleBase.Components
             if (hitChance <= hit)
             {
                 // apply damage to vehicle here
-                this.Cart?.TakeDamage(dinfo);
+                this.Vehicle?.TakeDamage(dinfo);
 
                 absorbed = true;
                 return;
@@ -54,7 +54,7 @@ namespace TFH_VehicleBase.Components
         // IMPORTANT: THE parent IS THE PAWN, NOT THE VEHICLE!!!!!!!
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {
-            if (selPawn == null || this.Cart == null || selPawn.Faction != Faction.OfPlayer)
+            if (selPawn == null || this.Vehicle == null || selPawn.Faction != Faction.OfPlayer)
             {
                 yield break;
             }
@@ -70,12 +70,12 @@ namespace TFH_VehicleBase.Components
                 {
                     if (!selPawn.Position.InBounds(selPawn.Map))
                     {
-                        this.Cart.MountableComp.DismountAt(selPawn.Position);
+                        this.Vehicle.MountableComp.DismountAt(selPawn.Position);
                         return;
                     }
 
-                    this.Cart.MountableComp.DismountAt(
-                        selPawn.Position - this.Cart.def.interactionCellOffset.RotatedBy(selPawn.Rotation));
+                    this.Vehicle.MountableComp.DismountAt(
+                        selPawn.Position - this.Vehicle.def.interactionCellOffset.RotatedBy(selPawn.Rotation));
                     selPawn.Position = selPawn.Position.RandomAdjacentCell8Way();
 
                     // mountableComp.DismountAt(myPawn.Position - VehicleDef.interactionCellOffset.RotatedBy(myPawn.Rotation));
