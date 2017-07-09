@@ -31,7 +31,7 @@ namespace TFH_VehicleBase
             foreach (var thing in availableVehicles)
             {
                 var cart = (Vehicle_Cart)thing;
-                string driver = cart.MountableComp.IsMounted ? cart.MountableComp.Driver.LabelCap : "No Driver";
+                string driver = cart.MountableComp.IsMounted ? cart.MountableComp.Rider.LabelCap : "No Driver";
                 string state = string.Empty;
                 if (cart.IsForbidden(pawn.Faction))
                 {

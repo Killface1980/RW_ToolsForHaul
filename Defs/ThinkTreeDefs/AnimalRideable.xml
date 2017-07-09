@@ -10,6 +10,15 @@
             <li Class="JobGiver_KeepLyingDown" />
           </subNodes>
         </li>
+    
+        <li Class="TFH_VehicleBase.ThinkNode_ConditionalShouldBeIdle">
+          <subNodes>
+            <li Class="ThinkNode_Tagger">
+              <tagToGive>Idle</tagToGive>
+            </li>
+          </subNodes>
+        </li>
+
 
         <li Class="ThinkNode_Subtree">
           <treeDef>Downed</treeDef>
@@ -99,8 +108,6 @@
 
         <!-- Lay eggs you need to -->
         <li Class="JobGiver_LayEgg" />
-
-        <li Class="TFH_RideableAnimals.JobGiver_ProvideRide"/>
 
         <!-- Tame animal -->
         <li Class="ThinkNode_ConditionalColonyFaction">

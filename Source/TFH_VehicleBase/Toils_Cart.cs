@@ -249,7 +249,7 @@
                 else
                     job = new Job(VehicleJobDefOf.StandBy, toil.actor.jobs.curJob.GetTarget(Ind), defaultWaitWorker);
 
-                cart.MountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
+                cart.MountableComp.Rider.jobs.StartJob(job, JobCondition.InterruptForced);
             };
             return toil;
         }
@@ -267,8 +267,8 @@
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                 }
 
-                if (cart.MountableComp.IsMounted && cart.MountableComp.Driver.CurJob.def == VehicleJobDefOf.StandBy)
-                    cart.MountableComp.Driver.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
+                if (cart.MountableComp.IsMounted && cart.MountableComp.Rider.CurJob.def == VehicleJobDefOf.StandBy)
+                    cart.MountableComp.Rider.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
             };
             return toil;
         }
@@ -292,22 +292,22 @@
                 if (cart.MountableComp.IsMounted)
                 {
                     // Worker has arrived and Animal cart is coming
-                    if (cart.MountableComp.Driver.CurJob.def == VehicleJobDefOf.StandBy
+                    if (cart.MountableComp.Rider.CurJob.def == VehicleJobDefOf.StandBy
                         && (!actor.Position.InHorDistOf(cart.Position, 1f)
-                            || !actor.Position.InHorDistOf(cart.MountableComp.Driver.Position, 1f)))
+                            || !actor.Position.InHorDistOf(cart.MountableComp.Rider.Position, 1f)))
                     {
                         tickTime = 0;
                     }
 
                     // Worker has arrived and Animal cart has arrived
-                    else if (cart.MountableComp.Driver.CurJob.def == VehicleJobDefOf.StandBy
-                             && actor.Position.InHorDistOf(cart.MountableComp.Driver.Position, 1f)) toil.actor.jobs.curDriver.ReadyForNextToil();
+                    else if (cart.MountableComp.Rider.CurJob.def == VehicleJobDefOf.StandBy
+                             && actor.Position.InHorDistOf(cart.MountableComp.Rider.Position, 1f)) toil.actor.jobs.curDriver.ReadyForNextToil();
 
                     // Worker has arrived but Animal cart is missing
                     else
                     {
                         Job job = new Job(VehicleJobDefOf.StandBy, actor, defaultWaitWorker);
-                        cart.MountableComp.Driver.jobs.StartJob(job, JobCondition.InterruptForced);
+                        cart.MountableComp.Rider.jobs.StartJob(job, JobCondition.InterruptForced);
                     }
                 }
                 else
@@ -327,15 +327,15 @@
                     if (cart.MountableComp.IsMounted)
                     {
                         // Animal cart has arrived
-                        if (cart.MountableComp.Driver.CurJob.def == VehicleJobDefOf.StandBy
-                            && (actor.Position.AdjacentTo8WayOrInside(cart.MountableComp.Driver)
+                        if (cart.MountableComp.Rider.CurJob.def == VehicleJobDefOf.StandBy
+                            && (actor.Position.AdjacentTo8WayOrInside(cart.MountableComp.Rider)
                                 || actor.Position.AdjacentTo8WayOrInside(cart)))
                         {
                             toil.actor.jobs.curDriver.ReadyForNextToil();
                         }
 
                         // Animal cart would never come. Imcompletable.
-                        else if (cart.MountableComp.Driver.CurJob.def != VehicleJobDefOf.StandBy
+                        else if (cart.MountableComp.Rider.CurJob.def != VehicleJobDefOf.StandBy
                                  || tickTime >= defaultWaitWorker)
                         {
                             toil.actor.jobs.curDriver.EndJobWith(JobCondition.Incompletable);

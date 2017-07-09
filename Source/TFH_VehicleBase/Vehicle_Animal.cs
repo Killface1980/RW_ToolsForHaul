@@ -20,66 +20,28 @@
     public class Vehicle_Animal : BasicVehicle
     {
 
-        public CompRideable RideableComp;
 
         #region Variables
 
-        public override Color DrawColor
-        {
-            get
-            {
-                CompColorable comp = this.GetComp<CompColorable>();
-                if (comp != null && comp.Active)
-                {
-                    return comp.Color;
-                }
-
-                return base.DrawColor;
-            }
-
-            set
-            {
-                this.SetColor(value, true);
-            }
-        }
-
         // ==================================
-
-        public int MaxItemPerBodySize => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
 
         public bool instantiated;
 
 
         public float DesiredSpeed => this.GetStatValue(StatDefOf.MoveSpeed);
 
-        public override void SpawnSetup(Map map, bool respawningAfterLoad)
-        {
-            base.SpawnSetup(map, respawningAfterLoad);
-            this.RideableComp = this.TryGetComp<CompRideable>();
-
-        }
-
         private int tickCheck = Find.TickManager.TicksGame;
 
         private int tickCooldown = 60;
 
-        // mount and storage data
 
-
-
-        public IntVec3 GetPosition()
-        {
-            return this.Position;
-        }
 
         // slotGroupParent Interface
 
-        public CompVehicle VehicleComp;
 
 
         public Vector3 DriverOffset = new Vector3();
 
-        public CompDriver DriverComp { get; set; }
 
         #endregion
 
@@ -91,50 +53,6 @@
 #endif
 
 
-
-        public override IEnumerable<Gizmo> GetGizmos()
-        {
-            foreach (Gizmo c in base.GetGizmos())
-            {
-                yield return c;
-            }
-            if (this.Faction != Faction.OfPlayer)
-            {
-                yield break;
-                
-            }
-            if (!this.RideableComp.IsMounted)
-            {
-                Designator_Mount designator =
-                    new Designator_Mount
-                        {
-                            vehicle = this,
-                            defaultLabel = Static.TxtCommandMountLabel.Translate(),
-                            defaultDesc = Static.TxtCommandMountDesc.Translate(),
-                            icon = Static.IconMount,
-                            activateSound = Static.ClickSound
-                        };
-                yield return designator;
-            }
-            else
-            {
-                if (this.RideableComp.Driver != null)
-                {
-                    yield return new Command_Action
-                                     {
-                                         defaultLabel = Static.TxtCommandDismountLabel.Translate(),
-                                         defaultDesc = Static.TxtCommandDismountDesc.Translate(),
-                                         icon = Static.IconUnmount,
-                                         activateSound = Static.ClickSound,
-                                         action = delegate
-                                             {
-                                                 TFH_BaseUtility.DismountGizmoFloatMenu(
-                                                     this.RideableComp.Driver);
-                                             }
-                                     };
-                }
-            }
-        }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
         {
@@ -159,45 +77,16 @@
                 yield return fmo;
             }
 
-            Map map = myPawn.Map;
-
-            Action action_MakeMount = () =>
-                {
-                    Pawn worker = null;
-                    Job jobNew = new Job(VehicleJobDefOf.MakeMount);
-                    map.reservationManager.ReleaseAllForTarget(this);
-                    jobNew.count = 1;
-                    jobNew.targetA = this;
-                    jobNew.targetB = myPawn;
-                    foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
-                    {
-                        if (colonyPawn.CurJob.def != jobNew.def
-                            && (worker == null || (worker.Position - myPawn.Position).LengthHorizontal
-                                > (colonyPawn.Position - myPawn.Position).LengthHorizontal))
-                        {
-                            worker = colonyPawn;
-                        }
-                    }
-
-                    if (worker == null)
-                    {
-                        Messages.Message("NoWorkForMakeMount".Translate(), MessageSound.RejectInput);
-                    }
-                    else
-                    {
-                        worker.jobs.StartJob(jobNew, JobCondition.InterruptForced);
-                    }
-                };
-
-
-
             Action action_Mount = () =>
                 {
-                    Job jobNew = new Job(VehicleJobDefOf.MountAnimal);
+                    Job jobNew = new Job(VehicleJobDefOf.Mount);
                     myPawn.Map.reservationManager.ReleaseAllForTarget(this);
                     myPawn.Map.reservationManager.Reserve(myPawn, this);
                     jobNew.targetA = this;
                     myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
+
+                    // Job job = new Job(VehicleJobDefOf.StandBy, myPawn.Position);
+                    // if (this.RaceProps.Animal) { this.jobs.StartJob(job, JobCondition.InterruptForced);}
                 };
 
             Action action_DismountInBase = () =>
@@ -207,9 +96,8 @@
                     myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
 
-            if (!this.RideableComp.IsMounted)
+            if (!this.MountableComp.IsMounted)
             {
-                if (!this.IsForbidden(Faction.OfPlayer))
                 {
                     if (myPawn.RaceProps.Humanlike && !myPawn.IsDriver())
                     {
@@ -261,17 +149,18 @@
                     return base.DrawPos;
                 }
 
-                if (!this.RideableComp.IsMounted)
+                if (!this.MountableComp.IsMounted)
                 {
                     return base.DrawPos;
                 }
 
-                float num = this.RideableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
-                num *= this.RideableComp.Driver.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
+                float num = this.MountableComp.Rider.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
+                num *= this.MountableComp.Rider.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
                 Vector3 vector = new Vector3(0f, 0f, -num);
 
                 // vector += DriverOffset;
-                return this.RideableComp.Position + vector.RotatedBy(this.RideableComp.Driver.Rotation.AsAngle);
+                this.Position = this.MountableComp.Position.ToIntVec3();
+                return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Rider.Rotation.AsAngle);
             }
         }
 
@@ -285,29 +174,6 @@
                 return;
             }
 
-
-
-            // // Lights
-            // spotlightMatrix.SetTRS(drawLoc + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightScale);
-            // if (this.MountableComp.IsMounted)
-            // {
-            // Graphics.DrawMesh(MeshPool.plane10, spotlightMatrix, spotlightOnTexture, 0);
-            // spotlightLightEffectMatrix.SetTRS(drawLoc + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightLightEffectScale);
-            // Graphics.DrawMesh(MeshPool.plane10, spotlightLightEffectMatrix, spotlightLightEffectTexture, 0);
-            // }
-            // else
-            // {
-            // Graphics.DrawMesh(MeshPool.plane10, spotlightMatrix, spotlightOffTexture, 0);
-            // }
-            // if (Find.Selector.IsSelected(this)
-            // && (this.CurrentTarget != null))
-            // {
-            // Vector3 lineOrigin = this.TrueCenter();
-            // Vector3 lineTarget = this.CurrentTarget.Thing.Position.ToVector3Shifted();
-            // lineTarget.y = Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays);
-            // lineOrigin.y = lineTarget.y;
-            // GenDraw.DrawLineBetween(lineOrigin, lineTarget, targetLineTexture);
-            // }
         }
 
         public override string GetInspectString()
@@ -316,9 +182,9 @@
             stringBuilder.Append(base.GetInspectString());
 
             string currentDriverString;
-            if (this.RideableComp.IsMounted)
+            if (this.MountableComp.IsMounted)
             {
-                currentDriverString = "Rider".Translate() + ": " + this.RideableComp.Driver.LabelCap;
+                currentDriverString = "Rider".Translate() + ": " + this.MountableComp.Rider.LabelCap;
             }
             else
             {

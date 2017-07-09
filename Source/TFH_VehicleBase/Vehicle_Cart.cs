@@ -19,7 +19,6 @@
 
     public class Vehicle_Cart : BasicVehicle
     {
-        public CompMountable MountableComp;
     
         #region Variables
 
@@ -68,26 +67,40 @@
 
         public float DesiredSpeed => this.GetStatValue(StatDefOf.MoveSpeed);
 
-        public bool IsCurrentlyMotorized()
-        {
-            return (this.RefuelableComp != null && this.RefuelableComp.HasFuel)
-                   || this.VehicleComp.MotorizedWithoutFuel();
-        }
 
-        public bool CanExplode()
+        public virtual bool ClaimableBy(Faction claimee)
         {
-            if (!this.ExplosiveTickers.NullOrEmpty())
+            // No vehicles if enemy near
+
+
+            if (base.Faction != null)
             {
-                for (int index = this.ExplosiveTickers.Count - 1; index >= 0; index--)
+                if (claimee != base.Faction)
                 {
-                    HediffCompExplosive_TFH ticker = this.ExplosiveTickers[index];
-                    if (ticker.CompShouldRemove)
+                    if (base.Faction.HostileTo(claimee))
                     {
-                        this.ExplosiveTickers.Remove(ticker);
+                        foreach (IAttackTarget attackTarget in this.Map.attackTargetsCache.TargetsHostileToFaction(claimee))
+                        {
+                            if (attackTarget.Thing.Position.InHorDistOf(this.Position, 20f))
+                            {
+                                return false;
+                            }
+                        }
                     }
                 }
             }
-            return !this.ExplosiveTickers.NullOrEmpty();
+
+            return true;
+
+            // CompPowerTrader comp = this.GetComp<CompPowerTrader>();
+            // if (comp == null || !comp.PowerOn)
+            // {
+            // CompMannable comp2 = this.GetComp<CompMannable>();
+            // if (comp2 == null || !comp2.MannedNow)
+            // {
+            // return true;
+            // }
+            // }
         }
 
         public bool IsAboutToBlowUp()
@@ -153,14 +166,12 @@
 
         public CompGasTank GasTankComp;
 
-        private Sustainer sustainerAmbient;
 
         public Vector3 DriverOffset = new Vector3();
 
-        public CompDriver DriverComp { get; set; }
 
-        public int MaxItem => this.MountableComp.IsMounted && this.MountableComp.Driver.RaceProps.Animal
-                                  ? Mathf.CeilToInt(this.MountableComp.Driver.BodySize * this.DefaultMaxItem)
+        public int MaxItem => this.MountableComp.IsMounted && this.MountableComp.Rider.RaceProps.Animal
+                                  ? Mathf.CeilToInt(this.MountableComp.Rider.BodySize * this.DefaultMaxItem)
                                   : this.DefaultMaxItem;
 
         public int MaxStack => this.MaxItem * 100;
@@ -178,34 +189,6 @@
         {
             base.SpawnSetup(map, respawningAfterLoad);
 
-            this.MountableComp = this.TryGetComp<CompMountable>();
-            // Reload textures to get colored versions
-            LongEventHandler.ExecuteWhenFinished(
-                delegate
-                    {
-                        PawnKindLifeStage curKindLifeStage = this.ageTracker.CurKindLifeStage;
-                        this.Drawer.renderer.graphics.nakedGraphic =
-                            curKindLifeStage.bodyGraphicData.Graphic.GetColoredVersion(
-                                ShaderDatabase.Cutout,
-                                this.DrawColor,
-                                this.DrawColorTwo);
-                    });
-
-            List<Hediff> hediffSetHediffs = this.health?.hediffSet?.hediffs;
-            if (!hediffSetHediffs.NullOrEmpty())
-            {
-                this.ExplosiveTickers = new List<HediffCompExplosive_TFH>();
-                foreach (var hediff in hediffSetHediffs)
-                {
-                    HediffCompExplosive_TFH exploder = hediff.TryGetComp<HediffCompExplosive_TFH>();
-
-                    if (exploder != null)
-                    {
-                        this.ExplosiveTickers.Add(exploder);
-                    }
-                }
-            }
-
             // To allow the vehicle to be drafted -> Still not possible to draft, because 1. not humanlike and 2. the GetGizmos in Pawn_Drafter is internal! 
             this.drafter = new Pawn_DraftController(this); // Maybe not needed because not usable?
 
@@ -213,7 +196,6 @@
             {
                 this.equipment = new Pawn_EquipmentTracker(this);
             }
-
 
             this.RefuelableComp = this.TryGetComp<CompRefuelable>();
 
@@ -250,36 +232,8 @@
             // spotlightMatrix.SetTRS(base.DrawPos + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightScale);
         }
 
-        public void AddDriverComp()
-        {
-            this.DriverComp = new CompDriver
-            {
-                Vehicle = this,
-                Pawn = this.MountableComp.Driver,
-                parent = this.MountableComp.Driver
-            };
-            this.MountableComp.Driver.AllComps.Add(this.DriverComp);
-        }
 
-        public void StartSustainerVehicleIfInactive()
-        {
-            CompVehicle vehicleComp = this.VehicleComp;
-            if (vehicleComp != null && (!vehicleComp.compProps.soundAmbient.NullOrUndefined()
-                                        && this.sustainerAmbient == null))
-            {
-                SoundInfo info = SoundInfo.InMap(this, MaintenanceType.None);
-                this.sustainerAmbient = this.VehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
-            }
-        }
 
-        public void EndSustainerVehicleIfActive()
-        {
-            if (this.sustainerAmbient != null)
-            {
-                this.sustainerAmbient.End();
-                this.sustainerAmbient = null;
-            }
-        }
 
         public override void DeSpawn()
         {
@@ -340,37 +294,7 @@
             }
 
 
-            if (!this.MountableComp.IsMounted)
-            {
-                Designator_Mount designator =
-                    new Designator_Mount
-                        {
-                            vehicle = this,
-                            defaultLabel = Static.TxtCommandMountLabel.Translate(),
-                            defaultDesc = Static.TxtCommandMountDesc.Translate(),
-                            icon = Static.IconMount,
-                            activateSound = Static.ClickSound
-                        };
-                yield return designator;
-            }
-            else
-            {
-                if (this.MountableComp.Driver != null)
-                {
-                    yield return new Command_Action
-                                     {
-                                         defaultLabel = Static.TxtCommandDismountLabel.Translate(),
-                                         defaultDesc = Static.TxtCommandDismountDesc.Translate(),
-                                         icon = Static.IconUnmount,
-                                         activateSound = Static.ClickSound,
-                                         action = delegate
-                                             {
-                                                 TFH_BaseUtility.DismountGizmoFloatMenu(
-                                                     this.MountableComp.Driver);
-                                             }
-                                     };
-                }
-            }
+
             // Getting the gizmos manually - no drafting, see SpawnSetup?
 
 
@@ -780,7 +704,7 @@
             {
                 if (this.RefuelableComp != null)
                 {
-                    if (this.MountableComp.Driver.Faction != Faction.OfPlayer)
+                    if (this.MountableComp.Rider.Faction != Faction.OfPlayer)
                     {
                         if (!this.fueledByAI)
                         {
@@ -824,20 +748,19 @@
                     return base.DrawPos;
                 }
 
-                float num = this.MountableComp.Driver.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
-                num *= this.MountableComp.Driver.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
+                float num = this.MountableComp.Rider.Drawer.renderer.graphics.nakedGraphic.drawSize.x - 1f;
+                num *= this.MountableComp.Rider.Rotation.AsInt % 2 == 1 ? 0.5f : 0.25f;
                 Vector3 vector = new Vector3(0f, 0f, -num);
 
                 // vector += DriverOffset;
-                return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Driver.Rotation.AsAngle);
+                return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Rider.Rotation.AsAngle);
+
             }
         }
 
-        public bool wickStarted;
 
         private bool fireAtWillInt = true;
 
-        public List<HediffCompExplosive_TFH> ExplosiveTickers;
 
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
@@ -851,8 +774,8 @@
             if (this.VehicleComp.ShowsStorage())
             {
                 if (!this.storage.InnerListForReading.NullOrEmpty() || (this.MountableComp.IsMounted
-                                                  && this.MountableComp.Driver.RaceProps.packAnimal
-                                                  && this.MountableComp.Driver.RaceProps.Animal))
+                                                  && this.MountableComp.Rider.RaceProps.packAnimal
+                                                  && this.MountableComp.Rider.RaceProps.Animal))
                 {
                     Vector3 mountThingLoc = drawLoc;
                     if (this.Rotation.AsInt % 2 == 1)
@@ -873,12 +796,12 @@
                             (-0.3f * this.def.interactionCellOffset.ToVector3()).RotatedBy(this.Rotation.AsAngle);
                     }
 
-                    if (this.MountableComp.Driver.RaceProps.packAnimal && this.MountableComp.Driver.RaceProps.Animal)
+                    if (this.MountableComp.Rider.RaceProps.packAnimal && this.MountableComp.Rider.RaceProps.Animal)
                     {
                         if (this.MountableComp.IsMounted
-                            && this.MountableComp.Driver.inventory.innerContainer.Count > 0)
+                            && this.MountableComp.Rider.inventory.innerContainer.Count > 0)
                         {
-                            foreach (Thing mountThing in this.MountableComp.Driver.inventory.innerContainer)
+                            foreach (Thing mountThing in this.MountableComp.Rider.inventory.innerContainer)
                             {
                                 mountThing.Rotation = this.Rotation;
                                 mountThing.DrawAt(mountThingLoc + mountThingOffset);
@@ -944,7 +867,7 @@
             string currentDriverString;
             if (this.MountableComp.IsMounted)
             {
-                currentDriverString = "Driver".Translate() + ": " + this.MountableComp.Driver.LabelCap;
+                currentDriverString = "Driver".Translate() + ": " + this.MountableComp.Rider.LabelCap;
             }
             else
             {

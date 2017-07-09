@@ -10,6 +10,8 @@ namespace TFH_VehicleBase.Components
 {
     using RimWorld;
 
+    using TFH_VehicleBase.DefOfs_TFH;
+
     using UnityEngine;
 
     using Verse;
@@ -333,6 +335,10 @@ namespace TFH_VehicleBase.Components
             this.IsMounted = true;
 
             this.IsPrisonBreaking = PrisonBreakUtility.IsPrisonBreaking(pawn);
+
+            Job job = new Job(VehicleJobDefOf.StandBy);
+
+            this.rideableAnimal.jobs.StartJob(job, JobCondition.Incompletable);
         }
 
         public override void PostExposeData()

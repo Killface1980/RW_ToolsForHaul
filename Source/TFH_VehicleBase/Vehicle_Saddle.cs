@@ -86,9 +86,9 @@
                 return;
             }
 
-            Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("StandBy"), this.MountableComp.Driver.Position, 4800);
+            Job jobNew = new Job(DefDatabase<JobDef>.GetNamed("StandBy"), this.MountableComp.Rider.Position, 4800);
 
-            this.MountableComp.Driver.jobs.StartJob(jobNew, JobCondition.Incompletable);
+            this.MountableComp.Rider.jobs.StartJob(jobNew, JobCondition.Incompletable);
 
             this.innerContainer.TryTransferToContainer(pawn, this.innerContainer, pawn.stackCount);
 
@@ -205,7 +205,7 @@
             {
                 FloatMenuOption fmoBoard = new FloatMenuOption();
 
-                fmoBoard.Label = "Ride".Translate(this.MountableComp.Driver.LabelCap);
+                fmoBoard.Label = "Ride".Translate(this.MountableComp.Rider.LabelCap);
                 fmoBoard.Priority = MenuOptionPriority.High;
                 fmoBoard.action = () =>
                     {

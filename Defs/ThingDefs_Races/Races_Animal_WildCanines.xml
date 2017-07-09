@@ -5,7 +5,7 @@
 
 
   <ThingDef ParentName="AnimalThingBase">
-    <thingClass>TFH_VehicleBase.Vehicle_Animal</thingClass>
+    <thingClass>TFH_VehicleBase.Vehicle_Cart</thingClass>
     <defName>Warg</defName>
     <label>warg</label>
     <description>Heavily-muscled wolf-like creatures. Scientists say wargs are the descendants of weaponized military animals created for population suppression. The superstitious see them as the tools of an angry god. They will only eat meat or corpses.</description>
@@ -69,8 +69,13 @@
         <linkedBodyPartsGroup>HeadAttackTool</linkedBodyPartsGroup>
       </li>
     </verbs>
+    <hasInteractionCell>True</hasInteractionCell>
+    <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <race>
       <thinkTreeMain>AnimalRideable</thinkTreeMain>
+    <!--
+      <thinkTreeMain>Engine</thinkTreeMain>
+    -->
       <body>QuadrupedAnimalWithPawsAndTail</body>
       <predator>true</predator>
       <petness>0.5</petness>
@@ -125,7 +130,7 @@
       <li>BadassAnimal</li>
     </tradeTags>
     <comps>
-      <li Class="TFH_VehicleBase.Components.CompProperties_Rideable"/>
+      <li Class="TFH_VehicleBase.Components.CompProperties_Mountable"/>
       <li>
         <compClass>CompForbiddable</compClass>
       </li>

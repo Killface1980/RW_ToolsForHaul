@@ -135,10 +135,10 @@
                 (Thing aV) => ((aV is Vehicle_Cart) && !aV.IsForbidden(pawn.Faction)
                                && pawn.CanReserveAndReach(aV, PathEndMode.Touch, Danger.Some)
                                && (aV.TryGetComp<CompMountable>().IsMounted
-                                   && aV.TryGetComp<CompMountable>().Driver.RaceProps.Animal
-                                   && aV.TryGetComp<CompMountable>().Driver.needs.food.CurCategory
+                                   && aV.TryGetComp<CompMountable>().Rider.RaceProps.Animal
+                                   && aV.TryGetComp<CompMountable>().Rider.needs.food.CurCategory
                                    != HungerCategory.Hungry
-                                   && aV.TryGetComp<CompMountable>().Driver.needs.rest.CurCategory
+                                   && aV.TryGetComp<CompMountable>().Rider.needs.rest.CurCategory
                                    != RestCategory.Tired) // Driver is animal not hungry and restless
                 ));
 

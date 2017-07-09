@@ -32,8 +32,8 @@ namespace TFH_VehicleHauling
             if (!pawn.CanReserveAndReach(cart, PathEndMode.InteractionCell, Danger.Some)) return false;
 
             if (!cart.MountableComp.IsMounted) return true;
-            if (cart.MountableComp.Driver == pawn) return true;
-            if (cart.MountableComp.IsMounted && cart.MountableComp.Driver.RaceProps.Animal) return true;
+            if (cart.MountableComp.Rider == pawn) return true;
+            if (cart.MountableComp.IsMounted && cart.MountableComp.Rider.RaceProps.Animal) return true;
             return false;
         }
 
@@ -46,7 +46,7 @@ namespace TFH_VehicleHauling
             foreach (Thing thing in availableVehicles)
             {
                 Vehicle_Cart vehicle = (Vehicle_Cart)thing;
-                if (vehicle.VehicleComp.IsMedical() && vehicle.MountableComp.Driver == null
+                if (vehicle.VehicleComp.IsMedical() && vehicle.MountableComp.Rider == null
                     && pawn.CanReserveAndReach(vehicle.InteractionCell, PathEndMode.ClosestTouch, Danger.Some)
                     && vehicle.Faction == pawn.Faction)
                 {
@@ -58,25 +58,6 @@ namespace TFH_VehicleHauling
             Debug.Log("No wheel chair found");
             return null;
         }
-
-
-        public static Vehicle_Saddle GetSaddleByRider(Pawn pawn)
-        {
-
-            List<Thing> availableVehicles = TFH_BaseUtility.AvailableRideables(pawn);
-            foreach (var thing in availableVehicles)
-            {
-                var vehicle = (Vehicle_Saddle)thing;
-                if (vehicle.MountableComp.Driver == pawn)
-                {
-                    return vehicle;
-                }
-            }
-
-            return null;
-        }
-
- 
     
         public static Job HaulWithToolsToCell(Pawn pawn, Vehicle_Cart cart, Thing haulThing = null)
         {
@@ -95,7 +76,7 @@ namespace TFH_VehicleHauling
             // Thing lastItem = TryGetBackpackLastItem(pawn);
             if (cart.MountableComp.IsMounted)
             {
-                jobDef = cart.MountableComp.Driver.RaceProps.Animal
+                jobDef = cart.MountableComp.Rider.RaceProps.Animal
                              ? VehicleJobDefOf.HaulWithAnimalCart
                              : VehicleJobDefOf.HaulWithCart;
             }
@@ -299,7 +280,7 @@ namespace TFH_VehicleHauling
             // Thing lastItem = TryGetBackpackLastItem(pawn);
             if (cart.MountableComp.IsMounted)
             {
-                jobDef = cart.MountableComp.Driver.RaceProps.Animal
+                jobDef = cart.MountableComp.Rider.RaceProps.Animal
                              ? VehicleJobDefOf.HaulWithAnimalCart
                              : VehicleJobDefOf.HaulWithCart;
             }

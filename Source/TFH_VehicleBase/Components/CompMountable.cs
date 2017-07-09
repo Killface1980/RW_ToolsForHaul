@@ -8,7 +8,11 @@
 
 namespace TFH_VehicleBase.Components
 {
+    using System.Collections.Generic;
+
     using RimWorld;
+
+    using TFH_VehicleBase.Designators;
 
     using UnityEngine;
 
@@ -23,9 +27,9 @@ namespace TFH_VehicleBase.Components
 
         private float lastDrawAsAngle;
 
-        private Vehicle_Cart cart;
+        private BasicVehicle parentVehicle;
 
-        private Pawn driver;
+        private Pawn rider;
 
         private Building_Door lastPassedDoor;
 
@@ -37,7 +41,7 @@ namespace TFH_VehicleBase.Components
 
         private int tickLastDoorCheck = Find.TickManager.TicksGame;
 
-        public Pawn Driver => this.driver;
+        public Pawn Rider => this.rider;
 
         private Vector3 InteractionOffset => this.parent.def.interactionCellOffset.ToVector3()
             .RotatedBy(this.lastDrawAsAngle);
@@ -46,11 +50,11 @@ namespace TFH_VehicleBase.Components
         {
             get
             {
-                this.position = this.Driver.DrawPos - this.InteractionOffset * 1.3f;
+                this.position = this.Rider.DrawPos - this.InteractionOffset * 1.3f;
 
-                if (!this.cart.Rotation.IsHorizontal)
+                if (!this.parentVehicle.Rotation.IsHorizontal)
                 {
-                    if (this.cart.Rotation == Rot4.North)
+                    if (this.parentVehicle.Rotation == Rot4.North)
                     {
                         this.position += this.Props.drawOffsetRotN;
                     }
@@ -61,20 +65,20 @@ namespace TFH_VehicleBase.Components
                 }
 
                 // No Driver
-                if (this.Driver == null)
+                if (this.Rider == null)
                 {
-                    return this.cart.DrawPos;
+                    return this.parentVehicle.DrawPos;
                 }
 
                 // Out of bound or Preventing cart from stucking door
                 if (!this.position.InBounds(this.parent.Map))
                 {
-                    return this.Driver.DrawPos;
+                    return this.Rider.DrawPos;
                 }
 
-                if (!this.position.ToIntVec3().Walkable(this.cart.Map))
+                if (!this.position.ToIntVec3().Walkable(this.parentVehicle.Map))
                 {
-                    return this.Driver.DrawPos;
+                    return this.Rider.DrawPos;
                 }
 
                 return this.position;
@@ -87,38 +91,39 @@ namespace TFH_VehicleBase.Components
         {
             base.CompTick();
 
-            if (this.cart == null || !this.cart.Spawned || !this.IsMounted)
+            if (this.parentVehicle == null || !this.parentVehicle.Spawned || !this.IsMounted)
             {
                 return;
             }
 
-            if (this.driver.Dead || this.driver.Downed || this.driver.health.InPainShock
-                || (this.parent.IsForbidden(Faction.OfPlayer) && this.driver.Faction == Faction.OfPlayer))
+            if (this.rider.Dead || this.rider.Downed || this.rider.health.InPainShock
+                || (this.parentVehicle.RaceProps.IsMechanoid && this.parentVehicle.IsForbidden(Faction.OfPlayer)
+                    && this.rider.Faction == Faction.OfPlayer))
             {
-                if (!this.driver.Position.InBounds(this.cart.Map))
+                if (!this.rider.Position.InBounds(this.parentVehicle.Map))
                 {
                     Log.Message("1");
-                    this.DismountAt(this.Driver.Position);
+                    this.DismountAt(this.Rider.Position);
                     return;
                 }
 
                 Log.Message("2");
                 this.DismountAt(
-                    this.driver.Position - this.parent.def.interactionCellOffset.RotatedBy(this.driver.Rotation));
+                    this.rider.Position - this.parent.def.interactionCellOffset.RotatedBy(this.rider.Rotation));
                 return;
             }
 
-            if (!this.driver.Spawned)
+            if (!this.rider.Spawned)
             {
-                this.cart.DeSpawn();
+                this.parentVehicle.DeSpawn();
                 return;
             }
 
             if (Find.TickManager.TicksGame - this.tickCheck >= this.tickCooldown)
             {
-                if (this.driver.Faction == Faction.OfPlayer && this.driver.CurJob != null)
+                if (this.rider.Faction == Faction.OfPlayer && this.rider.CurJob != null)
                 {
-                    Job curJob = this.driver.CurJob;
+                    Job curJob = this.rider.CurJob;
                     if (curJob.def.playerInterruptible
                         && (curJob.def == JobDefOf.GotoWander || curJob.def == JobDefOf.Open
                             || curJob.def == JobDefOf.ManTurret
@@ -158,98 +163,72 @@ namespace TFH_VehicleBase.Components
                             || curJob.def == JobDefOf.VisitSickPawn
                             || curJob.def == JobDefOf.Slaughter || curJob.def == JobDefOf.Milk
                             || curJob.def == JobDefOf.Shear || curJob.def == JobDefOf.Train
-                            || curJob.def == JobDefOf.Mate || this.Driver.health.HasHediffsNeedingTend())
-                        && this.Driver.Position.Roofed(this.Driver.Map))
+                            || curJob.def == JobDefOf.Mate || this.Rider.health.HasHediffsNeedingTend())
+                        && this.Rider.Position.Roofed(this.Rider.Map))
                     {
-                        this.cart.Position = this.Position.ToIntVec3();
-                        this.cart.Rotation = this.driver.Rotation;
-                        if (!this.driver.Position.InBounds(this.cart.Map))
+                        this.parentVehicle.Position = this.Position.ToIntVec3();
+                        this.parentVehicle.Rotation = this.rider.Rotation;
+                        if (!this.rider.Position.InBounds(this.parentVehicle.Map))
                         {
                             Log.Message("3");
-                            this.DismountAt(this.Driver.Position);
+                            this.DismountAt(this.Rider.Position);
                             return;
                         }
 
                         Log.Message("4");
-                        this.DismountAt(this.driver.Position - this.InteractionOffset.ToIntVec3());
-                        this.driver.Position = this.driver.Position.RandomAdjacentCell8Way();
+                        this.DismountAt(this.rider.Position - this.InteractionOffset.ToIntVec3());
+                        this.rider.Position = this.rider.Position.RandomAdjacentCell8Way();
                         return;
                     }
                 }
 
                 this.tickCheck = Find.TickManager.TicksGame;
                 this.tickCooldown = Rand.RangeInclusive(60, 180);
-
-                // // bring vehicles home
-                // if (this.cart.VehicleComp != null && !this.cart.VehicleComp.MotorizedWithoutFuel())
-                // {
-                //     float hitPointsPercent = this.cart.health.summaryHealth.SummaryHealthPercent;
-                //
-                //     if (this.cart.Faction == Faction.OfPlayer)
-                //     {
-                //         if (!GenAI.EnemyIsNear(this.Driver, 120f))
-                //         {
-                //             if (!this.Driver.drafter.Drafted)
-                //             {
-                //                 var flag = this.cart.HasGasTank() && this.cart.GasTankComp.tankLeaking;
-                //
-                //                 if (hitPointsPercent < 0.65f
-                //
-                //                     // || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
-                //                     || flag || !this.cart.RefuelableComp.HasFuel)
-                //                 {
-                //                     Job jobNew = this.Driver.DismountAtParkingLot("CM");
-                //                     this.Driver.jobs.TryTakeOrderedJob(jobNew);
-                //                 }
-                //             }
-                //         }
-                //     }
-                // }
             }
 
             if (Find.TickManager.TicksGame - this.tickLastDoorCheck >= 96
-                && (this.driver.Position.GetDoor(this.cart.Map) != null
-                    || this.cart.Position.GetDoor(this.cart.Map) != null))
+                && (this.rider.Position.GetDoor(this.parentVehicle.Map) != null
+                    || this.parentVehicle.Position.GetDoor(this.parentVehicle.Map) != null))
             {
-                this.lastPassedDoor = this.Driver.Position.GetDoor(this.Driver.Map) != null
-                                          ? this.Driver.Position.GetDoor(this.Driver.Map)
-                                          : this.cart.Position.GetDoor(this.cart.Map);
-                this.lastPassedDoor?.StartManualOpenBy(this.Driver);
+                this.lastPassedDoor = this.Rider.Position.GetDoor(this.Rider.Map) != null
+                                          ? this.Rider.Position.GetDoor(this.Rider.Map)
+                                          : this.parentVehicle.Position.GetDoor(this.parentVehicle.Map);
+                this.lastPassedDoor?.StartManualOpenBy(this.Rider);
                 this.tickLastDoorCheck = Find.TickManager.TicksGame;
             }
             else if (Find.TickManager.TicksGame - this.tickLastDoorCheck >= 96)
             {
                 if (this.lastPassedDoor != null)
                 {
-                    this.lastPassedDoor.StartManualCloseBy(this.Driver);
+                    this.lastPassedDoor.StartManualCloseBy(this.Rider);
                     this.lastPassedDoor = null;
                 }
             }
 
             // Keep the heading of the vehicle
-            if (this.Driver.pather.Moving && !this.Position.ToIntVec3().CloseToEdge(this.cart.Map, 2))
+            if (this.Rider.pather.Moving && !this.Position.ToIntVec3().CloseToEdge(this.parentVehicle.Map, 2))
             {
                 // Not there yet
-                if (this.Driver.Position != this.Driver.pather.Destination.Cell)
+                if (this.Rider.Position != this.Rider.pather.Destination.Cell)
                 {
                     // Check rotation
-                    if (this.Driver.Rotation != this.cart.Rotation)
+                    if (this.Rider.Rotation != this.parentVehicle.Rotation)
                     {
-                        if (this.Driver.pather.Destination.Cell.InHorDistOf(this.cart.Position, 12f))
+                        if (this.Rider.pather.Destination.Cell.InHorDistOf(this.parentVehicle.Position, 12f))
                         {
                             // Don't rotate if near tagert or short distance
-                            if (this.Driver.Rotation.Opposite == this.cart.Rotation)
+                            if (this.Rider.Rotation.Opposite == this.parentVehicle.Rotation)
                             {
-                                this.lastDrawAsAngle = this.Driver.Rotation.Opposite.AsAngle;
-                                this.cart.Position = this.Position.ToIntVec3();
+                                this.lastDrawAsAngle = this.Rider.Rotation.Opposite.AsAngle;
+                                this.parentVehicle.Position = this.Position.ToIntVec3();
                                 return;
                             }
                         }
-                        this.cart.Rotation = this.Driver.Rotation;
-                        this.lastDrawAsAngle = this.Driver.Rotation.AsAngle;
+                        this.parentVehicle.Rotation = this.Rider.Rotation;
+                        this.lastDrawAsAngle = this.Rider.Rotation.AsAngle;
 
                     }
-                    this.cart.Position = this.Position.ToIntVec3();
+                    this.parentVehicle.Position = this.Position.ToIntVec3();
                 }
             }
         }
@@ -259,43 +238,43 @@ namespace TFH_VehicleBase.Components
 
             this.RemoveDriverComp();
 
-            this.Driver.RaceProps.makesFootprints = this.Driver.def.race.makesFootprints;
+            this.Rider.RaceProps.makesFootprints = this.Rider.def.race.makesFootprints;
 
             // if (Find.Reservations.IsReserved(parent, Driver.Faction))
             this.parent.Map.reservationManager.ReleaseAllForTarget(this.parent);
 
-            if (this.Driver.Faction != Faction.OfPlayer)
+            if (this.Rider.Faction != Faction.OfPlayer && this.parentVehicle.RaceProps.IsMechanoid)
             {
                 // this.parent.SetForbidden(true);
-                if (this.Driver.Dead)
+                if (this.Rider.Dead)
                 {
-                    this.parent.SetFaction(Faction.OfInsects);
+                    this.parent.SetFaction(null);
                 }
             }
 
-            this.Driver.Position = this.Driver.Position.RandomAdjacentCell8Way();
+            this.Rider.Position = this.Rider.Position.RandomAdjacentCell8Way();
 
-            this.driver = null;
+            this.rider = null;
             this.IsMounted = false;
 
-            this.cart.EndSustainerVehicleIfActive();
+            this.parentVehicle.EndSustainerVehicleIfActive();
 
             // Find.ListerBuildings.Add(parent as Building);
         }
 
         private void RemoveDriverComp()
         {
-            if (this.driver == null)
+            if (this.rider == null)
             {
                 return;
 
             }
-            if (this.driver.AllComps.Contains(this.cart.DriverComp))
+            if (this.rider.AllComps.Contains(this.parentVehicle.DriverComp))
             {
-                this.driver.AllComps?.Remove(this.cart.DriverComp);
-                this.cart.DriverComp.Vehicle = null;
-                this.cart.DriverComp.Pawn = null;
-                this.cart.DriverComp.parent = null;
+                this.rider.AllComps?.Remove(this.parentVehicle.DriverComp);
+                this.parentVehicle.DriverComp.Vehicle = null;
+                this.parentVehicle.DriverComp.Pawn = null;
+                this.parentVehicle.DriverComp.parent = null;
             }
         }
 
@@ -305,7 +284,7 @@ namespace TFH_VehicleBase.Components
             if (dismountPos != IntVec3.Invalid)
             {
                 this.Dismount();
-                this.cart.Position = dismountPos;
+                this.parentVehicle.Position = dismountPos;
                 return;
             }
 
@@ -314,12 +293,12 @@ namespace TFH_VehicleBase.Components
 
         public void MountOn(Pawn pawn)
         {
-            if (this.driver != null)
+            if (this.rider != null)
             {
                 return;
             }
 
-            if (this.cart == null)
+            if (this.parentVehicle == null)
             {
                 return;
             }
@@ -330,23 +309,26 @@ namespace TFH_VehicleBase.Components
                 drivenCart.MountableComp.Dismount();
             }
 
-            this.driver = pawn;
+            this.rider = pawn;
             this.IsMounted = true;
 
-            if (pawn.RaceProps.Humanlike && this.cart.IsCurrentlyMotorized())
+            if (pawn.RaceProps.Humanlike && this.parentVehicle.IsCurrentlyMotorized())
             {
                 pawn.RaceProps.makesFootprints = false;
             }
 
-            this.cart.AddDriverComp();
+            this.parentVehicle.AddDriverComp();
 
-            // Set faction of vehicle to whoever mounts it
-            if (this.cart.Faction != this.Driver.Faction)
+            if (this.parentVehicle.RaceProps.IsMechanoid)
             {
-                this.cart.SetFaction(this.Driver.Faction);
+                // Set faction of vehicle to whoever mounts it
+                if (this.parentVehicle.Faction != this.Rider.Faction)
+                {
+                    this.parentVehicle.SetFaction(this.Rider.Faction);
+                }
             }
 
-            this.cart.StartSustainerVehicleIfInactive();
+            this.parentVehicle.StartSustainerVehicleIfInactive();
 
             this.IsPrisonBreaking = PrisonBreakUtility.IsPrisonBreaking(pawn);
         }
@@ -356,7 +338,7 @@ namespace TFH_VehicleBase.Components
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_References.Look(ref this.driver, "Driver");
+            Scribe_References.Look(ref this.rider, "Driver");
             Scribe_References.Look(ref this.lastPassedDoor, "lastPassedDoor");
             Scribe_Values.Look(ref this.lastDrawAsAngle, "lastDrawAsAngle");
             Scribe_Values.Look(ref this.IsMounted, "IsMounted");
@@ -368,19 +350,19 @@ namespace TFH_VehicleBase.Components
             base.PostPostApplyDamage(dinfo, totalDamageDealt);
             if (this.IsMounted)
             {
-                if (this.cart.CanExplode() && this.cart.wickStarted)
+                if (this.parentVehicle.CanExplode() && this.parentVehicle.wickStarted)
                 {
                     if (Rand.Value >= 0.1f)
                     {
                         this.DismountAt(
-                            (this.driver.Position - this.InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
+                            (this.rider.Position - this.InteractionOffset.ToIntVec3()).RandomAdjacentCell8Way());
                     }
                     else
                     {
-                        if (this.cart.Spawned)
+                        if (this.parentVehicle.Spawned)
                         {
                             //     this.driver.TryAttachFire(0.1f);
-                            this.cart.TryAttachFire(0.1f);
+                            this.parentVehicle.TryAttachFire(0.1f);
                         }
                     }
                 }
@@ -411,16 +393,16 @@ namespace TFH_VehicleBase.Components
         {
             base.PostSpawnSetup(respawningAfterLoad);
 
-            this.cart = this.parent as Vehicle_Cart;
+            this.parentVehicle = this.parent as Vehicle_Cart;
 
-            if (this.driver != null)
+            if (this.rider != null)
             {
                 this.IsMounted = true;
 
                 // if (this.Driver.RaceProps.Humanlike)
-                if (this.driver.RaceProps.Humanlike)
+                if (this.rider.RaceProps.Humanlike)
                 {
-                    this.driver.RaceProps.makesFootprints = false;
+                    this.rider.RaceProps.makesFootprints = false;
                 }
             }
 

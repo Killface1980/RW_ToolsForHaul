@@ -39,7 +39,7 @@
             {
                 if (this.cart.RefuelableComp != null)
                 {
-                    if (this.cart.MountableComp.Driver.Faction != Faction.OfPlayer)
+                    if (this.cart.MountableComp.Rider.Faction != Faction.OfPlayer)
                     {
                         if (!this.fueledByAI)
                         {

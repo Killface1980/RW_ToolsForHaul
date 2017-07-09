@@ -34,7 +34,6 @@
         <compClass>CompColorable</compClass>
       </li>
     </comps>
-    
     <drawGUIOverlay>true</drawGUIOverlay>
   </ThingDef>
   

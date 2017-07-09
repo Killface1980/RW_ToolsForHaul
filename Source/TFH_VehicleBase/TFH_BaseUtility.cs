@@ -27,7 +27,7 @@ namespace TFH_VehicleBase
 
         public static bool IsMountedOnAnimalAndAvailable(this Vehicle_Cart cart)
         {
-            Pawn driver = cart.MountableComp.IsMounted ? cart.MountableComp.Driver : null;
+            Pawn driver = cart.MountableComp.IsMounted ? cart.MountableComp.Rider : null;
             if (driver == null)
             {
                 return false;
@@ -36,6 +36,34 @@ namespace TFH_VehicleBase
             return driver.RaceProps.Animal && driver.CanCasuallyInteractNow()
                    && driver.needs.food.CurCategory < HungerCategory.Starving
                    && driver.needs.rest.CurCategory < RestCategory.VeryTired && !HealthAIUtility.ShouldBeTendedNow(driver);
+        }
+
+        public static bool IsCurrentlyMotorized(this BasicVehicle vehicle)
+        {
+            if (vehicle.RaceProps.Animal)
+            {
+                return false;
+            }
+            var refuelabale = vehicle.TryGetComp<CompRefuelable>();
+            var vehiclecoomp = vehicle.TryGetComp<CompVehicle>();
+            return (refuelabale != null && refuelabale.HasFuel)
+                   || vehiclecoomp != null && vehiclecoomp.MotorizedWithoutFuel();
+        }
+
+        public static bool CanExplode(this BasicVehicle vehicle)
+        {
+            if (!vehicle.ExplosiveTickers.NullOrEmpty())
+            {
+                for (int index = vehicle.ExplosiveTickers.Count - 1; index >= 0; index--)
+                {
+                    HediffCompExplosive_TFH ticker = vehicle.ExplosiveTickers[index];
+                    if (ticker.CompShouldRemove)
+                    {
+                        vehicle.ExplosiveTickers.Remove(ticker);
+                    }
+                }
+            }
+            return !vehicle.ExplosiveTickers.NullOrEmpty();
         }
 
         public static bool IsPlayerAllowedToRide(this Pawn pawn, Vehicle_Cart cart)
@@ -47,8 +75,8 @@ namespace TFH_VehicleBase
             if (!pawn.CanReserve(cart)) return false;
 
             if (!cart.MountableComp.IsMounted) return true;
-            if (cart.MountableComp.Driver == pawn) return true;
-            if (cart.MountableComp.IsMounted && cart.MountableComp.Driver.RaceProps.Animal) return true;
+            if (cart.MountableComp.Rider == pawn) return true;
+            if (cart.MountableComp.IsMounted && cart.MountableComp.Rider.RaceProps.Animal) return true;
             return false;
         }
 
@@ -251,8 +279,8 @@ namespace TFH_VehicleBase
                 cart => cart is Vehicle_Cart && !cart.IsForbidden(pawn.Faction)
                         && pawn.Position.InHorDistOf(cart.Position, distance) && pawn.CanReserve(cart)
                         && (!(cart as Vehicle_Cart).MountableComp.IsMounted
-                            || ((cart as Vehicle_Cart).MountableComp.Driver == pawn
-                                || (cart as Vehicle_Cart).MountableComp.Driver.RaceProps.Animal))
+                            || ((cart as Vehicle_Cart).MountableComp.Rider == pawn
+                                || (cart as Vehicle_Cart).MountableComp.Rider.RaceProps.Animal))
                         && (allowedThing == null || (cart as Vehicle_Cart).allowances.Allows(allowedThing))
                         && !(cart as Vehicle_Cart).IsAboutToBlowUp());
 
@@ -271,15 +299,6 @@ namespace TFH_VehicleBase
             List<Thing> availableVehicles =
                 map.listerThings.AllThings.FindAll(
                     aV => aV is Vehicle_Cart && aV.Faction == Faction.OfPlayer);
-            return availableVehicles;
-        }
-
-        public static List<Thing> AvailableRideables(Pawn pawn)
-        {
-            List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-                aV => aV is Vehicle_Saddle && !aV.IsForbidden(pawn.Faction)
-                              && (aV.TryGetComp<CompMountable>().IsMounted && pawn.CanReserve(aV) // Unmounted
-                                  || aV.TryGetComp<CompMountable>().Driver == pawn)); // or Driver is pawn himself
             return availableVehicles;
         }
 
@@ -354,15 +373,15 @@ namespace TFH_VehicleBase
 
         public static Vehicle_Cart MountedVehicle(this Pawn pawn)
         {
-            return pawn.Map.listerThings.AllThings.FindAll(x => x is Vehicle_Cart && ((Vehicle_Cart)x).MountableComp.Driver == pawn).FirstOrDefault() as Vehicle_Cart;
+            return pawn.Map.listerThings.AllThings.FindAll(x => x is Vehicle_Cart && ((Vehicle_Cart)x).MountableComp.Rider == pawn).FirstOrDefault() as Vehicle_Cart;
         }
 
-        public static void MountedVehicle(this Pawn pawn, out Vehicle_Cart cart)
+        public static void MountedVehicle(this Pawn pawn, out BasicVehicle cart)
         {
-            cart = pawn.Map.listerThings.AllThings.FindAll(x => x is BasicVehicle && ((Vehicle_Cart)x).MountableComp.Driver == pawn).FirstOrDefault() as Vehicle_Cart;
+            cart = pawn.Map.listerThings.AllThings.FindAll(x => x is BasicVehicle && ((BasicVehicle)x).MountableComp.Rider == pawn).FirstOrDefault() as Vehicle_Cart;
         }
 
-        public static Job DismountAtParkingLot(this Pawn pawn, string caller, Vehicle_Cart cart = null)
+        public static Job DismountAtParkingLot(this Pawn pawn, string caller, BasicVehicle cart = null)
         {
             if (cart == null)
             {
@@ -495,7 +514,7 @@ namespace TFH_VehicleBase
             // Thing lastItem = TryGetBackpackLastItem(pawn);
             if (cart.MountableComp.IsMounted)
             {
-                jobDef = cart.MountableComp.Driver.RaceProps.Animal
+                jobDef = cart.MountableComp.Rider.RaceProps.Animal
                              ? VehicleJobDefOf.HaulWithAnimalCart
                              : VehicleJobDefOf.HaulWithCart;
             }
@@ -839,22 +858,6 @@ namespace TFH_VehicleBase
             return true;
         }
 
-        public static Vehicle_Saddle GetSaddleByRider(Pawn pawn)
-        {
-
-            List<Thing> availableVehicles = AvailableRideables(pawn);
-            foreach (Thing thing in availableVehicles)
-            {
-                Vehicle_Saddle vehicle = (Vehicle_Saddle)thing;
-                if (vehicle.MountableComp.Driver == pawn)
-                {
-                    return vehicle;
-                }
-            }
-
-            return null;
-        }
-
         /// <summary>
         ///     Calculates the actual current movement speed of a pawn
         /// </summary>
@@ -907,7 +910,7 @@ namespace TFH_VehicleBase
         {
             if (cart != null)
             {
-                return cart.MountableComp.Driver == pawn;
+                return cart.MountableComp.Rider == pawn;
             }
 
             List<Thing> mountedVehicles = pawn.Map.MountedVehicles();
@@ -916,7 +919,7 @@ namespace TFH_VehicleBase
                 foreach (Thing thing in mountedVehicles)
                 {
                     Vehicle_Cart vehicle = (Vehicle_Cart)thing;
-                    if (vehicle.MountableComp.Driver == pawn)
+                    if (vehicle.MountableComp.Rider == pawn)
                     {
                         return true;
                     }
@@ -931,7 +934,7 @@ namespace TFH_VehicleBase
             if (cart != null)
             {
                 mountedCart = cart;
-                return cart.MountableComp.Driver == pawn;
+                return cart.MountableComp.Rider == pawn;
             }
 
             List<Thing> mountedVehicles = pawn.Map.MountedVehicles();
@@ -940,7 +943,7 @@ namespace TFH_VehicleBase
                 foreach (Thing thing in mountedVehicles)
                 {
                     Vehicle_Cart vehicle = (Vehicle_Cart)thing;
-                    if (vehicle.MountableComp.Driver == pawn)
+                    if (vehicle.MountableComp.Rider == pawn)
                     {
                         mountedCart = vehicle;
                         return true;
@@ -961,7 +964,7 @@ namespace TFH_VehicleBase
                 foreach (Thing thing in mountedVehicles)
                 {
                     Vehicle_Cart vehicle = (Vehicle_Cart)thing;
-                    if (vehicle.MountableComp.Driver == pawn)
+                    if (vehicle.MountableComp.Rider == pawn)
                     {
                         return true;
                     }
@@ -1042,7 +1045,7 @@ namespace TFH_VehicleBase
                     Pawn selPawn = selectedObject as Pawn;
                     if (selPawn != null)
                     {
-                        if (selPawn.IsDriver(out Vehicle_Cart drivenCart))
+                        if (selPawn.IsDriver())
                         {
                             allPawnsDriving.Add(selPawn);
                         }
@@ -1054,7 +1057,7 @@ namespace TFH_VehicleBase
                 {
                     foreach (Pawn driverPawn in allPawnsDriving)
                     {
-                        driverPawn.MountedVehicle(out Vehicle_Cart pawnCart2);
+                        driverPawn.MountedVehicle(out BasicVehicle pawnCart2);
 
                         options.Add(
                             new FloatMenuOption(
@@ -1091,7 +1094,7 @@ namespace TFH_VehicleBase
                                 {
                                     foreach (Pawn driverPawn in allPawnsDriving)
                                     {
-                                        driverPawn.MountedVehicle(out Vehicle_Cart pawnCart3);
+                                        driverPawn.MountedVehicle(out BasicVehicle pawnCart3);
                                         if (!driverPawn.Position.InBounds(driverPawn.Map))
                                         {
                                             pawnCart3.MountableComp.DismountAt(driverPawn.Position);

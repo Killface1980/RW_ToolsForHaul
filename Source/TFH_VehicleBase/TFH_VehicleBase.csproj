@@ -36,6 +36,7 @@
     <Compile Include="BasicVehicle.cs" />
     <None Include="Class1.cs" />
     <None Include="Class2.cs" />
+    <Compile Include="Class3.cs" />
     <Compile Include="Command_VerbTarget.cs" />
     <Compile Include="Components\CompAxles.cs" />
     <Compile Include="Components\CompDriver.cs" />
@@ -44,9 +45,9 @@
     <Compile Include="Components\CompMountable.cs" />
     <Compile Include="Components\CompProperties_Axle.cs" />
     <Compile Include="Components\CompProperties_Mountable.cs" />
-    <Compile Include="Components\CompProperties_Rideable.cs" />
+    <None Include="Components\CompProperties_Rideable.cs" />
     <Compile Include="Components\CompProperties_Vehicle.cs" />
-    <Compile Include="Components\CompRideable.cs" />
+    <None Include="Components\CompRideable.cs" />
     <Compile Include="Components\CompVehicle.cs" />
     <Compile Include="Components\GameComponentToolsForHaul.cs" />
     <Compile Include="Components\HediffCompExplosive_TFH.cs" />
@@ -60,7 +61,7 @@
     <Compile Include="JobDrivers\JobDriver_DismountAtParkingLot.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
-    <Compile Include="JobDrivers\JobDriver_MountAnimal.cs" />
+    <None Include="JobDrivers\JobDriver_MountAnimal.cs" />
     <Compile Include="JobDrivers\JobDriver_Mount.cs" />
     <Compile Include="JobDrivers\JobDriver_MountAndDraft.cs" />
     <Compile Include="JobDrivers\JobDriver_StandBy.cs" />
@@ -86,7 +87,7 @@
     <Compile Include="Trace.cs" />
     <Compile Include="VehicleInfo.cs" />
     <Compile Include="VehicleRecipesUtility.cs" />
-    <Compile Include="Vehicle_Animal.cs" />
+    <None Include="Vehicle_Animal.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_ReturnCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Refuel.cs" />
     <Compile Include="Zone_ParkingLot.cs" />
@@ -96,7 +97,7 @@
     <None Include="Designators\Designator_Move.cs" />
     <Compile Include="Designators\Designator_ZoneAddParkingLot.cs" />
     <None Include="Designators\Vehicle\Designator_Board.cs" />
-    <Compile Include="DefOfs_TFH\HaulJobDefOf.cs" />
+    <Compile Include="DefOfs_TFH\VehicleJobDefOf.cs" />
     <Compile Include="MoteCounterTFH.cs" />
     <Compile Include="MoteMakerTFH.cs" />
     <Compile Include="MoteThrown_TFH.cs" />

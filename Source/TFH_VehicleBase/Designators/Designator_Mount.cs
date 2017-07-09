@@ -54,7 +54,7 @@
 
                 if (vehicle.Faction == Faction.OfPlayer)
                 {
-                    if (vehicle.RaceProps.IsMechanoid && !vehicle.IsDriver(out Vehicle_Cart drivenCart))
+                    if (vehicle.RaceProps.IsMechanoid || vehicle.RaceProps.Animal && !vehicle.IsDriver(out Vehicle_Cart drivenCart))
                     {
                         Job jobNew = new Job(VehicleJobDefOf.Mount);
                         this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
@@ -63,31 +63,7 @@
                         break;
                     }
 
-                    if (vehicle.RaceProps.Animal) ;// && vehicle.training.IsCompleted(TrainableDefOf.Obedience) && vehicle.RaceProps.baseBodySize >= 1.0 && !vehicle.IsDriver(out Vehicle_Cart drivenCart2))
-                    {
-                        Pawn worker = null;
-                        Job jobNew = new Job(VehicleJobDefOf.MountAnimal);
-                        this.Map.reservationManager.ReleaseAllForTarget(this.vehicle);
-                        jobNew.count = 1;
-                        jobNew.targetA = this.vehicle;
-                        jobNew.targetB = vehicle;
-                        foreach (Pawn colonyPawn in PawnsFinder.AllMaps_FreeColonistsSpawned)
-                            if (colonyPawn.CurJob.def != jobNew.def
-                                && (worker == null || (worker.Position - vehicle.Position).LengthHorizontal
-                                    > (colonyPawn.Position - vehicle.Position).LengthHorizontal))
-                            {
-                                worker = colonyPawn;
-                            }
 
-                        if (worker == null)
-                        {
-                            Messages.Message("NoWorkForMakeMount".Translate(), MessageSound.RejectInput);
-                            break;
-                        }
-
-                        worker.jobs.StartJob(jobNew, JobCondition.InterruptForced);
-                        break;
-                    }
                 }
             }
 

@@ -17,7 +17,7 @@ namespace TFH_VehicleBase.Components
 
     public class CompDriver : ThingComp
     {
-        public Vehicle_Cart Vehicle { get; set; }
+        public BasicVehicle Vehicle { get; set; }
 
         public Pawn Pawn;
 
@@ -108,38 +108,6 @@ namespace TFH_VehicleBase.Components
                 activateSound = Static.ClickSound,
                 action = delegate { TFH_BaseUtility.DismountGizmoFloatMenu(this.parent as Pawn); }
             };
-
-
-            var saddle = TFH_BaseUtility.GetSaddleByRider((Pawn)this.parent);
-
-            if (saddle != null)
-            {
-                if (saddle.MountableComp.Driver.RaceProps.Animal)
-                {
-                    Designator_Board designatorBoard =
-                        new Designator_Board
-                        {
-                            vehicle = this.parent,
-                            defaultLabel = "CommandRideLabel".Translate(),
-                            defaultDesc = "CommandRideDesc".Translate(),
-                            icon = Static.IconBoard,
-                            activateSound = Static.ClickSound
-                        };
-
-                    yield return designatorBoard;
-
-                    // if (mountableComp.IsMounted && this.innerContainer.Count(x => x is Pawn) >= maxNumBoarding)
-                    // {
-                    // Command_Action commandUnboardAll = new Command_Action();
-
-                    // commandUnboardAll.defaultLabel = "CommandGetOffLabel".Translate();
-                    // commandUnboardAll.defaultDesc = "CommandGetOffDesc".Translate();
-                    // commandUnboardAll.icon = ContentFinder<Texture2D>.Get("UI/Commands/IconUnboardAll");
-                    // commandUnboardAll.activateSound = Static.ClickSound;
-                    // commandUnboardAll.action = () => { this.UnboardAll(); };
-                    // yield return commandUnboardAll;
-                }
-            }
         }
 
     }

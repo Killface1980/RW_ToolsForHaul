@@ -12,48 +12,132 @@ namespace TFH_VehicleBase
 
     using Verse;
     using Verse.AI;
+    using Verse.Sound;
 
     public class BasicVehicle : Pawn
     {
+        public CompMountable MountableComp;
 
+        public CompDriver DriverComp;
 
+        public List<HediffCompExplosive_TFH> ExplosiveTickers;
 
-        public virtual bool ClaimableBy(Faction claimee)
+        public bool wickStarted;
+
+        private Sustainer sustainerAmbient;
+
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            // No vehicles if enemy near
+            base.SpawnSetup(map, respawningAfterLoad);
 
+            this.MountableComp = this.TryGetComp<CompMountable>();
 
-            if (base.Faction != null)
+            // Get Exploder info
+            List<Hediff> hediffSetHediffs = this.health?.hediffSet?.hediffs;
+            if (!hediffSetHediffs.NullOrEmpty())
             {
-                if (claimee != base.Faction)
+                this.ExplosiveTickers = new List<HediffCompExplosive_TFH>();
+                foreach (var hediff in hediffSetHediffs)
                 {
-                    if (base.Faction.HostileTo(claimee))
+                    HediffCompExplosive_TFH exploder = hediff.TryGetComp<HediffCompExplosive_TFH>();
+
+                    if (exploder != null)
                     {
-                        foreach (IAttackTarget attackTarget in this.Map.attackTargetsCache.TargetsHostileToFaction(claimee))
-                        {
-                            if (attackTarget.Thing.Position.InHorDistOf(this.Position, 20f))
-                            {
-                                return false;
-                            }
-                        }
+                        this.ExplosiveTickers.Add(exploder);
                     }
                 }
             }
 
-            return true;
+            // Reload textures to get colored versions
+            if (this.RaceProps.IsMechanoid)
+            {
+                LongEventHandler.ExecuteWhenFinished(
+                    delegate
+                        {
+                            PawnKindLifeStage curKindLifeStage = this.ageTracker.CurKindLifeStage;
 
-            // CompPowerTrader comp = this.GetComp<CompPowerTrader>();
-            // if (comp == null || !comp.PowerOn)
-            // {
-            // CompMannable comp2 = this.GetComp<CompMannable>();
-            // if (comp2 == null || !comp2.MannedNow)
-            // {
-            // return true;
-            // }
-            // }
+                            this.Drawer.renderer.graphics.nakedGraphic =
+                                curKindLifeStage.bodyGraphicData.Graphic.GetColoredVersion(
+                                    ShaderDatabase.Cutout,
+                                    this.DrawColor,
+                                    this.DrawColorTwo);
+                        });
+            }
+
+        }
+
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            foreach (Gizmo gizmo in base.GetGizmos())
+            {
+                yield return gizmo;
+            }
+
+            if (this.Faction != Faction.OfPlayer)
+            {
+                yield break;
+            }
+
+            if (!this.MountableComp.IsMounted)
+            {
+                Designator_Mount designator =
+                    new Designator_Mount
+                        {
+                            vehicle = this,
+                            defaultLabel = Static.TxtCommandMountLabel.Translate(),
+                            defaultDesc = Static.TxtCommandMountDesc.Translate(),
+                            icon = Static.IconMount,
+                            activateSound = Static.ClickSound
+                        };
+                yield return designator;
+            }
+            else
+            {
+                yield return new Command_Action
+                                 {
+                                     defaultLabel = Static.TxtCommandDismountLabel.Translate(),
+                                     defaultDesc = Static.TxtCommandDismountDesc.Translate(),
+                                     icon = Static.IconUnmount,
+                                     activateSound = Static.ClickSound,
+                                     action = delegate
+                                         {
+                                             TFH_BaseUtility.DismountGizmoFloatMenu(
+                                                 this.MountableComp.Rider);
+                                         }
+                                 };
+            }
+        }
+
+        public void AddDriverComp()
+        {
+            this.DriverComp = new CompDriver
+                                  {
+                                      Vehicle = this,
+                                      Pawn = this.MountableComp.Rider,
+                                      parent = this.MountableComp.Rider
+                                  };
+            this.MountableComp.Rider.AllComps.Add(this.DriverComp);
         }
 
 
+        public void StartSustainerVehicleIfInactive()
+        {
+            CompVehicle vehicleComp = this.TryGetComp<CompVehicle>();
+            if (vehicleComp != null && (!vehicleComp.compProps.soundAmbient.NullOrUndefined()
+                                        && this.sustainerAmbient == null))
+            {
+                SoundInfo info = SoundInfo.InMap(this, MaintenanceType.None);
+                this.sustainerAmbient = vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
+            }
+        }
 
+        public void EndSustainerVehicleIfActive()
+        {
+            if (this.sustainerAmbient != null)
+            {
+                this.sustainerAmbient.End();
+                this.sustainerAmbient = null;
+            }
+        }
     }
 }

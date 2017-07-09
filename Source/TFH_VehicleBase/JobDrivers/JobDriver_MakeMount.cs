@@ -104,9 +104,9 @@
                     }
 
                     if (cart != null && cart.MountableComp.IsMounted
-                        && cart.MountableComp.Driver.CurJob.def == VehicleJobDefOf.StandBy)
+                        && cart.MountableComp.Rider.CurJob.def == VehicleJobDefOf.StandBy)
                     {
-                        cart.MountableComp.Driver.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
+                        cart.MountableComp.Rider.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
                     }
                     this.EndJobWith(JobCondition.Succeeded);
                 };

@@ -42,7 +42,7 @@
             // JumpIf already mounted
             yield return Toils_Jump.JumpIf(toil, () =>
             {
-                if (cart.TryGetComp<CompMountable>().Driver == this.pawn) return true;
+                if (cart.TryGetComp<CompMountable>().Rider == this.pawn) return true;
                 return false;
             });
 

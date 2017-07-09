@@ -27,7 +27,7 @@ namespace TFH_VehicleBase.StatWorkers
                     if (thisPawn.IsDriver(out Vehicle_Cart vehicleCart) && !vehicleCart.RaceProps.Animal)
                     {
                         var cart = vehicleCart as Vehicle_Cart;
-                        if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Driver == thisPawn)
+                        if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Rider == thisPawn)
                         {
                             stringBuilder.AppendLine();
                             stringBuilder.AppendLine(
@@ -74,7 +74,7 @@ namespace TFH_VehicleBase.StatWorkers
                 if (!drivenCart.RaceProps.Animal)
                 {
                     var cart = drivenCart as Vehicle_Cart;
-                    if (!cart.MountableComp.Driver.RaceProps.Animal && cart.MountableComp.Driver == thisPawn)
+                    if (!cart.MountableComp.Rider.RaceProps.Animal && cart.MountableComp.Rider == thisPawn)
                     {
                         if (cart.IsCurrentlyMotorized())
                         {

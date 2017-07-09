@@ -42,11 +42,11 @@
                 return;
             }
 
-            Pawn_PathFollower pawnPathFollower = this.cart.MountableComp.Driver.pather;
+            Pawn_PathFollower pawnPathFollower = this.cart.MountableComp.Rider.pather;
             if (pawnPathFollower != null && pawnPathFollower.Moving)
             {
                 // || mountableComp.Driver.drafter.pawn.pather.Moving)
-                Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Driver.stances;
+                Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Rider.stances;
                 if (pawnStanceTracker != null && (!pawnStanceTracker.FullBodyBusy && this.HasAxles()))
                 {
                     this.wheelRotation += this.cart.VehicleComp.currentDriverSpeed / 5f;
@@ -55,7 +55,7 @@
 
                 }
 
-                if (this.cart.MountableComp.Driver.Position.AdjacentTo8WayOrInside(this.cart.MountableComp.Driver.pather.Destination.Cell))
+                if (this.cart.MountableComp.Rider.Position.AdjacentTo8WayOrInside(this.cart.MountableComp.Rider.pather.Destination.Cell))
                 {
                     // Make the breaks sound once and throw some dust if Driver comes to his destination
                     if (this.HasAxles())
@@ -63,7 +63,7 @@
                         if (!this.breakSoundPlayed)
                         {
                             SoundDef.Named("VehicleATV_Ambience_Break")
-                                .PlayOneShot(new TargetInfo(this.cart.MountableComp.Driver.Position, this.parent.Map));
+                                .PlayOneShot(new TargetInfo(this.cart.MountableComp.Rider.Position, this.parent.Map));
                             MoteMakerTFH.ThrowDustPuff(this.parent.DrawPos, this.parent.Map, 0.8f);
                             this.breakSoundPlayed = true;
                         }

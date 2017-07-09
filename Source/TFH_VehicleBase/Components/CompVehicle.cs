@@ -140,7 +140,7 @@
                 }
             }
 #endif
-            Pawn_PathFollower pawnPathFollower = this.cart.MountableComp.Driver.pather;
+            Pawn_PathFollower pawnPathFollower = this.cart.MountableComp.Rider.pather;
             bool isMoving = pawnPathFollower != null && pawnPathFollower.Moving;
 
             if (isMoving)
@@ -183,14 +183,14 @@
             {
                 if (isMoving)
                 {
-                    Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Driver.stances;
+                    Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Rider.stances;
                     if (pawnStanceTracker != null && !pawnStanceTracker.FullBodyBusy)
                     {
                         this.cart.RefuelableComp?.Notify_UsedThisTick();
 
                         if (this.cart.HasAxles())
                         {
-                            this.currentDriverSpeed = TFH_BaseUtility.GetMoveSpeed(this.cart.MountableComp.Driver);
+                            this.currentDriverSpeed = TFH_BaseUtility.GetMoveSpeed(this.cart.MountableComp.Rider);
                         }
                     }
 

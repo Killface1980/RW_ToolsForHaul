@@ -51,13 +51,13 @@
     <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_Mount</driverClass>
     <reportString>Mount on TargetA.</reportString>
   </JobDef> 
-  
+  <!--
   <JobDef>
     <defName>MountAnimal</defName>
     <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_MountAnimal</driverClass>
     <reportString>Mount on TargetA.</reportString>
   </JobDef>
-  
+  -->
   <JobDef>
     <defName>MountAndDraft</defName>
     <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_MountAndDraft</driverClass>

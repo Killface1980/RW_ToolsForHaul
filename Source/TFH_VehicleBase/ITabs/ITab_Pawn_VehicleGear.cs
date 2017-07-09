@@ -72,7 +72,7 @@ namespace TFH_VehicleBase.ITabs
 
             if (compMountable.IsMounted)
             {
-                Pawn driver = compMountable.Driver;
+                Pawn driver = compMountable.Rider;
                 Widgets.ThingIcon(thingIconRect, driver);
                 Widgets.Label(thingLabelRect, driver.Label);
                 if (Mouse.IsOver(thingLabelRect))

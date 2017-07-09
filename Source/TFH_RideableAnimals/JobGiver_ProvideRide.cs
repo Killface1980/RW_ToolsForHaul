@@ -15,7 +15,7 @@ namespace TFH_RideableAnimals
 
         protected override Job TryGiveJob(Pawn pawn)
         {
-            if (((Vehicle_Animal)pawn).RideableComp.IsMounted)
+            if (((Vehicle_Animal)pawn).MountableComp.IsMounted)
             {
                 return new Job(JobDefOf.Wait)
                 {
