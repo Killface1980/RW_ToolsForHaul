@@ -193,7 +193,7 @@
                         if (actor.Position.AdjacentTo8Way(thingList[i].Thing.Position))
                         {
                             // thingList[i].Thing.DeSpawn();
-                var storage = carrier.GetContainer();
+                            var storage = carrier.GetContainer();
                             thingList[i].Thing.holdingOwner
                                 .TryTransferToContainer(thingList[i].Thing, storage, thingList[i].Thing.stackCount);
                             {
@@ -352,34 +352,50 @@
                     Pawn actor = toil.actor;
                     Job curJob = actor.jobs.curJob;
                     Vehicle_Cart carrier = actor.jobs.curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
-                var storage = carrier.GetContainer();
-                    if (storage.Count <= 0)
+                    ThingOwner cartStorage = carrier.GetContainer();
+                    if (cartStorage.Count <= 0)
                     {
                         return;
                     }
 
-                    toil.actor.jobs.curJob.SetTarget(TargetIndex.A, storage.First());
+                    toil.actor.jobs.curJob.SetTarget(TargetIndex.A, cartStorage.First());
                     Thing dropThing = toil.actor.jobs.curJob.targetA.Thing;
                     IntVec3 destLoc = actor.jobs.curJob.GetTarget(StoreCellInd).Cell;
                     Thing dummy;
 
                     SlotGroup slotGroup = actor.Map.slotGroupManager.SlotGroupAt(destLoc);
 
-                    // if (destLoc.GetStorable() == null)
-                    if (slotGroup != null && slotGroup.Settings.AllowedToAccept(dropThing))
+                    // if (slotGroup != null && slotGroup.Settings.AllowedToAccept(dropThing))
+                    if (destLoc.GetStorable(actor.Map) == null)
                     {
                         actor.Map.designationManager.RemoveAllDesignationsOn(dropThing);
-                        storage.TryDrop(dropThing, destLoc, actor.Map, placeMode, out dummy);
+                        cartStorage.TryDrop(dropThing, destLoc, actor.Map, placeMode, out dummy);
                     }
 
                     // Check cell queue is adjacent
                     List<LocalTargetInfo> cells = curJob.GetTargetQueue(StoreCellInd);
-                    for (int i = 0; i < cells.Count && i < storage.Count; i++)
+                    for (int i = 0; i < cells.Count && i < cartStorage.Count; i++)
                     {
                         if (destLoc.AdjacentTo8Way(cells[i].Cell) && cells[i].Cell.GetStorable(actor.Map) == null)
                         {
-                            actor.Map.designationManager.RemoveAllDesignationsOn(storage[i]);
-                            storage.TryDrop(storage[i], cells[i].Cell, actor.Map, ThingPlaceMode.Direct, out dummy);
+                            IntVec3 b;
+                            if (cells[i].HasThing)
+                            {
+                                b = cells[i].Thing.OccupiedRect().ClosestCellTo(actor.Position);
+                            }
+                            else
+                            {
+                                b = cells[i].Cell;
+                            }
+                            IntVec3 dropLoc = actor.Position + PawnRotator.RotFromAngleBiased((actor.Position - b).AngleFlat).FacingCell;
+
+                            // if (actor.CanReserve(dropLoc, 1, -1, null, false))
+                            // {
+                            //     actor.Reserve(dropLoc, 1, -1, null);
+                            // }
+
+                            actor.Map.designationManager.RemoveAllDesignationsOn(cartStorage[i]);
+                            cartStorage.TryDrop(cartStorage[i], dropLoc, actor.Map, ThingPlaceMode.Direct, out dummy);
                             cells.RemoveAt(i);
                             i--;
                         }
@@ -388,19 +404,22 @@
                     // Check item queue is valid storage for adjacent cell
                     foreach (IntVec3 adjCell in GenAdj.CellsAdjacent8Way(destLoc, Rot4.Random, new IntVec2()))
                     {
-                        if (storage.Count > 0 && adjCell.GetStorable(actor.Map) == null
-                            && adjCell.IsValidStorageFor(actor.Map, storage.First()))
+                        if (cartStorage.Count > 0 && adjCell.GetStorable(actor.Map) == null
+                            && adjCell.IsValidStorageFor(actor.Map, cartStorage.First()))
                         {
-                            actor.Map.designationManager.RemoveAllDesignationsOn(storage.First());
-                            storage.TryDrop(storage.First(), adjCell, actor.Map, ThingPlaceMode.Direct, out dummy);
+                            actor.Map.designationManager.RemoveAllDesignationsOn(cartStorage.First());
+                         // if (actor.CanReserve(adjCell, 1, -1, null, false))
+                         // {
+                         //     actor.Reserve(adjCell, 1, -1, null);
+                         // }
+
+                            cartStorage.TryDrop(cartStorage.First(), adjCell, actor.Map, ThingPlaceMode.Direct, out dummy);
                         }
                     }
                 };
             toil.FailOnDestroyedOrNull(CarrierInd);
             return toil;
         }
-
-
 
         // OLD
         /*

@@ -7,9 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace TFH_VehicleBase
+namespace TFH_Motes
 {
-    using TFH_VehicleBase.DefOfs_TFH;
+    using TFH_Motes.DefOfs_TFH;
 
     using UnityEngine;
 
@@ -20,7 +20,7 @@ namespace TFH_VehicleBase
 
         public static void PlaceTireTrack(Vector3 loc, Map map, float rot, Vector3 pos)
         {
-            if (!loc.ShouldSpawnMotesAt(map) || map.GetComponent<MoteCounterTFH>().SaturatedLowPriority)
+            if (!loc.ShouldSpawnMotesAt(map) || map.GetComponent<MoteCounter_TFH>().SaturatedLowPriority)
             {
                 return;
             }
@@ -32,7 +32,7 @@ namespace TFH_VehicleBase
 
         public static void ThrowDustPuff(Vector3 loc, Map map, float scale)
         {
-            if (!loc.ShouldSpawnMotesAt(map) || map.GetComponent<MoteCounterTFH>().SaturatedLowPriority)
+            if (!loc.ShouldSpawnMotesAt(map) || map.GetComponent<MoteCounter_TFH>().SaturatedLowPriority)
             {
                 return;
             }
@@ -47,7 +47,7 @@ namespace TFH_VehicleBase
 
         public static void ThrowMicroSparks(Vector3 loc, Map map)
         {
-            if (!loc.ShouldSpawnMotesAt(map) || map.GetComponent<MoteCounterTFH>().SaturatedLowPriority)
+            if (!loc.ShouldSpawnMotesAt(map) || map.GetComponent<MoteCounter_TFH>().SaturatedLowPriority)
             {
                 return;
             }
@@ -64,7 +64,7 @@ namespace TFH_VehicleBase
 
         public static void ThrowSmoke(Vector3 loc, Map map, float size)
         {
-            if (!loc.ShouldSpawnMotesAt(map) || map.GetComponent<MoteCounterTFH>().SaturatedLowPriority)
+            if (!loc.ShouldSpawnMotesAt(map) || map.GetComponent<MoteCounter_TFH>().SaturatedLowPriority)
             {
                 return;
             }

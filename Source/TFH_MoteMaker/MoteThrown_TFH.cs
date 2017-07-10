@@ -1,4 +1,4 @@
-﻿namespace TFH_VehicleBase
+﻿namespace TFH_Motes
 {
     using Verse;
 
@@ -10,12 +10,12 @@
         {
             base.SpawnSetup(map, respawningAfterLoad);
             this.thisMap = map;
-            map.GetComponent<MoteCounterTFH>().Notify_MoteSpawned();
+            map.GetComponent<MoteCounter_TFH>().Notify_MoteSpawned();
         }
 
         public override void DeSpawn()
         {
-            this.thisMap.GetComponent<MoteCounterTFH>().Notify_MoteDespawned();
+            this.thisMap.GetComponent<MoteCounter_TFH>().Notify_MoteDespawned();
             base.DeSpawn();
         }
   /*      

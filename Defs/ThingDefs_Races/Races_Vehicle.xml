@@ -706,7 +706,7 @@
         <compClass>TFH_VehicleBase.Components.CompFrontTex</compClass>
       </li>
       <li Class="TFH_VehicleBase.Components.CompProperties_Mountable">
-        <drawOffsetRotN>(0,0,0.5)</drawOffsetRotN>
+        <drawOffsetRotN>(0,0,-0.3)</drawOffsetRotN>
         <drawOffsetRotS>(0,0,-0.5)</drawOffsetRotS>
       </li>
       <li Class="CompProperties_Refuelable">

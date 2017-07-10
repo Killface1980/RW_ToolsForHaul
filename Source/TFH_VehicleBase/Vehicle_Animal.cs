@@ -2,20 +2,16 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
 
     using RimWorld;
 
-    using TFH_VehicleBase.Components;
     using TFH_VehicleBase.DefOfs_TFH;
-    using TFH_VehicleBase.Designators;
 
     using UnityEngine;
 
     using Verse;
     using Verse.AI;
-    using Verse.Sound;
 
     public class Vehicle_Animal : BasicVehicle
     {
@@ -159,8 +155,8 @@
                 Vector3 vector = new Vector3(0f, 0f, -num);
 
                 // vector += DriverOffset;
-                this.Position = this.MountableComp.Position.ToIntVec3();
-                return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Rider.Rotation.AsAngle);
+                this.Position = this.MountableComp.drawPosition.ToIntVec3();
+                return this.MountableComp.drawPosition + vector.RotatedBy(this.MountableComp.Rider.Rotation.AsAngle);
             }
         }
 

@@ -72,7 +72,11 @@
 
             Toil findParkingSpaceForCart = Toils_Cart.FindParkingSpaceForCartForCart(CartInd);
 
-            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(
+            Toil findStoreCellFor = Toils_Cart.FindStoreCellForCart(CartInd);
+            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(findStoreCellFor, () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
+
+
+            Toil checkParkingCellEmpty = Toils_Jump.JumpIf(
                 findParkingSpaceForCart,
                 () => this.CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
             Toil checkHaulableEmpty = Toils_Jump.JumpIf(
@@ -128,6 +132,7 @@
                 yield return Toils_Jump.JumpIfHaveTargetInQueue(StoreCellInd, extractB);
             }
 
+            // Keep the cart if haulables
             if (this.pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().NullOrEmpty())
             {
                 yield return findParkingSpaceForCart;

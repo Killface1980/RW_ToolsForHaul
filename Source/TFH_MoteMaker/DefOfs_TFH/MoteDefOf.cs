@@ -1,4 +1,4 @@
-﻿namespace TFH_VehicleBase.DefOfs_TFH
+﻿namespace TFH_Motes.DefOfs_TFH
 {
     using RimWorld;
 

@@ -19,27 +19,9 @@
 
     public class Vehicle_Cart : BasicVehicle
     {
-    
+
         #region Variables
 
-        public override Color DrawColor
-        {
-            get
-            {
-                CompColorable comp = this.GetComp<CompColorable>();
-                if (comp != null && comp.Active)
-                {
-                    return comp.Color;
-                }
-
-                return base.DrawColor;
-            }
-
-            set
-            {
-                this.SetColor(value, true);
-            }
-        }
 
         // ==================================
         public int DefaultMaxItem => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
@@ -185,6 +167,7 @@
         HeadLights flooder;
 #endif
 
+
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
@@ -232,8 +215,25 @@
             // spotlightMatrix.SetTRS(base.DrawPos + Altitudes.AltIncVect, this.spotLightRotation.ToQuat(), spotlightScale);
         }
 
+        public void StartSustainerVehicleIfInactive()
+        {
+            CompVehicle vehicleComp = this.TryGetComp<CompVehicle>();
+            if (vehicleComp != null && (!vehicleComp.compProps.soundAmbient.NullOrUndefined()
+                                        && this.sustainerAmbient == null))
+            {
+                SoundInfo info = SoundInfo.InMap(this, MaintenanceType.None);
+                this.sustainerAmbient = vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
+            }
+        }
 
-
+        public void EndSustainerVehicleIfActive()
+        {
+            if (this.sustainerAmbient != null)
+            {
+                this.sustainerAmbient.End();
+                this.sustainerAmbient = null;
+            }
+        }
 
         public override void DeSpawn()
         {
@@ -651,6 +651,8 @@
             }
         }
 
+
+
         public override void Tick()
         {
             base.Tick();
@@ -658,7 +660,17 @@
             if (!this.Spawned || this.Dead)
             {
                 return;
+            }
 
+            // Tell the CompTicks if it vehicle moving
+            if (this.MountableComp.IsMounted)
+            {
+                Pawn_PathFollower pawnPathFollower = this.MountableComp.Rider.pather;
+                this.IsMoving = pawnPathFollower != null && pawnPathFollower.Moving;
+            }
+            else
+            {
+                this.IsMoving = false;
             }
 
             if (!this.instantiated)
@@ -753,14 +765,18 @@
                 Vector3 vector = new Vector3(0f, 0f, -num);
 
                 // vector += DriverOffset;
-                return this.MountableComp.Position + vector.RotatedBy(this.MountableComp.Rider.Rotation.AsAngle);
+                return this.MountableComp.drawPosition + vector.RotatedBy(this.MountableComp.Rider.Rotation.AsAngle);
 
             }
         }
 
 
+
         private bool fireAtWillInt = true;
 
+        public bool IsMoving;
+
+        private Sustainer sustainerAmbient;
 
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
@@ -803,17 +819,23 @@
                         {
                             foreach (Thing mountThing in this.MountableComp.Rider.inventory.innerContainer)
                             {
-                                mountThing.Rotation = this.Rotation;
-                                mountThing.DrawAt(mountThingLoc + mountThingOffset);
+                                if (mountThing.Graphic != null)
+                                {
+                                    mountThing.Rotation = this.Rotation;
+                                    mountThing.DrawAt(mountThingLoc + mountThingOffset);
+                                }
                             }
                         }
                     }
                     else if (!this.storage.InnerListForReading.NullOrEmpty())
                     {
-                        foreach (Thing mountThing in this.storage.InnerListForReading)
+                        foreach (ThingWithComps mountThing in this.storage.InnerListForReading)
                         {
-                            mountThing.Rotation = this.Rotation;
-                            mountThing.DrawAt(mountThingLoc + mountThingOffset);
+                            if (mountThing.Graphic != null)
+                            {
+                                mountThing.Rotation = this.Rotation;
+                                mountThing.DrawAt(mountThingLoc + mountThingOffset);
+                            }
                         }
                     }
                 }

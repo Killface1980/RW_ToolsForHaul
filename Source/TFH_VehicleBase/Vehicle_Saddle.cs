@@ -274,7 +274,7 @@
             get
             {
                 if (!this.MountableComp.IsMounted || !this.Spawned) return base.DrawPos;
-                return this.MountableComp.Position;
+                return this.MountableComp.drawPosition;
             }
         }
 

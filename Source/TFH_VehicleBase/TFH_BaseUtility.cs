@@ -68,15 +68,46 @@ namespace TFH_VehicleBase
 
         public static bool IsPlayerAllowedToRide(this Pawn pawn, Vehicle_Cart cart)
         {
-            if (cart.Faction != Faction.OfPlayer) return false;
-            if (cart.IsForbidden(pawn.Faction)) return false;
-            if (cart.Position.IsForbidden(pawn)) return false;
-            if (cart.IsBurning()) return false;
-            if (!pawn.CanReserve(cart)) return false;
+            if (cart.Faction != Faction.OfPlayer)
+            {
+                return false;
+            }
 
-            if (!cart.MountableComp.IsMounted) return true;
-            if (cart.MountableComp.Rider == pawn) return true;
-            if (cart.MountableComp.IsMounted && cart.MountableComp.Rider.RaceProps.Animal) return true;
+            if (cart.IsForbidden(pawn.Faction))
+            {
+                return false;
+            }
+
+            if (cart.Position.IsForbidden(pawn))
+            {
+                return false;
+            }
+
+            if (cart.IsBurning())
+            {
+                return false;
+            }
+
+            if (!pawn.CanReserve(cart))
+            {
+                return false;
+            }
+
+            if (!cart.MountableComp.IsMounted)
+            {
+                return true;
+            }
+
+            if (cart.MountableComp.Rider == pawn)
+            {
+                return true;
+            }
+
+            if (cart.MountableComp.IsMounted && cart.MountableComp.Rider.RaceProps.Animal)
+            {
+                return true;
+            }
+
             return false;
         }
 
@@ -101,18 +132,30 @@ namespace TFH_VehicleBase
                 IOrderedEnumerable<Thing> armoured =
                     availableVehicles.OrderBy(x => ((Vehicle_Cart)x).health.summaryHealth);
 
-                IOrderedEnumerable<Thing> orderedEnumerable =
-                    availableVehicles.OrderBy(x => ((Vehicle_Cart)x).health.summaryHealth);
-
                 foreach (Thing thing in armoured)
                 {
-                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
-                    if (vehicleCart == null) continue;
-                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
-                    if (!pawn.IsPlayerAllowedToRide(vehicleCart)) continue;
+                    Vehicle_Cart vehicleCart = thing as Vehicle_Cart;
+                    if (vehicleCart == null)
+                    {
+                        continue;
+                    }
+
+                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot))
+                    {
+                        continue;
+                    }
+
+                    if (!pawn.IsPlayerAllowedToRide(vehicleCart))
+                    {
+                        continue;
+                    }
+
                     if (vehicleCart.HasGasTank())
                     {
-                        if (vehicleCart.GasTankComp.tankLeaking) continue;
+                        if (vehicleCart.GasTankComp.tankLeaking)
+                        {
+                            continue;
+                        }
                     }
 
                     if (vehicleCart.IsAboutToBlowUp())
@@ -129,15 +172,88 @@ namespace TFH_VehicleBase
                 }
 
 
-                foreach (Thing thing in orderedEnumerable)
+            }
+            else if (worktype == WorkTypeDefOf.Hauling)
+            {
+                IOrderedEnumerable<Thing> orderedEnumerable2 =
+                    availableVehicles.OrderByDescending(x => (x as Vehicle_Cart)?.MaxItem).ThenBy(x => pawn.Position.DistanceToSquared(x.Position));
+
+                foreach (Thing thing in orderedEnumerable2)
                 {
                     Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
-                    if (vehicleCart == null) continue;
-                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
-                    if (!pawn.IsPlayerAllowedToRide(vehicleCart)) continue;
+                    if (vehicleCart == null)
+                    {
+                        continue;
+                    }
+
+                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot))
+                    {
+                        continue;
+                    }
+
+                    if (!pawn.IsPlayerAllowedToRide(vehicleCart))
+                    {
+                        continue;
+                    }
+
                     if (vehicleCart.HasGasTank())
                     {
-                        if (vehicleCart.GasTankComp.tankLeaking) continue;
+                        if (vehicleCart.GasTankComp.tankLeaking)
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (vehicleCart.IsAboutToBlowUp())
+                    {
+                        continue;
+                    }
+
+                    if (!vehicleCart.IsCurrentlyMotorized())
+                    {
+                        continue;
+                    }
+
+                    if (haulThing != null)
+                    {
+                        if (!vehicleCart.allowances.Allows(haulThing))
+                        {
+                            continue;
+                        }
+                    }
+
+                    cart = vehicleCart;
+                    break;
+                }
+            }
+            else if (worktype.Equals(WorkTypeDefOf.Construction))
+            {
+                IOrderedEnumerable<Thing> orderedEnumerable2 =
+                    availableVehicles.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).VehicleComp.VehicleSpeed);
+                foreach (Thing thing in orderedEnumerable2)
+                {
+                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
+                    if (vehicleCart == null)
+                    {
+                        continue;
+                    }
+
+                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot))
+                    {
+                        continue;
+                    }
+
+                    if (!pawn.IsPlayerAllowedToRide(vehicleCart))
+                    {
+                        continue;
+                    }
+
+                    if (vehicleCart.HasGasTank())
+                    {
+                        if (vehicleCart.GasTankComp.tankLeaking)
+                        {
+                            continue;
+                        }
                     }
 
                     if (vehicleCart.IsAboutToBlowUp())
@@ -154,68 +270,6 @@ namespace TFH_VehicleBase
                     break;
                 }
             }
-            else if (worktype == WorkTypeDefOf.Hauling)
-            {
-                IOrderedEnumerable<Thing> orderedEnumerable2 =
-                    availableVehicles.OrderByDescending(x => (x as Vehicle_Cart)?.MaxItem).ThenBy(x => pawn.Position.DistanceToSquared(x.Position));
-
-                foreach (Thing thing in orderedEnumerable2)
-                {
-                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
-                    if (vehicleCart == null)
-                    {
-                        continue;
-                    }
-
-                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
-
-                    if (!pawn.IsPlayerAllowedToRide(vehicleCart)) continue;
-                    if (vehicleCart.HasGasTank())
-                    {
-                        if (vehicleCart.GasTankComp.tankLeaking) continue;
-                    }
-
-                    if (vehicleCart.IsAboutToBlowUp())
-                    {
-                        continue;
-                    }
-
-                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
-                    if (haulThing != null)
-                    {
-                        if (!vehicleCart.allowances.Allows(haulThing)) continue;
-                    }
-
-                    cart = vehicleCart;
-                    break;
-                }
-            }
-            else if (worktype.Equals(WorkTypeDefOf.Construction))
-            {
-                IOrderedEnumerable<Thing> orderedEnumerable2 =
-                    availableVehicles.OrderBy(x => pawn.Position.DistanceToSquared(x.Position)).ThenByDescending(x => (x as Vehicle_Cart).VehicleComp.VehicleSpeed);
-                foreach (Thing thing in orderedEnumerable2)
-                {
-                    Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
-                    if (vehicleCart == null)
-                        continue;
-                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
-                    if (!pawn.IsPlayerAllowedToRide(vehicleCart)) continue;
-                    if (vehicleCart.HasGasTank())
-                    {
-                        if (vehicleCart.GasTankComp.tankLeaking) continue;
-                    }
-
-                    if (vehicleCart.IsAboutToBlowUp())
-                    {
-                        continue;
-                    }
-
-                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
-                    cart = vehicleCart;
-                    break;
-                }
-            }
             else if (worktype.Equals(WorkTypeDefOf.Doctor))
             {
                 IOrderedEnumerable<Thing> orderedEnumerable2 =
@@ -225,12 +279,26 @@ namespace TFH_VehicleBase
                 {
                     Vehicle_Cart vehicleCart = (Vehicle_Cart)thing;
                     if (vehicleCart == null)
+                    {
                         continue;
-                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot)) continue;
-                    if (!pawn.IsPlayerAllowedToRide(vehicleCart)) continue;
+                    }
+
+                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot))
+                    {
+                        continue;
+                    }
+
+                    if (!pawn.IsPlayerAllowedToRide(vehicleCart))
+                    {
+                        continue;
+                    }
+
                     if (vehicleCart.HasGasTank())
                     {
-                        if (vehicleCart.GasTankComp.tankLeaking) continue;
+                        if (vehicleCart.GasTankComp.tankLeaking)
+                        {
+                            continue;
+                        }
                     }
 
                     if (vehicleCart.IsAboutToBlowUp())
@@ -238,7 +306,11 @@ namespace TFH_VehicleBase
                         continue;
                     }
 
-                    if (!vehicleCart.IsCurrentlyMotorized()) continue;
+                    if (!vehicleCart.IsCurrentlyMotorized())
+                    {
+                        continue;
+                    }
+
                     cart = vehicleCart;
                     break;
                 }
@@ -468,7 +540,9 @@ namespace TFH_VehicleBase
                     }
 
                     if (!pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, pawn.NormalMaxDanger()))
+                    {
                         continue;
+                    }
 
                     parkingLot.Add(cell);
                 }
@@ -568,8 +642,10 @@ namespace TFH_VehicleBase
                     // }
                     Thing t2 = RestUtility.FindBedFor(pawn, pawn2Downee, pawn2Downee.HostFaction == pawn.Faction, false, false); ;
 
-                    if (t2 == null) break;
-
+                    if (t2 == null)
+                    {
+                        break;
+                    }
 
                     job.targetQueueB.Add(t2);
                 }

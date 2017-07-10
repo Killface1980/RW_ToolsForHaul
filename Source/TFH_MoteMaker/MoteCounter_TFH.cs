@@ -1,8 +1,8 @@
-﻿namespace TFH_VehicleBase
+﻿namespace TFH_Motes
 {
     using Verse;
 
-    public class MoteCounterTFH : MapComponent
+    public class MoteCounter_TFH : MapComponent
     {
         // vanilla = 250 motes + 250 TFH  => PC should handle this?
         private const int SaturatedCount = 1500;
@@ -45,7 +45,7 @@
             this.moteCount++;
         }
 
-        public MoteCounterTFH(Map map)
+        public MoteCounter_TFH(Map map)
             : base(map)
         {
             //

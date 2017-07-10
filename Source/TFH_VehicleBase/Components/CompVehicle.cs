@@ -2,6 +2,8 @@
 {
     using RimWorld;
 
+    using TFH_Motes;
+
     using UnityEngine;
 
     using Verse;
@@ -140,10 +142,7 @@
                 }
             }
 #endif
-            Pawn_PathFollower pawnPathFollower = this.cart.MountableComp.Rider.pather;
-            bool isMoving = pawnPathFollower != null && pawnPathFollower.Moving;
-
-            if (isMoving)
+            if (this.cart.IsMoving)
             {
                 Vector3 pos = this.cart.DrawPos;
                 if (this.cart.Map.terrainGrid.TerrainAt(pos.ToIntVec3()).takeFootprints
@@ -177,11 +176,8 @@
                             0.15f + Mathf.InverseLerp(0, 50, this.VehicleSpeed) * 0.6f);
                     }
                 }
-            }
 
-            if (Find.TickManager.TicksGame - this.tickCheck >= this.tickCooldown)
-            {
-                if (isMoving)
+                if (Find.TickManager.TicksGame - this.tickCheck >= this.tickCooldown)
                 {
                     Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Rider.stances;
                     if (pawnStanceTracker != null && !pawnStanceTracker.FullBodyBusy)
@@ -205,13 +201,14 @@
                     }
 
                     this.tickCheck = Find.TickManager.TicksGame;
+
+                    //     if (this.cart.Position.InNoBuildEdgeArea(this.parent.Map) && this.despawnAtEdge && this.parent.Spawned
+                    //         && this.cart.MountableComp.Driver.Faction != Faction.OfPlayer)
+                    //     {
+                    //         this.cart.DeSpawn();
+                    //     }
                 }
 
-                //     if (this.cart.Position.InNoBuildEdgeArea(this.parent.Map) && this.despawnAtEdge && this.parent.Spawned
-                //         && this.cart.MountableComp.Driver.Faction != Faction.OfPlayer)
-                //     {
-                //         this.cart.DeSpawn();
-                //     }
             }
 
             // Exhaustion fumes - basic

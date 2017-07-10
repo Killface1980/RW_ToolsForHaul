@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
 
+    using TFH_Motes;
+
     using UnityEngine;
 
     using Verse;
@@ -42,10 +44,8 @@
                 return;
             }
 
-            Pawn_PathFollower pawnPathFollower = this.cart.MountableComp.Rider.pather;
-            if (pawnPathFollower != null && pawnPathFollower.Moving)
+            if (this.cart.IsMoving)
             {
-                // || mountableComp.Driver.drafter.pawn.pather.Moving)
                 Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Rider.stances;
                 if (pawnStanceTracker != null && (!pawnStanceTracker.FullBodyBusy && this.HasAxles()))
                 {
@@ -108,27 +108,28 @@
             {
                 return;
             }
+            Rot4 rot;
+            rot = this.cart.Rotation;
 
             this.wheelLoc = this.cart.DrawPos;
             this.bodyLoc = this.cart.DrawPos;
 
             // Vertical
-            if (this.cart.Rotation.AsInt % 2 == 0)
+            if (rot.AsInt % 2 == 0)
             {
                 this.wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Item) + 0.02f;
             }
 
             // horizontal
-            if (this.parent.Rotation.AsInt % 2 == 1)
+            if (rot.AsInt % 2 == 1)
             {
                 this.wheelLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.04f;
                 this.bodyLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.03f;
 
                 int num = 0;
-                Rot4 rot;
+
                 // TODO: check rotation
                 //    rot = this.cart.MountableComp.IsMounted ? this.cart.MountableComp.Driver.Rotation  : this.cart.Rotation;
-                rot = this.cart.Rotation;
                 num = rot == Rot4.West ? -1 : 1;
                 Vector3 vector3 = new Vector3(1f * this.drawSize.x, 1f, 1f * this.drawSize.y);
                 Quaternion asQuat = rot.AsQuat;
@@ -151,7 +152,7 @@
                         Graphics.DrawMesh(
                             MeshPool.plane10,
                             matrix,
-                            this.graphic_Wheel_Single.MatAt(this.parent.Rotation),
+                            this.graphic_Wheel_Single.MatAt(rot),
                             0);
                     }
                 }

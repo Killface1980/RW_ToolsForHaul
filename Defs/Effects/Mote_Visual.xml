@@ -4,7 +4,7 @@
   <!--=============== Bases ==============-->
 
   <ThingDef Name="MoteBase_TFH" Abstract="True">
-    <thingClass>TFH_VehicleBase.MoteThrown_TFH</thingClass>
+    <thingClass>TFH_Motes.MoteThrown_TFH</thingClass>
     <label>Mote</label>
     <category>Mote</category>
     <graphicData>

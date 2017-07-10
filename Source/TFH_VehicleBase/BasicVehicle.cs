@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace TFH_VehicleBase
 {
@@ -10,8 +7,9 @@ namespace TFH_VehicleBase
     using TFH_VehicleBase.Components;
     using TFH_VehicleBase.Designators;
 
+    using UnityEngine;
+
     using Verse;
-    using Verse.AI;
     using Verse.Sound;
 
     public class BasicVehicle : Pawn
@@ -24,7 +22,24 @@ namespace TFH_VehicleBase
 
         public bool wickStarted;
 
-        private Sustainer sustainerAmbient;
+        public override Color DrawColor
+        {
+            get
+            {
+                CompColorable comp = this.GetComp<CompColorable>();
+                if (comp != null && comp.Active)
+                {
+                    return comp.Color;
+                }
+
+                return base.DrawColor;
+            }
+
+            set
+            {
+                this.SetColor(value, true);
+            }
+        }
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
@@ -120,24 +135,6 @@ namespace TFH_VehicleBase
         }
 
 
-        public void StartSustainerVehicleIfInactive()
-        {
-            CompVehicle vehicleComp = this.TryGetComp<CompVehicle>();
-            if (vehicleComp != null && (!vehicleComp.compProps.soundAmbient.NullOrUndefined()
-                                        && this.sustainerAmbient == null))
-            {
-                SoundInfo info = SoundInfo.InMap(this, MaintenanceType.None);
-                this.sustainerAmbient = vehicleComp.compProps.soundAmbient.TrySpawnSustainer(info);
-            }
-        }
 
-        public void EndSustainerVehicleIfActive()
-        {
-            if (this.sustainerAmbient != null)
-            {
-                this.sustainerAmbient.End();
-                this.sustainerAmbient = null;
-            }
-        }
     }
 }

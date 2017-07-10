@@ -1,6 +1,4 @@
-﻿using System;
-using Verse;
-using Verse.AI;
+﻿using Verse;
 
 namespace TFH_VehicleBase
 {
@@ -15,7 +13,7 @@ namespace TFH_VehicleBase
 
         public static bool ShouldBeIdle(Pawn pawn)
         {
-            var vehicle = pawn as Vehicle_Cart;
+            var vehicle = pawn as BasicVehicle;
             if (vehicle.MountableComp.IsMounted)
             {
                 return true;
