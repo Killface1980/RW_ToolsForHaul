@@ -666,7 +666,8 @@
             if (this.MountableComp.IsMounted)
             {
                 Pawn_PathFollower pawnPathFollower = this.MountableComp.Rider.pather;
-                this.IsMoving = pawnPathFollower != null && pawnPathFollower.Moving;
+                // this.IsMoving = pawnPathFollower != null && pawnPathFollower.Moving;
+                this.IsMoving = pawnPathFollower != null && pawnPathFollower.Destination != this.MountableComp.Rider.Position;
             }
             else
             {
@@ -831,9 +832,14 @@
                     {
                         foreach (ThingWithComps mountThing in this.storage.InnerListForReading)
                         {
-                            if (mountThing.Graphic != null)
+                            mountThing.Rotation = this.Rotation;
+                            var storagePawn = mountThing as Pawn;
+                            if (storagePawn != null)
                             {
-                                mountThing.Rotation = this.Rotation;
+                                storagePawn.Drawer.renderer.RenderPawnAt(mountThingLoc + mountThingOffset);
+                            }
+                            else if (mountThing.Graphic != null)
+                            {
                                 mountThing.DrawAt(mountThingLoc + mountThingOffset);
                             }
                         }

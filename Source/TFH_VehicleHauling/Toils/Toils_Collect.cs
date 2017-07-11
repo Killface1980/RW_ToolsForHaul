@@ -363,14 +363,19 @@
                     IntVec3 destLoc = actor.jobs.curJob.GetTarget(StoreCellInd).Cell;
                     Thing dummy;
 
-                    SlotGroup slotGroup = actor.Map.slotGroupManager.SlotGroupAt(destLoc);
-
-                    // if (slotGroup != null && slotGroup.Settings.AllowedToAccept(dropThing))
-                    if (destLoc.GetStorable(actor.Map) == null)
+                    // Possible fix for container
+                    ThingOwner bedContainer = actor.jobs.curJob.GetTarget(StoreCellInd).Thing.TryGetInnerInteractableThingOwner();
+                    if (bedContainer != null)
+                    {
+                        actor.Map.designationManager.RemoveAllDesignationsOn(dropThing);
+                        cartStorage.TryTransferToContainer(dropThing, bedContainer);
+                    }
+                    else if (destLoc.GetStorable(actor.Map) == null)
                     {
                         actor.Map.designationManager.RemoveAllDesignationsOn(dropThing);
                         cartStorage.TryDrop(dropThing, destLoc, actor.Map, placeMode, out dummy);
                     }
+
 
                     // Check cell queue is adjacent
                     List<LocalTargetInfo> cells = curJob.GetTargetQueue(StoreCellInd);
@@ -408,10 +413,10 @@
                             && adjCell.IsValidStorageFor(actor.Map, cartStorage.First()))
                         {
                             actor.Map.designationManager.RemoveAllDesignationsOn(cartStorage.First());
-                         // if (actor.CanReserve(adjCell, 1, -1, null, false))
-                         // {
-                         //     actor.Reserve(adjCell, 1, -1, null);
-                         // }
+                            // if (actor.CanReserve(adjCell, 1, -1, null, false))
+                            // {
+                            //     actor.Reserve(adjCell, 1, -1, null);
+                            // }
 
                             cartStorage.TryDrop(cartStorage.First(), adjCell, actor.Map, ThingPlaceMode.Direct, out dummy);
                         }

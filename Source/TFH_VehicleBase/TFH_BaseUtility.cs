@@ -20,10 +20,7 @@ namespace TFH_VehicleBase
     {
         private static List<IntVec3> candidates = new List<IntVec3>();
 
-        private const double ValidDistance = 30;
-
-
-        private const int NearbyCell = 10;
+        private const int NearbyCell = 30;
 
         public static bool IsMountedOnAnimalAndAvailable(this Vehicle_Cart cart)
         {
@@ -433,15 +430,15 @@ namespace TFH_VehicleBase
             return availableVehicles;
         }
 
-     // public static List<Thing> AvailableVehicleAt(this Pawn pawn)
-     // {
-     //     List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
-     //         aV => aV is Vehicle_Cart && !((Vehicle_Cart)aV).MountableComp.IsMounted
-     //               && aV.Position == pawn.Position
-     //               && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
-     //               && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
-     //     return availableVehicles;
-     // }
+        // public static List<Thing> AvailableVehicleAt(this Pawn pawn)
+        // {
+        //     List<Thing> availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
+        //         aV => aV is Vehicle_Cart && !((Vehicle_Cart)aV).MountableComp.IsMounted
+        //               && aV.Position == pawn.Position
+        //               && pawn.CanReserveAndReach(aV, PathEndMode.InteractionCell, Danger.Deadly)
+        //               && !((Vehicle_Cart)aV).IsAboutToBlowUp()); // Unmounted
+        //     return availableVehicles;
+        // }
 
         public static Vehicle_Cart MountedVehicle(this Pawn pawn)
         {
@@ -600,7 +597,7 @@ namespace TFH_VehicleBase
             Zone zone = pawn.Map.zoneManager.ZoneAt(cart.Position);
 
             targetCart = cart;
-            var storage = cart.GetContainer();
+            ThingOwner storage = cart.GetContainer();
 
             maxItem = cart.MaxItem;
             thresholdItem = (int)Math.Ceiling(maxItem * 0.25);
@@ -619,8 +616,6 @@ namespace TFH_VehicleBase
             Trace.AppendLine(
                 pawn.LabelCap + " In HaulWithToolsToCell: " + jobDef.defName + "\n" + "MaxItem: " + maxItem
                 + " reservedMaxItem: " + reservedMaxItem);
-
-            Thing lastItem = null;
 
             // Drop remaining item
             // if (reservedMaxItem >= Math.Ceiling(maxItem * 0.5) && shouldDrop)
@@ -671,15 +666,7 @@ namespace TFH_VehicleBase
             // Collect item
             Trace.AppendLine("Start Collect item");
 
-            // ClosestThing_Global_Reachable Configuration
-            Predicate<Thing> predicate = item => !job.targetQueueA.Contains(item)
-                                                 && pawn.CanReserveAndReach(
-                                                     item,
-                                                     PathEndMode.Touch,
-                                                     pawn.NormalMaxDanger());
 
-            IntVec3 searchPos;
-            searchPos = pawn2Downee.Position;
 
 
             bool flag1 = false;
@@ -692,23 +679,18 @@ namespace TFH_VehicleBase
             // Collect and drop item
             while (reservedMaxItem < maxItem)
             {
-                if (flag1 == false && !job.targetQueueA.NullOrEmpty()
-                    && job.targetQueueA.First().Thing.Position != IntVec3.Invalid)
-                {
-                    flag1 = true;
-                    searchPos = job.targetQueueA.First().Thing.Position;
-                    maxDistance = NearbyCell;
-                }
-
                 // Find Haulable
-                Thing closestHaulable = GenClosest.ClosestThing_Global_Reachable(
-                    searchPos,
-                    pawn.Map,
-                    pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling(),
-                    PathEndMode.Touch,
-                    TraverseParms.For(pawn, Danger.Some),
-                    maxDistance,
-                    predicate);
+                Pawn nextDownee = null;
+                foreach (Pawn x in pawn.Map.mapPawns.AllPawnsSpawned)
+                {
+                    if (x.Downed && x.Faction == pawn.Faction && !x.InBed() && pawn.CanReserve(x, 1, -1, null, forced)
+                        && !GenAI.EnemyIsNear(pawn, 40f) && x.Position.InHorDistOf(pawn2Downee.Position, NearbyCell)
+                        && !job.targetQueueA.Contains(x))
+                    {
+                        nextDownee = x;
+                        break;
+                    }
+                }
 
                 // Check it can be hauled
                 /*
@@ -718,21 +700,22 @@ namespace TFH_VehicleBase
                     deniedThings.Add(closestHaulable);
                     continue;
                 }*/
-                if (closestHaulable == null)
+                if (nextDownee == null)
                 {
                     break;
                 }
 
                 // Find StorageCell
-                IntVec3 storageCell = FindStorageCell(pawn, closestHaulable, job.targetQueueB);
-                if (storageCell == IntVec3.Invalid)
+                Building_Bed thing = RestUtility.FindBedFor(nextDownee, pawn, nextDownee.HostFaction == pawn.Faction, false, false);
+
+                if (thing == null || !pawn.CanReserve(thing, 1, -1, null, false))
                 {
                     break;
                 }
 
                 // Add Queue & Reserve
-                job.targetQueueA.Add(closestHaulable);
-                job.targetQueueB.Add(storageCell);
+                job.targetQueueA.Add(nextDownee);
+                job.targetQueueB.Add(thing);
                 reservedMaxItem++;
             }
 

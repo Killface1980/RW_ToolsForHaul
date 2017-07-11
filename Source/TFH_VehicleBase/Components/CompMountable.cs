@@ -207,28 +207,23 @@ namespace TFH_VehicleBase.Components
                 // Not there yet
                 if (this.Rider.Position != this.Rider.pather.Destination.Cell)
                 {
-                    if (this.Rider.Position.DistanceTo(this.lastPos) > 3f)
+                    if (this.Rider.Position.DistanceTo(this.lastPos) > 6f)
                     {
                         // Check rotation
                         Rot4 riderRotation = this.Rider.Rotation;
-                        if (riderRotation != this.parentCart.Rotation)
+                        if (this.parentCart.Rotation != riderRotation)
                         {
-                            if (this.Rider.pather.Destination.Cell.InHorDistOf(this.parentCart.Position, 12f))
+                            if (riderRotation.Opposite != this.parentCart.Rotation)
                             {
-                                // Don't rotate if near tagert or short distance
-                                if (riderRotation.Opposite == this.parentCart.Rotation)
-                                {
-                                    this.lastDrawAsAngle = riderRotation.Opposite.AsAngle;
-                                    return;
-                                }
+                                this.parentCart.Rotation = riderRotation;
+                                this.lastDrawAsAngle = riderRotation.AsAngle;
                             }
-
-                            this.parentCart.Rotation = riderRotation;
-                       //     this.parentCart.Rotation = Rot4.FromIntVec3(this.Rider.Position - this.Rider.pather.nextCell);
-
-                            this.lastDrawAsAngle = riderRotation.AsAngle;
-                            this.lastPos = this.drawPosition.ToIntVec3();
+                            //             if (this.parentCart.Position.DistanceTo(this.Rider.pather.Destination.Cell) < 12f)
+                            {
+                                //     this.parentCart.Rotation = Rot4.FromIntVec3(this.Rider.Position - this.Rider.pather.nextCell);
+                            }
                         }
+                        this.lastPos = this.drawPosition.ToIntVec3();
                     }
                 }
                 this.parentCart.Position = this.drawPosition.ToIntVec3();
