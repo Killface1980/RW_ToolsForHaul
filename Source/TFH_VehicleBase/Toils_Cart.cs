@@ -180,7 +180,7 @@
             return toil;
         }
 
-        public static Toil FindParkingSpaceForCartForCart(TargetIndex CartInd)
+        public static Toil FindParkingSpaceForCart(TargetIndex CartInd)
         {
 
             IntVec3 invalid = new IntVec3(0, 0, 0);

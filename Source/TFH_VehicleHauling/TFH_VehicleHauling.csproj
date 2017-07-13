@@ -58,9 +58,6 @@
     <None Include="Class3.cs" />
     <None Include="AcEnhancedHauling.cs" />
     <Compile Include="TFH_HaulUtility.cs" />
-    <None Include="HediffGiver_Bomb.cs" />
-    <None Include="HediffCompProperties_Explosive.cs" />
-    <None Include="HediffCompExplosive.cs" />
     <None Include="JobDrivers\Class1.cs" />
     <None Include="WorkGivers\Class1.cs" />
     <None Include="WorkGivers\WorkGiver_DoBillVehicle.cs" />

@@ -14,13 +14,13 @@
     public class CompAxles : ThingComp
     {
         // Graphic data
-        public Graphic_Single graphic_Wheel_Single;
+        private Graphic_Single graphic_Wheel_Single;
 
-        public double tick_time = 0f;
+        private double tick_time = 0f;
 
-        public float wheel_shake = 0f;
+        private float wheel_shake = 0f;
 
-        public float wheelRotation = 0f;
+        private float wheelRotation = 0f;
 
         private Vector3 bodyLoc;
 

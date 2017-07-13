@@ -138,13 +138,13 @@
       <Link>Defs\JoyGivers\JoyGivers.xml</Link>
     </Content>
     <Content Include="..\..\defs\recipedefs\Recipes_Vehicle_Implants.xml">
-      <Link>Recipes\Recipes_Vehicle_Implants.xml</Link>
+      <Link>Defs\RecipeDefs\Recipes_Vehicle_Implants.xml</Link>
     </Content>
     <Content Include="..\..\defs\recipedefs\Recipes_Vehicle_NewParts.xml">
-      <Link>Recipes\Recipes_Vehicle_NewParts.xml</Link>
+      <Link>Defs\RecipeDefs\Recipes_Vehicle_NewParts.xml</Link>
     </Content>
     <Content Include="..\..\defs\statdefs\Stats_Vehicle.xml">
-      <Link>StatDefs\Stats_Vehicle.xml</Link>
+      <Link>Defs\StatDefs\Stats_Vehicle.xml</Link>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\Stats\Stats_Pawns_General.xml">
