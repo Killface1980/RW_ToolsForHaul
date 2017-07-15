@@ -74,6 +74,7 @@
     <None Include="JobGivers\JobGiver_TakeWoundedGuest.cs" />
     <Compile Include="JobGivers\JoyGiver_GoForRide.cs" />
     <Compile Include="Recipes\Recipe_InstallArtificialBodyPart.cs" />
+    <None Include="Recipes\Recipe_InstallWheels.cs" />
     <Compile Include="Recipes\Recipe_InstallNaturalVehiclePart.cs" />
     <Compile Include="Recipes\Recipe_InstallVehicleImplant.cs" />
     <Compile Include="Recipes\Recipe_RemoveVehiclePart.cs" />
@@ -136,12 +137,6 @@
     </Content>
     <Content Include="..\..\defs\joygiverdefs\JoyGivers.xml">
       <Link>Defs\JoyGivers\JoyGivers.xml</Link>
-    </Content>
-    <Content Include="..\..\defs\recipedefs\Recipes_Vehicle_Implants.xml">
-      <Link>Defs\RecipeDefs\Recipes_Vehicle_Implants.xml</Link>
-    </Content>
-    <Content Include="..\..\defs\recipedefs\Recipes_Vehicle_NewParts.xml">
-      <Link>Defs\RecipeDefs\Recipes_Vehicle_NewParts.xml</Link>
     </Content>
     <Content Include="..\..\defs\statdefs\Stats_Vehicle.xml">
       <Link>Defs\StatDefs\Stats_Vehicle.xml</Link>

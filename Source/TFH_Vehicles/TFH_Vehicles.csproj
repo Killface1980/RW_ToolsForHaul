@@ -47,13 +47,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\Defs\Bodies\Bodies_Vehicles_Mechanical.xml">
-      <Link>Defs\Bodies_Vehicles_Mechanical.xml</Link>
+      <Link>Defs\Bodies\Bodies_Vehicles_Mechanical.xml</Link>
     </Content>
     <Content Include="..\..\Defs\Bodies\BodyPartGroups_Mechanical.xml">
-      <Link>Defs\BodyPartGroups_Mechanical.xml</Link>
+      <Link>Defs\Bodies\BodyPartGroups_Mechanical.xml</Link>
     </Content>
     <Content Include="..\..\Defs\Bodies\BodyParts_Vehicles_Mechanical.xml">
-      <Link>Defs\BodyParts_Vehicles_Mechanical.xml</Link>
+      <Link>Defs\Bodies\BodyParts_Vehicles_Mechanical.xml</Link>
     </Content>
     <Content Include="..\..\Defs\HeDiffDefs\Hediffs_Local_AddedMechanicalParts.xml">
       <Link>Defs\Hediffs_Local_AddedMechanicalParts.xml</Link>
@@ -63,6 +63,13 @@
     </Content>
     <Content Include="..\..\defs\pawnkinddefs_vehicles\PawnKinds_Vehicles.xml">
       <Link>Defs\PawnKinds_Vehicles.xml</Link>
+    </Content>
+    <Content Include="..\..\defs\recipedefs\Recipes_Vehicle_Implants.xml">
+      <Link>Defs\RecipeDefs\Recipes_Vehicle_Implants.xml</Link>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="..\..\defs\recipedefs\Recipes_Vehicle_NewParts.xml">
+      <Link>Defs\RecipeDefs\Recipes_Vehicle_NewParts.xml</Link>
     </Content>
     <Content Include="..\..\defs\sounddefs\Vehicle_Sustainers_Ambiences.xml">
       <Link>SoundDefs\Vehicle_Sustainers_Ambiences.xml</Link>

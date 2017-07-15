@@ -215,8 +215,11 @@ namespace TFH_VehicleBase.Components
                         {
                             if (riderRotation.Opposite != this.parentCart.Rotation)
                             {
-                                this.parentCart.Rotation = riderRotation;
-                                this.lastDrawAsAngle = riderRotation.AsAngle;
+                                this.parentCart.Rotation =
+                                    Rot4.FromAngleFlat(
+                                        (this.Rider.Position - this.Rider.pather.Destination.Cell).AngleFlat).Opposite;
+
+                                this.lastDrawAsAngle = this.parentCart.Rotation.AsAngle;
                             }
                             //             if (this.parentCart.Position.DistanceTo(this.Rider.pather.Destination.Cell) < 12f)
                             {

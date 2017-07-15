@@ -102,7 +102,7 @@
 
         public bool HasAxles()
         {
-            if (this.AxlesComp?.Props.axles.Count > 0)
+            if (this.TryGetComp<CompAxles>()?.Props.axles.Count > 0)
             {
                 return true;
             }
@@ -141,8 +141,6 @@
         public CompRefuelable RefuelableComp;
 
         public CompBreakdownable BreakdownableComp;
-
-        public CompAxles AxlesComp;
 
         public CompVehicle VehicleComp;
 
@@ -186,8 +184,6 @@
             // {
             // }
             this.BreakdownableComp = this.TryGetComp<CompBreakdownable>();
-
-            this.AxlesComp = this.TryGetComp<CompAxles>();
 
             this.VehicleComp = this.TryGetComp<CompVehicle>();
 

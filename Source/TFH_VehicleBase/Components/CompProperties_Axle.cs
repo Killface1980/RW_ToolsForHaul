@@ -17,6 +17,8 @@ namespace TFH_VehicleBase.Components
     {
         public List<Vector2> axles = new List<Vector2>();
 
+        public ThingDef wheel;
+
 
         public CompProperties_Axle()
         {

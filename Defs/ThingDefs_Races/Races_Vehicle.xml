@@ -111,6 +111,7 @@
     </butcherProducts>
     <comps>
       <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
+        <wheel>WoodenWheel</wheel>
         <axles>
           <li>(-20,-40)</li>
         </axles>
@@ -249,12 +250,13 @@
           <max>120</max>
         </wickTicks>
       </li>
+   -->
       <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
+        <wheel>BeetleWheel</wheel>
         <axles>
           <li>(-25,-40)</li>
         </axles>
       </li>
-   -->
       <li Class="TFH_VehicleBase.Components.CompProperties_Vehicle">
         <showsStorage>false</showsStorage>
         <animalsCanDrive>false</animalsCanDrive>
@@ -404,6 +406,7 @@
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
       <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
+        <wheel>OffRoadWheel</wheel>
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
@@ -556,6 +559,7 @@
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
       <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
+        <wheel>OffRoadWheel</wheel>
         <axles>
           <li>(-25,-45)</li>
           <li>(55,-45)</li>
@@ -721,6 +725,7 @@
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
       <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
+        <wheel>BeetleWheel</wheel>
         <axles>
           <li>(-50,-37)</li>
           <li>(57,-37)</li>
@@ -894,6 +899,7 @@
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
       </li>
       <li Class="TFH_VehicleBase.Components.CompProperties_Axle">
+        <wheel>TruckWheel</wheel>
         <axles>
           <li>(-35,-45)</li>
           <li>(85,-45)</li>

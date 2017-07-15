@@ -122,6 +122,68 @@
       <li>VehicleTank</li>
     </appliedOnFixedBodyParts>
   </RecipeDef>
+  
+  <!-- wheels -->
+  
+  <!--
+  <RecipeDef ParentName="SurgeryVehicle">
+    <defName>InstallWoodenWheel</defName>
+    <label>install wooden wheel</label>
+    <description>Installs wooden wheel.</description>
+    <workerClass>TFH_VehicleBase.Recipes.Recipe_InstallNaturalVehiclePart</workerClass>
+    <jobString>Installing wooden wheel.</jobString>
+    <workAmount>200</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>WoodenWheel</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>WoodenWheel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>WoodenWheel</li>
+      <li>OffRoadWheel</li>
+    </appliedOnFixedBodyParts>
+  </RecipeDef>
+  
+  <RecipeDef ParentName="SurgeryVehicle">
+    <defName>InstallOffRoadWheel</defName>
+    <label>install off road wheel</label>
+    <description>Installs off road wheel.</description>
+    <workerClass>TFH_VehicleBase.Recipes.Recipe_InstallWheels</workerClass>
+    <jobString>Installing off road wheel.</jobString>
+    <workAmount>200</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>OffRoadWheel</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>OffRoadWheel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <appliedOnFixedBodyParts>
+      <li>WheelFrontLeft</li>
+      <li>WheelFrontRight</li>
+      <li>WheelRearLeft</li>
+      <li>WheelRearRight</li>
+    </appliedOnFixedBodyParts>
+  </RecipeDef>
+-->
 
   <!-- artificial -->
 

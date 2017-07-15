@@ -47,18 +47,16 @@
             if (this.cart.IsMoving)
             {
                 Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Rider.stances;
-                if (pawnStanceTracker != null && (!pawnStanceTracker.FullBodyBusy && this.HasAxles()))
+                if (pawnStanceTracker != null && (!pawnStanceTracker.FullBodyBusy))
                 {
                     this.wheelRotation += this.cart.VehicleComp.currentDriverSpeed / 5f;
                     this.tick_time += 0.01f * this.cart.VehicleComp.currentDriverSpeed / 5f;
                     this.wheel_shake = (float)((Math.Sin(this.tick_time) + Math.Abs(Math.Sin(this.tick_time))) / 40.0);
-
                 }
 
                 if (this.cart.MountableComp.Rider.Position.AdjacentTo8WayOrInside(this.cart.MountableComp.Rider.pather.Destination.Cell))
                 {
                     // Make the breaks sound once and throw some dust if Driver comes to his destination
-                    if (this.HasAxles())
                     {
                         if (!this.breakSoundPlayed)
                         {
@@ -74,11 +72,6 @@
                     this.breakSoundPlayed = false;
                 }
             }
-        }
-
-        private bool HasAxles()
-        {
-            return this.Props.axles.Count > 0;
         }
 
         private bool GetAxleLocations(Vector2 drawSize, int flip, out List<Vector3> axleVecs)
@@ -104,10 +97,6 @@
         {
             base.PostDraw();
 
-            if (!this.HasAxles())
-            {
-                return;
-            }
             Rot4 rot;
             rot = this.cart.Rotation;
 
@@ -172,9 +161,8 @@
             this.cart = this.parent as Vehicle_Cart;
 
             // Don't change parent to cart!
-            if (this.HasAxles())
             {
-                string text = "Things/Vehicles/" + this.parent.def.defName + "/Wheel";
+                string text = this.Props.wheel.graphicData.texPath;
                 LongEventHandler.ExecuteWhenFinished(
                     delegate
                         {
