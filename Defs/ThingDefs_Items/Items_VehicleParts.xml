@@ -33,7 +33,7 @@
     </statBases>
   </ThingDef>
 
-  <ThingDef ParentName="VehiclePartBase" Name="BodyPartArtificialBase" Abstract="True">
+  <ThingDef ParentName="VehiclePartBase" Name="VehiclePartArtificialBase" Abstract="True">
     <thingCategories>
       <li>VehiclePartsArtificial</li>
     </thingCategories>
@@ -71,10 +71,66 @@
       <Mass>1</Mass>
     </statBases>
   </ThingDef>
+  
+  <ThingDef ParentName="VehiclePartNaturalBase">
+    <defName>WoodenWheel</defName>
+    <label>wooden wheel</label>
+    <description>Supplies blood and oxygen to all parts of the body. Ready to find a new owner.</description>
+    <graphicData>
+      <texPath>Things/Wheels/WoodenWheel</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MarketValue>500</MarketValue>
+      <Mass>1</Mass>
+    </statBases>
+  </ThingDef>
+  
+  <ThingDef ParentName="VehiclePartNaturalBase">
+    <defName>OffRoadWheel</defName>
+    <label>off road wheel</label>
+    <description>Supplies blood and oxygen to all parts of the body. Ready to find a new owner.</description>
+    <graphicData>
+      <texPath>Things/Wheels/OffRoadWheel</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MarketValue>500</MarketValue>
+      <Mass>1</Mass>
+    </statBases>
+  </ThingDef>
+  
+  <ThingDef ParentName="VehiclePartNaturalBase">
+    <defName>BeetleWheel</defName>
+    <label>beetle wheel</label>
+    <description>Supplies blood and oxygen to all parts of the body. Ready to find a new owner.</description>
+    <graphicData>
+      <texPath>Things/Wheels/BeetleWheel</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MarketValue>500</MarketValue>
+      <Mass>1</Mass>
+    </statBases>
+  </ThingDef>
+  
+  <ThingDef ParentName="VehiclePartNaturalBase">
+    <defName>TruckWheel</defName>
+    <label>truck wheel</label>
+    <description>Supplies blood and oxygen to all parts of the body. Ready to find a new owner.</description>
+    <graphicData>
+      <texPath>Things/Wheels/TruckWheel</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <MarketValue>500</MarketValue>
+      <Mass>1</Mass>
+    </statBases>
+  </ThingDef>
 
   <!-- artificial -->
   
-  <ThingDef ParentName="BodyPartArtificialBase">
+  <ThingDef ParentName="VehiclePartArtificialBase">
     <defName>VehicleTankBig</defName>
     <label>big fuel tank</label>
     <description>One of the most sophisticated arm replacements. Gives extreme strength to its user.</description>

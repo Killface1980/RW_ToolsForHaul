@@ -824,12 +824,12 @@
                             }
                         }
                     }
-                    else if (!this.storage.InnerListForReading.NullOrEmpty())
+                    else if (this.storage.Any)
                     {
                         foreach (ThingWithComps mountThing in this.storage.InnerListForReading)
                         {
                             mountThing.Rotation = this.Rotation;
-                            var storagePawn = mountThing as Pawn;
+                            Pawn storagePawn = mountThing as Pawn;
                             if (storagePawn != null)
                             {
                                 storagePawn.Drawer.renderer.RenderPawnAt(mountThingLoc + mountThingOffset);
