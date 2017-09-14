@@ -26,7 +26,7 @@ namespace TFH_VehicleBase.StatWorkers
                 {
                     if (thisPawn.IsDriver(out Vehicle_Cart vehicleCart) && !vehicleCart.RaceProps.Animal)
                     {
-                        var cart = vehicleCart as Vehicle_Cart;
+                        Vehicle_Cart cart = vehicleCart as Vehicle_Cart;
                         if (vehicleCart.MountableComp.IsMounted && vehicleCart.MountableComp.Rider == thisPawn)
                         {
                             stringBuilder.AppendLine();
@@ -50,7 +50,7 @@ namespace TFH_VehicleBase.StatWorkers
                 Pawn pawn = (Pawn)req.Thing;
 
                 if (pawn.RaceProps.intelligence >= Intelligence.ToolUser)
-
+                {
                     if (this.GetStatFactor(pawn) > 1.01f)
                     {
                         num = this.GetStatFactor(pawn);
@@ -59,6 +59,7 @@ namespace TFH_VehicleBase.StatWorkers
                     {
                         num *= this.GetStatFactor(pawn);
                     }
+                }
             }
 
             return num;
@@ -73,7 +74,7 @@ namespace TFH_VehicleBase.StatWorkers
             {
                 if (!drivenCart.RaceProps.Animal)
                 {
-                    var cart = drivenCart as Vehicle_Cart;
+                    Vehicle_Cart cart = drivenCart as Vehicle_Cart;
                     if (!cart.MountableComp.Rider.RaceProps.Animal && cart.MountableComp.Rider == thisPawn)
                     {
                         if (cart.IsCurrentlyMotorized())

@@ -52,15 +52,16 @@
                         {
                             cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_Speeder, parms.faction);
                         }
+
                         GenSpawn.Spawn(cart, pawn.Position, map, Rot4.Random, false);
 
-                        Job job = new Job(VehicleJobDefOf.Mount);
-                        job.targetA = cart;
-                      //  pawn.Map.reservationManager.ReleaseAllForTarget(cart);
-                        pawn.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
-
+                        pawn.Map.reservationManager.ReleaseAllForTarget(cart);
+                        Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
+                        pawn.Reserve(cart);
+                        pawn.jobs.jobQueue.EnqueueFirst(job);
                     }
-                }}
+                }
+            }
 
 
 

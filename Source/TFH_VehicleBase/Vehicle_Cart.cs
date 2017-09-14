@@ -17,7 +17,7 @@
     using Verse.AI;
     using Verse.Sound;
 
-    public class Vehicle_Cart : BasicVehicle
+    public class Vehicle_Cart : BasicVehicle, IAttackTarget
     {
 
         #region Variables
@@ -30,22 +30,6 @@
 
         public bool instantiated;
 
-        public bool ThreatDisabled()
-        {
-            return !this.MountableComp.IsMounted;
-
-            CompPowerTrader comp = this.GetComp<CompPowerTrader>();
-            if (comp == null || !comp.PowerOn)
-            {
-                CompMannable comp2 = this.GetComp<CompMannable>();
-                if (comp2 == null || !comp2.MannedNow)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         public float DesiredSpeed => this.GetStatValue(StatDefOf.MoveSpeed);
 
@@ -53,7 +37,6 @@
         public virtual bool ClaimableBy(Faction claimee)
         {
             // No vehicles if enemy near
-
 
             if (base.Faction != null)
             {
@@ -138,8 +121,6 @@
         public ThingFilter allowances;
 
 
-        public CompRefuelable RefuelableComp;
-
         public CompBreakdownable BreakdownableComp;
 
         public CompVehicle VehicleComp;
@@ -177,8 +158,6 @@
             {
                 this.equipment = new Pawn_EquipmentTracker(this);
             }
-
-            this.RefuelableComp = this.TryGetComp<CompRefuelable>();
 
             // if (this.health.hediffSet.HasHediff(HediffDef.Named("Bomb")))
             // {
@@ -272,27 +251,29 @@
             {
                 if (this.ClaimableBy(Faction.OfPlayer))
                 {
-                    Command_Action command_Claim = new Command_Action();
-                    command_Claim.defaultLabel = des.LabelCapReverseDesignating(this);
-                    command_Claim.icon = des.IconReverseDesignating(this);
-                    command_Claim.defaultDesc = des.DescReverseDesignating(this);
-                    command_Claim.action = delegate
-                        {
-                            des.DesignateThing(this);
-                            des.Finalize(true);
-                        };
-                    command_Claim.hotKey = des.hotKey;
-                    command_Claim.groupKey = des.groupKey;
+                    Command_Action commandClaim = new Command_Action
+                    {
+                        defaultLabel = des.LabelCapReverseDesignating(this),
+                        icon = des.IconReverseDesignating(this),
+                        defaultDesc = des.DescReverseDesignating(this),
+                        action = delegate
+                            {
+                                des.DesignateThing(this);
+                                des.Finalize(true);
+                            },
+                        hotKey = des.hotKey,
+                        groupKey = des.groupKey
+                    };
 
-                    yield return command_Claim;
+                    yield return commandClaim;
                 }
+
                 yield break;
             }
 
 
 
             // Getting the gizmos manually - no drafting, see SpawnSetup?
-
 
 
             CompForbiddable forbid = this.GetComp<CompForbiddable>();
@@ -302,9 +283,9 @@
                 yield return gizmo;
             }
 
-            if (this.RefuelableComp != null)
+            if (this.GetComp<CompRefuelable>() != null)
             {
-                foreach (Gizmo gizmo in this.RefuelableComp.CompGetGizmosExtra())
+                foreach (Gizmo gizmo in this.GetComp<CompRefuelable>().CompGetGizmosExtra())
                 {
                     yield return gizmo;
                 }
@@ -658,16 +639,24 @@
                 return;
             }
 
+            if (this.MountableComp.Rider != null && !this.MountableComp.Rider.Spawned)
+            {
+                this.isMoving = false;
+                this.DeSpawn();
+            }
+
             // Tell the CompTicks if it vehicle moving
             if (this.MountableComp.IsMounted)
             {
-                Pawn_PathFollower pawnPathFollower = this.MountableComp.Rider.pather;
+                Pawn_PathFollower pawnPathFollower = this.MountableComp.Rider?.pather;
+
                 // this.IsMoving = pawnPathFollower != null && pawnPathFollower.Moving;
-                this.IsMoving = pawnPathFollower != null && pawnPathFollower.Destination != this.MountableComp.Rider.Position;
+                this.isMoving = pawnPathFollower != null
+                                && pawnPathFollower.Destination != this.MountableComp.Rider.Position;
             }
             else
             {
-                this.IsMoving = false;
+                this.isMoving = false;
             }
 
             if (!this.instantiated)
@@ -709,28 +698,7 @@
             // }
             // // Update the spotlight rotation and range.
             // SpotlightMotionTick();
-            if (this.MountableComp.IsMounted)
-            {
-                if (this.RefuelableComp != null)
-                {
-                    if (this.MountableComp.Rider.Faction != Faction.OfPlayer)
-                    {
-                        if (!this.fueledByAI)
-                        {
-                            if (this.RefuelableComp.FuelPercentOfMax < 0.550000011920929)
-                            {
-                                this.RefuelableComp.Refuel(
-                                    ThingMaker.MakeThing(
-                                        this.RefuelableComp.Props.fuelFilter.AllowedThingDefs.FirstOrDefault()));
-                            }
-                            else
-                            {
-                                this.fueledByAI = true;
-                            }
-                        }
-                    }
-                }
-            }
+
 
             // if (Find.TickManager.TicksGame >= damagetick)
             // {
@@ -771,19 +739,21 @@
 
         private bool fireAtWillInt = true;
 
-        public bool IsMoving;
+        public bool IsMoving => this.isMoving;
+        private bool isMoving;
 
         private Sustainer sustainerAmbient;
 
         public override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             base.DrawAt(drawLoc);
-
+            return;
             if (!this.Spawned)
             {
                 return;
             }
 
+            // TODO bugs when storage shown & something in storage & no driver - deativated for now
             if (this.VehicleComp.ShowsStorage())
             {
                 if (!this.storage.InnerListForReading.NullOrEmpty() || (this.MountableComp.IsMounted

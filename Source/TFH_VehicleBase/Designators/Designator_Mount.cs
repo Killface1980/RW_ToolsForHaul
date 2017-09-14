@@ -25,17 +25,28 @@
         {
             Pawn pawn = loc.GetThingList(this.Map).Find(t => t is Pawn) as Pawn;
             if (pawn == null)
+            {
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotPawn".Translate());
+            }
+
             if (pawn.Faction != Faction.OfPlayer)
+            {
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotColonyFaction".Translate());
+            }
 #if Saddle
             if (!pawn.RaceProps.Animal && vehicle is Vehicle_Saddle)
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotHumanlikeOrMechanoid".Translate());
 #endif
             if (pawn.RaceProps.Animal && !pawn.training.IsCompleted(TrainableDefOf.Obedience))
+            {
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "NotTrainedAnimal".Translate());
+            }
+
             if (pawn.RaceProps.Animal && !(pawn.RaceProps.baseBodySize >= 1.0))
+            {
                 return new AcceptanceReport("CannotMount".Translate() + ": " + "TooSmallAnimal".Translate());
+            }
+
             return true;
         }
 

@@ -21,12 +21,55 @@
     {
         static HarmonyPatches()
         {
-            var harmony = HarmonyInstance.Create("com.toolsforhaul.rimworld.mod");
+            HarmonyInstance harmony = HarmonyInstance.Create("com.toolsforhaul.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-            Log.Message("Tools For Haul: Adding Harmony Patches.");
+           // Log.Message("Tools For Haul: Adding Harmony Patches.");
+           //
+           // harmony.Patch(
+           // AccessTools.Method(typeof(Pawn), nameof(Pawn.ThreatDisabled)),
+           //     null,
+           // new HarmonyMethod(typeof(HarmonyPatches), nameof(ThreatDisabled_Postfix)));
+           //
+           // harmony.Patch(
+           //     AccessTools.Method(typeof(Pawn), nameof(Pawn.ExitMap)),
+           //     null,
+           //     new HarmonyMethod(typeof(HarmonyPatches), nameof(ExitMap_Postfix)));
+           //
+           // harmony.Patch(
+           //     AccessTools.Method(typeof(Pawn), nameof(Pawn.SpawnSetup)),
+           //     null,
+           //     new HarmonyMethod(typeof(HarmonyPatches), nameof(SpawnSetup_Postfix)));
+
+
 
         }
+
+        public static void ThreatDisabled_Postfix(Pawn __instance, ref bool __result)
+        {
+            Vehicle_Cart cart = __instance as Vehicle_Cart;
+            if (cart != null)
+            {
+                __result = !cart.MountableComp.IsMounted;
+            }
+        }
+
+        public static void ExitMap_Postfix(Pawn __instance)
+        {
+            if (__instance.IsDriver())
+            {
+                TFH_BaseUtility.DriverDict[__instance].DeSpawn();
+            }
+        }
+
+        public static void SpawnSetup_Postfix(Pawn __instance, Map map, bool respawningAfterLoad)
+        {
+            if (__instance.IsDriver())
+            {
+                TFH_BaseUtility.DriverDict[__instance].SpawnSetup(map, respawningAfterLoad);
+            }
+        }
+
     }
 
     /*
@@ -61,20 +104,20 @@
         // [HarmonyPostfix]
         // public static void Targeter(Targeter __instance)
         // {
-        //     if (!__instance.targetingVerb.CasterIsPawn)
-        //     {
-        //         int numSelected = Find.Selector.NumSelected;
-        //         List<object> selectedObjects = Find.Selector.SelectedObjects;
-        //         for (int j = 0; j < numSelected; j++)
-        //         {
-        //             Vehicle_CartTurretGun cartTurretGun = selectedObjects[j] as Vehicle_CartTurretGun;
-        //             if (cartTurretGun != null && cartTurretGun.Map == Find.VisibleMap)
-        //             {
-        //                 LocalTargetInfo targ = CurrentTargetUnderMouse(__instance, true);
-        //                 cartTurretGun.OrderAttack(targ);
-        //             }
-        //         }
-        //     }
+        // if (!__instance.targetingVerb.CasterIsPawn)
+        // {
+        // int numSelected = Find.Selector.NumSelected;
+        // List<object> selectedObjects = Find.Selector.SelectedObjects;
+        // for (int j = 0; j < numSelected; j++)
+        // {
+        // Vehicle_CartTurretGun cartTurretGun = selectedObjects[j] as Vehicle_CartTurretGun;
+        // if (cartTurretGun != null && cartTurretGun.Map == Find.VisibleMap)
+        // {
+        // LocalTargetInfo targ = CurrentTargetUnderMouse(__instance, true);
+        // cartTurretGun.OrderAttack(targ);
+        // }
+        // }
+        // }
         // }
 
         // RimWorld.Targeter
@@ -84,6 +127,7 @@
             {
                 return LocalTargetInfo.Invalid;
             }
+
             TargetingParameters clickParams = __instance.targetingVerb.verbProps.targetParams;
             LocalTargetInfo localTargetInfo = LocalTargetInfo.Invalid;
             using (IEnumerator<LocalTargetInfo> enumerator = GenUI.TargetsAtMouse(clickParams, false).GetEnumerator())
@@ -94,6 +138,7 @@
                     localTargetInfo = current;
                 }
             }
+
             if (localTargetInfo.IsValid && mustBeHittableNowIfNotMelee && !(localTargetInfo.Thing is Pawn) && __instance.targetingVerb != null && !__instance.targetingVerb.verbProps.MeleeRange)
             {
                 if (!__instance.targetingVerb.CanHitTarget(localTargetInfo))
@@ -101,6 +146,7 @@
                     localTargetInfo = LocalTargetInfo.Invalid;
                 }
             }
+
             return localTargetInfo;
         }
 
@@ -117,71 +163,70 @@
         public static void SetupMoveIntoNextCell(Pawn_PathFollower __instance)
         {
             Pawn pawn = (Pawn)PawnField?.GetValue(__instance);
-            //Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
 
-            if (pawn.IsDriver(out Vehicle_Cart cart))
+            // Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
+            if (pawn.IsDriver())
             {
-
                 // TODO create own formula, wheel size??
-                //      Log.Message("Old cell cost: " + +__instance.nextCellCostLeft + " / " + __instance.nextCellCostTotal);
+                // Log.Message("Old cell cost: " + +__instance.nextCellCostLeft + " / " + __instance.nextCellCostTotal);
                 float newCost = Mathf.Min(__instance.nextCellCostTotal, 15f);
 
                 __instance.nextCellCostTotal = newCost;
                 __instance.nextCellCostLeft = newCost;
             }
 
-            //  int num;
-            //  if (c.x == this.pawn.Position.x || c.z == this.pawn.Position.z)
-            //  {
-            //      num = this.pawn.TicksPerMoveCardinal;
-            //  }
-            //  else
-            //  {
-            //      num = this.pawn.TicksPerMoveDiagonal;
-            //  }
-            //  num += this.pawn.Map.pathGrid.CalculatedCostAt(c, false, this.pawn.Position);
-            //  Building edifice = c.GetEdifice(this.pawn.Map);
-            //  if (edifice != null)
-            //  {
-            //      num += (int)edifice.PathWalkCostFor(this.pawn);
-            //  }
-            //  if (num > 450)
-            //  {
-            //      num = 450;
-            //  }
-            //  if (this.pawn.jobs.curJob != null)
-            //  {
-            //      switch (this.pawn.jobs.curJob.locomotionUrgency)
-            //      {
-            //          case LocomotionUrgency.Amble:
-            //              num *= 3;
-            //              if (num < 60)
-            //              {
-            //                  num = 60;
-            //              }
-            //              break;
-            //          case LocomotionUrgency.Walk:
-            //              num *= 2;
-            //              if (num < 50)
-            //              {
-            //                  num = 50;
-            //              }
-            //              break;
-            //          case LocomotionUrgency.Jog:
-            //              num *= 1;
-            //              break;
-            //          case LocomotionUrgency.Sprint:
-            //              num = Mathf.RoundToInt((float)num * 0.75f);
-            //              break;
-            //      }
-            //  }
-            //  return Mathf.Max(num, 1);
+            // int num;
+            // if (c.x == this.pawn.Position.x || c.z == this.pawn.Position.z)
+            // {
+            // num = this.pawn.TicksPerMoveCardinal;
+            // }
+            // else
+            // {
+            // num = this.pawn.TicksPerMoveDiagonal;
+            // }
+            // num += this.pawn.Map.pathGrid.CalculatedCostAt(c, false, this.pawn.Position);
+            // Building edifice = c.GetEdifice(this.pawn.Map);
+            // if (edifice != null)
+            // {
+            // num += (int)edifice.PathWalkCostFor(this.pawn);
+            // }
+            // if (num > 450)
+            // {
+            // num = 450;
+            // }
+            // if (this.pawn.jobs.curJob != null)
+            // {
+            // switch (this.pawn.jobs.curJob.locomotionUrgency)
+            // {
+            // case LocomotionUrgency.Amble:
+            // num *= 3;
+            // if (num < 60)
+            // {
+            // num = 60;
+            // }
+            // break;
+            // case LocomotionUrgency.Walk:
+            // num *= 2;
+            // if (num < 50)
+            // {
+            // num = 50;
+            // }
+            // break;
+            // case LocomotionUrgency.Jog:
+            // num *= 1;
+            // break;
+            // case LocomotionUrgency.Sprint:
+            // num = Mathf.RoundToInt((float)num * 0.75f);
+            // break;
+            // }
+            // }
+            // return Mathf.Max(num, 1);
         }
     }
 
     [HarmonyPatch(typeof(ThinkNode_JobGiver))]
     [HarmonyPatch("TryIssueJobPackage")]
-    [HarmonyPatch(new Type[] { typeof(Pawn), typeof(JobIssueParams) })]
+    [HarmonyPatch(new[] { typeof(Pawn), typeof(JobIssueParams) })]
     public static class ThinkNode_JobGiver_Patch
     {
 
@@ -195,7 +240,7 @@
 
     [HarmonyPatch(typeof(ThinkNode_Priority))]
     [HarmonyPatch("TryIssueJobPackage")]
-    [HarmonyPatch(new Type[] { typeof(Pawn), typeof(JobIssueParams) })]
+    [HarmonyPatch(new[] { typeof(Pawn), typeof(JobIssueParams) })]
     public static class ThinkNode_Priority_Patch
     {
         [HarmonyPostfix]
@@ -242,16 +287,16 @@
                 if (!pawn.Drafted)
                 {
                     // if (job.def == JobDefOf.LayDown || job.def == JobDefOf.Arrest || job.def == JobDefOf.DeliverFood
-                    //     || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.EnterTransporter
-                    //     || job.def == JobDefOf.Ingest || job.def == JobDefOf.ManTurret
-                    //     || job.def == JobDefOf.Slaughter || job.def == JobDefOf.VisitSickPawn
-                    //     || job.def == JobDefOf.WaitWander || job.def == JobDefOf.DoBill)
+                    // || job.def == JobDefOf.EnterCryptosleepCasket || job.def == JobDefOf.EnterTransporter
+                    // || job.def == JobDefOf.Ingest || job.def == JobDefOf.ManTurret
+                    // || job.def == JobDefOf.Slaughter || job.def == JobDefOf.VisitSickPawn
+                    // || job.def == JobDefOf.WaitWander || job.def == JobDefOf.DoBill)
                     // {
-                    //     if (pawn.IsDriver())
-                    //     {
-                    //         job = pawn.DismountAtParkingLot("TN #1");
-                    //         newjob = true;
-                    //     }
+                    // if (pawn.IsDriver())
+                    // {
+                    // job = pawn.DismountAtParkingLot("TN #1");
+                    // newjob = true;
+                    // }
                     // }
                     if (pawn.IsDriver(out Vehicle_Cart drivenCart))
                     {
@@ -269,6 +314,7 @@
                             || requestJob.def == JobDefOf.RemoveRoof || requestJob.def == JobDefOf.RemoveFloor)
                         {
                             pawn.AvailableVehicles(out List<Thing> availableVehicles);
+
                             Vehicle_Cart vehicle =
                                 TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Construction);
 
@@ -281,6 +327,7 @@
                                 }
                             }
                         }
+
                         if (requestJob.def == JobDefOf.Hunt)
                         {
                             pawn.AvailableVehicles(out List<Thing> availableVehicles);
@@ -318,20 +365,18 @@
             {
                 // Enemies & other
 
-                //    Log.Message("Non-player faction");
-
+                // Log.Message("Non-player faction");
                 if (!pawn.IsDriver(out Vehicle_Cart drivenCart))
                 {
                     // Log.Message("no driver");
                     // Log.Message("job " + __result + " - " + requestJob);
-
                     if (requestJob.def == JobDefOf.Flee || requestJob.def == JobDefOf.FleeAndCower
                         || requestJob.def == JobDefOf.Steal || requestJob.def == JobDefOf.Kidnap
                         || requestJob.def == JobDefOf.CarryDownedPawnToExit || requestJob.def == JobDefOf.WaitCombat
                         || requestJob.def == JobDefOf.AttackMelee || requestJob.def == JobDefOf.AttackStatic
                         || requestJob.def == JobDefOf.Goto && (requestJob.exitMapOnArrival || pawn.Position.InNoBuildEdgeArea(pawn.Map)))
                     {
-                        //   Log.Message("job " + requestJob.def);
+                        // Log.Message("job " + requestJob.def);
                         List<Thing> availableVehicles;
 
                         if (pawn.Faction.HostileTo(Faction.OfPlayer))
@@ -342,11 +387,11 @@
                         {
                             availableVehicles = pawn.AvailableVehiclesForAllFactions(vehicleSearchRadius);
                         }
-                        //      Log.Message("vehicles " + availableVehicles.ToList());
 
+                        // Log.Message("vehicles " + availableVehicles.ToList());
                         if (!availableVehicles.NullOrEmpty())
                         {
-                            var cart = availableVehicles.FirstOrDefault();
+                            Thing cart = availableVehicles.FirstOrDefault();
                             job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
                         }
                     }
@@ -396,6 +441,7 @@
             {
                 return;
             }
+
             if (vehicleCart.InParkingLot)
             {
                 __result = true;
@@ -414,8 +460,8 @@
             {
                 return;
             }
-            //  if (vehicleCart.InParkingLot)
             {
+                // if (vehicleCart.InParkingLot)
                 __result = false;
             }
         }

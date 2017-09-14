@@ -36,12 +36,22 @@ namespace TFH_VehicleBase.ITabs
             get
             {
                 Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
-                if (cart == null) return false;
+                if (cart == null)
+                {
+                    return false;
+                }
 
                 if (cart != null)
                 {
-                    if (cart.Faction == null) return false;
-                    if (cart.Faction == Faction.OfPlayer) return true;
+                    if (cart.Faction == null)
+                    {
+                        return false;
+                    }
+
+                    if (cart.Faction == Faction.OfPlayer)
+                    {
+                        return true;
+                    }
                 }
 
                 return false;

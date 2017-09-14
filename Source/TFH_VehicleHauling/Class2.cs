@@ -18,6 +18,7 @@ namespace RimWorld
                     return new Job(JobDefOf.ExtinguishSelf, fire);
                 }
             }
+
             return null;
         }
     }

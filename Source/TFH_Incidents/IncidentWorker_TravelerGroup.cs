@@ -20,17 +20,19 @@
         public override bool TryExecute(IncidentParms parms)
         {
             Map map = (Map)parms.target;
-            if (!base.TryResolveParms(parms))
+            if (!this.TryResolveParms(parms))
             {
                 return false;
             }
+
             IntVec3 travelDest;
             if (!RCellFinder.TryFindTravelDestFrom(parms.spawnCenter, map, out travelDest))
             {
                 Log.Warning("Failed to do traveler incident from " + parms.spawnCenter + ": couldn't find anywhere for the traveler to go.");
                 return false;
             }
-            List<Pawn> list = base.SpawnPawns(parms);
+
+            List<Pawn> list = this.SpawnPawns(parms);
             if (list.Count == 0)
             {
                 return false;
@@ -51,10 +53,13 @@
                     {
                         cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_CombatATV, parms.faction);
                     }
+
                     GenSpawn.Spawn(cart, current.Position, map, Rot4.Random, false);
-                 //   current.Map.reservationManager.ReleaseAllForTarget(cart);
+
+                    current.Map.reservationManager.ReleaseAllForTarget(cart);
                     Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
-                    current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
+                    current.Reserve(cart);
+                    current.jobs.jobQueue.EnqueueFirst(job);
                 }
             }
 
@@ -76,6 +81,7 @@
                                                                  parms.faction.Name
                                                              });
             }
+
             Messages.Message(text, list[0], MessageSound.Standard);
             LordJob_TravelAndExit lordJob = new LordJob_TravelAndExit(travelDest);
             LordMaker.MakeNewLord(parms.faction, lordJob, map, list);
@@ -86,6 +92,7 @@
             {
                 Find.LetterStack.ReceiveLetter(empty, empty2, LetterDefOf.Good, list[0], null);
             }
+
             return true;
         }
     }

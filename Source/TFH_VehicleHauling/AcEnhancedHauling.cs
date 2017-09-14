@@ -23,7 +23,7 @@
 
             Vehicle_Cart cart = null;
 
-            var thing = job.targetA.Thing;
+            Thing thing = job.targetA.Thing;
 
             // Vehicle selection
             if (pawn.IsDriver())
@@ -74,8 +74,8 @@
             // JobFailReason.Is(TFH_Utility.NoEmptyPlaceLowerTrans);
             // return null;
             // }
-            var targetPos = thing.Position;
-            var destPos = job.targetB.Thing.Position;
+            IntVec3 targetPos = thing.Position;
+            IntVec3 destPos = job.targetB.Thing.Position;
 
             if ((targetPos - destPos).LengthHorizontalSquared > (targetPos - storeCell).LengthHorizontalSquared)
             {

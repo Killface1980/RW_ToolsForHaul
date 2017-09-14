@@ -364,6 +364,7 @@
             {
                 return cart.InteractionCell;
             }
+
                 return billGiver.Position;
             Log.Error("Tried to find bill ingredients for " + billGiver + " which has no interaction cell.");
             return forPawn.Position;

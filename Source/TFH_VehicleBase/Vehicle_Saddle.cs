@@ -4,6 +4,8 @@
     using System.Linq;
     using System.Text;
 
+    using CompVehicle;
+
     using RimWorld;
 
     using TFH_VehicleBase.Components;
@@ -37,7 +39,7 @@
         private Vector3 saddleLoc;
 
         // mount and storage data
-        public CompMountable MountableComp;
+        public CompVehicle MountableComp;
 
         public ThingOwner<Thing> innerContainer;
 
@@ -74,7 +76,9 @@
             if (this.MountableComp.IsMounted && (this.innerContainer.Count(x => x is Pawn) >= maxNumBoarding // No Space
                                             || (this.Faction != null
                                                 && this.Faction != pawn.Faction))) // Not your vehicle
+            {
                 return;
+            }
 
             if (pawn.Faction == Faction.OfPlayer && (pawn.needs.food.CurCategory == HungerCategory.Starving
                                                      || pawn.needs.rest.CurCategory == RestCategory.Exhausted))
@@ -100,7 +104,10 @@
 
         public virtual void Unboard(Pawn pawn)
         {
-            if (this.innerContainer.Count(x => x is Pawn) <= 0) return;
+            if (this.innerContainer.Count(x => x is Pawn) <= 0)
+            {
+                return;
+            }
 
             Thing dummy;
             if (this.innerContainer.Contains(pawn))
@@ -113,7 +120,10 @@
 
         public virtual void UnboardAll()
         {
-            if (this.innerContainer.Count(x => x is Pawn) <= 0) return;
+            if (this.innerContainer.Count(x => x is Pawn) <= 0)
+            {
+                return;
+            }
 
             Thing dummy;
             foreach (Pawn crew in this.innerContainer.Where(x => x is Pawn).ToList())
@@ -131,7 +141,7 @@
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            this.MountableComp = this.GetComp<CompMountable>();
+            this.MountableComp = this.GetComp<CompVehicle>();
             this.innerContainer = new ThingOwner<Thing>(this, false);
 
             LongEventHandler.ExecuteWhenFinished(delegate { this.UpdateGraphics(); });
@@ -148,18 +158,22 @@
             this.UnboardAll();
             this.innerContainer.TryDropAll(this.Position, this.Map, ThingPlaceMode.Near);
 
-            if (mode == DestroyMode.Deconstruct) mode = DestroyMode.KillFinalize;
+            if (mode == DestroyMode.Deconstruct)
+            {
+                mode = DestroyMode.KillFinalize;
+            }
+
             base.Destroy(mode);
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            foreach (var baseGizmo in base.GetGizmos())
+            foreach (Gizmo baseGizmo in base.GetGizmos())
             {
                 yield return baseGizmo;
             }
 
-            if (this.MountableComp.IsMounted && this.innerContainer.Count(x => x is Pawn) < maxNumBoarding)
+            if (this.MountableComp..IsMounted && this.innerContainer.Count(x => x is Pawn) < maxNumBoarding)
             {
                 Designator_Board designatorBoard =
                     new Designator_Board
@@ -199,7 +213,10 @@
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
         {
-            foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn)) yield return fmo;
+            foreach (FloatMenuOption fmo in base.GetFloatMenuOptions(myPawn))
+            {
+                yield return fmo;
+            }
 
             if (this.MountableComp.IsMounted)
             {
@@ -249,15 +266,25 @@
         {
             base.Tick();
 
-            if (this.innerContainer.Count == 0) return;
+            if (this.innerContainer.Count == 0)
+            {
+                return;
+            }
 
             foreach (Pawn crew in this.innerContainer.Where(x => x is Pawn))
             {
-                if (crew.Downed || crew.Dead) this.Unboard(crew);
+                if (crew.Downed || crew.Dead)
+                {
+                    this.Unboard(crew);
+                }
+
                 crew.Position = this.Position;
             }
 
-            if (!this.MountableComp.IsMounted) this.UnboardAll();
+            if (!this.MountableComp.IsMounted)
+            {
+                this.UnboardAll();
+            }
         }
 
         #endregion
@@ -273,7 +300,11 @@
         {
             get
             {
-                if (!this.MountableComp.IsMounted || !this.Spawned) return base.DrawPos;
+                if (!this.MountableComp.IsMounted || !this.Spawned)
+                {
+                    return base.DrawPos;
+                }
+
                 return this.MountableComp.drawPosition;
             }
         }
@@ -295,7 +326,11 @@
                 Vector3 crewLoc = drawLoc;
                 crewLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
                 Vector3 crewsOffset = new Vector3(0.25f, 0.02f, -0.25f);
-                if (this.Rotation == Rot4.North || this.Rotation == Rot4.South) crewsOffset.x = 0f;
+                if (this.Rotation == Rot4.North || this.Rotation == Rot4.South)
+                {
+                    crewsOffset.x = 0f;
+                }
+
                 foreach (Pawn pawn in this.innerContainer.Where(x => x is Pawn).ToList())
                 {
                     pawn.Rotation = this.Rotation;
@@ -305,9 +340,19 @@
                     {
                         stance_Warmup = pawn.stances.curStance as Stance_Warmup;
                         float pieSizeFactor;
-                        if (stance_Warmup.ticksLeft < 300) pieSizeFactor = 1f;
-                        else if (stance_Warmup.ticksLeft < 450) pieSizeFactor = 0.75f;
-                        else pieSizeFactor = 0.5f;
+                        if (stance_Warmup.ticksLeft < 300)
+                        {
+                            pieSizeFactor = 1f;
+                        }
+                        else if (stance_Warmup.ticksLeft < 450)
+                        {
+                            pieSizeFactor = 0.75f;
+                        }
+                        else
+                        {
+                            pieSizeFactor = 0.5f;
+                        }
+
                         GenDraw.DrawAimPie(
                             stance_Warmup.stanceTracker.pawn,
                             stance_Warmup.focusTarg,
@@ -316,7 +361,10 @@
                     }
                 }
             }
-            else base.DrawAt(drawLoc);
+            else
+            {
+                base.DrawAt(drawLoc);
+            }
         }
 
         public override string GetInspectString()
@@ -325,7 +373,10 @@
             stringBuilder.Append(base.GetInspectString());
             stringBuilder.AppendLine("Rider".Translate());
             foreach (Pawn pawn in this.innerContainer.Where(x => x is Pawn).ToList())
+            {
                 stringBuilder.Append(pawn.LabelCap.Translate() + ", ");
+            }
+
             stringBuilder.Remove(stringBuilder.Length - 3, 1);
             return stringBuilder.ToString();
         }

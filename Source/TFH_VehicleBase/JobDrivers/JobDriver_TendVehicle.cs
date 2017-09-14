@@ -1,7 +1,9 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+
+using RimWorld;
+
 using UnityEngine;
 
 namespace ToolsForHaul.JobDrivers
@@ -34,6 +36,7 @@ namespace ToolsForHaul.JobDrivers
                 {
                     throw new InvalidOperationException("DoBill on non-Billgiver.");
                 }
+
                 return billGiver;
             }
         }
@@ -42,8 +45,9 @@ namespace ToolsForHaul.JobDrivers
         {
             if (this.pawn.jobs.curJob.RecipeDef != null)
             {
-                return base.ReportStringProcessed(this.pawn.jobs.curJob.RecipeDef.jobString);
+                return this.ReportStringProcessed(this.pawn.jobs.curJob.RecipeDef.jobString);
             }
+
             return base.GetReport();
         }
 
@@ -65,6 +69,7 @@ namespace ToolsForHaul.JobDrivers
                     {
                         return JobCondition.Incompletable;
                     }
+
                     return JobCondition.Ongoing;
                 });
             this.FailOnBurningImmobile(TargetIndex.A);
@@ -77,11 +82,13 @@ namespace ToolsForHaul.JobDrivers
                         {
                             return true;
                         }
+
                         if (!billGiver.CurrentlyUsable())
                         {
                             return true;
                         }
                     }
+
                     return false;
                 });
             Toil gotoBillGiver = Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.InteractionCell);
@@ -148,16 +155,19 @@ namespace ToolsForHaul.JobDrivers
                         Log.Error("JumpToAlsoCollectTargetInQueue run on " + actor + " who is not carrying something.");
                         return;
                     }
+
                     if (actor.carryTracker.Full)
                     {
                         return;
                     }
+
                     Job curJob = actor.jobs.curJob;
                     List<LocalTargetInfo> targetQueue = curJob.GetTargetQueue(ind);
                     if (targetQueue.NullOrEmpty<LocalTargetInfo>())
                     {
                         return;
                     }
+
                     for (int i = 0; i < targetQueue.Count; i++)
                     {
                         if (GenAI.CanUseItemForWork(actor, targetQueue[i].Thing))
@@ -185,6 +195,7 @@ namespace ToolsForHaul.JobDrivers
                                             curJob.countQueue.RemoveAt(i);
                                             targetQueue.RemoveAt(i);
                                         }
+
                                         actor.jobs.curDriver.JumpToToil(gotoGetTargetToil);
                                         return;
                                     }

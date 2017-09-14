@@ -22,42 +22,60 @@
                 yield return c;
             }
 
-            Command_Action draft = new Command_Action();
-            draft.hotKey = KeyBindingDefOf.CommandColonistDraft;
-            draft.defaultLabel = "CommandDraftLabel".Translate();
-            draft.defaultDesc = "CommandToggleDraftDesc".Translate();
-            draft.icon = TexCommand.Draft;
-            draft.activateSound = SoundDefOf.DraftOn;
+            Command_Action draft = new Command_Action
+                                       {
+                                           hotKey = KeyBindingDefOf.CommandColonistDraft,
+                                           defaultLabel = "CommandDraftLabel".Translate(),
+                                           defaultDesc = "CommandToggleDraftDesc".Translate(),
+                                           icon = TexCommand.Draft,
+                                           activateSound = SoundDefOf.DraftOn,
+                                           action = delegate
+                                               {
+                                                   foreach (Pawn pawn in Find.VisibleMap.mapPawns
+                                                       .FreeColonistsSpawned)
+                                                   {
+                                                       if (pawn.mindState == null)
+                                                       {
+                                                           continue;
+                                                       }
 
-            //     pris.isActive = (() => this.<> f__this.ForPrisoners);
-            draft.action = delegate
-                {
-                    foreach (Pawn pawn in Find.VisibleMap.mapPawns.FreeColonistsSpawned)
-                    {
-                        if (pawn.mindState == null)
-                            continue;
-                        if (pawn.InMentalState)
-                            continue;
-                        if (pawn.Dead || pawn.Downed)
-                            continue;
+                                                       if (pawn.InMentalState)
+                                                       {
+                                                           continue;
+                                                       }
 
+                                                       if (pawn.Dead || pawn.Downed)
+                                                       {
+                                                           continue;
+                                                       }
 
-                        pawn.jobs.StopAll();
+                                                       pawn.jobs.StopAll();
 
-                        Thing vehicle = TFH_BaseUtility.GetRightVehicle(pawn, pawn.AvailableVehiclesForPawnFaction(120f), WorkTypeDefOf.Hunting);
+                                                       Thing vehicle = TFH_BaseUtility.GetRightVehicle(
+                                                           pawn,
+                                                           pawn.AvailableVehiclesForPawnFaction(120f),
+                                                           WorkTypeDefOf.Hunting);
 
+                                                       Job jobby =
+                                                           new Job(VehicleJobDefOf.MountAndDraft)
+                                                               {
+                                                                   targetA
+                                                                       = vehicle,
+                                                                   targetB
+                                                                       = this
+                                                                           .Position,
+                                                                   locomotionUrgency
+                                                                       = LocomotionUrgency
+                                                                           .Sprint
+                                                               };
+                                                       pawn.jobs.TryTakeOrderedJob(jobby);
+                                                   }
 
-                        Job jobby = new Job(VehicleJobDefOf.MountAndDraft)
-                        {
-                            targetA = vehicle,
-                            targetB = this.Position,
-                            locomotionUrgency = LocomotionUrgency.Sprint
-                        };
-                        pawn.jobs.TryTakeOrderedJob(jobby);
+                                                   this.DeSpawn();
+                                               }
+                                       };
 
-                    }
-                    this.DeSpawn();
-                };
+            // pris.isActive = (() => this.<> f__this.ForPrisoners);
             yield return draft;
         }
 

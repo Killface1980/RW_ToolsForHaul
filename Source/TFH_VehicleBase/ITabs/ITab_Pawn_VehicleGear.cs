@@ -41,12 +41,22 @@ namespace TFH_VehicleBase.ITabs
             get
             {
                 Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
-                if (cart == null) return false;
+                if (cart == null)
+                {
+                    return false;
+                }
 
                 if (cart != null)
                 {
-                    if (cart.Faction == null) return false;
-                    if (cart.Faction == Faction.OfPlayer) return true;
+                    if (cart.Faction == null)
+                    {
+                        return false;
+                    }
+
+                    if (cart.Faction == Faction.OfPlayer)
+                    {
+                        return true;
+                    }
                 }
 
                 return false;
@@ -76,7 +86,10 @@ namespace TFH_VehicleBase.ITabs
                 Widgets.ThingIcon(thingIconRect, driver);
                 Widgets.Label(thingLabelRect, driver.Label);
                 if (Mouse.IsOver(thingLabelRect))
+                {
                     GUI.DrawTexture(thingLabelRect, TexUI.HighlightTex);
+                }
+
                 if (Event.current.button == 1 && Widgets.ButtonInvisible(thingButtonRect))
                 {
                     List<FloatMenuOption> options = new List<FloatMenuOption>();
@@ -105,7 +118,7 @@ namespace TFH_VehicleBase.ITabs
             Vehicle_Cart cart = this.SelThing as Vehicle_Cart;
             if (cart != null)
             {
-                var storage = cart.GetContainer();
+                ThingOwner storage = cart.GetContainer();
                 foreach (Thing thing in storage)
                 {
                     if (thing.ThingID.IndexOf("Human_Corpse") > -1)
@@ -148,7 +161,9 @@ namespace TFH_VehicleBase.ITabs
                     }
 
                     if (Mouse.IsOver(thingLabelRect))
+                    {
                         GUI.DrawTexture(thingLabelRect, TexUI.HighlightTex);
+                    }
 
                     TooltipHandler.TipRegion(thingLabelRect, thing.def.LabelCap);
                     thingIconRect.y += fieldHeight;
@@ -156,7 +171,9 @@ namespace TFH_VehicleBase.ITabs
                 }
 
                 if (Widgets.ButtonText(new Rect(180f, 400f, 100f, 30f), "Drop All"))
+                {
                     storage.TryDropAll(this.SelThing.Position, cart.Map, ThingPlaceMode.Near);
+                }
             }
 
 

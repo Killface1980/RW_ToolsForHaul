@@ -52,7 +52,7 @@ namespace TFH_VehicleBase
             if (!hediffSetHediffs.NullOrEmpty())
             {
                 this.ExplosiveTickers = new List<HediffCompExplosive_TFH>();
-                foreach (var hediff in hediffSetHediffs)
+                foreach (Hediff hediff in hediffSetHediffs)
                 {
                     HediffCompExplosive_TFH exploder = hediff.TryGetComp<HediffCompExplosive_TFH>();
 

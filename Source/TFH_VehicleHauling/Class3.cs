@@ -27,6 +27,7 @@ namespace RimWorld
                                                                      this.TargetFire.parent.LabelCap
                                                                  });
             }
+
             return "ReportExtinguishingFire".Translate();
         }
 

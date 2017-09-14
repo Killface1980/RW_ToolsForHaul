@@ -8,12 +8,6 @@ namespace TFH_VehicleBase
     [StaticConstructorOnStartup]
     public static class Static
     {
-        #region ThingDefs
-
-
-
-        #endregion
-
         #region Zone_ParkingLot
 
         public static string ParkingLotDesc = "TFH_DescriptionParkingLot".Translate();

@@ -22,7 +22,9 @@
         {
             this.EndOnDespawnedOrNull(MountableInd);
             if (this.TargetThingB.IsForbidden(this.pawn.Faction))
+            {
                 this.FailOnForbidden(MountableInd);
+            }
 
             yield return Toils_Reserve.Reserve(MountableInd, this.CurJob.def.joyMaxParticipants);
 
@@ -42,7 +44,11 @@
             // JumpIf already mounted
             yield return Toils_Jump.JumpIf(toil, () =>
             {
-                if (cart.TryGetComp<CompMountable>().Rider == this.pawn) return true;
+                if (cart.TryGetComp<CompMountable>().Rider == this.pawn)
+                {
+                    return true;
+                }
+
                 return false;
             });
 

@@ -29,6 +29,19 @@
         // Body and part location
         private Vector3 wheelLoc;
 
+        public Vehicle_Cart Cart
+        {
+            get
+            {
+                if (this.cart == null)
+                {
+                    this.cart = this.parent as Vehicle_Cart;
+                }
+
+                return this.cart;
+            }
+        }
+
         private Vehicle_Cart cart;
 
         private Vector2 drawSize;
@@ -37,31 +50,30 @@
 
         public override void CompTick()
         {
-            base.CompTick();
 
-            if (this.cart == null || !this.cart.Spawned || !this.cart.MountableComp.IsMounted)
+            if (this.Cart == null || !this.Cart.Spawned || !this.Cart.MountableComp.IsMounted)
             {
                 return;
             }
 
-            if (this.cart.IsMoving)
+            if (this.Cart.IsMoving)
             {
-                Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Rider.stances;
+                Pawn_StanceTracker pawnStanceTracker = this.Cart.MountableComp.Rider.stances;
                 if (pawnStanceTracker != null && (!pawnStanceTracker.FullBodyBusy))
                 {
-                    this.wheelRotation += this.cart.VehicleComp.currentDriverSpeed / 5f;
-                    this.tick_time += 0.01f * this.cart.VehicleComp.currentDriverSpeed / 5f;
+                    this.wheelRotation += this.Cart.VehicleComp.currentDriverSpeed / 5f;
+                    this.tick_time += 0.01f * this.Cart.VehicleComp.currentDriverSpeed / 5f;
                     this.wheel_shake = (float)((Math.Sin(this.tick_time) + Math.Abs(Math.Sin(this.tick_time))) / 40.0);
                 }
 
-                if (this.cart.MountableComp.Rider.Position.AdjacentTo8WayOrInside(this.cart.MountableComp.Rider.pather.Destination.Cell))
+                if (this.Cart.MountableComp.Rider.Position.AdjacentTo8WayOrInside(this.Cart.MountableComp.Rider.pather.Destination.Cell))
                 {
-                    // Make the breaks sound once and throw some dust if Driver comes to his destination
                     {
+                        // Make the breaks sound once and throw some dust if Driver comes to his destination
                         if (!this.breakSoundPlayed)
                         {
                             SoundDef.Named("VehicleATV_Ambience_Break")
-                                .PlayOneShot(new TargetInfo(this.cart.MountableComp.Rider.Position, this.parent.Map));
+                                .PlayOneShot(new TargetInfo(this.Cart.MountableComp.Rider.Position, this.parent.Map));
                             MoteMakerTFH.ThrowDustPuff(this.parent.DrawPos, this.parent.Map, 0.8f);
                             this.breakSoundPlayed = true;
                         }
@@ -72,6 +84,9 @@
                     this.breakSoundPlayed = false;
                 }
             }
+
+            base.CompTick();
+
         }
 
         private bool GetAxleLocations(Vector2 drawSize, int flip, out List<Vector3> axleVecs)
@@ -98,10 +113,10 @@
             base.PostDraw();
 
             Rot4 rot;
-            rot = this.cart.Rotation;
+            rot = this.Cart.Rotation;
 
-            this.wheelLoc = this.cart.DrawPos;
-            this.bodyLoc = this.cart.DrawPos;
+            this.wheelLoc = this.Cart.DrawPos;
+            this.bodyLoc = this.Cart.DrawPos;
 
             // Vertical
             if (rot.AsInt % 2 == 0)
@@ -118,7 +133,7 @@
                 int num = 0;
 
                 // TODO: check rotation
-                //    rot = this.cart.MountableComp.IsMounted ? this.cart.MountableComp.Driver.Rotation  : this.cart.Rotation;
+                // rot = this.Cart.MountableComp.IsMounted ? this.Cart.MountableComp.Driver.Rotation  : this.Cart.Rotation;
                 num = rot == Rot4.West ? -1 : 1;
                 Vector3 vector3 = new Vector3(1f * this.drawSize.x, 1f, 1f * this.drawSize.y);
                 Quaternion asQuat = rot.AsQuat;
@@ -158,16 +173,14 @@
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            this.cart = this.parent as Vehicle_Cart;
-
-            // Don't change parent to cart!
             {
+                // Don't change parent to Cart!
                 string text = this.Props.wheel.graphicData.texPath;
                 LongEventHandler.ExecuteWhenFinished(
                     delegate
                         {
                             PawnKindLifeStage curKindLifeStage = ((Vehicle_Cart)this.parent).ageTracker.CurKindLifeStage;
-                            var graphic = curKindLifeStage.bodyGraphicData.Graphic;
+                            Graphic graphic = curKindLifeStage.bodyGraphicData.Graphic;
 
                             // don't use the vehicle color here
                             this.drawSize = graphic.drawSize;

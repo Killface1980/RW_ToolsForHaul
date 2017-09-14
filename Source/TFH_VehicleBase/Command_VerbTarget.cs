@@ -23,6 +23,7 @@ namespace TFH_VehicleBase
                 {
                     return this.verb.ownerEquipment.DrawColor;
                 }
+
                 return base.IconDrawColor;
             }
         }

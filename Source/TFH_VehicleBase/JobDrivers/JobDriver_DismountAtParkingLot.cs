@@ -29,13 +29,19 @@
             }
 
             if (destZone != null)
+            {
                 destName = destZone.label;
+            }
 
             string repString;
             if (destName != null)
+            {
                 repString = "ReportDismountingOn".Translate(cart.LabelCap, destName);
+            }
             else
+            {
                 repString = "ReportDismounting".Translate(cart.LabelCap);
+            }
 
             return repString;
         }

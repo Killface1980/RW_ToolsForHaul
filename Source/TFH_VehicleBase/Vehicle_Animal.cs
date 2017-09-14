@@ -20,7 +20,6 @@
         #region Variables
 
         // ==================================
-
         public bool instantiated;
 
 
@@ -33,7 +32,6 @@
 
 
         // slotGroupParent Interface
-
 
 
         public Vector3 DriverOffset = new Vector3();
@@ -127,10 +125,6 @@
         }
 
 
-
-        #endregion
-
-        #region Ticker
 
         #endregion
 

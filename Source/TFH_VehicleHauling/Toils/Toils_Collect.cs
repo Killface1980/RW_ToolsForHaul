@@ -40,7 +40,11 @@
                     Pawn actor = toil.GetActor();
 
                     LocalTargetInfo target = toil.actor.jobs.curJob.GetTarget(HaulableInd);
-                    if (target.Thing.def.stackLimit <= 1) return;
+                    if (target.Thing.def.stackLimit <= 1)
+                    {
+                        return;
+                    }
+
                     List<LocalTargetInfo> targetQueue = toil.actor.jobs.curJob.GetTargetQueue(HaulableInd);
                     if (!targetQueue.NullOrEmpty() && target.Thing.def.defName == targetQueue.First().Thing.def.defName)
                     {
@@ -59,7 +63,8 @@
                         toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                         return;
                     }
-                    var storage = cart.GetContainer();
+
+                    ThingOwner storage = cart.GetContainer();
 
                     int curItemCount = storage.Count
                                        + targetQueue.Count;
@@ -67,7 +72,10 @@
                                        + targetQueue.Sum(item => item.Thing.stackCount);
                     int maxItem = cart.MaxItem;
                     int maxStack = cart.MaxStack;
-                    if (curItemCount >= maxItem || curItemStack >= maxStack) return;
+                    if (curItemCount >= maxItem || curItemStack >= maxStack)
+                    {
+                        return;
+                    }
 
                     // Check target's nearby
                     Thing thing = GenClosest.ClosestThing_Global_Reachable(
@@ -173,14 +181,14 @@
                     // {
                     // apparel.holdingContainer = carrier.GetContainer();
                     // apparel.holdingContainer.owner = carrier;
-                    // }
                     {
+                        // }
                         // }
                         // }
                         // Collecting TargetIndex ind
                         // if
                         // haulThing.DeSpawn();
-                        var storage = carrier.GetContainer();
+                        ThingOwner storage = carrier.GetContainer();
 
                         haulThing.holdingOwner.TryTransferToContainer(haulThing, storage, haulThing.stackCount);// carrier.innerContainer.TryAdd(haulThing);
                     }
@@ -190,10 +198,11 @@
 
                     List<LocalTargetInfo> thingList = curJob.GetTargetQueue(HaulableInd);
                     for (int i = 0; i < thingList.Count; i++)
+                    {
                         if (actor.Position.AdjacentTo8Way(thingList[i].Thing.Position))
                         {
                             // thingList[i].Thing.DeSpawn();
-                            var storage = carrier.GetContainer();
+                            ThingOwner storage = carrier.GetContainer();
                             thingList[i].Thing.holdingOwner
                                 .TryTransferToContainer(thingList[i].Thing, storage, thingList[i].Thing.stackCount);
                             {
@@ -204,6 +213,7 @@
                             thingList.RemoveAt(i);
                             i--;
                         }
+                    }
                 };
             toil.FailOn(
                 () =>
@@ -216,7 +226,10 @@
                         if (!carrier.allowances.Allows(haulThing)
                             && actor.Position.InHorDistOf(
                                 haulThing.Position, 1f))
+                        {
                             return true;
+                        }
+
                         return false;
                     });
             toil.FailOnDestroyedOrNull(CarrierInd);
@@ -240,7 +253,8 @@
                         Log.Error(actor.LabelCap + " Report: Don't have Carrier");
                         toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                     }
-                    var storage = cart.GetContainer();
+
+                    ThingOwner storage = cart.GetContainer();
 
                     if (storage.Count == 0)
                     {
@@ -392,13 +406,13 @@
                             {
                                 b = cells[i].Cell;
                             }
+
                             IntVec3 dropLoc = actor.Position + PawnRotator.RotFromAngleBiased((actor.Position - b).AngleFlat).FacingCell;
 
                             // if (actor.CanReserve(dropLoc, 1, -1, null, false))
                             // {
-                            //     actor.Reserve(dropLoc, 1, -1, null);
+                            // actor.Reserve(dropLoc, 1, -1, null);
                             // }
-
                             actor.Map.designationManager.RemoveAllDesignationsOn(cartStorage[i]);
                             cartStorage.TryDrop(cartStorage[i], dropLoc, actor.Map, ThingPlaceMode.Direct, out dummy);
                             cells.RemoveAt(i);
@@ -413,12 +427,17 @@
                             && adjCell.IsValidStorageFor(actor.Map, cartStorage.First()))
                         {
                             actor.Map.designationManager.RemoveAllDesignationsOn(cartStorage.First());
+
                             // if (actor.CanReserve(adjCell, 1, -1, null, false))
                             // {
-                            //     actor.Reserve(adjCell, 1, -1, null);
+                            // actor.Reserve(adjCell, 1, -1, null);
                             // }
-
-                            cartStorage.TryDrop(cartStorage.First(), adjCell, actor.Map, ThingPlaceMode.Direct, out dummy);
+                            cartStorage.TryDrop(
+                                cartStorage.First(),
+                                adjCell,
+                                actor.Map,
+                                ThingPlaceMode.Direct,
+                                out dummy);
                         }
                     }
                 };

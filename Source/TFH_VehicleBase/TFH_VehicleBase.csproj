@@ -18,7 +18,7 @@
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;LOGGING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -36,7 +36,7 @@
     <Compile Include="BasicVehicle.cs" />
     <None Include="Class1.cs" />
     <None Include="Class2.cs" />
-    <Compile Include="Class3.cs" />
+    <Compile Include="ThinkNode_ConditionalShouldBeIdle.cs" />
     <Compile Include="Command_VerbTarget.cs" />
     <Compile Include="Components\CompAxles.cs" />
     <Compile Include="Components\CompDriver.cs" />
@@ -48,6 +48,7 @@
     <None Include="Components\CompProperties_Rideable.cs" />
     <Compile Include="Components\CompProperties_Vehicle.cs" />
     <None Include="Components\CompRideable.cs" />
+    <None Include="Components\CompRefuelableVehicle.cs" />
     <Compile Include="Components\CompVehicle.cs" />
     <Compile Include="Components\GameComponentToolsForHaul.cs" />
     <Compile Include="Components\HediffCompExplosive_TFH.cs" />
@@ -57,7 +58,7 @@
     <Compile Include="Hediff_ImplantExplosive.cs" />
     <Compile Include="ITabs\ITab_Pawn_VehicleGear.cs" />
     <Compile Include="ITabs\ITab_Vehicle_Storage.cs" />
-    <Compile Include="JobDrivers\JobDriver_Board.cs" />
+    <None Include="JobDrivers\JobDriver_Board.cs" />
     <Compile Include="JobDrivers\JobDriver_DismountAtParkingLot.cs" />
     <Compile Include="JobDrivers\JobDriver_GoForRide.cs" />
     <Compile Include="JobDrivers\JobDriver_MakeMount.cs" />
@@ -103,7 +104,7 @@
     <Compile Include="TFH_BaseUtility.cs" />
     <Compile Include="DefOfs_TFH\ThingDefOf_TFH.cs" />
     <Compile Include="Vehicle_Cart.cs" />
-    <Compile Include="Vehicle_Saddle.cs" />
+    <None Include="Vehicle_Saddle.cs" />
     <None Include="_old\Vehicle_CartTurretGun.cs" />
     <None Include="_old\Vehicle_CartTurret.cs" />
     <None Include="_old\Cart_TurretTop.cs" />
@@ -116,6 +117,10 @@
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="CompVehicle">
+      <HintPath>..\..\..\JecsTools\Assemblies\CompVehicle.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />

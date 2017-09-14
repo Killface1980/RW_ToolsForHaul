@@ -20,7 +20,7 @@
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;LOGGING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
@@ -115,6 +115,12 @@
       <Link>Defs\ThingDefs\Vehicle_Turret.xml</Link>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="..\..\Defs\ThingDefs_Races\Races_Vehicle.xml">
+      <Link>Defs\ThingDefs\Races_Vehicle.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs_Races\Races_Vehicle_Base.xml">
+      <Link>Defs\ThingDefs\Races_Vehicle_Base.xml</Link>
+    </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers.xml">
       <Link>WorkGivers\WorkGivers.xml</Link>
       <SubType>Designer</SubType>
@@ -122,7 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TFH_VehicleBase\TFH_VehicleBase.csproj">
-      <Project>{BBEADC75-7F91-4397-86BC-A4981FDA42B1}</Project>
+      <Project>{bbeadc75-7f91-4397-86bc-a4981fda42b1}</Project>
       <Name>TFH_VehicleBase</Name>
     </ProjectReference>
   </ItemGroup>

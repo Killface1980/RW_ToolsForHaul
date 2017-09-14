@@ -6,6 +6,8 @@ namespace TFH_VehicleBase
     using System.Collections.Generic;
     using System.Linq;
 
+    using JetBrains.Annotations;
+
     using RimWorld;
 
     using TFH_VehicleBase.Components;
@@ -19,6 +21,8 @@ namespace TFH_VehicleBase
     public static class TFH_BaseUtility
     {
         private static List<IntVec3> candidates = new List<IntVec3>();
+
+        public static Dictionary<Pawn, Thing> DriverDict = new Dictionary<Pawn, Thing>();
 
         private const int NearbyCell = 30;
 
@@ -355,6 +359,7 @@ namespace TFH_VehicleBase
 
         }
 
+        [CanBeNull]
         public static List<Thing> MountedVehicles(this Map map)
         {
             List<Thing> availableVehicles =
@@ -681,7 +686,7 @@ namespace TFH_VehicleBase
             {
                 // Find Haulable
                 Pawn nextDownee = null;
-                foreach (Pawn x in pawn.Map.mapPawns.AllPawnsSpawned)
+                foreach (Pawn x in pawn.Map.listerThings.AllThings)
                 {
                     if (x.Downed && x.Faction == pawn.Faction && !x.InBed() && pawn.CanReserve(x, 1, -1, null, forced)
                         && !GenAI.EnemyIsNear(pawn, 40f) && x.Position.InHorDistOf(pawn2Downee.Position, NearbyCell)
@@ -973,7 +978,7 @@ namespace TFH_VehicleBase
             }
 
             List<Thing> mountedVehicles = pawn.Map.MountedVehicles();
-            if (!mountedVehicles.NullOrEmpty())
+            if (mountedVehicles != null)
             {
                 foreach (Thing thing in mountedVehicles)
                 {
@@ -997,7 +1002,7 @@ namespace TFH_VehicleBase
             }
 
             List<Thing> mountedVehicles = pawn.Map.MountedVehicles();
-            if (!mountedVehicles.NullOrEmpty())
+            if (mountedVehicles != null)
             {
                 foreach (Thing thing in mountedVehicles)
                 {
@@ -1018,7 +1023,7 @@ namespace TFH_VehicleBase
         {
 
             List<Thing> mountedVehicles = pawn.Map.MountedVehicles();
-            if (!mountedVehicles.NullOrEmpty())
+            if (mountedVehicles != null)
             {
                 foreach (Thing thing in mountedVehicles)
                 {

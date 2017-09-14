@@ -185,27 +185,24 @@ namespace TFH_VehicleBase.Components
                 // // bring vehicles home
                 // if (this.cart.VehicleComp != null && !this.cart.VehicleComp.MotorizedWithoutFuel())
                 // {
-                //     float hitPointsPercent = this.cart.health.summaryHealth.SummaryHealthPercent;
-                //
-                //     if (this.cart.Faction == Faction.OfPlayer)
-                //     {
-                //         if (!GenAI.EnemyIsNear(this.Driver, 120f))
-                //         {
-                //             if (!this.Driver.drafter.Drafted)
-                //             {
-                //                 var flag = this.cart.HasGasTank() && this.cart.GasTankComp.tankLeaking;
-                //
-                //                 if (hitPointsPercent < 0.65f
-                //
-                //                     // || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
-                //                     || flag || !this.cart.RefuelableComp.HasFuel)
-                //                 {
-                //                     Job jobNew = this.Driver.DismountAtParkingLot("CM");
-                //                     this.Driver.jobs.TryTakeOrderedJob(jobNew);
-                //                 }
-                //             }
-                //         }
-                //     }
+                // float hitPointsPercent = this.cart.health.summaryHealth.SummaryHealthPercent;
+                // if (this.cart.Faction == Faction.OfPlayer)
+                // {
+                // if (!GenAI.EnemyIsNear(this.Driver, 120f))
+                // {
+                // if (!this.Driver.drafter.Drafted)
+                // {
+                // var flag = this.cart.HasGasTank() && this.cart.GasTankComp.tankLeaking;
+                // if (hitPointsPercent < 0.65f
+                // // || (this.Driver.CurJob != null && this.Driver.jobs.curDriver.asleep)
+                // || flag || !this.cart.RefuelableComp.HasFuel)
+                // {
+                // Job jobNew = this.Driver.DismountAtParkingLot("CM");
+                // this.Driver.jobs.TryTakeOrderedJob(jobNew);
+                // }
+                // }
+                // }
+                // }
                 // }
             }
 
@@ -247,10 +244,12 @@ namespace TFH_VehicleBase.Components
                                 return;
                             }
                         }
+
                         this.rideableAnimal.Rotation = this.Driver.Rotation;
                         this.lastDrawAsAngle = this.Driver.Rotation.AsAngle;
 
                     }
+
                     this.rideableAnimal.Position = this.Position.ToIntVec3();
                 }
             }
@@ -291,6 +290,7 @@ namespace TFH_VehicleBase.Components
                 return;
 
             }
+
             if (this.driver.AllComps.Contains(this.rideableAnimal.DriverComp))
             {
                 this.driver.AllComps?.Remove(this.rideableAnimal.DriverComp);

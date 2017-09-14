@@ -9,7 +9,7 @@
     using Verse;
     using Verse.AI;
 
-    public class CompVehicle : ThingComp
+    public class CompVehicle: ThingComp
     {
         public CompProperties_Vehicle compProps => (CompProperties_Vehicle)this.props;
 
@@ -65,12 +65,13 @@
 
 
 
-
         public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             base.PostPostApplyDamage(dinfo, totalDamageDealt);
             if (!this.parent.Spawned)
+            {
                 return;
+            }
 
             float hitpointsPercent = (float)this.parent.HitPoints / this.parent.MaxHitPoints;
 
@@ -105,6 +106,7 @@
             {
                 return;
             }
+
 #if Headlights
             {
                 if ( this.parent.Map.glo Find.GlowGrid.GameGlowAt(Position - Rotation.FacingCell - Rotation.FacingCell) < 0.4f)
@@ -182,7 +184,7 @@
                     Pawn_StanceTracker pawnStanceTracker = this.cart.MountableComp.Rider.stances;
                     if (pawnStanceTracker != null && !pawnStanceTracker.FullBodyBusy)
                     {
-                        this.cart.RefuelableComp?.Notify_UsedThisTick();
+                        this.cart.GetComp<CompRefuelable>()?.Notify_UsedThisTick();
 
                         if (this.cart.HasAxles())
                         {
@@ -191,7 +193,7 @@
                     }
 
                     if (this.cart.BreakdownableComp != null && this.cart.BreakdownableComp.BrokenDown
-                        || this.cart.RefuelableComp != null && !this.cart.RefuelableComp.HasFuel)
+                        || this.cart.GetComp<CompRefuelable>() != null && !this.cart.GetComp<CompRefuelable>().HasFuel)
                     {
                         this.VehicleSpeed = 0.75f;
                     }
@@ -202,11 +204,11 @@
 
                     this.tickCheck = Find.TickManager.TicksGame;
 
-                    //     if (this.cart.Position.InNoBuildEdgeArea(this.parent.Map) && this.despawnAtEdge && this.parent.Spawned
-                    //         && this.cart.MountableComp.Driver.Faction != Faction.OfPlayer)
-                    //     {
-                    //         this.cart.DeSpawn();
-                    //     }
+                    // if (this.cart.Position.InNoBuildEdgeArea(this.parent.Map) && this.despawnAtEdge && this.parent.Spawned
+                    // && this.cart.MountableComp.Driver.Faction != Faction.OfPlayer)
+                    // {
+                    // this.cart.DeSpawn();
+                    // }
                 }
 
             }

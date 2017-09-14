@@ -7,7 +7,7 @@
     <thingClass>TFH_VehicleBase.Vehicle_Cart</thingClass>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
     <statBases>
-      <Flammability>1.0</Flammability>
+      <Flammability>0</Flammability>
       <PsychicSensitivity>0</PsychicSensitivity>
       <ToxicSensitivity>0</ToxicSensitivity>
       <ComfyTemperatureMin>-100</ComfyTemperatureMin>
@@ -17,7 +17,7 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <race>
-      <thinkTreeMain>Engine</thinkTreeMain>
+      <thinkTreeMain>CompVehicle_Simple</thinkTreeMain>
       <fleshType>Mechanoid</fleshType>
       <needsRest>false</needsRest>
       <hasGenders>false</hasGenders>
@@ -28,6 +28,7 @@
       <li>InstallNaturalTank</li>
       <li>InstallBigTank</li>
       <li>InstallCarBomb</li>
+      <li>RepairVehicle</li>
       <li>RemoveVehiclePart</li>
     </recipes>
   </ThingDef>
@@ -494,7 +495,7 @@
       <VehicleATVFrame>1</VehicleATVFrame>
     </killedLeavings>
     <race>
-      <thinkTreeMain>EngineCombat</thinkTreeMain>
+      <thinkTreeMain>CompVehicle_Simple</thinkTreeMain>
       <lifeExpectancy>50</lifeExpectancy>
       <litterSizeCurve>
         <points>
@@ -703,6 +704,45 @@
       <Component>2</Component>
     </butcherProducts>
     <comps>
+      <li Class="CompVehicle.CompProperties_Vehicle">
+        <vehicleType>LandHover</vehicleType>
+        <movementHandling>HandlerRequired</movementHandling>
+        <weaponHandling>HandlerRequired</weaponHandling>
+        <manipulationHandling>Incapable</manipulationHandling>
+        <soundEntry>PJ_SpeederCall</soundEntry>
+        <soundEject>PJ_SpeederCall</soundEject>
+        <soundMoving>PJ_SpeederMoving</soundMoving>
+        <ejectIfBelowHealthPercent>0.25</ejectIfBelowHealthPercent>
+        <seatHitDamageFactor>1.75</seatHitDamageFactor>
+        <seatHitCriticalHitChance>0.03</seatHitCriticalHitChance>
+        <canBeDowned>true</canBeDowned>
+        <canWiggleWhenDowned>false</canWiggleWhenDowned>
+        <worldSpeedFactor>4.0</worldSpeedFactor>
+        <roles>
+          <li>
+            <label>driver</label>
+            <labelPlural>drivers</labelPlural>
+            <handlingTypes>Movement</handlingTypes>
+            <slots>1</slots>
+            <slotsToOperate>1</slotsToOperate>
+            <slotTag>PilotSeat</slotTag>
+          </li>
+          <li>
+            <label>gunner</label>
+            <labelPlural>gunners</labelPlural>
+            <handlingTypes>Weapons</handlingTypes>
+            <slots>1</slots>
+            <slotsToOperate>1</slotsToOperate>
+            <slotTag>GunnerSeat</slotTag>
+          </li>
+          <li>
+            <label>passenger</label>
+            <labelPlural>passengers</labelPlural>
+            <slots>2</slots>
+            <slotTag>PassengerSeat</slotTag>
+          </li>
+        </roles>
+      </li>
       <li>
         <compClass>TFH_VehicleBase.Components.CompGasTank</compClass>
       </li>

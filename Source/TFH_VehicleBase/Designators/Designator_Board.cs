@@ -25,11 +25,13 @@
         {
             List<Thing> thingList = loc.GetThingList(this.Map);
 
-            foreach (var thing in thingList)
+            foreach (Thing thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
                 if (pawn != null && (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike)))
+                {
                     return true;
+                }
             }
 
             return new AcceptanceReport(txtCannotBoard.Translate());
@@ -38,7 +40,7 @@
         public override void DesignateSingleCell(IntVec3 c)
         {
             List<Thing> thingList = c.GetThingList(this.Map);
-            foreach (var thing in thingList)
+            foreach (Thing thing in thingList)
             {
                 Pawn pawn = thing as Pawn;
                 if (pawn != null && (pawn.Faction == Faction.OfPlayer && (pawn.RaceProps.IsMechanoid || pawn.RaceProps.Humanlike)))

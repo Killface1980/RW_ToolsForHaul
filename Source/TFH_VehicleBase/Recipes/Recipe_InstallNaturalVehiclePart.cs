@@ -41,10 +41,11 @@
         {
             if (billDoer != null)
             {
-                if (base.CheckSurgeryFail(billDoer, pawn, ingredients, part))
+                if (this.CheckSurgeryFail(billDoer, pawn, ingredients, part))
                 {
                     return;
                 }
+
                 TaleRecorder.RecordTale(TaleDefOf.DidSurgery, new object[]
                                                                   {
                                                                       billDoer,

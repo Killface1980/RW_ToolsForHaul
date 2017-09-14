@@ -60,9 +60,13 @@
             base.LoadedGame();
             foreach (Map map in Find.Maps)
             {
-                foreach (Thing vehicle in map.MountedVehicles())
+                List<Thing> mountedVehicles = map.MountedVehicles();
+                if (mountedVehicles != null)
                 {
-                    ((Vehicle_Cart)vehicle).StartSustainerVehicleIfInactive();
+                    foreach (Thing vehicle in mountedVehicles)
+                    {
+                        ((Vehicle_Cart)vehicle).StartSustainerVehicleIfInactive();
+                    }
                 }
             }
         }

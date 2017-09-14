@@ -7,6 +7,8 @@
 
     using RimWorld;
 
+    using TFH_VehicleBase.DefOfs_TFH;
+
     using TFH_Vehicles;
     using TFH_Vehicles.DefOfs_TFH;
 
@@ -142,7 +144,6 @@
                     IntVec3 loc = CellFinder.RandomClosewalkCellNear(parms.spawnCenter, map, 8);
                     GenSpawn.Spawn(current, loc, map, parms.spawnRotation);
                     target = current;
-
                     {
 
                         // Vehicles for raiders
@@ -161,6 +162,7 @@
                                     break;
                                 }
                             }
+
                             if (current.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
                             {
                                 if (value >= 0.66f && !isShieldUser || isShieldUser && value > 0.9f)
@@ -170,13 +172,17 @@
 
                                     if (value >= 0.9f && !isShieldUser)
                                     {
-                                        cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_CombatATV, parms.faction);
+                                        cart = PawnGenerator.GeneratePawn(
+                                            VehicleKindDefOf.TFH_CombatATV,
+                                            parms.faction);
                                     }
-                                    GenSpawn.Spawn(cart, current.Position, map, Rot4.Random, false);
-                                 // current.Map.reservationManager.ReleaseAllForTarget(cart);
-                                 // Job job = new Job(HaulJobDefOf.Mount) { targetA = cart };
-                                 // current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
 
+                                    GenSpawn.Spawn(cart, current.Position, map, Rot4.Random, false);
+
+                                    current.Map.reservationManager.ReleaseAllForTarget(cart);
+                                    Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
+                                    current.Reserve(cart);
+                                    current.jobs.jobQueue.EnqueueFirst(job);
                                 }
                             }
                         }

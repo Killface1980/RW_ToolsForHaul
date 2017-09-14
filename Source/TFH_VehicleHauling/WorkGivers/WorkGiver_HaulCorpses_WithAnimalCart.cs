@@ -32,9 +32,10 @@
             {
                 return null;
             }
-            var carrier=new Vehicle_Cart();
 
-            var storage = carrier.GetContainer();
+            Vehicle_Cart carrier=new Vehicle_Cart();
+
+            ThingOwner storage = carrier.GetContainer();
 
             IEnumerable<Thing> remainingItems = storage;
             int reservedMaxItem = storage.Count;
@@ -50,7 +51,7 @@
             pawn.Reserve(carrier);
 
             // Drop remaining item
-            foreach (var remainingItem in remainingItems)
+            foreach (Thing remainingItem in remainingItems)
             {
                 IntVec3 storageCell = this.FindStorageCell(pawn, remainingItem, jobNew.targetQueueB);
                 if (!storageCell.IsValid)
@@ -122,15 +123,18 @@
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
             availableVehicle = pawn.Map.listerThings.AllThings.FindAll(
-                (Thing aV) => ((aV is Vehicle_Cart) && !aV.IsForbidden(pawn.Faction)
-                               && pawn.CanReserveAndReach(aV, PathEndMode.Touch, Danger.Some)
-                               && (aV.TryGetComp<CompMountable>().IsMounted
-                                   && aV.TryGetComp<CompMountable>().Rider.RaceProps.Animal
-                                   && aV.TryGetComp<CompMountable>().Rider.needs.food.CurCategory
-                                   != HungerCategory.Hungry
-                                   && aV.TryGetComp<CompMountable>().Rider.needs.rest.CurCategory
-                                   != RestCategory.Tired) // Driver is animal not hungry and restless
-                ));
+                aV =>
+                    {
+                        CompMountable mountable = aV.TryGetComp<CompMountable>();
+
+                        return ((aV is Vehicle_Cart) && !aV.IsForbidden(pawn.Faction)
+                                && pawn.CanReserveAndReach(aV, PathEndMode.Touch, Danger.Some)
+                                && (mountable.IsMounted && mountable.Rider.RaceProps.Animal
+                                    && mountable.Rider.needs.food.CurCategory != HungerCategory.Hungry
+                                    && mountable.Rider.needs.rest.CurCategory
+                                    != RestCategory.Tired) // Driver is animal not hungry and restless
+                               );
+                    });
 
 #if DEBUG
 
@@ -144,9 +148,9 @@
         {
             availableVehicle = this.PotentialWorkThingsGlobal(pawn) as List<Thing>;
 
-            return availableVehicle.Find(aV => ((Vehicle_Cart)aV).GetContainer().TotalStackCount > 0)
-                    == null // Need to drop
-                    && pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0; // No Haulable
+            return availableVehicle != null && (availableVehicle.Find(aV => ((Vehicle_Cart)aV).GetContainer().TotalStackCount > 0)
+                                                == null // Need to drop
+                                                && pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0); // No Haulable
         }
 
         private IntVec3 FindStorageCell(Pawn pawn, Thing closestHaulable, List<LocalTargetInfo> targetQueue)
@@ -155,7 +159,7 @@
             {
                 foreach (LocalTargetInfo target in targetQueue)
                 {
-                    foreach (var adjCell in GenAdjFast.AdjacentCells8Way(target))
+                    foreach (IntVec3 adjCell in GenAdjFast.AdjacentCells8Way(target))
                     {
                         if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(pawn.Map, closestHaulable)
                             && pawn.CanReserve(adjCell))
@@ -166,9 +170,9 @@
                 }
             }
 
-            foreach (var slotGroup in pawn.Map.slotGroupManager.AllGroupsListInPriorityOrder)
+            foreach (SlotGroup slotGroup in pawn.Map.slotGroupManager.AllGroupsListInPriorityOrder)
             {
-                foreach (var cell in slotGroup.CellsList.Where(
+                foreach (IntVec3 cell in slotGroup.CellsList.Where(
                     cell => !targetQueue.Contains(cell)
                             && cell.IsValidStorageFor(pawn.Map, closestHaulable)
                             && pawn.CanReserve(cell)))

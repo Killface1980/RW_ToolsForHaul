@@ -36,9 +36,9 @@
 
 
             List<Thing> steelVehicle = pawn.AvailableVehiclesForSteeling(20f);
-            foreach (var thing in steelVehicle)
+            foreach (Thing thing in steelVehicle)
             {
-                var cart = (Vehicle_Cart)thing;
+                Vehicle_Cart cart = (Vehicle_Cart)thing;
 
                 if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
                     break;

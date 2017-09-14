@@ -155,8 +155,15 @@
 
                                 foreach (RegionLink link in regions[regionInd].links)
                                 {
-                                    if (regions.Contains(link.RegionA) == false) regions.Add(link.RegionA);
-                                    if (regions.Contains(link.RegionB) == false) regions.Add(link.RegionB);
+                                    if (regions.Contains(link.RegionA) == false)
+                                    {
+                                        regions.Add(link.RegionA);
+                                    }
+
+                                    if (regions.Contains(link.RegionB) == false)
+                                    {
+                                        regions.Add(link.RegionB);
+                                    }
                                 }
                             }
 
@@ -245,9 +252,13 @@
 
                 Job job;
                 if (pawn != null)
+                {
                     job = new Job(VehicleJobDefOf.StandBy, pawn.Position, defaultWaitWorker);
+                }
                 else
+                {
                     job = new Job(VehicleJobDefOf.StandBy, toil.actor.jobs.curJob.GetTarget(Ind), defaultWaitWorker);
+                }
 
                 cart.MountableComp.Rider.jobs.StartJob(job, JobCondition.InterruptForced);
             };
@@ -268,7 +279,9 @@
                 }
 
                 if (cart.MountableComp.IsMounted && cart.MountableComp.Rider.CurJob.def == VehicleJobDefOf.StandBy)
+                {
                     cart.MountableComp.Rider.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
+                }
             };
             return toil;
         }
@@ -301,7 +314,10 @@
 
                     // Worker has arrived and Animal cart has arrived
                     else if (cart.MountableComp.Rider.CurJob.def == VehicleJobDefOf.StandBy
-                             && actor.Position.InHorDistOf(cart.MountableComp.Rider.Position, 1f)) toil.actor.jobs.curDriver.ReadyForNextToil();
+                             && actor.Position.InHorDistOf(cart.MountableComp.Rider.Position, 1f))
+                    {
+                        toil.actor.jobs.curDriver.ReadyForNextToil();
+                    }
 
                     // Worker has arrived but Animal cart is missing
                     else
@@ -311,7 +327,9 @@
                     }
                 }
                 else
+                {
                     toil.actor.jobs.curDriver.EndJobWith(JobCondition.Incompletable);
+                }
             };
             toil.tickAction = () =>
             {
@@ -324,6 +342,7 @@
                 }
 
                 if (Find.TickManager.TicksGame % tickCheckInterval == 0)
+                {
                     if (cart.MountableComp.IsMounted)
                     {
                         // Animal cart has arrived
@@ -342,7 +361,10 @@
                         }
                     }
                     else
+                    {
                         toil.actor.jobs.curDriver.EndJobWith(JobCondition.Incompletable);
+                    }
+                }
             };
             toil.defaultCompleteMode = ToilCompleteMode.Never;
             return toil;

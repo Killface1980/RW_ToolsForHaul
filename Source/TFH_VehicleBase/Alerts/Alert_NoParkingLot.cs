@@ -37,7 +37,7 @@ namespace TFH_VehicleBase.Alerts
                 return false;
             }
 
-            var currentMap = Find.VisibleMap;
+            Map currentMap = Find.VisibleMap;
             {
 
                 List<Zone> zonesList = currentMap.zoneManager.AllZones;
@@ -56,6 +56,7 @@ namespace TFH_VehicleBase.Alerts
                                 {
                                     continue;
                                 }
+
                                 if (current.def.passability == Traversability.PassThroughOnly
                                     || current.def.passability == Traversability.Impassable)
                                 {
@@ -66,11 +67,13 @@ namespace TFH_VehicleBase.Alerts
                         }
                     }
                 }
-                var count =0;
+
+                int count =0;
                 foreach (Thing thing in currentMap.VehiclesOfPlayer())
                 {
                    count += thing.def.size.x * thing.def.size.z;
                 }
+
                 if (this.count - this.blocked < count)
                 {
                     return true;

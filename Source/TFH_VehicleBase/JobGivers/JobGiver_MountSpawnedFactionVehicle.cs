@@ -28,6 +28,7 @@
             {
                 return null;
             }
+
             if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
             {
                 return null;
@@ -46,7 +47,6 @@
                 Job job = new Job(HaulJobDefOf.Mount) { targetA = availableVehicles.First() };
 
                 // orderedEnumerable.First().SetFaction(null);
-
                 return job;
             }
 

@@ -32,19 +32,22 @@
         public override bool TryExecute(IncidentParms parms)
         {
             Map map = (Map)parms.target;
-            if (!base.TryResolveParms(parms))
+            if (!this.TryResolveParms(parms))
             {
                 return false;
             }
+
             if (parms.faction.HostileTo(Faction.OfPlayer))
             {
                 return false;
             }
-            List<Pawn> list = base.SpawnPawns(parms);
+
+            List<Pawn> list = this.SpawnPawns(parms);
             if (list.Count == 0)
             {
                 return false;
             }
+
             for (int i = 0; i < list.Count; i++)
             {
                 if (list[i].needs != null && list[i].needs.food != null)
@@ -52,6 +55,7 @@
                     list[i].needs.food.CurLevel = list[i].needs.food.MaxLevel;
                 }
             }
+
             TraderKindDef traderKindDef = null;
             for (int j = 0; j < list.Count; j++)
             {
@@ -72,7 +76,7 @@
                     && current.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && current.RaceProps.ToolUser && Rand.Value > 0.5f)
                 {
                     CellFinder.RandomClosewalkCellNear(current.Position, current.Map, 5);
-                    var rand = Rand.Value;
+                    float rand = Rand.Value;
 
                     Pawn cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_ATV, parms.faction);
 
@@ -84,10 +88,14 @@
                     {
                         cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_Truck, parms.faction);
                     }
+
                     GenSpawn.Spawn(cart, current.Position, map, Rot4.Random, false);
-                   // current.Map.reservationManager.ReleaseAllForTarget(cart);
+
+                    // current.Map.reservationManager.ReleaseAllForTarget(cart);
+                    current.Map.reservationManager.ReleaseAllForTarget(cart);
                     Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
-                    current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
+                    current.Reserve(cart);
+                    current.jobs.jobQueue.EnqueueFirst(job);
                 }
             }
 

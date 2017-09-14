@@ -34,7 +34,7 @@
             // // This helps haul-aside jobs on forbidden items
             // if (!((Vehicle_Cart)this.TargetThingA).ClaimableBy(this.pawn.Faction))
             // {
-            //     this.FailOnForbidden(MountableInd);
+            // this.FailOnForbidden(MountableInd);
             // }
 
             ///
@@ -73,13 +73,16 @@
                         EndJobWith(JobCondition.Errored);
                         return;
                     }
+
                     if (cart.MountableComp.IsMounted)
                     {
                         cart.MountableComp.Rider.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
                     }
+
                     EndJobWith(JobCondition.Succeeded);
                 };
       
+
             ///
             // Toils Start
             ///

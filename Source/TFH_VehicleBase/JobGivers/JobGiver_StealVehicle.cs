@@ -37,7 +37,7 @@
             }
 
             List<Thing> steelVehicle = pawn.AvailableVehiclesForSteeling(vehicleSearchRadius);
-            foreach (var thing in steelVehicle)
+            foreach (Thing thing in steelVehicle)
             {
                 var cart = (Vehicle_Cart)thing;
 
@@ -60,12 +60,11 @@
                 // && !GenAI.InDangerousCombat(pawn))
                 IOrderedEnumerable<Thing> orderedEnumerable =
                     steelVehicle.OrderBy(x => x.Position.DistanceToSquared(pawn.Position));
-                var cart = orderedEnumerable.First();
+                Thing cart = orderedEnumerable.First();
                 pawn.Reserve(cart);
                 Job job = new Job(HaulJobDefOf.Mount) { targetA = cart };
 
                 // orderedEnumerable.First().SetFaction(null);
-
                 return job;
             }
 

@@ -25,15 +25,46 @@ namespace TFH_VehicleHauling
 
         public static bool IsPlayerAllowedToRide(this Pawn pawn, Vehicle_Cart cart)
         {
-            if (cart.Faction != Faction.OfPlayer) return false;
-            if (cart.IsForbidden(pawn.Faction)) return false;
-            if (cart.Position.IsForbidden(pawn)) return false;
-            if (cart.IsBurning()) return false;
-            if (!pawn.CanReserveAndReach(cart, PathEndMode.InteractionCell, Danger.Some)) return false;
+            if (cart.Faction != Faction.OfPlayer)
+            {
+                return false;
+            }
 
-            if (!cart.MountableComp.IsMounted) return true;
-            if (cart.MountableComp.Rider == pawn) return true;
-            if (cart.MountableComp.IsMounted && cart.MountableComp.Rider.RaceProps.Animal) return true;
+            if (cart.IsForbidden(pawn.Faction))
+            {
+                return false;
+            }
+
+            if (cart.Position.IsForbidden(pawn))
+            {
+                return false;
+            }
+
+            if (cart.IsBurning())
+            {
+                return false;
+            }
+
+            if (!pawn.CanReserveAndReach(cart, PathEndMode.InteractionCell, Danger.Some))
+            {
+                return false;
+            }
+
+            if (!cart.MountableComp.IsMounted)
+            {
+                return true;
+            }
+
+            if (cart.MountableComp.Rider == pawn)
+            {
+                return true;
+            }
+
+            if (cart.MountableComp.IsMounted && cart.MountableComp.Rider.RaceProps.Animal)
+            {
+                return true;
+            }
+
             return false;
         }
 
@@ -88,7 +119,7 @@ namespace TFH_VehicleHauling
             Zone zone = pawn.Map.zoneManager.ZoneAt(cart.Position);
 
             targetCart = cart;
-            var storage = cart.GetContainer();
+            ThingOwner storage = cart.GetContainer();
 
             maxItem = cart.MaxItem;
             thresholdItem = (int)Math.Ceiling(maxItem * 0.25);
@@ -292,7 +323,7 @@ namespace TFH_VehicleHauling
             Zone zone = pawn.Map.zoneManager.ZoneAt(cart.Position);
 
             targetC = cart;
-            var storage = cart.GetContainer();
+            ThingOwner storage = cart.GetContainer();
 
             maxItem = cart.MaxItem;
             thresholdItem = (int)Math.Ceiling(maxItem * 0.25);

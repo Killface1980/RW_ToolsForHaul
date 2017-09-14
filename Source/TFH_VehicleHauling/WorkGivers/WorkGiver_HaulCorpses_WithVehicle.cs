@@ -76,9 +76,12 @@
                 cart = TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling, t) as Vehicle_Cart;
 
                 if (cart == null)
+                {
                     return null;
+                }
             }
-            var storage = cart.GetContainer();
+
+            ThingOwner storage = cart.GetContainer();
 
             if (cart.IsBurning())
             {

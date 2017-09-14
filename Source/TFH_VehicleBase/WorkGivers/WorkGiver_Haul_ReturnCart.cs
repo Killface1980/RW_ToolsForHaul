@@ -24,8 +24,10 @@
                 {
                     continue;
                 }
+
                 things.Add(vehicleCart);
             }
+
             return things;
 
             // pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling();
@@ -45,7 +47,7 @@
         {
             Vehicle_Cart cart = t as Vehicle_Cart;
 
-            if (cart.RefuelableComp != null && !cart.RefuelableComp.HasFuel)
+            if (cart.GetComp<CompRefuelable>() != null && !cart.GetComp<CompRefuelable>().HasFuel)
             {
                 JobFailReason.Is("EmptyTank".Translate());
                 return null;

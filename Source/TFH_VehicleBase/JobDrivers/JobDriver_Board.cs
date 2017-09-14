@@ -32,7 +32,10 @@
 
             // Note we only fail on forbidden if the target doesn't start that way
             // This helps haul-aside jobs on forbidden items
-            if (!this.TargetThingA.IsForbidden(this.pawn.Faction)) this.FailOnForbidden(MountableInd);
+            if (!this.TargetThingA.IsForbidden(this.pawn.Faction))
+            {
+                this.FailOnForbidden(MountableInd);
+            }
 
             ///
             // Define Toil

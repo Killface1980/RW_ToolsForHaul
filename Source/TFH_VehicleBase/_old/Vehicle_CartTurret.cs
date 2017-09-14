@@ -112,6 +112,7 @@
             {
                 return;
             }
+
             this.stunner.Notify_DamageApplied(dinfo, true);
             absorbed = false;
         }
@@ -124,15 +125,17 @@
             {
                 return false;
             }
+
             return true;
 
 
-            CompPowerTrader comp = base.GetComp<CompPowerTrader>();
+            CompPowerTrader comp = this.GetComp<CompPowerTrader>();
             if (comp != null && !comp.PowerOn)
             {
                 return true;
             }
-            CompMannable comp2 = base.GetComp<CompMannable>();
+
+            CompMannable comp2 = this.GetComp<CompMannable>();
             return comp2 != null && !comp2.MannedNow;
         }
 

@@ -23,6 +23,7 @@
             {
                 num *= room.GetStat(RoomStatDefOf.SurgerySuccessChanceFactor);
             }
+
             num *= this.GetAverageMedicalPotency(ingredients);
             num *= this.recipe.surgerySuccessChanceFactor;
             if (Rand.Value > num)
@@ -71,12 +72,15 @@
                                                                                          }), patient, MessageSound.Negative);
                     HealthUtility.GiveInjuriesOperationFailureMinor(patient, part);
                 }
+
                 if (!patient.Dead)
                 {
                     this.TryGainBotchedSurgeryThought(patient, surgeon);
                 }
+
                 return true;
             }
+
             return false;
         }
 
@@ -86,6 +90,7 @@
             {
                 return;
             }
+
             patient.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.BotchedMySurgery, surgeon);
         }
 
@@ -95,6 +100,7 @@
             {
                 return 1f;
             }
+
             int num = 0;
             float num2 = 0f;
             for (int i = 0; i < ingredients.Count; i++)
@@ -106,10 +112,12 @@
                     num2 += medicine.GetStatValue(StatDefOf.MedicalPotency, true) * (float)medicine.stackCount;
                 }
             }
+
             if (num == 0)
             {
                 return 1f;
             }
+
             return num2 / (float)num;
         }
     }

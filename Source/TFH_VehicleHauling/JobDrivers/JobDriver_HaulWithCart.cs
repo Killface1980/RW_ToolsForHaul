@@ -26,7 +26,10 @@
             Thing hauledThing = null;
             hauledThing = this.TargetThingA;
             if (this.TargetThingA == null)  // Haul Cart
+            {
                 hauledThing = this.CurJob.targetC.Thing;
+            }
+
             IntVec3 destLoc = IntVec3.Invalid;
             string destName = null;
             SlotGroup destGroup = null;
@@ -38,13 +41,19 @@
             }
 
             if (destGroup != null)
+            {
                 destName = destGroup.parent.SlotYielderLabel();
+            }
 
             string repString;
             if (destName != null)
+            {
                 repString = "ReportHaulingTo".Translate(hauledThing.LabelCap, destName);
+            }
             else
+            {
                 repString = "ReportHauling".Translate(hauledThing.LabelCap);
+            }
 
             return repString;
         }

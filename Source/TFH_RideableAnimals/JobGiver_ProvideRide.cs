@@ -22,6 +22,7 @@ namespace TFH_RideableAnimals
                     expiryInterval = this.ticks
                 };
             }
+
             return null;
         }
     }

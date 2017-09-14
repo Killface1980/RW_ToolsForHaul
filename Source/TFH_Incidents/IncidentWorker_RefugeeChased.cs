@@ -101,14 +101,13 @@
                         {
                             cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_Speeder, parms.faction);
                         }
+
                         GenSpawn.Spawn(cart, refugee.Position, map, Rot4.Random, false);
 
-
-                        Job job = new Job(VehicleJobDefOf.Mount);
-                     //   refugee.Map.reservationManager.ReleaseAllForTarget(cart);
-                        job.targetA = cart;
-                        refugee.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
-
+                        refugee.Map.reservationManager.ReleaseAllForTarget(cart);
+                        Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
+                        refugee.Reserve(cart);
+                        refugee.jobs.jobQueue.EnqueueFirst(job);
                     }
                 }
             }

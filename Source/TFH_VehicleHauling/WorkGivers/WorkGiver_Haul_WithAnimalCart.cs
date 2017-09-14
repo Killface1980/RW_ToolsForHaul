@@ -26,7 +26,7 @@
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced)
         {
             Vehicle_Cart carrier = t as Vehicle_Cart;
-                var storage = carrier.GetContainer();
+                ThingOwner storage = carrier.GetContainer();
 
             if (carrier == null)
             {
@@ -47,7 +47,7 @@
             pawn.Reserve(carrier);
 
             // Drop remaining item
-            foreach (var remainingItem in remainingItems)
+            foreach (Thing remainingItem in remainingItems)
             {
                 IntVec3 storageCell = this.FindStorageCell(pawn, remainingItem, jobNew.targetQueueB);
                 if (!storageCell.IsValid)
@@ -132,7 +132,7 @@
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
             availableVehicle = pawn.Map.listerThings.AllThings.FindAll(
-                (Thing aV) => ((aV is Vehicle_Cart) && !aV.IsForbidden(pawn.Faction)
+                (aV) => ((aV is Vehicle_Cart) && !aV.IsForbidden(pawn.Faction)
                                && pawn.CanReserveAndReach(aV, PathEndMode.Touch, Danger.Some)
                                && (aV.TryGetComp<CompMountable>().IsMounted
                                    && aV.TryGetComp<CompMountable>().Rider.RaceProps.Animal
@@ -154,9 +154,9 @@
         {
             availableVehicle = this.PotentialWorkThingsGlobal(pawn) as List<Thing>;
 
-            return availableVehicle.Find(aV => ((Vehicle_Cart)aV).GetContainer().TotalStackCount > 0)
-                    == null // Need to drop
-                    && pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0; // No Haulable
+            return availableVehicle != null && (availableVehicle.Find(aV => ((Vehicle_Cart)aV).GetContainer().TotalStackCount > 0)
+                                                == null // Need to drop
+                                                && pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0); // No Haulable
         }
 
         private IntVec3 FindStorageCell(Pawn pawn, Thing closestHaulable, List<LocalTargetInfo> targetQueue)
@@ -165,7 +165,7 @@
             {
                 foreach (LocalTargetInfo target in targetQueue)
                 {
-                    foreach (var adjCell in GenAdjFast.AdjacentCells8Way(target))
+                    foreach (IntVec3 adjCell in GenAdjFast.AdjacentCells8Way(target))
                     {
                         if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(pawn.Map, closestHaulable)
                             && pawn.CanReserve(adjCell))
@@ -176,9 +176,9 @@
                 }
             }
 
-            foreach (var slotGroup in pawn.Map.slotGroupManager.AllGroupsListInPriorityOrder)
+            foreach (SlotGroup slotGroup in pawn.Map.slotGroupManager.AllGroupsListInPriorityOrder)
             {
-                foreach (var cell in slotGroup.CellsList.Where(
+                foreach (IntVec3 cell in slotGroup.CellsList.Where(
                     cell => !targetQueue.Contains(cell)
                             && cell.IsValidStorageFor(pawn.Map, closestHaulable)
                             && pawn.CanReserve(cell)))

@@ -24,6 +24,7 @@ namespace TFH_Motes
             {
                 return;
             }
+
             MoteThrown_TFH moteThrown = (MoteThrown_TFH)ThingMaker.MakeThing(MoteDefOf.Mote_Track_ATV);
             moteThrown.exactRotation = rot;
             moteThrown.exactPosition = loc;

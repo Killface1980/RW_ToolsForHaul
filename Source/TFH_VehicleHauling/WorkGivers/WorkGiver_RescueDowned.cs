@@ -11,7 +11,6 @@
     using Verse.AI;
 
     // TODO properly add the downee to the container, not working like HaulWithCart
-
     public class WorkGiver_RescueVehicleDowned : WorkGiver_TakeToBed
     {
         private const float MinDistFromEnemy = 40f;
@@ -61,9 +60,10 @@
             {
                 return false;
             }
-            Thing thing = base.FindBed(pawn, pawn2);
 
-            var distance = pawn.Position.DistanceTo(pawn2.Position)/2;
+            Thing thing = this.FindBed(pawn, pawn2);
+
+            float distance = pawn.Position.DistanceTo(pawn2.Position)/2;
             pawn.AvailableVehicles(out List<Thing> availableVehicles, null, distance);
 
             return thing != null && pawn2.CanReserve(thing, 1, -1, null, false) && !availableVehicles.NullOrEmpty();
@@ -72,7 +72,7 @@
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             Pawn pawn2 = t as Pawn;
-            Thing t2 = base.FindBed(pawn, pawn2);
+            Thing t2 = this.FindBed(pawn, pawn2);
 
 
             return TFH_BaseUtility.HaulDowneesToBed(pawn, pawn2, t2);

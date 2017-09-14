@@ -13,7 +13,7 @@
 
         protected override Job TryGivePlayJob(Pawn pawn, Thing t)
         {
-            var cart = t as Vehicle_Cart;
+            Vehicle_Cart cart = t as Vehicle_Cart;
 
             if (cart == null)
             {
@@ -25,7 +25,7 @@
                 return null;
             }
 
-            if (!cart.RefuelableComp.HasFuel)
+            if (!cart.GetComp<CompRefuelable>().HasFuel)
             {
                 return null;
             }
@@ -46,7 +46,12 @@
             }
 
             Region reg;
-            if (!CellFinder.TryFindClosestRegionWith(pawn.Position.GetRegion(pawn.Map), TraverseParms.For(pawn), r => r.Room.PsychologicallyOutdoors && !r.IsForbiddenEntirely(pawn), 100, out reg))
+            if (!CellFinder.TryFindClosestRegionWith(
+                    pawn.Position.GetRegion(pawn.Map),
+                    TraverseParms.For(pawn),
+                    r => r.Room.PsychologicallyOutdoors && !r.IsForbiddenEntirely(pawn),
+                    100,
+                    out reg))
             {
                 return null;
             }

@@ -98,7 +98,9 @@
                         tp = new LocalTargetInfo(freeCell);
                     }
                     else
+                    {
                         tp = new LocalTargetInfo(this.pawn.Position);
+                    }
 
                     this.pawn.pather.StartPath(tp, PathEndMode.OnCell);
                 };
@@ -122,6 +124,7 @@
             {
                 return;
             }
+
             this.pawn.ExitMap(true);
         }
     }

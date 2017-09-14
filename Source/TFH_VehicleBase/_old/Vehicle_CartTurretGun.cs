@@ -104,6 +104,7 @@
                         verb.castCompleteCallback = new Action(this.BurstComplete);
                     }
                 }
+
                 return this.gunInt;
             }
         }
@@ -132,8 +133,8 @@
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            this.powerComp = base.GetComp<CompPowerTrader>();
-            this.mannableComp = base.GetComp<CompMannable>();
+            this.powerComp = this.GetComp<CompPowerTrader>();
+            this.mannableComp = this.GetComp<CompMannable>();
         }
 
         public override void DeSpawn()
@@ -160,18 +161,22 @@
                 {
                     this.ResetForcedTarget();
                 }
+
                 return;
             }
+
             if ((targ.Cell - base.Position).LengthHorizontal < this.GunCompEq.PrimaryVerb.verbProps.minRange)
             {
                 Messages.Message("MessageTargetBelowMinimumRange".Translate(), this, MessageSound.RejectInput);
                 return;
             }
+
             if ((targ.Cell - base.Position).LengthHorizontal > this.GunCompEq.PrimaryVerb.verbProps.range)
             {
                 Messages.Message("MessageTargetBeyondMaximumRange".Translate(), this, MessageSound.RejectInput);
                 return;
             }
+
             if (this.forcedTarget != targ)
             {
                 this.forcedTarget = targ;
@@ -195,14 +200,17 @@
             {
                 this.ResetForcedTarget();
             }
+
             if (!this.CanToggleHoldFire)
             {
                 this.holdFire = false;
             }
+
             if (this.forcedTarget.ThingDestroyed)
             {
                 this.ResetForcedTarget();
             }
+
             bool flag = (this.powerComp == null || this.powerComp.PowerOn) && (this.mannableComp == null || this.mannableComp.MannedNow);
             if (flag && base.Spawned)
             {
@@ -223,11 +231,13 @@
                         {
                             this.burstCooldownTicksLeft--;
                         }
+
                         if (this.burstCooldownTicksLeft <= 0 && this.IsHashIntervalTick(TryStartShootSomethingIntervalTicks))
                         {
                             this.TryStartShootSomething(true);
                         }
                     }
+
                     this.top.TurretTopTick();
                 }
             }
@@ -244,6 +254,7 @@
                 this.ResetCurrentTarget();
                 return;
             }
+
             bool isValid = this.currentTargetInt.IsValid;
             if (this.forcedTarget.IsValid)
             {
@@ -253,10 +264,12 @@
             {
                 this.currentTargetInt = this.TryFindNewTarget();
             }
+
             if (!isValid && this.currentTargetInt.IsValid)
             {
                 SoundDefOf.TurretAcquireTarget.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
             }
+
             if (this.currentTargetInt.IsValid)
             {
                 if (this.def.building.turretBurstWarmupTime > 0f)
@@ -293,16 +306,19 @@
             {
                 return t;
             }
+
             TargetScanFlags targetScanFlags = TargetScanFlags.NeedThreat;
             if (!this.GunCompEq.PrimaryVerb.verbProps.projectileDef.projectile.flyOverhead)
             {
                 targetScanFlags |= TargetScanFlags.NeedLOSToAll;
                 targetScanFlags |= TargetScanFlags.LOSBlockableByGas;
             }
+
             if (this.GunCompEq.PrimaryVerb.verbProps.ai_IsIncendiary)
             {
                 targetScanFlags |= TargetScanFlags.NeedNonBurning;
             }
+
             return (Thing)AttackTargetFinder.BestShootTargetFromCurrentPosition(attackTargetSearcher, new Predicate<Thing>(this.IsValidTarget), range, minRange, targetScanFlags);
         }
 
@@ -312,6 +328,7 @@
             {
                 return this.mannableComp.ManningPawn;
             }
+
             return this;
         }
 
@@ -328,27 +345,31 @@
                         return false;
                     }
                 }
+
                 if (this.mannableComp == null)
                 {
                     return !GenAI.MachinesLike(base.Faction, pawn);
                 }
+
                 if (pawn.RaceProps.Animal && pawn.Faction == Faction.OfPlayer)
                 {
                     return false;
                 }
+
                 // Don't attack fellow prison breakers
                 if (this.MountableComp.IsPrisonBreaking && !t.Faction.IsPlayer)
                 {
                     return false;
                 }
             }
+
             return true;
         }
 
         protected void BeginBurst()
         {
             this.GunCompEq.PrimaryVerb.TryStartCastOn(this.CurrentTarget, false, true);
-            base.OnAttackedTarget(this.CurrentTarget);
+            this.OnAttackedTarget(this.CurrentTarget);
         }
 
         protected void BurstComplete()
@@ -361,6 +382,7 @@
             {
                 this.burstCooldownTicksLeft = this.GunCompEq.PrimaryVerb.verbProps.defaultCooldownTime.SecondsToTicks();
             }
+
             this.loaded = false;
         }
 
@@ -372,15 +394,18 @@
             {
                 stringBuilder.AppendLine(inspectString);
             }
+
             stringBuilder.AppendLine("GunInstalled".Translate() + ": " + this.Gun.Label);
             if (this.GunCompEq.PrimaryVerb.verbProps.minRange > 0f)
             {
                 stringBuilder.AppendLine("MinimumRange".Translate() + ": " + this.GunCompEq.PrimaryVerb.verbProps.minRange.ToString("F0"));
             }
+
             if (base.Spawned && this.burstCooldownTicksLeft > 0)
             {
                 stringBuilder.AppendLine("CanFireIn".Translate() + ": " + this.burstCooldownTicksLeft.TicksToSecondsString());
             }
+
             if (this.def.building.turretShellDef != null)
             {
                 if (this.loaded)
@@ -392,6 +417,7 @@
                     stringBuilder.AppendLine("ShellNotLoaded".Translate());
                 }
             }
+
             return stringBuilder.ToString().TrimEndNewlines();
         }
 
@@ -408,16 +434,19 @@
             {
                 GenDraw.DrawRadiusRing(base.Position, range);
             }
+
             float minRange = this.GunCompEq.PrimaryVerb.verbProps.minRange;
             if (minRange < 90f && minRange > 0.1f)
             {
                 GenDraw.DrawRadiusRing(base.Position, minRange);
             }
+
             if (this.WarmingUp)
             {
                 int degreesWide = (int)((float)this.burstWarmupTicksLeft * 0.5f);
                 GenDraw.DrawAimPie(this, this.CurrentTarget, degreesWide, (float)this.def.size.x * 0.5f);
             }
+
             if (this.forcedTarget.IsValid && (!this.forcedTarget.HasThing || this.forcedTarget.Thing.Spawned))
             {
                 Vector3 b;
@@ -429,6 +458,7 @@
                 {
                     b = this.forcedTarget.Cell.ToVector3Shifted();
                 }
+
                 Vector3 a = this.TrueCenter();
                 b.y = Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays);
                 a.y = b.y;
@@ -443,6 +473,7 @@
             {
                 yield return c;
             }
+
             if (this.CanSetForcedTarget)
             {
                 yield return new Command_VerbTarget
@@ -454,6 +485,7 @@
                                      hotKey = KeyBindingDefOf.Misc4
                                  };
             }
+
             if (this.forcedTarget.IsValid)
             {
                 Command_Action stop = new Command_Action();
@@ -469,9 +501,11 @@
                 {
                     stop.Disable("CommandStopAttackFailNotForceAttacking".Translate());
                 }
+
                 stop.hotKey = KeyBindingDefOf.Misc5;
                 yield return stop;
             }
+
             if (this.CanToggleHoldFire)
             {
                 yield return new Command_Toggle
@@ -488,7 +522,7 @@
                                                  this.ResetForcedTarget();
                                              }
                                          },
-                                     isActive = (() => this.holdFire)
+                                     isActive = () => this.holdFire
                                  };
             }
         }

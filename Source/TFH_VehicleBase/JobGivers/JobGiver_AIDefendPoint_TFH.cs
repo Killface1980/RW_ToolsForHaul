@@ -15,6 +15,7 @@
                 dest = IntVec3.Invalid;
                 return false;
             }
+
             return CastPositionFinder.TryFindCastPosition(new CastPositionRequest
             {
                 caster = pawn,
@@ -30,7 +31,7 @@
         // RimWorld.JobGiver_AIFightEnemy
         protected override Job TryGiveJob(Pawn pawn)
         {
-            var vehicleCart = pawn as Vehicle_Cart;
+            Vehicle_Cart vehicleCart = pawn as Vehicle_Cart;
 
             if (!vehicleCart.MountableComp.IsMounted)
             {
@@ -45,20 +46,26 @@
             }
 
             bool allowManualCastWeapons = vehicleCart != null;
-            //    bool allowManualCastWeapons = !pawn.IsColonist;
+
+            // bool allowManualCastWeapons = !pawn.IsColonist;
             Verb verb = pawn.TryGetAttackVerb(allowManualCastWeapons);
             if (verb == null)
             {
                 return null;
             }
+
             if (verb.verbProps.MeleeRange)
             {
                 return this.MeleeAttackJob(enemyTarget);
             }
+
             bool flag3 = verb.CanHitTarget(enemyTarget);
-            if ((flag3))
+            if (flag3)
             {
-                return new Job(JobDefOf.WaitCombat, JobGiver_AIFightEnemy.ExpiryInterval_ShooterSucceeded.RandomInRange, true);
+                return new Job(
+                    JobDefOf.WaitCombat,
+                    JobGiver_AIFightEnemy.ExpiryInterval_ShooterSucceeded.RandomInRange,
+                    true);
             }
 
             IntVec3 intVec;
@@ -66,17 +73,23 @@
             {
                 return null;
             }
+
             if (intVec == pawn.Position)
             {
-                return new Job(JobDefOf.WaitCombat, JobGiver_AIFightEnemy.ExpiryInterval_ShooterSucceeded.RandomInRange, true);
+                return new Job(
+                    JobDefOf.WaitCombat,
+                    JobGiver_AIFightEnemy.ExpiryInterval_ShooterSucceeded.RandomInRange,
+                    true);
             }
+
             pawn.Map.pawnDestinationManager.ReserveDestinationFor(pawn, intVec);
             return new Job(JobDefOf.Goto, intVec)
-            {
-                expiryInterval = JobGiver_AIFightEnemy.ExpiryInterval_ShooterSucceeded.RandomInRange,
-                checkOverrideOnExpire = true
-            };
+                       {
+                           expiryInterval =
+                               JobGiver_AIFightEnemy.ExpiryInterval_ShooterSucceeded
+                                   .RandomInRange,
+                           checkOverrideOnExpire = true
+                       };
         }
-
     }
 }

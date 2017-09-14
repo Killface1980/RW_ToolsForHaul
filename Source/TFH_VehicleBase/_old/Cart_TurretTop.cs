@@ -1,10 +1,11 @@
 ﻿using System;
 namespace ToolsForHaul.Vehicles
 {
+    using RimWorld;
 
     using UnityEngine;
+
     using Verse;
-    using RimWorld;
 
     public class Cart_TurretTop
     {
@@ -32,6 +33,7 @@ namespace ToolsForHaul.Vehicles
             {
                 return this.curRotationInt;
             }
+
             set
             {
                 this.curRotationInt = value;
@@ -39,6 +41,7 @@ namespace ToolsForHaul.Vehicles
                 {
                     this.curRotationInt -= 360f;
                 }
+
                 if (this.curRotationInt < 0f)
                 {
                     this.curRotationInt += 360f;
@@ -73,6 +76,7 @@ namespace ToolsForHaul.Vehicles
                     {
                         this.idleTurnClockwise = false;
                     }
+
                     this.idleTurnTicksLeft = IdleTurnDuration;
                 }
             }
@@ -86,6 +90,7 @@ namespace ToolsForHaul.Vehicles
                 {
                     this.CurRotation -= IdleTurnDegreesPerTick;
                 }
+
                 this.idleTurnTicksLeft--;
                 if (this.idleTurnTicksLeft <= 0)
                 {

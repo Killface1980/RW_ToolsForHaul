@@ -21,15 +21,17 @@
         public override bool TryExecute(IncidentParms parms)
         {
             Map map = (Map)parms.target;
-            if (!base.TryResolveParms(parms))
+            if (!this.TryResolveParms(parms))
             {
                 return false;
             }
-            List<Pawn> list = base.SpawnPawns(parms);
+
+            List<Pawn> list = this.SpawnPawns(parms);
             if (list.Count == 0)
             {
                 return false;
             }
+
             IntVec3 chillSpot;
             RCellFinder.TryFindRandomSpotJustOutsideColony(list[0], out chillSpot);
             LordJob_VisitColony lordJob = new LordJob_VisitColony(parms.faction, chillSpot);
@@ -39,6 +41,7 @@
             {
                 flag = this.TryConvertOnePawnToSmallTrader(list, parms.faction, map);
             }
+
             Pawn pawn = list.Find((Pawn x) => parms.faction.leader == x);
             string label;
             string text3;
@@ -84,7 +87,7 @@
                     CellFinder.RandomClosewalkCellNear(current.Position, current.Map, 5);
 
                     Pawn cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_ATV, parms.faction);
-                    var rand = Rand.Value;
+                    float rand = Rand.Value;
 
                     if (rand >= 0.9f)
                     {
@@ -94,10 +97,14 @@
                     {
                         cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_Speeder, parms.faction);
                     }
+
                     GenSpawn.Spawn(cart, current.Position, map, Rot4.Random, false);
-                 //   current.Map.reservationManager.ReleaseAllForTarget(cart);
+
+                    // current.Map.reservationManager.ReleaseAllForTarget(cart);
+                    current.Map.reservationManager.ReleaseAllForTarget(cart);
                     Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
-                    current.jobs.StartJob(job, JobCondition.InterruptForced, null, true);
+                    current.Reserve(cart);
+                    current.jobs.jobQueue.EnqueueFirst(job);
                 }
             }
 
@@ -112,6 +119,7 @@
             {
                 return false;
             }
+
             Pawn pawn = pawns.RandomElement<Pawn>();
             Lord lord = pawn.GetLord();
             pawn.mindState.wantsToTradeWithColony = true;
@@ -132,6 +140,7 @@
                     {
                         pawn2.SetFaction(pawn.Faction, null);
                     }
+
                     IntVec3 loc = CellFinder.RandomClosewalkCellNear(pawn.Position, map, 5, null);
                     GenSpawn.Spawn(pawn2, loc, map);
                     lord.AddPawn(pawn2);
@@ -141,6 +150,7 @@
                     current.Destroy(DestroyMode.Vanish);
                 }
             }
+
             PawnInventoryGenerator.GiveRandomFood(pawn);
             return true;
         }

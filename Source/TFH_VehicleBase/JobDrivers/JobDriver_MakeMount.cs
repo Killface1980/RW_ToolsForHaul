@@ -35,7 +35,10 @@
 
             // Note we only fail on forbidden if the target doesn't start that way
             // This helps haul-aside jobs on forbidden items
-            if (!this.TargetThingA.IsForbidden(this.pawn.Faction)) this.FailOnForbidden(MountableInd);
+            if (!this.TargetThingA.IsForbidden(this.pawn.Faction))
+            {
+                this.FailOnForbidden(MountableInd);
+            }
 
             ///
             // Define Toil
@@ -68,7 +71,10 @@
                             Thing haulThing = curJob.GetTarget(MountableInd).Thing;
 
                             IntVec3 destLoc = actor.jobs.curJob.GetTarget(TargetIndex.B).Cell;
-                            if (!destLoc.IsValidStorageFor(actor.Map, haulThing)) return true;
+                            if (!destLoc.IsValidStorageFor(actor.Map, haulThing))
+                            {
+                                return true;
+                            }
                         }
 
                         return false;
@@ -108,6 +114,7 @@
                     {
                         cart.MountableComp.Rider.jobs.curDriver.EndJobWith(JobCondition.Succeeded);
                     }
+
                     this.EndJobWith(JobCondition.Succeeded);
                 };
 

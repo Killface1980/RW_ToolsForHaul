@@ -35,6 +35,7 @@
             {
                 thing = base.TargetThingA;
             }
+
             return "ReportHaulingTo".Translate(new object[]
                                                    {
                                                        thing.LabelCap,

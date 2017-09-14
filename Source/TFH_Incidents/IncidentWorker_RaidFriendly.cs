@@ -23,6 +23,7 @@
             {
                 return false;
             }
+
             Map map = (Map)target;
             return (from p in map.attackTargetsCache.TargetsHostileToColony
                     where !p.ThreatDisabled()
@@ -33,6 +34,7 @@
                     {
                         return pawn.kindDef.combatPower;
                     }
+
                     return 0f;
                 }) > 120f;
         }
@@ -44,11 +46,13 @@
             {
                 return true;
             }
-            if (!base.CandidateFactions(map, false).Any<Faction>())
+
+            if (!this.CandidateFactions(map, false).Any<Faction>())
             {
                 return false;
             }
-            parms.faction = base.CandidateFactions(map, false).RandomElementByWeight((Faction fac) => fac.PlayerGoodwill + 120.000008f);
+
+            parms.faction = this.CandidateFactions(map, false).RandomElementByWeight((Faction fac) => fac.PlayerGoodwill + 120.000008f);
             return true;
         }
 
@@ -58,6 +62,7 @@
             {
                 return;
             }
+
             parms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
         }
 
@@ -110,6 +115,7 @@
                                                                       pawn.LabelShort
                                                                   });
             }
+
             return text;
         }
 

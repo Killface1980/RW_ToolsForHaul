@@ -22,10 +22,12 @@
                 {
                     yield return part;
                 }
+
                 if (VehicleRecipesUtility.IsCleanAndDroppable(pawn, part))
                 {
                     yield return part;
                 }
+
                 if (part != pawn.RaceProps.body.corePart && !part.def.dontSuggestAmputation && pawn.health.hediffSet.hediffs.Any((Hediff d) => !(d is Hediff_Injury) && d.def.isBad && d.Visible && d.Part == part))
                 {
                     yield return part;
@@ -44,10 +46,11 @@
             bool flag2 = this.IsViolationOnPawn(pawn, part, Faction.OfPlayer);
             if (billDoer != null)
             {
-                if (base.CheckSurgeryFail(billDoer, pawn, ingredients, part))
+                if (this.CheckSurgeryFail(billDoer, pawn, ingredients, part))
                 {
                     return;
                 }
+
                 TaleRecorder.RecordTale(TaleDefOf.DidSurgery, new object[]
                                                                   {
                                                                       billDoer,
@@ -56,6 +59,7 @@
                 VehicleRecipesUtility.SpawnNaturalPartIfClean(pawn, part, billDoer.Position, billDoer.Map);
                 VehicleRecipesUtility.SpawnThingsFromHediffs(pawn, part, billDoer.Position, billDoer.Map);
             }
+
             pawn.TakeDamage(new DamageInfo(DamageDefOf.SurgicalCut, 99999, -1f, null, part, null, DamageInfo.SourceCategory.ThingOrUnknown));
             if (flag)
             {
@@ -68,6 +72,7 @@
                     ThoughtUtility.GiveThoughtsForPawnOrganHarvested(pawn);
                 }
             }
+
             if (flag2)
             {
                 pawn.Faction.AffectGoodwillWith(billDoer.Faction, -20f);
@@ -80,19 +85,23 @@
             {
                 return RecipeDefOf.RemoveBodyPart.LabelCap;
             }
+
             BodyPartRemovalIntent bodyPartRemovalIntent = HealthUtility.PartRemovalIntent(pawn, part);
             if (bodyPartRemovalIntent == BodyPartRemovalIntent.Harvest)
             {
                 return "Harvest".Translate();
             }
+
             if (bodyPartRemovalIntent != BodyPartRemovalIntent.Amputate)
             {
                 throw new InvalidOperationException();
             }
+
             if (part.depth == BodyPartDepth.Inside || part.def.useDestroyedOutLabel)
             {
                 return "RemoveOrgan".Translate();
             }
+
             return "Amputate".Translate();
         }
     }

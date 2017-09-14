@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_VehicleHauling", "TFH_VehicleHauling\TFH_VehicleHauling.csproj", "{D8E37818-F1A0-4C90-930D-4F04B21614E9}"
 EndProject
@@ -16,8 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_RideableAnimals", "TFH_RideableAnimals\TFH_RideableAnimals.csproj", "{F1C893D1-5162-483E-952E-FC2D023D6550}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFH_Motes", "TFH_MoteMaker\TFH_Motes.csproj", "{FA737661-4233-4D27-BD05-FD17B304415E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompVehicle", "..\..\JecsTools\Source\AllModdingComponents\CompVehicle\CompVehicle.csproj", "{6E907669-2299-47E1-B144-8BC7488DF5C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,12 +51,11 @@ Global
 		{FA737661-4233-4D27-BD05-FD17B304415E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA737661-4233-4D27-BD05-FD17B304415E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA737661-4233-4D27-BD05-FD17B304415E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E907669-2299-47E1-B144-8BC7488DF5C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E907669-2299-47E1-B144-8BC7488DF5C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E907669-2299-47E1-B144-8BC7488DF5C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E907669-2299-47E1-B144-8BC7488DF5C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5EA87B88-7F0D-4C0F-AE31-F8BA5B4F117E}
 	EndGlobalSection
 EndGlobal

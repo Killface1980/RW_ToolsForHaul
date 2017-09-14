@@ -13,11 +13,12 @@ namespace TFH_VehicleBase
 
         public static bool ShouldBeIdle(Pawn pawn)
         {
-            var vehicle = pawn as BasicVehicle;
+            BasicVehicle vehicle = pawn as BasicVehicle;
             if (vehicle.MountableComp.IsMounted)
             {
                 return true;
             }
+
                 return false;
          }
     }

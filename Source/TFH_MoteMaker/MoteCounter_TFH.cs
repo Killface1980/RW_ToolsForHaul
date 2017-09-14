@@ -48,7 +48,6 @@
         public MoteCounter_TFH(Map map)
             : base(map)
         {
-            //
         }
     }
 }

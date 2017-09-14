@@ -20,8 +20,9 @@
         public override bool ShouldSkip(Pawn pawn)
         {
             if (pawn.RaceProps.Animal || !pawn.RaceProps.Humanlike || !pawn.RaceProps.hasGenders)
+            {
                 return true;
-
+            }
 
             pawn.AvailableVehicles(out List<Thing> availableVehicles);
 
@@ -45,13 +46,13 @@
             }
 
             // Vehicle selection
-
             pawn.AvailableVehicles(out List<Thing> availableVehicles);
 
             if (availableVehicles.NullOrEmpty())
             {
                 return null;
             }
+
             Vehicle_Cart drivenCart;
             if (!pawn.IsDriver(out drivenCart))
             {
@@ -62,9 +63,12 @@
                            t) as Vehicle_Cart;
             }
 
-            if (cart == null) return null;
+            if (cart == null)
+            {
+                return null;
+            }
 
-            var storage = cart.GetContainer();
+            ThingOwner storage = cart.GetContainer();
 
             if (cart.IsBurning())
             {

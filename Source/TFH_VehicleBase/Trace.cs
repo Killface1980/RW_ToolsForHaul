@@ -28,9 +28,9 @@ namespace TFH_VehicleBase
         public static void DebugWriteHaulingPawn(Pawn pawn)
         {
             pawn.AvailableVehicles(out List<Thing> availableVehicles);
-            foreach (var thing in availableVehicles)
+            foreach (Thing thing in availableVehicles)
             {
-                var cart = (Vehicle_Cart)thing;
+                Vehicle_Cart cart = (Vehicle_Cart)thing;
                 string driver = cart.MountableComp.IsMounted ? cart.MountableComp.Rider.LabelCap : "No Driver";
                 string state = string.Empty;
                 if (cart.IsForbidden(pawn.Faction))

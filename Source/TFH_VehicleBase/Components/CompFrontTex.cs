@@ -28,7 +28,7 @@
                     delegate
                         {
                             PawnKindLifeStage curKindLifeStage = ((Pawn)this.parent).ageTracker.CurKindLifeStage;
-                            var graphic = curKindLifeStage.bodyGraphicData.Graphic;
+                            Graphic graphic = curKindLifeStage.bodyGraphicData.Graphic;
 
                             this.drawSize = graphic.drawSize;
 
@@ -49,7 +49,7 @@
             base.PostDraw();
 
             Vector3 vector3 = new Vector3(1f * this.drawSize.x, 1f, 1f * this.drawSize.y);
-            var pos = this.cart.DrawPos;
+            Vector3 pos = this.cart.DrawPos;
             pos.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.05f;
 
             // Rot4 rotation = this.Rotation;

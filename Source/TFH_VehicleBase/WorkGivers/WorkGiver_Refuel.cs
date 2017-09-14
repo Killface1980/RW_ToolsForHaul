@@ -31,8 +31,11 @@
 
         private bool CanRefuel(Pawn pawn, Thing t, bool mustBeAutoRefuelable)
         {
-            var cart = t as Vehicle_Cart;
-            if (cart == null) return false;
+            Vehicle_Cart cart = t as Vehicle_Cart;
+            if (cart == null)
+            {
+                return false;
+            }
 
             CompRefuelable compRefuelable = t.TryGetComp<CompRefuelable>();
             if (compRefuelable == null || compRefuelable.IsFull)
