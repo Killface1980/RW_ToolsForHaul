@@ -4,8 +4,6 @@
     using System.Linq;
     using System.Text;
 
-    using CompVehicle;
-
     using RimWorld;
 
     using TFH_VehicleBase.Components;
@@ -71,9 +69,10 @@
             }
         }
 
+        /*
         public virtual void BoardOn(Pawn pawn)
         {
-            if (this.MountableComp.IsMounted && (this.innerContainer.Count(x => x is Pawn) >= maxNumBoarding // No Space
+            if (this.MountableComp..IsMounted && (this.innerContainer.Count(x => x is Pawn) >= maxNumBoarding // No Space
                                             || (this.Faction != null
                                                 && this.Faction != pawn.Faction))) // Not your vehicle
             {
@@ -173,7 +172,7 @@
                 yield return baseGizmo;
             }
 
-            if (this.MountableComp..IsMounted && this.innerContainer.Count(x => x is Pawn) < maxNumBoarding)
+            if (this.MountableComp.IsMounted && this.innerContainer.Count(x => x is Pawn) < maxNumBoarding)
             {
                 Designator_Board designatorBoard =
                     new Designator_Board
@@ -318,13 +317,13 @@
             }
 
             this.saddleLoc = drawLoc;
-            this.saddleLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn) + 0.01f;
+            this.saddleLoc.y = Altitudes.AltitudeFor(altitudeLayer.Pawn) + 0.01f;
 
             if (this.MountableComp.IsMounted)
             {
                 this.graphic_Saddle.Draw(this.saddleLoc, this.Rotation, this);
                 Vector3 crewLoc = drawLoc;
-                crewLoc.y = Altitudes.AltitudeFor(AltitudeLayer.Pawn);
+                crewLoc.y = Altitudes.AltitudeFor(altitudeLayer.Pawn);
                 Vector3 crewsOffset = new Vector3(0.25f, 0.02f, -0.25f);
                 if (this.Rotation == Rot4.North || this.Rotation == Rot4.South)
                 {
@@ -339,24 +338,24 @@
                     if (pawn.stances.curStance is Stance_Warmup && Find.Selector.IsSelected(this))
                     {
                         stance_Warmup = pawn.stances.curStance as Stance_Warmup;
-                        float pieSizeFactor;
+                        float piesizeFactor;
                         if (stance_Warmup.ticksLeft < 300)
                         {
-                            pieSizeFactor = 1f;
+                            piesizeFactor = 1f;
                         }
                         else if (stance_Warmup.ticksLeft < 450)
                         {
-                            pieSizeFactor = 0.75f;
+                            piesizeFactor = 0.75f;
                         }
                         else
                         {
-                            pieSizeFactor = 0.5f;
+                            piesizeFactor = 0.5f;
                         }
 
                         GenDraw.DrawAimPie(
                             stance_Warmup.stanceTracker.pawn,
                             stance_Warmup.focusTarg,
-                            (int)(stance_Warmup.ticksLeft * (double)pieSizeFactor),
+                            (int)(stance_Warmup.ticksLeft * (double)piesizeFactor),
                             0.2f);
                     }
                 }
@@ -380,7 +379,9 @@
             stringBuilder.Remove(stringBuilder.Length - 3, 1);
             return stringBuilder.ToString();
         }
+        */
 
         #endregion
+
     }
 }

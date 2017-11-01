@@ -26,7 +26,7 @@ namespace TFH_VehicleBase.Components
             {
                 GenDraw.FillableBarRequest r = default(GenDraw.FillableBarRequest);
                 r.center = this.parent.DrawPos + Vector3.up * 0.1f;
-                r.size = FuelBarSize;
+                r.size = FuelBarsize;
                 r.fillPercent = this.FuelPercentOfMax;
                 r.filledMat = FuelBarFilledMat;
                 r.unfilledMat = FuelBarUnfilledMat;

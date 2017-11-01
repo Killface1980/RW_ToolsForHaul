@@ -17,6 +17,11 @@
 
         private const int tickCheckInterval = 64;
 
+        public override bool TryMakePreToilReservations()
+        {
+            return this.pawn.Reserve(this.TargetThingB, this.job);
+        }
+
         [DebuggerHidden]
         protected override IEnumerable<Toil> MakeNewToils()
         {
@@ -26,12 +31,12 @@
                 this.FailOnForbidden(MountableInd);
             }
 
-            yield return Toils_Reserve.Reserve(MountableInd, this.CurJob.def.joyMaxParticipants);
+            yield return Toils_Reserve.Reserve(MountableInd, this.job.def.joyMaxParticipants);
 
             Toil toil = Toils_Goto.GotoCell(DrivePathInd, PathEndMode.OnCell);
             toil.tickAction = delegate
             {
-                if (Find.TickManager.TicksGame > this.startTick + this.CurJob.def.joyDuration)
+                if (Find.TickManager.TicksGame > this.startTick + this.job.def.joyDuration)
                 {
                     this.EndJobWith(JobCondition.Succeeded);
                     return;
@@ -39,7 +44,7 @@
 
                 JoyUtility.JoyTickCheckEnd(this.pawn);
             };
-            ThingWithComps cart = this.CurJob.GetTarget(MountableInd).Thing as ThingWithComps;
+            ThingWithComps cart = this.job.GetTarget(MountableInd).Thing as ThingWithComps;
 
             // JumpIf already mounted
             yield return Toils_Jump.JumpIf(toil, () =>
@@ -64,11 +69,11 @@
             {
                 initAction = delegate
                 {
-                    if (this.CurJob.targetQueueA.Count > 0)
+                    if (this.job.targetQueueA.Count > 0)
                     {
-                        LocalTargetInfo targetA = this.CurJob.targetQueueA[0];
-                        this.CurJob.targetQueueA.RemoveAt(0);
-                        this.CurJob.targetA = targetA;
+                        LocalTargetInfo targetA = this.job.targetQueueA[0];
+                        this.job.targetQueueA.RemoveAt(0);
+                        this.job.targetA = targetA;
                         this.JumpToToil(toil);
                     }
                 }

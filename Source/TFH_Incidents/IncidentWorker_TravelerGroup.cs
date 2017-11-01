@@ -17,7 +17,7 @@
     // Vanilla copy with edited base class
     public class IncidentWorker_TravelerGroup : IncidentWorker_NeutralGroup
     {
-        public override bool TryExecute(IncidentParms parms)
+        protected override bool TryExecuteWorker(IncidentParms parms)
         {
             Map map = (Map)parms.target;
             if (!this.TryResolveParms(parms))
@@ -58,7 +58,7 @@
 
                     current.Map.reservationManager.ReleaseAllForTarget(cart);
                     Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
-                    current.Reserve(cart);
+                    current.Reserve(cart, job);
                     current.jobs.jobQueue.EnqueueFirst(job);
                 }
             }
@@ -82,15 +82,15 @@
                                                              });
             }
 
-            Messages.Message(text, list[0], MessageSound.Standard);
+            Messages.Message(text, list[0], MessageTypeDefOf.NeutralEvent);
             LordJob_TravelAndExit lordJob = new LordJob_TravelAndExit(travelDest);
             LordMaker.MakeNewLord(parms.faction, lordJob, map, list);
-            string empty = string.Empty;
-            string empty2 = string.Empty;
-            PawnRelationUtility.Notify_PawnsSeenByPlayer(list, ref empty, ref empty2, "LetterRelatedPawnsNeutralGroup".Translate(), true);
-            if (!empty2.NullOrEmpty())
+            string label = "";
+            string text2 = "";
+            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref label, ref text2, "LetterRelatedPawnsNeutralGroup".Translate(), true, true);
+            if (!text2.NullOrEmpty())
             {
-                Find.LetterStack.ReceiveLetter(empty, empty2, LetterDefOf.Good, list[0], null);
+                Find.LetterStack.ReceiveLetter(label, text2, LetterDefOf.NeutralEvent, list[0], null);
             }
 
             return true;

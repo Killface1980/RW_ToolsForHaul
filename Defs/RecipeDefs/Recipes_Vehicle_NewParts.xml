@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<RecipeDefs>
+<Defs>
 
   <RecipeDef Abstract="True" Name="SurgeryVehicle">
     <soundWorking>Recipe_Surgery</soundWorking>
@@ -231,4 +231,4 @@
   </RecipeDef>
 
 
-</RecipeDefs>
+</Defs>

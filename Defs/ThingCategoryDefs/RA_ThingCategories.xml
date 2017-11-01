@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ThingCategoryDefs>
+<Defs>
 
 <!-- resourceReadoutRoot - toggle category display in resources list of main UI-->
 
@@ -69,4 +69,4 @@
 		     </ThingCategoryDef>
 
 	
-</ThingCategoryDefs>
+</Defs>

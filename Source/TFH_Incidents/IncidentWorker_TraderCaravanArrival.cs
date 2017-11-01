@@ -29,7 +29,7 @@
             return base.FactionCanBeGroupSource(f, map, desperate) && f.def.caravanTraderKinds.Any<TraderKindDef>();
         }
 
-        public override bool TryExecute(IncidentParms parms)
+        protected override bool TryExecuteWorker(IncidentParms parms)
         {
             Map map = (Map)parms.target;
             if (!this.TryResolveParms(parms))
@@ -94,7 +94,7 @@
                     // current.Map.reservationManager.ReleaseAllForTarget(cart);
                     current.Map.reservationManager.ReleaseAllForTarget(cart);
                     Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
-                    current.Reserve(cart);
+                    current.Reserve(cart, job);
                     current.jobs.jobQueue.EnqueueFirst(job);
                 }
             }
@@ -109,9 +109,8 @@
                                                                          parms.faction.Name,
                                                                          traderKindDef.label
                                                                      }).CapitalizeFirst();
-            PawnRelationUtility.Notify_PawnsSeenByPlayer(list, ref label, ref text, "LetterRelatedPawnsNeutralGroup".Translate(), true);
-            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Good, list[0], null);
-            IntVec3 chillSpot;
+            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref label, ref text, "LetterRelatedPawnsNeutralGroup".Translate(), true, true);
+            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.PositiveEvent, list[0], null); IntVec3 chillSpot;
             RCellFinder.TryFindRandomSpotJustOutsideColony(list[0], out chillSpot);
             LordJob_TradeWithColony lordJob = new LordJob_TradeWithColony(parms.faction, chillSpot);
             LordMaker.MakeNewLord(parms.faction, lordJob, map, list);

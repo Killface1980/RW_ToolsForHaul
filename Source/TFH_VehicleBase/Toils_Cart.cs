@@ -179,8 +179,8 @@
                             if (cell.DistanceToSquared(cart.Position) < NearbyCell)
                                 storeCell = cell;
                     */
-                    actor.Reserve(storeCell);
-                    toil.actor.jobs.curJob.targetB = storeCell != invalid && storeCell != IntVec3.Invalid
+                    actor.Reserve(storeCell, toil.actor.CurJob);
+                    toil.actor.CurJob.targetB = storeCell != invalid && storeCell != IntVec3.Invalid
                                                          ? storeCell
                                                          : vehicleCart.Position;
                 };
@@ -221,8 +221,8 @@
                             if (cell.DistanceToSquared(cart.Position) < NearbyCell)
                                 storeCell = cell;
                     */
-                    actor.Reserve(storeCell);
-                    toil.actor.jobs.curJob.targetB = storeCell != invalid && storeCell != IntVec3.Invalid
+                    actor.Reserve(storeCell, toil.actor.CurJob);
+                    toil.actor.CurJob.targetB = storeCell != invalid && storeCell != IntVec3.Invalid
                                                          ? storeCell
                                                          : vehicleCart.Position;
                 };

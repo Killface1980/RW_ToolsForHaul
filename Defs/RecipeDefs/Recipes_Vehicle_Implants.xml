@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<RecipeDefs>
+<Defs>
 
   <!-- implants -->
 
@@ -47,4 +47,4 @@
     <addsHediff>CarBomb</addsHediff>
   </RecipeDef>
 
-</RecipeDefs>
+</Defs>

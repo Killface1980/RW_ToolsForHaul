@@ -18,6 +18,11 @@
             return repString;
         }
 
+        public override bool TryMakePreToilReservations()
+        {
+            return true;
+        }
+
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ///
@@ -39,7 +44,7 @@
 
             yield return Toils_Goto.GotoCell(DestInd, PathEndMode.ClosestTouch);
 
-            yield return Toils_General.Wait(this.CurJob.expiryInterval);
+            yield return Toils_General.Wait(this.job.expiryInterval);
 
         }
 

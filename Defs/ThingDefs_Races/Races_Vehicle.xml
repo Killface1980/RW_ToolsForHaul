@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ThingDefs>
+<Defs>
 
   <!-- base -->
-  
+
   <ThingDef ParentName="BasePawnTFH" Name="BaseVehicleTFH" Abstract="True">
     <thingClass>TFH_VehicleBase.Vehicle_Cart</thingClass>
     <soundImpactDefault>BulletImpactMetal</soundImpactDefault>
@@ -17,7 +17,7 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <race>
-      <thinkTreeMain>CompVehicle_Simple</thinkTreeMain>
+      <thinkTreeMain>Engine</thinkTreeMain>
       <fleshType>Mechanoid</fleshType>
       <needsRest>false</needsRest>
       <hasGenders>false</hasGenders>
@@ -51,10 +51,10 @@
       <Mass>100</Mass>
     </statBases>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
-    <CostList>
+    <costList>
       <Steel>40</Steel>
       <WoodLog>120</WoodLog>
-    </CostList>
+    </costList>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <killedLeavings>
       <Steel>40</Steel>
@@ -160,7 +160,7 @@
   </ThingDef>
 
   <!-- motorized -->
-  
+
   <ThingDef ParentName="BaseVehicleTFH">
     <defName>VehicleSmackWay</defName>
     <label>SmackWay</label>
@@ -177,11 +177,11 @@
       <Comfort>0.5</Comfort>
       <Mass>80</Mass>
     </statBases>
-    <CostList>
+    <costList>
       <Steel>150</Steel>
       <Plasteel>15</Plasteel>
       <Component>1</Component>
-    </CostList>
+    </costList>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <killedLeavings>
       <Steel>75</Steel>
@@ -280,10 +280,7 @@
       <workAmount>22000</workAmount>
       <unfinishedThingDef>UnfinishedWheelChair</unfinishedThingDef>
       <skillRequirements>
-        <li>
-          <skill>Crafting</skill>
-          <minLevel>10</minLevel>
-        </li>
+        <Crafting>10</Crafting>
       </skillRequirements>
       <researchPrerequisite>PoweredArmor</researchPrerequisite>
     </recipeMaker>
@@ -314,7 +311,7 @@
       </options>
     </colorGenerator>
   </ThingDef>
-  
+
   <ThingDef ParentName="BaseVehicleTFH">
     <defName>VehicleATV</defName>
     <label>ATV</label>
@@ -330,12 +327,12 @@
       <Beauty>10</Beauty>
       <Mass>500</Mass>
     </statBases>
-    <CostList>
+    <costList>
       <Steel>150</Steel>
       <Plasteel>10</Plasteel>
       <Component>10</Component>
       <VehicleATVFrame>1</VehicleATVFrame>
-    </CostList>
+    </costList>
     <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
     <killedLeavings>
       <VehicleATVFrame>1</VehicleATVFrame>
@@ -435,10 +432,7 @@
       <workAmount>22000</workAmount>
       <unfinishedThingDef>UnfinishedATV</unfinishedThingDef>
       <skillRequirements>
-        <li>
-          <skill>Crafting</skill>
-          <minLevel>10</minLevel>
-        </li>
+        <Crafting>10</Crafting>
       </skillRequirements>
     </recipeMaker>
     <colorGenerator Class="ColorGenerator_Options">
@@ -484,18 +478,18 @@
       <Beauty>10</Beauty>
       <Mass>500</Mass>
     </statBases>
-    <CostList>
+    <costList>
       <Steel>150</Steel>
       <Plasteel>10</Plasteel>
       <Component>10</Component>
       <VehicleATVFrame>1</VehicleATVFrame>
-    </CostList>
+    </costList>
     <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
     <killedLeavings>
       <VehicleATVFrame>1</VehicleATVFrame>
     </killedLeavings>
     <race>
-      <thinkTreeMain>CompVehicle_Simple</thinkTreeMain>
+      <thinkTreeMain>EngineCombat</thinkTreeMain>
       <lifeExpectancy>50</lifeExpectancy>
       <litterSizeCurve>
         <points>
@@ -588,10 +582,7 @@
       <workAmount>22000</workAmount>
       <unfinishedThingDef>UnfinishedATV</unfinishedThingDef>
       <skillRequirements>
-        <li>
-          <skill>Crafting</skill>
-          <minLevel>10</minLevel>
-        </li>
+        <Crafting>10</Crafting>
       </skillRequirements>
     </recipeMaker>
     <colorGenerator Class="ColorGenerator_Options">
@@ -642,12 +633,12 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <size>(2,3)</size>
-    <CostList>
+    <costList>
       <Steel>150</Steel>
       <Plasteel>10</Plasteel>
       <Component>10</Component>
       <VehicleATVFrame>1</VehicleATVFrame>
-    </CostList>
+    </costList>
     <leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
     <killedLeavings>
       <VehicleATVFrame>1</VehicleATVFrame>
@@ -704,6 +695,7 @@
       <Component>2</Component>
     </butcherProducts>
     <comps>
+      <!--
       <li Class="CompVehicle.CompProperties_Vehicle">
         <vehicleType>LandHover</vehicleType>
         <movementHandling>HandlerRequired</movementHandling>
@@ -743,6 +735,7 @@
           </li>
         </roles>
       </li>
+      -->
       <li>
         <compClass>TFH_VehicleBase.Components.CompGasTank</compClass>
       </li>
@@ -792,10 +785,7 @@
       <workAmount>22000</workAmount>
       <unfinishedThingDef>UnfinishedATV</unfinishedThingDef>
       <skillRequirements>
-        <li>
-          <skill>Crafting</skill>
-          <minLevel>10</minLevel>
-        </li>
+        <Crafting>10</Crafting>
       </skillRequirements>
     </recipeMaker>
     <colorGenerator Class="ColorGenerator_Options">
@@ -803,8 +793,8 @@
         <li>
           <weight>10</weight>
           <only>RGBA(0.8,0.8,0.8,1)</only>
-        </li> 
-          <li>
+        </li>
+        <li>
           <weight>10</weight>
           <only>RGBA(0.6,0.4,0.05,1)</only>
         </li>
@@ -847,12 +837,12 @@
     </statBases>
     <interactionCellOffset>(0,0,1)</interactionCellOffset>
     <size>(1,2)</size>
-    <CostList>
+    <costList>
       <Steel>200</Steel>
       <WoodLog>200</WoodLog>
       <Plasteel>10</Plasteel>
       <Component>10</Component>
-    </CostList>
+    </costList>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <killedLeavings>
       <Steel>100</Steel>
@@ -967,10 +957,7 @@
       <workAmount>24000</workAmount>
       <unfinishedThingDef>UnfinishedTruck</unfinishedThingDef>
       <skillRequirements>
-        <li>
-          <skill>Crafting</skill>
-          <minLevel>10</minLevel>
-        </li>
+        <Crafting>10</Crafting>
       </skillRequirements>
     </recipeMaker>
   </ThingDef>
@@ -995,12 +982,12 @@
     <hasInteractionCell>True</hasInteractionCell>
     <interactionCellOffset>(0,0,0)</interactionCellOffset>
     <size>(1,2)</size>
-    <CostList>
+    <costList>
       <Steel>150</Steel>
       <Plasteel>15</Plasteel>
       <Component>15</Component>
       <VehicleATVFrame>1</VehicleATVFrame>
-    </CostList>
+    </costList>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <killedLeavings>
       <VehicleATVFrame>1</VehicleATVFrame>
@@ -1093,10 +1080,7 @@
       <workAmount>22000</workAmount>
       <unfinishedThingDef>UnfinishedSpeeder</unfinishedThingDef>
       <skillRequirements>
-        <li>
-          <skill>Crafting</skill>
-          <minLevel>10</minLevel>
-        </li>
+        <Crafting>10</Crafting>
       </skillRequirements>
     </recipeMaker>
     <colorGenerator Class="ColorGenerator_Options">
@@ -1128,4 +1112,4 @@
   </ThingDef>
 
 
-</ThingDefs>
+</Defs>

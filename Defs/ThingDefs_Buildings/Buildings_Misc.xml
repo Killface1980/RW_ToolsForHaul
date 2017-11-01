@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Buildings>
+<Defs>
 
 	<ThingDef Name="TFH_BuildingBase" Abstract="True">
 		<category>Building</category>
@@ -21,22 +21,22 @@
 	<ThingDef ParentName="TFH_BuildingBase">
 		<defName>TFHSpot</defName>
 		<label>Tools for haul battle beacon</label>
-		<Description>Designates a spot where pawns can summoned with vehicles of war. After activation, pawns will grab their best combat gear and move to the spot. Despawns after usage</Description>
+		<description>Designates a spot where pawns can summoned with vehicles of war. After activation, pawns will grab their best combat gear and move to the spot. Despawns after usage</description>
 		<thingClass>TFH_BattleBeacon.Building_BattleBeacon</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Misc/CaravanPackingSpot</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(1,1)</drawSize>
 		</graphicData>
-		<AltitudeLayer>FloorEmplacement</AltitudeLayer>
+		<altitudeLayer>FloorEmplacement</altitudeLayer>
 		<statBases>
 			<WorkToBuild>0</WorkToBuild>
 		</statBases>
 		<useHitPoints>false</useHitPoints>
 		<scatterableOnMapGen>false</scatterableOnMapGen>
-		<Size>(1,1)</Size>
-		<DesignationCategory>Misc</DesignationCategory>
-		<Passability>Standable</Passability>
+		<size>(1,1)</size>
+		<designationCategory>Misc</designationCategory>
+		<passability>Standable</passability>
 		<building>
 			<sowTag>SupportPlantsOnly</sowTag>
 			<canPlaceOverImpassablePlant>false</canPlaceOverImpassablePlant>
@@ -45,4 +45,4 @@
 		<!--  <designationHotkey>Misc10</designationHotkey> -->
 	</ThingDef>
 
-</Buildings>
+</Defs>

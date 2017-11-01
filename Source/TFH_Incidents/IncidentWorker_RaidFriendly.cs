@@ -121,7 +121,7 @@
 
         protected override LetterDef GetLetterDef()
         {
-            return LetterDefOf.BadNonUrgent;
+            return LetterDefOf.PositiveEvent;
         }
 
         protected override string GetRelatedPawnsInfoLetterText(IncidentParms parms)

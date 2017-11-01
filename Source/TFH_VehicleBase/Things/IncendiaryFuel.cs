@@ -8,7 +8,7 @@
 
     public class IncendiaryFuel : Filth
     {
-        private const float maxFireSize = 1.25f;
+        private const float maxFiresize = 1.25f;
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
@@ -21,14 +21,14 @@
                 if (thing.HasAttachment(ThingDefOf.Fire))
                 {
                     Fire fire = (Fire)thing.GetAttachment(ThingDefOf.Fire);
-                    if (fire != null) fire.fireSize = maxFireSize;
+                    if (fire != null) fire.firesize = maxFiresize;
                 }
 
                 // else
                 // {
                 // if (thing.HitPoints < 5)
                 // {
-                // thing.TryAttachFire(maxFireSize);
+                // thing.TryAttachFire(maxFiresize);
                 // }
                 // }
             }
@@ -50,7 +50,7 @@
                     Fire fire = (Fire)this.GetAttachment(ThingDefOf.Fire);
                     if (fire != null)
                     {
-                        fire.fireSize = maxFireSize;
+                        fire.firesize = maxFiresize;
                     }
 
                     this.fireTick = Find.TickManager.TicksGame + 200;

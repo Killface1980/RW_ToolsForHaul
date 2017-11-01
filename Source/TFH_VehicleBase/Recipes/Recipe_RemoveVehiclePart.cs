@@ -40,13 +40,13 @@
             return pawn.Faction != billDoerFaction && HealthUtility.PartRemovalIntent(pawn, part) == BodyPartRemovalIntent.Harvest;
         }
 
-        public override void ApplyOnPawn(Pawn pawn, BodyPartRecord part, Pawn billDoer, List<Thing> ingredients)
+        public override void ApplyOnPawn(Pawn pawn, BodyPartRecord part, Pawn billDoer, List<Thing> ingredients, Bill bill)
         {
             bool flag = VehicleRecipesUtility.IsClean(pawn, part);
             bool flag2 = this.IsViolationOnPawn(pawn, part, Faction.OfPlayer);
             if (billDoer != null)
             {
-                if (this.CheckSurgeryFail(billDoer, pawn, ingredients, part))
+                if (this.CheckSurgeryFail(billDoer, pawn, ingredients, part, bill))
                 {
                     return;
                 }

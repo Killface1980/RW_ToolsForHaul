@@ -75,7 +75,7 @@
                 {
                     Job jobNew = new Job(VehicleJobDefOf.Mount);
                     myPawn.Map.reservationManager.ReleaseAllForTarget(this);
-                    myPawn.Map.reservationManager.Reserve(myPawn, this);
+                    myPawn.Map.reservationManager.Reserve(myPawn,jobNew, this);
                     jobNew.targetA = this;
                     myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
 

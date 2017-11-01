@@ -18,7 +18,7 @@
     {
         private const float TraderChance = 0.75f;
 
-        public override bool TryExecute(IncidentParms parms)
+        protected override bool TryExecuteWorker(IncidentParms parms)
         {
             Map map = (Map)parms.target;
             if (!this.TryResolveParms(parms))
@@ -103,13 +103,12 @@
                     // current.Map.reservationManager.ReleaseAllForTarget(cart);
                     current.Map.reservationManager.ReleaseAllForTarget(cart);
                     Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
-                    current.Reserve(cart);
+                    current.Reserve(cart, job);
                     current.jobs.jobQueue.EnqueueFirst(job);
                 }
             }
 
-            PawnRelationUtility.Notify_PawnsSeenByPlayer(list, ref label, ref text3, "LetterRelatedPawnsNeutralGroup".Translate(), true);
-            Find.LetterStack.ReceiveLetter(label, text3, LetterDefOf.Good, list[0], null);
+            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref label, ref text3, "LetterRelatedPawnsNeutralGroup".Translate(), true, true); Find.LetterStack.ReceiveLetter(label, text3, LetterDefOf.PositiveEvent, list[0], null);
             return true;
         }
 
@@ -129,8 +128,8 @@
             pawn.inventory.DestroyAll(DestroyMode.Vanish);
             ItemCollectionGeneratorParams parms = default(ItemCollectionGeneratorParams);
             parms.traderDef = traderKindDef;
-            parms.forTile = map.Tile;
-            parms.forFaction = faction;
+            parms.tile = map.Tile;
+            parms.traderFaction = faction;
             foreach (Thing current in ItemCollectionGeneratorDefOf.TraderStock.Worker.Generate(parms))
             {
                 Pawn pawn2 = current as Pawn;

@@ -10,7 +10,7 @@ namespace TFH_VehicleBase
     {
         #region Zone_ParkingLot
 
-        public static string ParkingLotDesc = "TFH_DescriptionParkingLot".Translate();
+        public static string ParkingLotDesc = "TFH_descriptionParkingLot".Translate();
 
         public static Texture2D TexParkingLot = ContentFinder<Texture2D>.Get("UI/Designations/ZoneCreate_ParkingLot");
 

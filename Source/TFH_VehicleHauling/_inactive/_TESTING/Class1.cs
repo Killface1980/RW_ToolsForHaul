@@ -19,7 +19,6 @@ namespace ppumkin.LEDTechnology.GlowFlooders
         void Clear();
     }
 
-
     /// <summary>
     /// All values in here must be provided and calcualted. This serves as a cache to prevent recalculating glowers again
     /// The values here will be dumped into the GlowGrid as fast as possible to conserve CPU usage on refreshing!

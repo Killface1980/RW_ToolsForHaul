@@ -44,7 +44,7 @@
 
             // Set carrier
             jobNew.targetC = carrier;
-            pawn.Reserve(carrier);
+            pawn.Reserve(carrier, jobNew);
 
             // Drop remaining item
             foreach (Thing remainingItem in remainingItems)
@@ -55,7 +55,7 @@
                     break;
                 }
 
-                pawn.Reserve(storageCell);
+                pawn.Reserve(storageCell, jobNew);
                 jobNew.targetQueueB.Add(storageCell);
             }
 
@@ -100,8 +100,8 @@
 
                 jobNew.targetQueueA.Add(closestHaulable);
                 jobNew.targetQueueB.Add(storageCell);
-                pawn.Reserve(closestHaulable);
-                pawn.Reserve(storageCell);
+                pawn.Reserve(closestHaulable, jobNew);
+                pawn.Reserve(storageCell, jobNew);
                 reservedMaxItem++;
             }
 

@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- 
+	- defaultOutfitTags - used to determine gear in preset outfit sets available in the outfits menu
+	- equippedStatOffsets - applies offset to the pawns stat when worn
+	- wornGraphicPath - used to fraw apparel texture on the pawn. shows nothing if not set
+	 -->
+
+  <ThingDef Name="ToolsForHaulToolbeltBase" ParentName="ApparelMakeableBase" Abstract="True">
+    <thingClass>TFH_Tools.Apparel_ToolBelt</thingClass>
+    <thingCategories>
+      <li>Toolbelts</li>
+    </thingCategories>
+  </ThingDef>
+
+
+  <ThingDef ParentName="ToolsForHaulToolbeltBase">
+    <defName>Basic_Toolbelt</defName>
+    <label>basic toolbelt</label>
+    <description>Basic toolbelt where your tools belong.</description>
+    <graphicData>
+      <texPath>Things/Apparel/Toolbelt/Toolbelt</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <WorkToMake>3000</WorkToMake>
+      <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
+      <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
+      <ArmorRating_Heat>0.03</ArmorRating_Heat>
+      <InventoryMaxItem>2</InventoryMaxItem>
+      <MarketValue>150</MarketValue>
+    </statBases>
+    <costStuffCount>20</costStuffCount>
+    <stuffCategories>
+      <li>Leathery</li>
+      <li>Fabric</li>
+    </stuffCategories>
+    <apparel>
+      <bodyPartGroups>
+        <li>Shoulders</li>
+      </bodyPartGroups>
+      <wornGraphicPath>Things/Apparel/Toolbelt/Toolbelt</wornGraphicPath>
+      <layers>
+        <li>Middle</li>
+      </layers>
+      <defaultOutfitTags>
+        <li>Worker</li>
+      </defaultOutfitTags>
+    </apparel>
+    <colorGenerator Class="ColorGenerator_StandardApparel" />
+    <!--<colorGenerator Class="ColorGenerator_Options">
+			<options>
+				<li>
+					<weight>10</weight>
+					<only>RGBA(0.4,0.3,0.15,1)</only>
+				</li>
+				<li>
+					<weight>15</weight>
+					<only>RGBA(0.6,0.45,0.18,1)</only>
+				</li>
+				<li>
+					<weight>20</weight>
+					<only>RGBA(0.8,0.6,0.23,1)</only>
+				</li>
+			</options>
+		</colorGenerator>
+		-->
+    <comps>
+      <li Class="TFH_Tools.Components.CompSlotsToolbelt_Properties">
+        <allowedThingCategoryDefs>
+          <li>WeaponsMelee</li>
+        </allowedThingCategoryDefs>
+      </li>
+    </comps>
+    <equippedStatOffsets>
+      <WorkSpeedGlobal>0.15</WorkSpeedGlobal>
+    </equippedStatOffsets>
+  </ThingDef>
+
+  <ThingDef ParentName="ToolsForHaulToolbeltBase">
+    <defName>Professional_Toolbelt</defName>
+    <label>professional toolbelt</label>
+    <description>Professional toolbelt for all your needs</description>
+    <graphicData>
+      <texPath>Things/Apparel/Toolbelt/ProfToolbelt</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases>
+      <WorkToMake>6000</WorkToMake>
+      <ArmorRating_Blunt>0.03</ArmorRating_Blunt>
+      <ArmorRating_Sharp>0.03</ArmorRating_Sharp>
+      <ArmorRating_Heat>0.03</ArmorRating_Heat>
+      <InventoryMaxItem>4</InventoryMaxItem>
+      <MarketValue>500</MarketValue>
+    </statBases>
+    <tickerType>Normal</tickerType>
+    <costStuffCount>30</costStuffCount>
+    <stuffCategories>
+      <li>Leathery</li>
+      <li>Fabric</li>
+    </stuffCategories>
+    <apparel>
+      <bodyPartGroups>
+        <li>Shoulders</li>
+      </bodyPartGroups>
+      <wornGraphicPath>Things/Apparel/Toolbelt/ProfToolbelt</wornGraphicPath>
+      <layers>
+        <li>Middle</li>
+      </layers>
+      <tags>
+        <li>Toolbelt</li>
+      </tags>
+    </apparel>
+    <colorGenerator Class="ColorGenerator_StandardApparel" />
+    <!--
+    <colorGenerator Class="ColorGenerator_Options">
+      <options>
+        <li>
+          <weight>10</weight>
+          <only>RGBA(0.4,0.3,0.15,1)</only>
+        </li>
+        <li>
+          <weight>15</weight>
+          <only>RGBA(0.6,0.45,0.18,1)</only>
+        </li>
+        <li>
+          <weight>20</weight>
+          <only>RGBA(0.8,0.6,0.23,1)</only>
+        </li>
+      </options>
+    </colorGenerator>
+    -->
+    <comps>
+      <li Class="TFH_Tools.Components.CompSlotsToolbelt_Properties">
+        <allowedThingCategoryDefs>
+          <li>WeaponsMelee</li>
+        </allowedThingCategoryDefs>
+      </li>
+    </comps>
+    <equippedStatOffsets>
+      <WorkSpeedGlobal>0.25</WorkSpeedGlobal>
+    </equippedStatOffsets>
+  </ThingDef>
+
+</Defs>

@@ -40,7 +40,7 @@
                 return true;
             }
 
-            if (TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling) == null)
+            if (TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, null) == null)
             {
                 return true;
             }

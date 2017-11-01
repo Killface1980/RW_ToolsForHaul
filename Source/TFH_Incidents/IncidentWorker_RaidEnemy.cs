@@ -15,9 +15,9 @@
             return base.FactionCanBeGroupSource(f, map, desperate) && f.HostileTo(Faction.OfPlayer) && (desperate || GenDate.DaysPassed >= f.def.earliestRaidDays);
         }
 
-        public override bool TryExecute(IncidentParms parms)
+        protected override bool TryExecuteWorker(IncidentParms parms)
         {
-            if (!base.TryExecute(parms))
+            if (!base.TryExecuteWorker(parms))
             {
                 return false;
             }
@@ -27,33 +27,33 @@
             return true;
         }
 
+        // RimWorld.IncidentWorker_RaidEnemy
         protected override bool TryResolveRaidFaction(IncidentParms parms)
         {
             Map map = (Map)parms.target;
+            bool result;
             if (parms.faction != null)
             {
-                return true;
+                result = true;
             }
-
-            float maxPoints = parms.points;
-            if (maxPoints <= 0f)
+            else
             {
-                maxPoints = 999999f;
-            }
-
-            if (!(from f in Find.FactionManager.AllFactions
-                  where this.FactionCanBeGroupSource(f, map) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
-                  select f).TryRandomElementByWeight(f => f.def.raidCommonality, out parms.faction))
-            {
-                if (!(from f in Find.FactionManager.AllFactions
-                      where this.FactionCanBeGroupSource(f, map, true) && maxPoints >= f.def.MinPointsToGenerateNormalPawnGroup()
-                      select f).TryRandomElementByWeight(f => f.def.raidCommonality, out parms.faction))
+                float num = parms.points;
+                if (num <= 0f)
                 {
-                    return false;
+                    num = 999999f;
                 }
+                if (!PawnGroupMakerUtility.TryGetRandomFactionForNormalPawnGroup(num, out parms.faction, (Faction f) => this.FactionCanBeGroupSource(f, map, false), true, true, true, true))
+                {
+                    if (!PawnGroupMakerUtility.TryGetRandomFactionForNormalPawnGroup(num, out parms.faction, (Faction f) => this.FactionCanBeGroupSource(f, map, true), true, true, true, true))
+                    {
+                        result = false;
+                        return result;
+                    }
+                }
+                result = true;
             }
-
-            return true;
+            return result;
         }
 
         protected override void ResolveRaidPoints(IncidentParms parms)
@@ -120,7 +120,7 @@
 
         protected override LetterDef GetLetterDef()
         {
-            return LetterDefOf.BadUrgent;
+            return LetterDefOf.ThreatBig;
         }
 
         protected override string GetRelatedPawnsInfoLetterText(IncidentParms parms)

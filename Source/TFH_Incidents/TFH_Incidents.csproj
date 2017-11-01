@@ -47,14 +47,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IncidentWorker_RaidEnemy.cs" />
-    <Compile Include="IncidentWorker_RaidFriendly.cs" />
-    <Compile Include="IncidentWorker_Raid_TFH.cs" />
-    <Compile Include="IncidentWorker_RefugeeChased.cs" />
-    <Compile Include="IncidentWorker_TraderCaravanArrival.cs" />
-    <Compile Include="IncidentWorker_TravelerGroup.cs" />
-    <Compile Include="IncidentWorker_VisitorGroup.cs" />
-    <Compile Include="IncidentWorker_WandererJoin.cs" />
+    <None Include="IncidentWorker_RaidEnemy.cs" />
+    <None Include="IncidentWorker_RaidFriendly.cs" />
+    <None Include="IncidentWorker_Raid_TFH.cs" />
+    <None Include="IncidentWorker_RefugeeChased.cs" />
+    <None Include="IncidentWorker_TraderCaravanArrival.cs" />
+    <None Include="IncidentWorker_TravelerGroup.cs" />
+    <None Include="IncidentWorker_VisitorGroup.cs" />
+    <None Include="IncidentWorker_WandererJoin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

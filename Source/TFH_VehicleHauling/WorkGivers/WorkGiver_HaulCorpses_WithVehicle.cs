@@ -32,7 +32,7 @@
                 return true;
             }
 
-            if (TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling) == null)
+            if (TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles) == null)
             {
                 return true;
             }
@@ -73,7 +73,7 @@
             if (cart == null)
             {
                 pawn.AvailableVehicles(out List<Thing> availableVehicles);
-                cart = TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling, t) as Vehicle_Cart;
+                cart = TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, null, t) as Vehicle_Cart;
 
                 if (cart == null)
                 {

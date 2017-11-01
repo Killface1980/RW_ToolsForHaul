@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ThingDefs>
+<Defs>
   <ThingDef Name="TFH_BaseThingWithComponents" Abstract="True">
     <thingClass>ThingWithComponents</thingClass>
     <category>Item</category>
@@ -55,9 +55,9 @@
     <!--     <inspectorTabs>
       <li>TFH_VehicleBase.ITab_Pawn_VehicleGear</li>
     </inspectorTabs> -->
-    <CostList>
+    <costList>
       <Steel>40</Steel>
-    </CostList>
+    </costList>
     <leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
     <killedLeavings>
       <Steel>20</Steel>
@@ -118,9 +118,9 @@
     <inspectorTabs>
       <li>ITab_Storage</li>
     </inspectorTabs>
-    <CostList>
+    <costList>
       <Steel>40</Steel>
-    </CostList>
+    </costList>
     <recipeMaker>
       <workSpeedStat>SmithingSpeed</workSpeedStat>
       <workSkill>Crafting</workSkill>
@@ -138,4 +138,4 @@
   </ThingDef>
    -->
   
-</ThingDefs>
+</Defs>

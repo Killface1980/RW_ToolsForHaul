@@ -15,7 +15,6 @@ namespace ppumkin.LEDTechnology.Managers
 {
     public static class CustomGlowFloodManager
     {
-
         public static List<IGlowFlooder> customFlooders; // = new List<IGlowFlooder>();
 
         static CustomGlowFloodManager()
@@ -48,7 +47,6 @@ namespace ppumkin.LEDTechnology.Managers
             {
                 customFlooder.CalculateGlowFlood();
             }
-
         }
     }
 }

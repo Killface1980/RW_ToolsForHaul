@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TFH_Vehicles</RootNamespace>
-    <AssemblyName>TFH_Vehicles</AssemblyName>
+    <AssemblyName>2TFH_Vehicles</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -64,6 +64,9 @@
     <Content Include="..\..\defs\pawnkinddefs_vehicles\PawnKinds_Vehicles.xml">
       <Link>Defs\PawnKinds_Vehicles.xml</Link>
     </Content>
+    <Content Include="..\..\Defs\RecipeDefs\Recipes_RepairVehicle.xml">
+      <Link>Defs\RecipeDefs\Recipes_RepairVehicle.xml</Link>
+    </Content>
     <Content Include="..\..\defs\recipedefs\Recipes_Vehicle_Implants.xml">
       <Link>Defs\RecipeDefs\Recipes_Vehicle_Implants.xml</Link>
       <SubType>Designer</SubType>
@@ -85,9 +88,6 @@
     </Content>
     <Content Include="..\..\defs\thingdefs_races\Races_Vehicle_Base.xml">
       <Link>Defs\Races_Vehicle_Base.xml</Link>
-    </Content>
-    <Content Include="..\..\defs\thinktreedefs\Vehicle_Mechanical.xml">
-      <Link>Defs\Vehicle_Mechanical.xml</Link>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

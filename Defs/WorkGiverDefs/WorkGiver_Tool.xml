@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- ============= Hauling ============= -->
+
+  <WorkGiverDef>
+    <defName>EquipTools</defName>
+    <giverClass>TFH_Tools.WorkGivers.WorkGiver_EquipTools</giverClass>
+    <workType>Flicker</workType>
+    <priorityInType>350</priorityInType>
+    <verb>equip with</verb>
+    <gerund>equipping with</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  
+  <WorkGiverDef>
+    <defName>HaulWithBackpack</defName>
+    <giverClass>TFH_Tools.WorkGivers.WorkGiver_HaulWithBackpack</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>43</priorityInType>
+    <scanThings>true</scanThings>
+    <verb>haul with backpack</verb>
+    <gerund>hauling with backpack</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+
+  <!-- ============= Driver ============= -->
+
+  
+</Defs>

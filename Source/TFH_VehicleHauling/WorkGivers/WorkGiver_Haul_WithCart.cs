@@ -59,7 +59,7 @@
                 cart = TFH_BaseUtility.GetRightVehicle(
                            pawn,
                            availableVehicles,
-                           DefDatabase<WorkTypeDef>.GetNamed("Hauling"),
+                           null,
                            t) as Vehicle_Cart;
             }
 
@@ -108,7 +108,7 @@
             // JobFailReason.Is(TFH_Utility.NoEmptyPlaceLowerTrans);
             // return null;
             // }
-            if (cart.IsMountedOnAnimalAndAvailable() || TFH_Utility.IsPlayerAllowedToRide(pawn, cart))
+            if (cart.IsMountedOnAnimalAndAvailable() || pawn.IsPlayerAllowedToRide(cart))
             {
                 return TFH_Utility.HaulWithToolsToCell(pawn, cart, t);
             }

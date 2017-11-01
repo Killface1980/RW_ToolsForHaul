@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<StatDefs>
+<Defs>
 
   <StatDef>
     <defName>MoveSpeed</defName>
@@ -20,4 +20,4 @@
   </StatDef>
   
   
-</StatDefs>
+</Defs>

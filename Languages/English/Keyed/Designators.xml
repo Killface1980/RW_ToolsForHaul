@@ -21,7 +21,7 @@
   <CannotEatAnymore>Colonist is not hungry</CannotEatAnymore>
 
   <ParkingLotZone>Parking lot</ParkingLotZone>
-  <TFH_DescriptionParkingLot>A place for pawns to store vehicles. Pre-requisite for hauling with vehicles.</TFH_DescriptionParkingLot>
+  <TFH_descriptionParkingLot>A place for pawns to store vehicles. Pre-requisite for hauling with vehicles.</TFH_descriptionParkingLot>
   <MaximumLots>Maximum parking spaces: {0}</MaximumLots>
   <OccupiedLots>Occupied parking spaces: {0}</OccupiedLots>
   

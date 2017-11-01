@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ThingDefs>
+<Defs>
 
   <ThingDef Name="VehicleImplantBase" Abstract="True">
     <label>implant</label>
@@ -46,4 +46,4 @@
     </techHediffsTags>
   </ThingDef>
     
-</ThingDefs>
+</Defs>

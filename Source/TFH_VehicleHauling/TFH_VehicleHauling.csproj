@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TFH_VehicleHauling</RootNamespace>
-    <AssemblyName>TFH_VehicleHauling</AssemblyName>
+    <AssemblyName>3TFH_VehicleHauling</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
@@ -104,19 +104,13 @@
       <Link>Defs\ThingDefs\Items_Unfinished.xml</Link>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="..\..\Defs\ThingDefs\Vehicle_Haul.xml">
-      <Link>Defs\ThingDefs\Vehicle_Haul.xml</Link>
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="..\..\Defs\ThingDefs\Vehicle_Saddle.xml">
       <Link>Defs\ThingDefs\Vehicle_Saddle.xml</Link>
-    </Content>
-    <Content Include="..\..\Defs\ThingDefs\Vehicle_Turret.xml">
-      <Link>Defs\ThingDefs\Vehicle_Turret.xml</Link>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs_Races\Races_Vehicle.xml">
       <Link>Defs\ThingDefs\Races_Vehicle.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\Defs\ThingDefs_Races\Races_Vehicle_Base.xml">
       <Link>Defs\ThingDefs\Races_Vehicle_Base.xml</Link>

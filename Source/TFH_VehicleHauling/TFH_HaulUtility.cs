@@ -6,6 +6,8 @@ namespace TFH_VehicleHauling
     using System.Collections.Generic;
     using System.Linq;
 
+    using JetBrains.Annotations;
+
     using RimWorld;
 
     using TFH_VehicleBase;
@@ -90,7 +92,7 @@ namespace TFH_VehicleHauling
             return null;
         }
     
-        public static Job HaulWithToolsToCell(Pawn pawn, Vehicle_Cart cart, Thing haulThing = null)
+        public static Job HaulWithToolsToCell([NotNull] Pawn pawn, Vehicle_Cart cart, Thing haulThing = null)
         {
             Trace.StopWatchStart();
             bool forced = false;

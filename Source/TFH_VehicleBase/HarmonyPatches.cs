@@ -256,15 +256,6 @@
         private static MethodInfo PawnFieldInfo;
         private static float vehicleSearchRadius = 12f;
 
-        private static void GetReflections()
-        {
-            if (PawnRendererType == null)
-            {
-                PawnRendererType = typeof(ThinkNode_JobGiver);
-                PawnFieldInfo = PawnRendererType.GetMethod("TryGiveJob", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
-        }
-
         public static ThinkResult VehicleThinkResult(ThinkResult __result, ThinkNode_JobGiver __instance, Pawn pawn)
         {
 
@@ -430,11 +421,11 @@
     }
 
     // Makes vehicles available for recipes - medical
-    [HarmonyPatch(typeof(Pawn), "CurrentlyUsable")]
-    public static class CurrentlyUsable_Patch
+    [HarmonyPatch(typeof(Pawn), "CurrentlyUsableForBills")]
+    public static class CurrentlyUsableForBills_Patch
     {
         [HarmonyPostfix]
-        public static void CurrentlyUsable_Postfix(ref bool __result, Pawn __instance)
+        public static void CurrentlyUsableForBills_Postfix(ref bool __result, Pawn __instance)
         {
             Vehicle_Cart vehicleCart = __instance as Vehicle_Cart;
             if (vehicleCart == null)

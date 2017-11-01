@@ -21,6 +21,11 @@
             return repString;
         }
 
+        public override bool TryMakePreToilReservations()
+        {
+            return this.pawn.Reserve(this.TargetThingA, this.job);
+        }
+
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ///

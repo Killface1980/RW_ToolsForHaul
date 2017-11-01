@@ -18,61 +18,69 @@
     {
         private const float RelationWithColonistWeight = 20f;
 
-        public override bool TryExecute(IncidentParms parms)
+
+        // RimWorld.IncidentWorker_WandererJoin
+        protected override bool TryExecuteWorker(IncidentParms parms)
         {
             Map map = (Map)parms.target;
             IntVec3 loc;
-            if (!CellFinder.TryFindRandomEdgeCellWith(c => map.reachability.CanReachColony(c), map, CellFinder.EdgeRoadChance_Neutral, out loc))
+            bool result;
+            if (!CellFinder.TryFindRandomEdgeCellWith((IntVec3 c) => map.reachability.CanReachColony(c), map, CellFinder.EdgeRoadChance_Neutral, out loc))
             {
-                return false;
+                result = false;
             }
-
-            PawnKindDef pawnKindDef = new List<PawnKindDef>
-                                          {
-                                              PawnKindDefOf.Villager
-                                          }.RandomElement();
-            PawnGenerationRequest request = new PawnGenerationRequest(pawnKindDef, Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, false, false, false, false, true, false, 20f, false, true, true, false, false, null, null, null, null, null);
-            Pawn pawn = PawnGenerator.GeneratePawn(request);
-            GenSpawn.Spawn(pawn, loc, map);
-
-            // Vehicle
-            if (pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
+            else
             {
-                if (parms.faction.def.techLevel >= TechLevel.Industrial && pawn.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && pawn.RaceProps.ToolUser)
+                PawnKindDef pawnKindDef = new List<PawnKindDef>
+                                              {
+                                                  PawnKindDefOf.Villager
+                                              }.RandomElement<PawnKindDef>();
+                PawnGenerationRequest request = new PawnGenerationRequest(pawnKindDef, Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, false, false, false, false, true, false, 20f, false, true, true, false, false, false, false, null, null, null, null, null, null, null);
+                Pawn pawn = PawnGenerator.GeneratePawn(request);
+                GenSpawn.Spawn(pawn, loc, map);
+                string text = "WandererJoin".Translate(new object[]
+                                                           {
+                                                               pawnKindDef.label,
+                                                               pawn.story.Title.ToLower()
+                                                           });
+                text = text.AdjustedFor(pawn);
+                string label = "LetterLabelWandererJoin".Translate();
+                PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, ref label, pawn);
+                Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.PositiveEvent, pawn, null);
+
+                if (pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
                 {
-                    float value = Rand.Value;
-
-                    if (value >= 0.35f)
+                    if (parms.faction.def.techLevel >= TechLevel.Industrial && pawn.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && pawn.RaceProps.ToolUser)
                     {
-                        CellFinder.RandomClosewalkCellNear(pawn.Position, pawn.Map, 5);
+                        float value = Rand.Value;
 
-                        Pawn cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_ATV, parms.faction);
-
-                        if (value >= 0.7f)
+                        if (value >= 0.35f)
                         {
-                            cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_Speeder, parms.faction);
+                            CellFinder.RandomClosewalkCellNear(pawn.Position, pawn.Map, 5);
+
+                            Pawn cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_ATV, parms.faction);
+
+                            if (value >= 0.7f)
+                            {
+                                cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_Speeder, parms.faction);
+                            }
+
+                            GenSpawn.Spawn(cart, pawn.Position, map, Rot4.Random, false);
+
+                            pawn.Map.reservationManager.ReleaseAllForTarget(cart);
+                            Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
+                            pawn.Reserve(cart, job);
+                            pawn.jobs.jobQueue.EnqueueFirst(job);
                         }
-
-                        GenSpawn.Spawn(cart, pawn.Position, map, Rot4.Random, false);
-
-                        pawn.Map.reservationManager.ReleaseAllForTarget(cart);
-                        Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
-                        pawn.Reserve(cart);
-                        pawn.jobs.jobQueue.EnqueueFirst(job);
                     }
                 }
+
+
+
+
+                result = true;
             }
-
-
-
-            string text = "WandererJoin".Translate(
-                pawnKindDef.label,
-                pawn.story.Title.ToLower());
-            text = text.AdjustedFor(pawn);
-            string label = "LetterLabelWandererJoin".Translate();
-            PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, ref label, pawn);
-            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.Good, pawn);
-            return true;
+            return result;
         }
 
             

@@ -24,11 +24,11 @@ namespace TFH_VehicleBase.ITabs
     {
         private const float TopAreaHeight = 35f;
         private Vector2 scrollPosition;
-        private static readonly Vector2 WinSize;
+        private static readonly Vector2 Winsize;
 
         static Itab_Pawn_Vehicle_Storage()
         {
-            WinSize = new Vector2(300f, 480f);
+            Winsize = new Vector2(300f, 480f);
         }
 
         public override bool IsVisible
@@ -69,7 +69,7 @@ namespace TFH_VehicleBase.ITabs
 
 
 
-            Rect position = new Rect(0.0f, 0.0f, WinSize.x, WinSize.y).ContractedBy(10f);
+            Rect position = new Rect(0.0f, 0.0f, Winsize.x, Winsize.y).ContractedBy(10f);
             GUI.BeginGroup(position);
 
             ThingFilterUI.DoThingFilterConfigWindow(new Rect(0.0f, 35f, position.width, position.height - 35f), ref this.scrollPosition, allowances);

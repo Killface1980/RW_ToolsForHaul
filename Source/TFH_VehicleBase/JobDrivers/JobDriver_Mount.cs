@@ -22,6 +22,11 @@
             return repString;
         }
 
+        public override bool TryMakePreToilReservations()
+        {
+            return this.pawn.Reserve(this.TargetThingA, this.job);
+        }
+
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ///
@@ -45,7 +50,7 @@
                                            initAction = () =>
                                                {
                                                    BasicVehicle vehicle =
-                                                       this.CurJob.GetTarget(MountableInd).Thing as BasicVehicle;
+                                                       this.job.GetTarget(MountableInd).Thing as BasicVehicle;
                                                    vehicle.jobs.StartJob(
                                                        new Job(
                                                            VehicleJobDefOf.StandBy,
@@ -66,7 +71,7 @@
             Toil toilEnd = new Toil();
             toilEnd.initAction = () =>
                 {
-                    BasicVehicle cart = CurJob.GetTarget(MountableInd).Thing as BasicVehicle;
+                    BasicVehicle cart = job.GetTarget(MountableInd).Thing as BasicVehicle;
                     if (cart == null)
                     {
                         Log.Error(GetActor().LabelCap + ": MakeMount get TargetA not cart or saddle.");
@@ -90,7 +95,7 @@
             // Reserve tvehicle 
             yield return Toils_Reserve.Reserve(MountableInd);
 
-            if ((this.CurJob.GetTarget(MountableInd).Thing as BasicVehicle).RaceProps.Animal)
+            if ((this.job.GetTarget(MountableInd).Thing as BasicVehicle).RaceProps.Animal)
             {
                 yield return toilMakeStandby;
             }

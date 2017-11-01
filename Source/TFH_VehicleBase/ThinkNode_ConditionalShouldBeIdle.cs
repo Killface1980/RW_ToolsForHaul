@@ -4,6 +4,8 @@ namespace TFH_VehicleBase
 {
     using RimWorld;
 
+    using Verse.AI;
+
     public class ThinkNode_ConditionalShouldBeIdle : ThinkNode_Conditional
     {
         protected override bool Satisfied(Pawn pawn)

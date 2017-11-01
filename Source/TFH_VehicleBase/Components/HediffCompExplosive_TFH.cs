@@ -242,7 +242,23 @@
             ThingDef postExplosionSpawnThingDef = props.postExplosionSpawnThingDef;
             float postExplosionSpawnChance = props.postExplosionSpawnChance;
             int postExplosionSpawnThingCount = props.postExplosionSpawnThingCount;
-            GenExplosion.DoExplosion(this.Pawn.PositionHeld, map, num, props.explosiveDamageType, this.instigator ?? this.Pawn, null, null, null, postExplosionSpawnThingDef, postExplosionSpawnChance, postExplosionSpawnThingCount, props.applyDamageToExplosionCellsNeighbors, props.preExplosionSpawnThingDef, props.preExplosionSpawnChance, props.preExplosionSpawnThingCount);
+            GenExplosion.DoExplosion(
+                this.Pawn.PositionHeld,
+                map,
+                num,
+                props.explosiveDamageType,
+                this.instigator ?? this.Pawn,
+                -1,
+                null,
+                null,
+                null,
+                postExplosionSpawnThingDef,
+                postExplosionSpawnChance,
+                postExplosionSpawnThingCount,
+                props.applyDamageToExplosionCellsNeighbors,
+                props.preExplosionSpawnThingDef,
+                props.preExplosionSpawnChance,
+                props.preExplosionSpawnThingCount);
         }
     }
 }

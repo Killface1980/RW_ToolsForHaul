@@ -27,7 +27,7 @@
             hauledThing = this.TargetThingA;
             if (this.TargetThingA == null)  // Haul Cart
             {
-                hauledThing = this.CurJob.targetC.Thing;
+                hauledThing = this.job.targetC.Thing;
             }
 
             IntVec3 destLoc = IntVec3.Invalid;
@@ -58,9 +58,14 @@
             return repString;
         }
 
+        public override bool TryMakePreToilReservations()
+        {
+            return true;// this.pawn.Reserve(this.job.GetTarget(CartInd).Thing, this.job);
+        }
+
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            Vehicle_Cart cart = (Vehicle_Cart)this.CurJob.GetTarget(CartInd).Thing;
+            Vehicle_Cart cart = (Vehicle_Cart)this.job.GetTarget(CartInd).Thing;
 
             ///
             // Set fail conditions
@@ -82,15 +87,15 @@
             Toil findParkingSpaceForCart = Toils_Cart.FindParkingSpaceForCart(CartInd);
 
             Toil findStoreCellFor = Toils_Cart.FindStoreCellForCart(CartInd);
-            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(findStoreCellFor, () => CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
+            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(findStoreCellFor, () => job.GetTargetQueue(StoreCellInd).NullOrEmpty());
 
 
             Toil checkParkingCellEmpty = Toils_Jump.JumpIf(
                 findParkingSpaceForCart,
-                () => this.CurJob.GetTargetQueue(StoreCellInd).NullOrEmpty());
+                () => this.job.GetTargetQueue(StoreCellInd).NullOrEmpty());
             Toil checkHaulableEmpty = Toils_Jump.JumpIf(
                 checkStoreCellEmpty,
-                () => this.CurJob.GetTargetQueue(HaulableInd).NullOrEmpty());
+                () => this.job.GetTargetQueue(HaulableInd).NullOrEmpty());
 
             ///
             // Toils Start

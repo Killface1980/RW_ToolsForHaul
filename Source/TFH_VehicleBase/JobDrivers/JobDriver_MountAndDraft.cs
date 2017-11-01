@@ -26,6 +26,11 @@
             return repString;
         }
 
+        public override bool TryMakePreToilReservations()
+        {
+            return this.pawn.Reserve(this.TargetThingA, job);
+        }
+
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ///
@@ -68,7 +73,7 @@
             Toil arrive = new Toil();
             arrive.initAction = () =>
                 {
-                    if (this.CurJob.exitMapOnArrival && this.pawn.Map.exitMapGrid.IsExitCell(this.pawn.Position))
+                    if (this.job.exitMapOnArrival && this.pawn.Map.exitMapGrid.IsExitCell(this.pawn.Position))
                     {
                         this.TryExitMap();
                     }
@@ -120,7 +125,7 @@
 
         private void TryExitMap()
         {
-            if (base.CurJob.failIfCantJoinOrCreateCaravan && !CaravanExitMapUtility.CanExitMapAndJoinOrCreateCaravanNow(this.pawn))
+            if (base.job.failIfCantJoinOrCreateCaravan && !CaravanExitMapUtility.CanExitMapAndJoinOrCreateCaravanNow(this.pawn))
             {
                 return;
             }

@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TFH_VehicleBase</RootNamespace>
-    <AssemblyName>TFH_VehicleBase</AssemblyName>
+    <AssemblyName>1TFH_VehicleBase</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -36,6 +36,7 @@
     <Compile Include="BasicVehicle.cs" />
     <None Include="Class1.cs" />
     <None Include="Class2.cs" />
+    <Compile Include="Class3.cs" />
     <Compile Include="ThinkNode_ConditionalShouldBeIdle.cs" />
     <Compile Include="Command_VerbTarget.cs" />
     <Compile Include="Components\CompAxles.cs" />
@@ -104,7 +105,7 @@
     <Compile Include="TFH_BaseUtility.cs" />
     <Compile Include="DefOfs_TFH\ThingDefOf_TFH.cs" />
     <Compile Include="Vehicle_Cart.cs" />
-    <None Include="Vehicle_Saddle.cs" />
+    <Compile Include="Vehicle_Saddle.cs" />
     <None Include="_old\Vehicle_CartTurretGun.cs" />
     <None Include="_old\Vehicle_CartTurret.cs" />
     <None Include="_old\Cart_TurretTop.cs" />
@@ -139,6 +140,7 @@
     </Content>
     <Content Include="..\..\defs\jobdefs\Jobs_Misc.xml">
       <Link>JobDefs\Jobs_Misc.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\defs\joygiverdefs\JoyGivers.xml">
       <Link>Defs\JoyGivers\JoyGivers.xml</Link>
@@ -155,6 +157,15 @@
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Filth_Various.xml">
       <Link>Defs\Filth_Various.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs_Buildings\Buildings_SpotlightLight.xml">
+      <Link>Defs\Buildings_SpotlightLight.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThinkTreeDefs\AnimalRideable.xml">
+      <Link>Defs\AnimalRideable.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThinkTreeDefs\Vehicle_Mechanical.xml">
+      <Link>Defs\Vehicle_Mechanical.xml</Link>
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGivers_Base.xml">
       <Link>Defs\WorkGivers_Base.xml</Link>

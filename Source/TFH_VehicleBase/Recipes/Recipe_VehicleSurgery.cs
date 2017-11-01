@@ -12,75 +12,8 @@
 
         private const float RidiculousFailChanceFromCatastrophic = 0.1f;
 
-        protected bool CheckSurgeryFail(Pawn surgeon, Pawn patient, List<Thing> ingredients, BodyPartRecord part)
+        protected bool CheckSurgeryFail(Pawn surgeon, Pawn patient, List<Thing> ingredients, BodyPartRecord part, Bill bill)
         {
-            return false;
-
-            float num = 1f;
-            num *= surgeon.GetStatValue((!patient.RaceProps.IsMechanoid) ? StatDefOf.MedicalSurgerySuccessChance : StatDefOf.MechanoidOperationSuccessChance, true);
-            Room room = surgeon.GetRoom(RegionType.Set_Passable);
-            if (room != null && !patient.RaceProps.IsMechanoid)
-            {
-                num *= room.GetStat(RoomStatDefOf.SurgerySuccessChanceFactor);
-            }
-
-            num *= this.GetAverageMedicalPotency(ingredients);
-            num *= this.recipe.surgerySuccessChanceFactor;
-            if (Rand.Value > num)
-            {
-                if (Rand.Value < this.recipe.deathOnFailedSurgeryChance)
-                {
-                    int num2 = 0;
-                    while (!patient.Dead)
-                    {
-                        HealthUtility.GiveInjuriesOperationFailureRidiculous(patient);
-                        num2++;
-                        if (num2 > 300)
-                        {
-                            Log.Error("Could not kill patient.");
-                            break;
-                        }
-                    }
-                }
-                else if (Rand.Value < 0.5f)
-                {
-                    if (Rand.Value < 0.1f)
-                    {
-                        Messages.Message("MessageMedicalOperationFailureRidiculous".Translate(new object[]
-                                                                                                  {
-                                                                                                      surgeon.LabelShort,
-                                                                                                      patient.LabelShort
-                                                                                                  }), patient, MessageSound.SeriousAlert);
-                        HealthUtility.GiveInjuriesOperationFailureRidiculous(patient);
-                    }
-                    else
-                    {
-                        Messages.Message("MessageMedicalOperationFailureCatastrophic".Translate(new object[]
-                                                                                                    {
-                                                                                                        surgeon.LabelShort,
-                                                                                                        patient.LabelShort
-                                                                                                    }), patient, MessageSound.SeriousAlert);
-                        HealthUtility.GiveInjuriesOperationFailureCatastrophic(patient, part);
-                    }
-                }
-                else
-                {
-                    Messages.Message("MessageMedicalOperationFailureMinor".Translate(new object[]
-                                                                                         {
-                                                                                             surgeon.LabelShort,
-                                                                                             patient.LabelShort
-                                                                                         }), patient, MessageSound.Negative);
-                    HealthUtility.GiveInjuriesOperationFailureMinor(patient, part);
-                }
-
-                if (!patient.Dead)
-                {
-                    this.TryGainBotchedSurgeryThought(patient, surgeon);
-                }
-
-                return true;
-            }
-
             return false;
         }
 

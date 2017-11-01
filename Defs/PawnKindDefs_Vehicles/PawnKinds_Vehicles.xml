@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<PawnKindDefs>
+<Defs>
 
   <!-- base -->
 
@@ -210,4 +210,4 @@
     <techHediffsMoney>1000</techHediffsMoney>
   </PawnKindDef>
 
-</PawnKindDefs>
+</Defs>

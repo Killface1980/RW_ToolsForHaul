@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<JobDefs>
+<Defs>
 
 <!--
   <JobDef>
@@ -70,17 +70,17 @@
     <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_MakeMount</driverClass>
     <reportString>Mount on TargetB.</reportString>
   </JobDef>
-  
+  <!--
   <JobDef>
     <defName>Board</defName>
     <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_Board</driverClass>
     <reportString>Board on TargetA.</reportString>
   </JobDef>
-  
+  -->
   <JobDef>
     <defName>StandBy</defName>
     <driverClass>TFH_VehicleBase.JobDrivers.JobDriver_StandBy</driverClass>
     <reportString>Standing by</reportString>
   </JobDef>
  
-</JobDefs>
+</Defs>

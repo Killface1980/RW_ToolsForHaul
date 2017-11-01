@@ -106,135 +106,142 @@
             return true;
         }
 
-        public override bool TryExecute(IncidentParms parms)
+        // RimWorld.IncidentWorker_Raid
+        protected override bool TryExecuteWorker(IncidentParms parms)
         {
             Map map = (Map)parms.target;
             this.ResolveRaidPoints(parms);
+            bool result;
             if (!this.TryResolveRaidFaction(parms))
             {
-                return false;
-            }
-
-            this.ResolveRaidStrategy(parms);
-            this.ResolveRaidArriveMode(parms);
-            if (!this.ResolveRaidSpawnCenter(parms))
-            {
-                return false;
-            }
-
-            IncidentParmsUtility.AdjustPointsForGroupArrivalParams(parms);
-            PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(parms);
-            List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(PawnGroupKindDefOf.Normal, defaultPawnGroupMakerParms).ToList();
-            if (list.Count == 0)
-            {
-                Log.Error("Got no pawns spawning raid from parms " + parms);
-                return false;
-            }
-
-            TargetInfo target = TargetInfo.Invalid;
-            if (parms.raidArrivalMode == PawnsArriveMode.CenterDrop || parms.raidArrivalMode == PawnsArriveMode.EdgeDrop)
-            {
-                DropPodUtility.DropThingsNear(parms.spawnCenter, map, list.Cast<Thing>(), parms.raidPodOpenDelay, false, true);
-                target = new TargetInfo(parms.spawnCenter, map);
+                result = false;
             }
             else
             {
-                foreach (Pawn current in list)
+                this.ResolveRaidStrategy(parms);
+                this.ResolveRaidArriveMode(parms);
+                if (!this.ResolveRaidSpawnCenter(parms))
                 {
-                    IntVec3 loc = CellFinder.RandomClosewalkCellNear(parms.spawnCenter, map, 8);
-                    GenSpawn.Spawn(current, loc, map, parms.spawnRotation);
-                    target = current;
+                    result = false;
+                }
+                else
+                {
+                    IncidentParmsUtility.AdjustPointsForGroupArrivalParams(parms);
+                    PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(parms, false);
+                    List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(PawnGroupKindDefOf.Normal, defaultPawnGroupMakerParms, true).ToList<Pawn>();
+                    if (list.Count == 0)
                     {
-
-                        // Vehicles for raiders
-                        // lowered probability for shield users as they are overpowered
-                        float value = Rand.Value;
-                        bool isShieldUser = false;
-
-                        if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && current.RaceProps.ToolUser)
+                        Log.Error("Got no pawns spawning raid from parms " + parms);
+                        result = false;
+                    }
+                    else
+                    {
+                        TargetInfo target = TargetInfo.Invalid;
+                        if (parms.raidArrivalMode == PawnsArriveMode.CenterDrop || parms.raidArrivalMode == PawnsArriveMode.EdgeDrop)
                         {
-                            List<Apparel> wornApparel = current.apparel.WornApparel;
-                            for (int i = 0; i < wornApparel.Count; i++)
+                            DropPodUtility.DropThingsNear(parms.spawnCenter, map, list.Cast<Thing>(), parms.raidPodOpenDelay, false, true, true, false);
+                            target = new TargetInfo(parms.spawnCenter, map, false);
+                        }
+                        else
+                        {
+                            foreach (Pawn current in list)
                             {
-                                if (wornApparel[i].def == ThingDefOf.Apparel_ShieldBelt)
+                                IntVec3 loc = CellFinder.RandomClosewalkCellNear(parms.spawnCenter, map, 8, null);
+                                GenSpawn.Spawn(current, loc, map, parms.spawnRotation, false);
+                                target = current;
+
+                                // Vehicles for raiders
+                                // lowered probability for shield users as they are overpowered
+                                float value = Rand.Value;
+                                bool isShieldUser = false;
+
+                                if (parms.faction.def.techLevel >= TechLevel.Industrial && current.RaceProps.FleshType != FleshTypeDefOf.Mechanoid && current.RaceProps.ToolUser)
                                 {
-                                    isShieldUser = true;
+                                    List<Apparel> wornApparel = current.apparel.WornApparel;
+                                    for (int i = 0; i < wornApparel.Count; i++)
+                                    {
+                                        if (wornApparel[i].def == ThingDefOf.Apparel_ShieldBelt)
+                                        {
+                                            isShieldUser = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (current.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
+                                    {
+                                        if (value >= 0.66f && !isShieldUser || isShieldUser && value > 0.9f)
+                                        {
+                                            CellFinder.RandomClosewalkCellNear(current.Position, current.Map, 5);
+                                            Pawn cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_ATV, parms.faction);
+
+                                            if (value >= 0.9f && !isShieldUser)
+                                            {
+                                                cart = PawnGenerator.GeneratePawn(
+                                                    VehicleKindDefOf.TFH_CombatATV,
+                                                    parms.faction);
+                                            }
+
+                                            GenSpawn.Spawn(cart, current.Position, map, Rot4.Random, false);
+
+                                            current.Map.reservationManager.ReleaseAllForTarget(cart);
+                                            Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
+                                            current.Reserve(cart, job);
+                                            current.jobs.jobQueue.EnqueueFirst(job);
+                                        }
+                                    }
+                                }
+
+
+                            }
+                        }
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.AppendLine("Points = " + parms.points.ToString("F0"));
+                        foreach (Pawn current2 in list)
+                        {
+                            string str = (current2.equipment == null || current2.equipment.Primary == null) ? "unarmed" : current2.equipment.Primary.LabelCap;
+                            stringBuilder.AppendLine(current2.KindLabel + " - " + str);
+                        }
+                        string letterLabel = this.GetLetterLabel(parms);
+                        string letterText = this.GetLetterText(parms, list);
+                        PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref letterLabel, ref letterText, this.GetRelatedPawnsInfoLetterText(parms), true, true);
+                        Find.LetterStack.ReceiveLetter(letterLabel, letterText, this.GetLetterDef(), target, stringBuilder.ToString());
+                        if (this.GetLetterDef() == LetterDefOf.ThreatBig)
+                        {
+                            TaleRecorder.RecordTale(TaleDefOf.RaidArrived, new object[0]);
+                        }
+                        Lord lord = LordMaker.MakeNewLord(parms.faction, parms.raidStrategy.Worker.MakeLordJob(parms, map), map, list);
+                        AvoidGridMaker.RegenerateAvoidGridsFor(parms.faction, map);
+                        LessonAutoActivator.TeachOpportunity(ConceptDefOf.EquippingWeapons, OpportunityType.Critical);
+                        if (!PlayerKnowledgeDatabase.IsComplete(ConceptDefOf.ShieldBelts))
+                        {
+                            for (int i = 0; i < list.Count; i++)
+                            {
+                                Pawn pawn = list[i];
+                                if (pawn.apparel.WornApparel.Any((Apparel ap) => ap is ShieldBelt))
+                                {
+                                    LessonAutoActivator.TeachOpportunity(ConceptDefOf.ShieldBelts, OpportunityType.Critical);
                                     break;
                                 }
                             }
-
-                            if (current.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
-                            {
-                                if (value >= 0.66f && !isShieldUser || isShieldUser && value > 0.9f)
-                                {
-                                    CellFinder.RandomClosewalkCellNear(current.Position, current.Map, 5);
-                                    Pawn cart = PawnGenerator.GeneratePawn(VehicleKindDefOf.TFH_ATV, parms.faction);
-
-                                    if (value >= 0.9f && !isShieldUser)
-                                    {
-                                        cart = PawnGenerator.GeneratePawn(
-                                            VehicleKindDefOf.TFH_CombatATV,
-                                            parms.faction);
-                                    }
-
-                                    GenSpawn.Spawn(cart, current.Position, map, Rot4.Random, false);
-
-                                    current.Map.reservationManager.ReleaseAllForTarget(cart);
-                                    Job job = new Job(VehicleJobDefOf.Mount) { targetA = cart };
-                                    current.Reserve(cart);
-                                    current.jobs.jobQueue.EnqueueFirst(job);
-                                }
-                            }
                         }
+                        if (DebugViewSettings.drawStealDebug && parms.faction.HostileTo(Faction.OfPlayer))
+                        {
+                            Log.Message(string.Concat(new object[]
+                                                          {
+                                                              "Market value threshold to start stealing: ",
+                                                              StealAIUtility.StartStealingMarketValueThreshold(lord),
+                                                              " (colony wealth = ",
+                                                              map.wealthWatcher.WealthTotal,
+                                                              ")"
+                                                          }));
+                        }
+                        result = true;
                     }
                 }
             }
-
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("Points = " + parms.points.ToString("F0"));
-            foreach (Pawn current2 in list)
-            {
-                string str = (current2.equipment == null || current2.equipment.Primary == null) ? "unarmed" : current2.equipment.Primary.LabelCap;
-                stringBuilder.AppendLine(current2.KindLabel + " - " + str);
-            }
-
-            string letterLabel = this.GetLetterLabel(parms);
-            string letterText = this.GetLetterText(parms, list);
-            PawnRelationUtility.Notify_PawnsSeenByPlayer(list, ref letterLabel, ref letterText, this.GetRelatedPawnsInfoLetterText(parms), true);
-            Find.LetterStack.ReceiveLetter(letterLabel, letterText, this.GetLetterDef(), target, stringBuilder.ToString());
-            if (this.GetLetterDef() == LetterDefOf.BadUrgent)
-            {
-                TaleRecorder.RecordTale(TaleDefOf.RaidArrived);
-            }
-
-            Lord lord = LordMaker.MakeNewLord(parms.faction, parms.raidStrategy.Worker.MakeLordJob(parms, map), map, list);
-            AvoidGridMaker.RegenerateAvoidGridsFor(parms.faction, map);
-            LessonAutoActivator.TeachOpportunity(ConceptDefOf.EquippingWeapons, OpportunityType.Critical);
-            if (!PlayerKnowledgeDatabase.IsComplete(ConceptDefOf.ShieldBelts))
-            {
-                for (int i = 0; i < list.Count; i++)
-                {
-                    Pawn pawn = list[i];
-                    if (pawn.apparel.WornApparel.Any(ap => ap is ShieldBelt))
-                    {
-                        LessonAutoActivator.TeachOpportunity(ConceptDefOf.ShieldBelts, OpportunityType.Critical);
-                        break;
-                    }
-                }
-            }
-
-            if (DebugViewSettings.drawStealDebug && parms.faction.HostileTo(Faction.OfPlayer))
-            {
-                Log.Message(
-                    string.Concat(
-                        "Market value threshold to start stealing: ",
-                        StealAIUtility.StartStealingMarketValueThreshold(lord),
-                        " (colony wealth = ",
-                        map.wealthWatcher.WealthTotal,
-                        ")"));
-            }
-
-            return true;
+            return result;
         }
+
+
     }
 }

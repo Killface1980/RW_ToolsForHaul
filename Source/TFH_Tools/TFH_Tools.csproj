@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DD34F689-D413-49ED-B374-A97D4ACADA12}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TFH_Tools</RootNamespace>
+    <AssemblyName>TFH_Tools</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony, Version=1.0.9.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Less Serious\Assemblies\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\RimWorldWin_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Apparel_Backpack.cs" />
+    <Compile Include="Apparel_ToolBelt.cs" />
+    <None Include="WorkGivers\Class1.cs" />
+    <Compile Include="Components\CompEquipmentGizmoProvider.cs" />
+    <Compile Include="Components\CompEquipmentGizmoUser.cs" />
+    <Compile Include="Components\CompSlotsBackpack.cs" />
+    <Compile Include="Components\CompSlotsBackpack_Properties.cs" />
+    <Compile Include="Components\CompSlotsToolbelt.cs" />
+    <Compile Include="Components\CompSlotsToolbelt_Properties.cs" />
+    <Compile Include="Components\CompTool.cs" />
+    <Compile Include="Designator_PutInBackpackSlot.cs" />
+    <Compile Include="Designator_PutInToolbeltSlot.cs" />
+    <Compile Include="Gizmo_BackpackEquipment.cs" />
+    <Compile Include="Gizmo_ToolbeltEquipment.cs" />
+    <Compile Include="HaulJobDefOf.cs" />
+    <Compile Include="HaulStatDefOf.cs" />
+    <None Include="MapComponentInjector.cs" />
+    <Compile Include="JobDrivers\JobDriver_HaulWithBackpack.cs" />
+    <Compile Include="JobDrivers\JobDriver_PutInBackpackSlot.cs" />
+    <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
+    <Compile Include="MapComponent_ToolsForHaul.cs" />
+    <Compile Include="MoteMakerTFH.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RightTools.cs" />
+    <Compile Include="StatsHelper.cs" />
+    <Compile Include="ToolsForHaulUtility.cs" />
+    <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
+    <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
+    <Compile Include="_Pawn_ApparelTracker.cs" />
+    <Compile Include="HarmonyPatches.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\Defs\JobDefs\Jobs_Tools.xml">
+      <Link>JobDrivers\Jobs_Tools.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Apparel_Backpack.xml">
+      <Link>Apparel_Backpack.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\Apparel_Toolbelt.xml">
+      <Link>Apparel_Toolbelt.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\ThingDefs\RA_Weapons_Melee.xml">
+      <Link>RA_Weapons_Melee.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\WorkGiverDefs\WorkGiver_Tool.xml">
+      <Link>WorkGiver_Tool.xml</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TFH_VehicleBase\TFH_VehicleBase.csproj">
+      <Project>{bbeadc75-7f91-4397-86bc-a4981fda42b1}</Project>
+      <Name>TFH_VehicleBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TFH_VehicleHauling\TFH_VehicleHauling.csproj">
+      <Project>{d8e37818-f1a0-4c90-930d-4f04b21614e9}</Project>
+      <Name>TFH_VehicleHauling</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

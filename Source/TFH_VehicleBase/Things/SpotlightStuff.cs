@@ -273,8 +273,8 @@ namespace ToolsForHaul.Things
         {
             IntVec3 farthestPosition = this.Position;
 
-            Mathf.Clamp(spotlightTarget.x, 0, this.Map.Size.x);
-            Mathf.Clamp(spotlightTarget.z, 0, this.Map.Size.z);
+            Mathf.Clamp(spotlightTarget.x, 0, this.Map.size.x);
+            Mathf.Clamp(spotlightTarget.z, 0, this.Map.size.z);
 
             IEnumerable<IntVec3> lineOfSightPoints = GenSight.PointsOnLineOfSight(this.Position, spotlightTarget);
             foreach (IntVec3 point in lineOfSightPoints)

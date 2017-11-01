@@ -3,21 +3,21 @@
 
   <Operation Class="PatchOperationSequence">
     <success>Always</success>
-    <Operations>
+    <operations>
       <li Class="PatchOperationAdd">
-        <xpath>/Defs/DesignationCategoryDef[DefName="Zone"]/specialDesignatorClasses</xpath>
+        <xpath>/Defs/DesignationCategoryDef[defName="Zone"]/specialDesignatorClasses</xpath>
         <value>
           <li>TFH_VehicleBase.Designators.Designator_ZoneAddParkingLot</li>
         </value>
         <order>Append</order>
       </li>
-    </Operations>
+    </operations>
   </Operation>
 
   <!--
   <Operation Class="PatchOperationSequence">
     <success>Always</success>
-    <Operations>
+    <operations>
       <li Class="PatchOperationAdd">
         <xpath>
           /Defs/DutyDef[DefName="AssaultColony"]/thinkNode Class="ThinkNode_Priority"/subNodes
@@ -27,7 +27,7 @@
         </value>
         <order>Prepend</order>
       </li>
-    </Operations>
+    </operations>
   </Operation>
 -->
   

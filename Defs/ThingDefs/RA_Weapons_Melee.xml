@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- 
+		- stuffCategories - specifies that weapon is made from stuff (stuff modifiers apply) and what stuff types should be used
+		- onGroundRandomRotateAngle - breaks drawSize parameter
+	-->
+
+  <!-- ========================= Neolithic =========================-->
+
+  <ThingDef Name="WeaponMeleeNeolithic" ParentName="BaseMeleeWeapon" Abstract="True">
+    <costList>
+      <WoodLog>10</WoodLog>
+    </costList>
+    <stuffCategories>
+      <li>Stony</li>
+    </stuffCategories>
+    <costStuffCount>20</costStuffCount>
+    <thingCategories>
+      <li>WeaponsMeleeNeolithic</li>
+    </thingCategories>
+    <techLevel>Neolithic</techLevel>
+    <recipeMaker>
+      <recipeUsers>
+        <li>CraftingSpot</li>
+      </recipeUsers>
+      <defaultIngredientFilter>
+        <categories>
+          <li>Root</li>
+        </categories>
+        <exceptedThingDefs>
+          <li>Jade</li>
+        </exceptedThingDefs>
+      </defaultIngredientFilter>
+    </recipeMaker>
+  </ThingDef>
+
+  <ThingDef ParentName="WeaponMeleeNeolithic">
+    <defName>HandaxeNeolithic</defName>
+    <label>improvised axe</label>
+    <description>An improvised axe-looking tool designed with vegetation cutting in mind. Lacking the weight and finish of a melee weapon.</description>
+    <graphicData>
+      <texPath>Things/Items/Weapons/Neolithic/HandaxeNeolithic/HandaxeNeolithic</texPath>
+      <drawSize>0.9</drawSize>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <equippedAngleOffset>30</equippedAngleOffset>
+    <statBases>
+      <MeleeWeapon_DamageMultiplier>1.9</MeleeWeapon_DamageMultiplier>
+      <MeleeWeapon_CooldownMultiplier>1</MeleeWeapon_CooldownMultiplier>
+      <MaxHitPoints>100</MaxHitPoints>
+    </statBases>
+    <verbs>
+      <li>
+        <hasStandardCommand>true</hasStandardCommand>
+        <verbClass>Verb_MeleeAttack</verbClass>
+        <meleeDamageDef>Cut</meleeDamageDef>
+      </li>
+    </verbs>
+    <equippedStatOffsets>
+      <PlantWorkSpeed>0.15</PlantWorkSpeed>
+      <PlantHarvestYield>0.15</PlantHarvestYield>
+    </equippedStatOffsets>
+    <weaponTags>
+      <li>NeolithicMelee</li>
+    </weaponTags>
+    <thingCategories>
+      <li>ToolsNeolithic</li>
+    </thingCategories>
+  </ThingDef>
+
+  <ThingDef ParentName="WeaponMeleeNeolithic">
+    <defName>HammerNeolithic</defName>
+    <label>improvised mallet</label>
+    <description>An improvised hammer-looking tool used for construction and repair rather than for combat purposes.</description>
+    <graphicData>
+      <texPath>Things/Items/Weapons/Neolithic/HammerNeolithic/HammerNeolithic</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <equippedAngleOffset>30</equippedAngleOffset>
+    <statBases>
+      <MeleeWeapon_DamageMultiplier>1.7</MeleeWeapon_DamageMultiplier>
+      <MeleeWeapon_CooldownMultiplier>0.8</MeleeWeapon_CooldownMultiplier>
+      <MaxHitPoints>100</MaxHitPoints>
+    </statBases>
+    <verbs>
+      <li>
+        <hasStandardCommand>true</hasStandardCommand>
+        <verbClass>Verb_MeleeAttack</verbClass>
+        <meleeDamageDef>Blunt</meleeDamageDef>
+      </li>
+    </verbs>
+    <equippedStatOffsets>
+      <ConstructionSpeed>0.15</ConstructionSpeed>
+      <FixBrokenDownBuildingSuccessChance>0.15</FixBrokenDownBuildingSuccessChance>
+    </equippedStatOffsets>
+    <weaponTags>
+      <li>NeolithicMelee</li>
+    </weaponTags>
+    <thingCategories>
+      <li>ToolsNeolithic</li>
+    </thingCategories>
+  </ThingDef>
+
+  <ThingDef ParentName="WeaponMeleeNeolithic">
+    <defName>Broom</defName>
+    <label>hand broom</label>
+    <description>An improvised cleaning device made out of plant fibres.</description>
+    <graphicData>
+      <texPath>Things/Items/Weapons/Neolithic/Broom</texPath>
+      <color>(133,97,67)</color>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <equippedStatOffsets>
+      <SmoothingSpeed>0.25</SmoothingSpeed>
+    </equippedStatOffsets>
+    <weaponTags>
+      <li>NeolithicMelee</li>
+    </weaponTags>
+    <verbs>
+      <li>
+        <hasStandardCommand>true</hasStandardCommand>
+        <verbClass>Verb_MeleeAttack</verbClass>
+        <meleeDamageDef>Blunt</meleeDamageDef>
+      </li>
+    </verbs>
+    <thingCategories>
+      <li>ToolsNeolithic</li>
+    </thingCategories>
+  </ThingDef>
+
+
+  <!-- ========================= Medieval =========================-->
+
+  <ThingDef Name="WeaponMeleeMedieval" ParentName="BaseMeleeWeapon" Abstract="True">
+    <costList>
+      <WoodLog>15</WoodLog>
+    </costList>
+    <stuffCategories>
+      <li>Metallic</li>
+    </stuffCategories>
+    <costStuffCount>30</costStuffCount>
+    <thingCategories>
+      <li>WeaponsMeleeMedieval</li>
+    </thingCategories>
+    <techLevel>Medieval</techLevel>
+    <recipeMaker>
+      <recipeUsers>
+        <li>ElectricSmithy</li>
+        <li>FueledSmithy</li>
+      </recipeUsers>
+    <defaultIngredientFilter>
+      <categories>
+        <li>Root</li>
+      </categories>
+      <exceptedThingDefs>
+        <li>Silver</li>
+        <li>Gold</li>
+      </exceptedThingDefs>
+    </defaultIngredientFilter>
+    </recipeMaker>
+  </ThingDef>
+
+  <ThingDef ParentName="WeaponMeleeMedieval">
+    <defName>Hammer</defName>
+    <label>hammer</label>
+    <description>Hammer.</description>
+    <graphicData>
+      <texPath>Things/Items/Weapons/Medieval/Hammer/Hammer</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <equippedAngleOffset>-65</equippedAngleOffset>
+    <equippedStatOffsets>
+      <ConstructionSpeed>0.25</ConstructionSpeed>
+      <FixBrokenDownBuildingSuccessChance>0.25</FixBrokenDownBuildingSuccessChance>
+    </equippedStatOffsets>
+    <verbs>
+      <li>
+        <verbClass>Verb_MeleeAttack</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <meleeDamageDef>Blunt</meleeDamageDef>
+      </li>
+    </verbs>
+    <weaponTags>
+      <li>MedievalMelee</li>
+    </weaponTags>
+    <thingCategories>
+      <li>ToolsMedieval</li>
+    </thingCategories>
+  </ThingDef>
+
+  <ThingDef ParentName="WeaponMeleeMedieval">
+    <defName>Axe</defName>
+    <label>axe</label>
+    <description>Axe.</description>
+    <graphicData>
+      <texPath>Things/Items/Weapons/Medieval/Axe/Axe</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <equippedAngleOffset>-25</equippedAngleOffset>
+    <statBases>
+      <MaxHitPoints>130</MaxHitPoints>
+      <MeleeWeapon_DamageMultiplier>1.5</MeleeWeapon_DamageMultiplier>
+      <MeleeWeapon_CooldownMultiplier>1.66</MeleeWeapon_CooldownMultiplier>
+    </statBases>
+    <verbs>
+      <li>
+        <verbClass>Verb_MeleeAttack</verbClass>
+        <hasStandardCommand>true</hasStandardCommand>
+        <meleeDamageDef>Cut</meleeDamageDef>
+      </li>
+    </verbs>
+    <equippedStatOffsets>
+      <PlantWorkSpeed>0.3</PlantWorkSpeed>
+      <PlantHarvestYield>0.3</PlantHarvestYield>
+    </equippedStatOffsets>
+    <weaponTags>
+      <li>MedievalMelee</li>
+    </weaponTags>
+    <thingCategories>
+      <li>ToolsMedieval</li>
+    </thingCategories>
+  </ThingDef>
+
+  <ThingDef ParentName="WeaponMeleeMedieval">
+    <defName>Pickaxe</defName>
+    <label>pickaxe</label>
+    <description>Pickaxe.</description>
+    <graphicData>
+      <texPath>Things/Items/Weapons/Medieval/Pickaxe</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <equippedAngleOffset>-65</equippedAngleOffset>
+    <verbs>
+      <li>
+        <hasStandardCommand>true</hasStandardCommand>
+        <verbClass>Verb_MeleeAttack</verbClass>
+        <meleeDamageDef>Cut</meleeDamageDef>
+      </li>
+    </verbs>
+    <equippedStatOffsets>
+      <MiningSpeed>0.5</MiningSpeed>
+    </equippedStatOffsets>
+    <weaponTags>
+      <li>MedievalMelee</li>
+    </weaponTags>
+    <thingCategories>
+      <li>ToolsMedieval</li>
+    </thingCategories>
+  </ThingDef>
+
+  <!-- ========================= Industrial =========================-->
+
+  <ThingDef ParentName="WeaponMeleeMedieval">
+    <defName>Multitool</defName>
+    <label>multitool</label>
+    <description>A survival grade hammer and axe tool used for construction and woodcutting. Performs perfectly in any environment, according to the manufacturer.</description>
+    <equippedAngleOffset>-65</equippedAngleOffset>
+    <statBases>
+      <MarketValue>500</MarketValue>
+    </statBases>
+    <graphicData>
+      <texPath>Things/Items/Weapons/Midworld/Multitool</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <verbs>
+      <li>
+        <hasStandardCommand>true</hasStandardCommand>
+        <verbClass>Verb_MeleeAttack</verbClass>
+        <meleeDamageDef>Cut</meleeDamageDef>
+      </li>
+    </verbs>
+    <equippedStatOffsets>
+      <ConstructionSpeed>0.6</ConstructionSpeed>
+      <PlantWorkSpeed>0.6</PlantWorkSpeed>
+      <PlantHarvestYield>0.5</PlantHarvestYield>
+    </equippedStatOffsets>
+    <techLevel>Industrial</techLevel>
+    <weaponTags>
+      <li>IndustrialTool</li>
+    </weaponTags>
+  </ThingDef>
+
+</Defs>

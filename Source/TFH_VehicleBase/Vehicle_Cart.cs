@@ -26,7 +26,7 @@
         // ==================================
         public int DefaultMaxItem => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
 
-        public int MaxItemPerBodySize => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
+        public int MaxItemPerBodysize => (int)this.GetStatValue(HaulStatDefOf.VehicleMaxItem);
 
         public bool instantiated;
 
@@ -254,7 +254,7 @@
                     Command_Action commandClaim = new Command_Action
                     {
                         defaultLabel = des.LabelCapReverseDesignating(this),
-                        icon = des.IconReverseDesignating(this),
+                        icon = des.IconReverseDesignating(this, out float angle),
                         defaultDesc = des.DescReverseDesignating(this),
                         action = delegate
                             {
@@ -526,7 +526,7 @@
 
                     if (worker == null)
                     {
-                        Messages.Message("NoWorkForMakeMount".Translate(), MessageSound.RejectInput);
+                        Messages.Message("NoWorkForMakeMount".Translate(), MessageTypeDefOf.RejectInput);
                     }
                     else
                     {
@@ -536,10 +536,10 @@
 
             Action action_Deconstruct = () =>
                 {
-                    map.reservationManager.ReleaseAllForTarget(this);
-                    map.reservationManager.Reserve(myPawn, this);
-                    map.designationManager.AddDesignation(new Designation(this, DesignationDefOf.Deconstruct));
                     Job job = new Job(JobDefOf.Deconstruct, this);
+                    map.reservationManager.ReleaseAllForTarget(this);
+                    map.reservationManager.Reserve(myPawn,job, this);
+                    map.designationManager.AddDesignation(new Designation(this, DesignationDefOf.Deconstruct));
                     myPawn.jobs.StartJob(job, JobCondition.InterruptForced);
                 };
 
@@ -547,7 +547,7 @@
                 {
                     Job jobNew = new Job(VehicleJobDefOf.Mount);
                     myPawn.Map.reservationManager.ReleaseAllForTarget(this);
-                    myPawn.Map.reservationManager.Reserve(myPawn, this);
+                    myPawn.Map.reservationManager.Reserve(myPawn,jobNew, this);
                     jobNew.targetA = this;
                     myPawn.jobs.StartJob(jobNew, JobCondition.InterruptForced);
                 };
@@ -838,7 +838,7 @@
             // {
             // Vector3 lineOrigin = this.TrueCenter();
             // Vector3 lineTarget = this.CurrentTarget.Thing.Position.ToVector3Shifted();
-            // lineTarget.y = Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays);
+            // lineTarget.y = Altitudes.AltitudeFor(altitudeLayer.MetaOverlays);
             // lineOrigin.y = lineTarget.y;
             // GenDraw.DrawLineBetween(lineOrigin, lineTarget, targetLineTexture);
             // }

@@ -14,36 +14,30 @@ namespace ToolsForHaul
         public Rot4 Orientation { get; set; }
         public Color32 Color { get; private set; }
 
-
         public List<GlowGridCache> ColorCellIndexCache { get; set; }
         public List<GlowGridCache> ColorCellIndexCacheOriginal { get; set; }
-        
 
-// public List<FloodBlocker> FloodBlockers { get; set; }
+        // public List<FloodBlocker> FloodBlockers { get; set; }
         Thing[] innerArray;
 
         int targetDistance;
         int angleModulus;
 
-
         public HeadLights(IntVec3 position, Rot4 orientation, Vehicle_Cart vehicleCart)
         {
-            
             Position = position;
             Orientation = orientation;
 
             // TODO move the colors to xml along with the angleModulus + targetDistance
             ColorCellIndexCache = new List<GlowGridCache>();
-            
 
-// FloodBlockers = new List<FloodBlocker>();
+            // FloodBlockers = new List<FloodBlocker>();
 
             // Color = new Color32(191, 63, 191, 1);
             // Color = new Color32(254, 255, 179, 0);
             Color = new Color32(210, 210, 140, 0);
 
-
-            innerArray =  Find.EdificeGrid.InnerArray;
+            innerArray = Find.EdificeGrid.InnerArray;
 
             targetDistance = 20;
             angleModulus = 4;  // 0 is 90 and the higher you go the more narrow the angle. //angle 45 is every two tiles? - actually its 90 because left side is 0->45 and then right is 45<-0
@@ -65,20 +59,16 @@ namespace ToolsForHaul
             foreach (GlowGridCache i in ColorCellIndexCache)
             {
                 Find.GlowGrid.glowGrid[i.CellGridIndex] = noColor;
-                
 
-// Find.MapDrawer.MapMeshDirty(thingPosition, MapMeshFlag.GroundGlow);
+                // Find.MapDrawer.MapMeshDirty(thingPosition, MapMeshFlag.GroundGlow);
             }
 
             ColorCellIndexCache = new List<GlowGridCache>();
         }
 
-
         private void calculateGrid()
         {
             // Log.Message("Anlge: Calc init");
-
-
 
             // Log.Message("Anlge: Power ON");
 
@@ -92,10 +82,8 @@ namespace ToolsForHaul
             // Log.Message("Anlge: Not cached - doing calc");
             // start tile
             addCellIndex(Position, false);
-            
 
-// next tiles
-
+            // next tiles
 
             ///implement collision detector
             ///check is in bounds
@@ -107,7 +95,6 @@ namespace ToolsForHaul
             int andgleDistanceDelta = 0;
             do
             {
-
                 if (andgleDistanceDelta == 0) // TODO CHECK BLOCKERS HERE, DUHHH!
                     addCellIndex(Position.ToOffsetPositionDirection(distance, 0, Orientation), false);
 
@@ -121,19 +108,16 @@ namespace ToolsForHaul
                         if (isBlocked(_pos, angleDelta))
                         {
                             completeBlocker = true;
-                            
 
-// addCellIndex(_pos, true); //it gets added in isBlocked method
+                            // addCellIndex(_pos, true); //it gets added in isBlocked method
                         }
                         else
                         {
                             completeBlocker = false;
-                            
 
-// Log.Message("Not blocking: X:" + _pos.x + " Z: " + _pos.z);
+                            // Log.Message("Not blocking: X:" + _pos.x + " Z: " + _pos.z);
                             addCellIndex(_pos, false);
                         }
-
                     }
                     else
                         break; // Ge'me oughta here!
@@ -148,10 +132,8 @@ namespace ToolsForHaul
                     andgleDistanceDelta++;
 
                 distance++;
-
             }
- while (distance < targetDistance);
-
+            while (distance < targetDistance);
 
             updateGlowGrid();
         }
@@ -165,9 +147,8 @@ namespace ToolsForHaul
                 {
                     // block this tile
                     addCellIndex(position, true);
-                    
 
-// block next forward tile to prevent further light going this way
+                    // block next forward tile to prevent further light going this way
                     addCellIndex(position.TranslateDirection(Orientation), true);
 
                     // block next left and right tiles to prevent further light going this way and help with "angle" detection
@@ -176,14 +157,12 @@ namespace ToolsForHaul
                 }
 
                 thingBlockers = null;
-                
 
-// Log.Message("Blocking by Def: X: " + position.x + " Z: " + position.z);
+                // Log.Message("Blocking by Def: X: " + position.x + " Z: " + position.z);
                 return true;
             }
 
             /////----------If def.blocked not found scan for previous blocks-------------//////
-
 
             // I pre emtifly block the cell at the building collision level so now I can find it here and carry on blocking
             // This part feels a bit iffy to me because I have to carry on calculation blockers. Not sure how flag any further
@@ -198,29 +177,22 @@ namespace ToolsForHaul
                 {
                     // pffff.. a bit ugly i know.. but i need to compensate for wide angles over distance
                     addCellIndex(thisCellBlocked.Position.TranslateDirection(Orientation, -1), true);
-                    
 
-// addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -2), true);
+                    // addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -2), true);
                     // addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, -3), true);
                 }
 
                 if (angleDelta > 0)
                 {
                     addCellIndex(thisCellBlocked.Position.TranslateDirection(Orientation, 1), true);
-                    
 
-// addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, 2), true);
+                    // addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, 2), true);
                     // addCellIndex(thisCellBlocked.Position.TranslateDirection(this.Orientation, 3), true);
                 }
             }
 
-
-
             return false;
         }
-
-
-
 
         public class FloodBlocker
         {
@@ -233,7 +205,6 @@ namespace ToolsForHaul
                 X = position.x;
                 Z = position.z;
             }
-
         }
 
         private void addCellIndex(IntVec3 position, bool isBlocked)
@@ -252,7 +223,6 @@ namespace ToolsForHaul
                 });
             }
 
-
             // Log.Message("ANGLE POS: " + position.ToLog());
         }
 
@@ -265,7 +235,6 @@ namespace ToolsForHaul
             {
                 Find.GlowGrid.glowGrid[cell.CellGridIndex] = cell.ColorAtCellIndex;
             }
-
 
             // for (int i = 0; i < ColorCellIndexCache.Count; i++)
             // {
@@ -287,11 +256,8 @@ namespace ToolsForHaul
         {
             return "AngledGlower - x:" + Position.x + " z:" + Position.z;
         }
-
     }
 }
-
-
 
 ////if (andgleDistanceDelta == 0)
 
@@ -304,22 +270,18 @@ namespace ToolsForHaul
 // for (int angleDelta = andgleDistanceDelta * (-1); angleDelta <= andgleDistanceDelta; angleDelta++)
 
 // {
-
 // //Log.Message("distance: " + distance + " xD:" + x + " zD:" + z + " mod:" + distance % 3);
 
 // var _pos = LEDTools.OffsetPosition(Position, angleDelta, distance); //TODO: rotation should be trnsformed here
 
-
 // if (_pos.InBounds())
 
 // {
-
 // //Log.Message("Block?: X:" + _pos.x + " Z: " + _pos.z);
 
 // if (isBlocked(_pos, angleDelta, andgleDistanceDelta))
 
 // {
-
 // completeBlocker = true;
 
 // continue;
@@ -339,7 +301,6 @@ namespace ToolsForHaul
 // if (completeBlocker)
 
 // {
-
 // //Log.Message("Blocker: Complete blocker detected at: " )
 
 // break; //dont bother calculating any more, thats all folks.

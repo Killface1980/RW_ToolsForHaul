@@ -49,7 +49,7 @@
                     if (!targetQueue.NullOrEmpty() && target.Thing.def.defName == targetQueue.First().Thing.def.defName)
                     {
                         toil.actor.jobs.curJob.SetTarget(HaulableInd, targetQueue.First());
-                        actor.Map.reservationManager.Reserve(actor, targetQueue.First());
+                        actor.Map.reservationManager.Reserve(actor,actor.CurJob, targetQueue.First());
                         targetQueue.RemoveAt(0);
                         toil.actor.jobs.curDriver.JumpToToil(jumpToil);
                         return;
@@ -91,7 +91,7 @@
                     if (thing != null)
                     {
                         toil.actor.jobs.curJob.SetTarget(HaulableInd, thing);
-                        actor.Map.reservationManager.Reserve(actor, thing);
+                        actor.Map.reservationManager.Reserve(actor,actor.CurJob, thing);
                         toil.actor.jobs.curDriver.JumpToToil(jumpToil);
                     }
                 };
@@ -265,7 +265,7 @@
                     if (cell != IntVec3.Invalid)
                     {
                         toil.actor.jobs.curJob.SetTarget(StoreCellInd, cell);
-                        actor.Map.reservationManager.Reserve(actor, cell);
+                        actor.Map.reservationManager.Reserve(actor,actor.CurJob, cell);
                         toil.actor.jobs.curDriver.JumpToToil(jumpToil);
                     }
                 };
@@ -407,7 +407,7 @@
                                 b = cells[i].Cell;
                             }
 
-                            IntVec3 dropLoc = actor.Position + PawnRotator.RotFromAngleBiased((actor.Position - b).AngleFlat).FacingCell;
+                            IntVec3 dropLoc = actor.Position + Pawn_RotationTracker.RotFromAngleBiased((actor.Position - b).AngleFlat).FacingCell;
 
                             // if (actor.CanReserve(dropLoc, 1, -1, null, false))
                             // {

@@ -15,58 +15,79 @@
 
         public override PathEndMode PathEndMode => PathEndMode.Touch;
 
-        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced)
-        {
-            return this.CanRefuel(pawn, t, true) && pawn.Faction == t.Faction;
-        }
-
-        public override Job JobOnThing(Pawn pawn, Thing t, bool forced)
-        {
-            Thing t2 = this.FindBestFuel(pawn, t);
-            return new Job(JobDefOf.Refuel, t, t2)
-            {
-                count = t.TryGetComp<CompRefuelable>().GetFuelCountToFullyRefuel()
-            };
-        }
-
-        private bool CanRefuel(Pawn pawn, Thing t, bool mustBeAutoRefuelable)
+        // RimWorld.WorkGiver_Refuel
+        public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             Vehicle_Cart cart = t as Vehicle_Cart;
             if (cart == null)
             {
                 return false;
             }
-
-            CompRefuelable compRefuelable = t.TryGetComp<CompRefuelable>();
-            if (compRefuelable == null || compRefuelable.IsFull)
-            {
-                return false;
-            }
-
-            if (mustBeAutoRefuelable && !compRefuelable.ShouldAutoRefuelNow)
-            {
-                return false;
-            }
-
-            if (t.IsForbidden(pawn) || !pawn.CanReserveAndReach(t, PathEndMode.Touch, pawn.NormalMaxDanger()))
-            {
-                return false;
-            }
-
-            if (this.FindBestFuel(pawn, t) == null)
-            {
-                ThingFilter fuelFilter = t.TryGetComp<CompRefuelable>().Props.fuelFilter;
-                JobFailReason.Is("NoFuelToRefuel".Translate(fuelFilter.Summary));
-                return false;
-            }
-
             CompMountable compMountable = t.TryGetComp<CompMountable>();
             if (compMountable != null && compMountable.IsMounted)
             {
                 return false;
             }
+            CompRefuelable compRefuelable = t.TryGetComp<CompRefuelable>();
+            bool result;
+            if (compRefuelable == null || compRefuelable.IsFull)
+            {
+                result = false;
+            }
+            else
+            {
+                bool flag = !forced;
+                if (flag && !compRefuelable.ShouldAutoRefuelNow)
+                {
+                    result = false;
+                }
+                else
+                {
+                    if (!t.IsForbidden(pawn))
+                    {
+                        LocalTargetInfo target = t;
+                        if (pawn.CanReserve(target, 1, -1, null, forced))
+                        {
+                            if (t.Faction != pawn.Faction)
+                            {
+                                result = false;
+                                return result;
+                            }
+                            ThingWithComps thingWithComps = t as ThingWithComps;
+                            if (thingWithComps != null)
+                            {
+                                CompFlickable comp = thingWithComps.GetComp<CompFlickable>();
+                                if (comp != null && !comp.SwitchIsOn)
+                                {
+                                    result = false;
+                                    return result;
+                                }
+                            }
+                            if (this.FindBestFuel(pawn, t) == null)
+                            {
+                                ThingFilter fuelFilter = t.TryGetComp<CompRefuelable>().Props.fuelFilter;
+                                JobFailReason.Is("NoFuelToRefuel".Translate(new object[]
+                                                                                {
+                                                                                    fuelFilter.Summary
+                                                                                }));
+                                result = false;
+                                return result;
+                            }
+                            result = true;
+                            return result;
+                        }
+                    }
+                    result = false;
+                }
+            }
+            return result;
+        }
 
-            return true;
+
+        public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
+        {
+            Thing t2 = this.FindBestFuel(pawn, t);
+            return new Job(JobDefOf.Refuel, t, t2);
         }
 
         private Thing FindBestFuel(Pawn pawn, Thing refuelable)

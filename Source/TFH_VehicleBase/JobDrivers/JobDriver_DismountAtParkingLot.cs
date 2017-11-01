@@ -13,6 +13,11 @@
         private const TargetIndex CartInd = TargetIndex.A;
         private const TargetIndex ParkingLotCellInd = TargetIndex.B;
 
+        public override bool TryMakePreToilReservations()
+        {
+           return this.pawn.Reserve(this.TargetThingA, this.job);
+        }
+
         public override string GetReport()
         {
             ThingWithComps cart = this.TargetThingA as ThingWithComps;

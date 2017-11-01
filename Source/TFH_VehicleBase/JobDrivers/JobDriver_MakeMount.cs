@@ -24,6 +24,11 @@
             return repString;
         }
 
+        public override bool TryMakePreToilReservations()
+        {
+            return this.pawn.Reserve(this.TargetThingA, this.job);
+        }
+
         protected override IEnumerable<Toil> MakeNewToils()
         {
             ///
@@ -47,7 +52,7 @@
             Toil toilMakeStandby = new Toil();
             toilMakeStandby.initAction = () =>
                 {
-                    Pawn driver = this.CurJob.GetTarget(DriverInd).Thing as Pawn;
+                    Pawn driver = this.job.GetTarget(DriverInd).Thing as Pawn;
                     driver.jobs.StartJob(
                         new Job(
                             VehicleJobDefOf.StandBy,
@@ -98,7 +103,7 @@
             Toil toilEnd = new Toil();
             toilEnd.initAction = () =>
                 {
-                    Vehicle_Cart cart = this.CurJob.GetTarget(MountableInd).Thing as Vehicle_Cart;
+                    Vehicle_Cart cart = this.job.GetTarget(MountableInd).Thing as Vehicle_Cart;
 
                     // Vehicle_Saddle saddle = CurJob.GetTarget(MountableInd).Thing as Vehicle_Saddle;
                     if (cart == null)

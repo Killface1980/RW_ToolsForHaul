@@ -460,7 +460,7 @@
                 }
 
                 Vector3 a = this.TrueCenter();
-                b.y = Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays);
+                b.y = Altitudes.AltitudeFor(altitudeLayer.MetaOverlays);
                 a.y = b.y;
                 GenDraw.DrawLineBetween(a, b, ForcedTargetLineMat);
             }

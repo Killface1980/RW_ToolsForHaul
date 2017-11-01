@@ -118,7 +118,7 @@ namespace TFH_VehicleBase
         public static Vehicle_Cart GetRightVehicle(
             Pawn pawn,
             List<Thing> availableVehicles,
-            WorkTypeDef worktype,
+            WorkTypeDef worktype = null,
             Thing haulThing = null)
         {
             if (availableVehicles.NullOrEmpty())
@@ -128,53 +128,7 @@ namespace TFH_VehicleBase
 
             Thing cart = null;
 
-            if (worktype.Equals(WorkTypeDefOf.Hunting))
-            {
-                IOrderedEnumerable<Thing> armoured =
-                    availableVehicles.OrderBy(x => ((Vehicle_Cart)x).health.summaryHealth);
-
-                foreach (Thing thing in armoured)
-                {
-                    Vehicle_Cart vehicleCart = thing as Vehicle_Cart;
-                    if (vehicleCart == null)
-                    {
-                        continue;
-                    }
-
-                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot))
-                    {
-                        continue;
-                    }
-
-                    if (!pawn.IsPlayerAllowedToRide(vehicleCart))
-                    {
-                        continue;
-                    }
-
-                    if (vehicleCart.HasGasTank())
-                    {
-                        if (vehicleCart.GasTankComp.tankLeaking)
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (vehicleCart.IsAboutToBlowUp())
-                    {
-                        continue;
-                    }
-
-                    if (!vehicleCart.IsCurrentlyMotorized())
-                    {
-                        continue;
-                    }
-
-                    return vehicleCart;
-                }
-
-
-            }
-            else if (worktype == WorkTypeDefOf.Hauling)
+            if (worktype == null)
             {
                 IOrderedEnumerable<Thing> orderedEnumerable2 =
                     availableVehicles.OrderByDescending(x => (x as Vehicle_Cart)?.MaxItem).ThenBy(x => pawn.Position.DistanceToSquared(x.Position));
@@ -226,6 +180,52 @@ namespace TFH_VehicleBase
                     cart = vehicleCart;
                     break;
                 }
+            }
+            else if (worktype.Equals(WorkTypeDefOf.Hunting))
+            {
+                IOrderedEnumerable<Thing> armoured =
+                    availableVehicles.OrderBy(x => ((Vehicle_Cart)x).health.summaryHealth);
+
+                foreach (Thing thing in armoured)
+                {
+                    Vehicle_Cart vehicleCart = thing as Vehicle_Cart;
+                    if (vehicleCart == null)
+                    {
+                        continue;
+                    }
+
+                    if (!(vehicleCart.Position.GetZone(vehicleCart.Map) is Zone_ParkingLot))
+                    {
+                        continue;
+                    }
+
+                    if (!pawn.IsPlayerAllowedToRide(vehicleCart))
+                    {
+                        continue;
+                    }
+
+                    if (vehicleCart.HasGasTank())
+                    {
+                        if (vehicleCart.GasTankComp.tankLeaking)
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (vehicleCart.IsAboutToBlowUp())
+                    {
+                        continue;
+                    }
+
+                    if (!vehicleCart.IsCurrentlyMotorized())
+                    {
+                        continue;
+                    }
+
+                    return vehicleCart;
+                }
+
+
             }
             else if (worktype.Equals(WorkTypeDefOf.Construction))
             {
@@ -576,7 +576,7 @@ namespace TFH_VehicleBase
 
             pawn.AvailableVehicles(out List<Thing> availableVehicles);
 
-            Vehicle_Cart cart = GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Hauling);
+            Vehicle_Cart cart = GetRightVehicle(pawn, availableVehicles, WorkTypeDefOf.Doctor);
 
             // Job Setting
             JobDef jobDef = null;

@@ -82,14 +82,15 @@
                     true);
             }
 
-            pawn.Map.pawnDestinationManager.ReserveDestinationFor(pawn, intVec);
-            return new Job(JobDefOf.Goto, intVec)
-                       {
-                           expiryInterval =
-                               JobGiver_AIFightEnemy.ExpiryInterval_ShooterSucceeded
-                                   .RandomInRange,
-                           checkOverrideOnExpire = true
-                       };
+            Job job = new Job(JobDefOf.Goto, intVec)
+                          {
+                              expiryInterval =
+                                  JobGiver_AIFightEnemy.ExpiryInterval_ShooterSucceeded
+                                      .RandomInRange,
+                              checkOverrideOnExpire = true
+                          };
+            pawn.Map.pawnDestinationReservationManager.Reserve(pawn,job, intVec);
+            return job;
         }
     }
 }
