@@ -18,7 +18,6 @@
 
         public override bool ShouldSkip(Pawn pawn)
         {
-            Trace.DebugWriteHaulingPawn(pawn);
 
             if (pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0)
             {
@@ -31,6 +30,7 @@
             {
                 return true;
             }
+            Trace.DebugWriteHaulingPawn(pawn);
 
             if (TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles) == null)
             {
@@ -81,7 +81,7 @@
                 }
             }
 
-            ThingOwner storage = cart.GetContainer();
+            ThingOwner storage = cart.GetDirectlyHeldThings();
 
             if (cart.IsBurning())
             {
@@ -112,7 +112,7 @@
 
             if (cart.IsMountedOnAnimalAndAvailable() || TFH_Utility.IsPlayerAllowedToRide(pawn, cart))
             {
-                return TFH_Utility.HaulWithToolsToCell(pawn, cart, t);
+                return TFH_Utility.HaulWithCartToCell(pawn, cart, t);
             }
 
             JobFailReason.Is(Static.NoAvailableCart);

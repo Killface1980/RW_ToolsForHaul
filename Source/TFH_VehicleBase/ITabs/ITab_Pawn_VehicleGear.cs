@@ -118,7 +118,7 @@ namespace TFH_VehicleBase.ITabs
             Vehicle_Cart cart = this.SelThing as Vehicle_Cart;
             if (cart != null)
             {
-                ThingOwner storage = cart.GetContainer();
+                ThingOwner storage = cart.GetDirectlyHeldThings();
                 foreach (Thing thing in storage)
                 {
                     if (thing.ThingID.IndexOf("Human_Corpse") > -1)

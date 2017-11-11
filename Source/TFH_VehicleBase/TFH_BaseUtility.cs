@@ -351,6 +351,7 @@ namespace TFH_VehicleBase
             availableVehicles = pawn.Map.listerThings.AllThings.FindAll(
                 cart => cart is Vehicle_Cart && !cart.IsForbidden(pawn.Faction)
                         && pawn.Position.InHorDistOf(cart.Position, distance) && pawn.CanReserve(cart)
+                        && pawn.Faction == cart.Faction
                         && (!(cart as Vehicle_Cart).MountableComp.IsMounted
                             || ((cart as Vehicle_Cart).MountableComp.Rider == pawn
                                 || (cart as Vehicle_Cart).MountableComp.Rider.RaceProps.Animal))
@@ -602,7 +603,7 @@ namespace TFH_VehicleBase
             Zone zone = pawn.Map.zoneManager.ZoneAt(cart.Position);
 
             targetCart = cart;
-            ThingOwner storage = cart.GetContainer();
+            ThingOwner storage = cart.GetDirectlyHeldThings();
 
             maxItem = cart.MaxItem;
             thresholdItem = (int)Math.Ceiling(maxItem * 0.25);
@@ -770,11 +771,6 @@ namespace TFH_VehicleBase
                 {
                     IntVec3 place = IntVec3.Invalid;
 
-                    if (TryFindSpotToPlaceHaulableCloseTo(haulable, pawn, target.Cell, out place))
-                    {
-                        return place;
-                    }
-                    continue;
                     foreach (IntVec3 adjCell in GenAdjFast.AdjacentCells8Way(target))
                     {
                         if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(pawn.Map, haulable))
@@ -784,6 +780,10 @@ namespace TFH_VehicleBase
                                 return adjCell;
                             }
                         }
+                    }
+                    if (TryFindSpotToPlaceHaulableCloseTo(haulable, pawn, target.Cell, out place))
+                    {
+                        return place;
                     }
                 }
             }
@@ -829,7 +829,6 @@ namespace TFH_VehicleBase
 
             return IntVec3.Invalid;
         }
-
         // Verse.AI.HaulAIUtility
 
         private static bool TryFindSpotToPlaceHaulableCloseTo(Thing haulable, Pawn worker, IntVec3 center, out IntVec3 spot)

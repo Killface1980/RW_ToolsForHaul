@@ -61,7 +61,7 @@
                 ThingWithComps thingWithComps = pawn.equipment.Primary;
                 float currentStat = GetMaxStat(thingWithComps, def);
 
-                foreach (Thing slot in toolbelt.slotsComp.slots)
+                foreach (Thing slot in toolbelt.slotsComp.innerContainer)
                 {
                     ThingWithComps thingWithComps2 = slot as ThingWithComps;
                     if (thingWithComps2 != null)

@@ -51,11 +51,11 @@
         {
             get
             {
-                if (this.backpack.slotsComp.slots.Count <= 4)
+                if (this.backpack.slotsComp.innerContainer.Count <= 4)
                     return 2;
                 else
                 {
-                    int count = Mathf.FloorToInt(this.backpack.slotsComp.slots.Count - 4) / 2;
+                    int count = Mathf.FloorToInt(this.backpack.slotsComp.innerContainer.Count - 4) / 2;
 
                     return 2 + count;
                 }
@@ -67,11 +67,11 @@
         {
             get
             {
-                if (this.backpack.slotsComp.slots.Count <= 4)
+                if (this.backpack.slotsComp.innerContainer.Count <= 4)
                     return Height;
                 else
                 {
-                    int count = Mathf.FloorToInt(this.backpack.slotsComp.slots.Count - 4) / 2;
+                    int count = Mathf.FloorToInt(this.backpack.slotsComp.innerContainer.Count - 4) / 2;
 
                     return Height + count * Height * 0.5f;
                 }
@@ -112,7 +112,7 @@
         public void DrawSlots(Pawn wearer, CompSlotsBackpack SlotsBackpackComp, Rect inventoryRect)
         {
             // draw text message if no contents inside
-            if (SlotsBackpackComp.slots.Count == 0)
+            if (SlotsBackpackComp.innerContainer.Count == 0)
             {
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleCenter;
@@ -121,7 +121,7 @@
                 Text.Font = GameFont.Tiny;
             }
 
-            // draw slots
+            // draw innerContainer
             else
             {
                 Rect slotRect = new Rect(
@@ -139,7 +139,7 @@
                         Widgets.DrawTextureFitted(slotRect, NoAvailableTex, 1.0f);
                     }
 
-                    if (currentSlotInd >= SlotsBackpackComp.slots.Count)
+                    if (currentSlotInd >= SlotsBackpackComp.innerContainer.Count)
                     {
                         slotRect.x = inventoryRect.x
                                      + inventoryRect.width / this.iconsPerRow * (currentSlotInd % this.iconsPerRow);
@@ -147,14 +147,14 @@
                         Widgets.DrawTextureFitted(slotRect, EmptyTex, 1.0f);
                     }
 
-                    // draw occupied slots
-                    if (currentSlotInd < SlotsBackpackComp.slots.Count)
+                    // draw occupied innerContainer
+                    if (currentSlotInd < SlotsBackpackComp.innerContainer.Count)
                     {
                         slotRect.x = inventoryRect.x
                                      + inventoryRect.width / this.iconsPerRow * (currentSlotInd % this.iconsPerRow);
                         slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / this.iconsPerRow);
 
-                        Thing currentThing = SlotsBackpackComp.slots[currentSlotInd];
+                        Thing currentThing = SlotsBackpackComp.innerContainer[currentSlotInd];
 
                         // draws greyish slot background
                         Widgets.DrawTextureFitted(slotRect.ContractedBy(3f), texOccupiedSlotBG, 1f);
@@ -180,7 +180,7 @@
                         // draw thing texture
                         Widgets.ThingIcon(slotRect, currentThing);
 
-                        // interaction with slots
+                        // interaction with innerContainer
                         if (Widgets.ButtonInvisible(slotRect))
                         {
                             // mouse button pressed
@@ -217,7 +217,7 @@
                                                                             () =>
                                                                                 {
                                                                                     Thing resultThing;
-                                                                                    SlotsBackpackComp.slots.TryDrop(
+                                                                                    SlotsBackpackComp.innerContainer.TryDrop(
                                                                                         currentThing,
                                                                                         wearer.Position,
                                                     wearer.Map,
@@ -252,7 +252,7 @@
                                             () =>
                                                 {
                                                     Thing dummy;
-                                                    SlotsBackpackComp.slots.TryDrop(
+                                                    SlotsBackpackComp.innerContainer.TryDrop(
                                                         currentThing,
                                                         wearer.Position,
                                                     wearer.Map,
@@ -276,7 +276,7 @@
                                             () =>
                                                 {
                                                     Thing dummy;
-                                                    SlotsBackpackComp.slots.TryDrop(
+                                                    SlotsBackpackComp.innerContainer.TryDrop(
                                                         currentThing,
                                                         wearer.Position,
                                                     wearer.Map,

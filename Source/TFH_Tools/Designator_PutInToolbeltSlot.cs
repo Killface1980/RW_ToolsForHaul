@@ -173,7 +173,7 @@
                 return true;
             }
 
-            this.numOfContents = this.SlotsToolbeltComp.slots.Count;
+            this.numOfContents = this.SlotsToolbeltComp.innerContainer.Count;
 
             int designationsTotalStackCount = 0;
             foreach (Thing designation in this.SlotsToolbeltComp.designatedThings)
@@ -181,7 +181,7 @@
 
             // No Item space or no stack space
             if (this.SlotsToolbeltComp.designatedThings.Count + this.numOfContents >= this.MaxItem
-                || designationsTotalStackCount + this.SlotsToolbeltComp.slots.TotalStackCount >= this.SlotsToolbeltComp.MaxStack)
+                || designationsTotalStackCount + this.SlotsToolbeltComp.innerContainer.TotalStackCount >= this.SlotsToolbeltComp.MaxStack)
                 return new AcceptanceReport("BackpackIsFull".Translate());
 
             foreach (Thing designation in this.SlotsToolbeltComp.designatedThings)
@@ -219,8 +219,8 @@
                 return false;
             }
 
-            // if there are free slots
-            if (this.SlotsToolbeltComp.designatedThings.Count + this.SlotsToolbeltComp.slots.Count >= this.MaxItem)
+            // if there are free innerContainer
+            if (this.SlotsToolbeltComp.designatedThings.Count + this.SlotsToolbeltComp.innerContainer.Count >= this.MaxItem)
             {
                 return false;
             }

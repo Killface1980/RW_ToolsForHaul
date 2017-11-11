@@ -2,6 +2,9 @@
 {
     using RimWorld;
     using System.Collections.Generic;
+
+    using UnityEngine;
+
     using Verse;
     using Verse.AI;
 
@@ -40,8 +43,8 @@
         {
             Apparel_ToolBelt toolbelt = this.job.GetTarget(SlotterInd).Thing as Apparel_ToolBelt;
 
-            // no free slots
-            this.FailOn(() => toolbelt.slotsComp.slots.Count >= toolbelt.MaxItem);
+            // no free innerContainer
+            this.FailOn(() => toolbelt.slotsComp.innerContainer.Count >= toolbelt.MaxItem);
 
             // reserve resources
             yield return Toils_Reserve.ReserveQueue(HaulableInd);
@@ -58,8 +61,7 @@
             {
                 initAction = () =>
                     {
-                        if (!toolbelt.slotsComp.slots.TryAdd(this.job.targetA.Thing)
-                        )
+                        if (!toolbelt.slotsComp.innerContainer.TryAddOrTransfer(this.TargetThingA.SplitOff(this.TargetThingA.stackCount)))
                         {
                             this.EndJobWith(JobCondition.Incompletable);
                         }
@@ -85,18 +87,18 @@
                                             statfloat));
                                 }
 
-                                for (int i = toolbelt.slotsComp.slots.Count - 1;
+                                for (int i = toolbelt.slotsComp.innerContainer.Count - 1;
                                      i >= 0;
                                      i--)
                                 {
-                                    var tool = toolbelt.slotsComp.slots[i];
+                                    var tool = toolbelt.slotsComp.innerContainer[i];
                                     var checkstat = RightTools.GetMaxStat(
                                         tool as ThingWithComps,
                                         stat.Key);
                                     if (checkstat > 0 && checkstat < statfloat)
                                     {
                                         Thing dropTool;
-                                        toolbelt.slotsComp.slots.TryDrop(
+                                        toolbelt.slotsComp.innerContainer.TryDrop(
                                             tool,
                                             this.pawn.Position,
                                             this.pawn.Map,
@@ -122,6 +124,7 @@
                         }
                     }
             };
+
             yield return pickUpThingIntoSlot;
 
             yield return Toils_Jump.JumpIfHaveTargetInQueue(HaulableInd, toilExtractNextTarget);

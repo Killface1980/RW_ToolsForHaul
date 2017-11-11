@@ -13,17 +13,17 @@
             Apparel_ToolBelt toolbelt = ap as Apparel_ToolBelt;
             Thing dropThing = null;
             
-            if (backpack?.slotsComp?.slots?.Count >= 1)
+            if (backpack?.slotsComp?.innerContainer?.Count >= 1)
             {
-                foreach (Thing slot in backpack.slotsComp.slots)
+                foreach (Thing slot in backpack.slotsComp.innerContainer)
                 {
                     GenThing.TryDropAndSetForbidden(slot, pos,ap.Map, ThingPlaceMode.Near, out dropThing, forbid);
                 }
             }
 
-            if (toolbelt?.slotsComp?.slots?.Count >= 1)
+            if (toolbelt?.slotsComp?.innerContainer?.Count >= 1)
             {
-                foreach (Thing slot in toolbelt.slotsComp.slots)
+                foreach (Thing slot in toolbelt.slotsComp.innerContainer)
                 {
                     GenThing.TryDropAndSetForbidden(slot, pos, ap.Map, ThingPlaceMode.Near, out dropThing, forbid);
                 }

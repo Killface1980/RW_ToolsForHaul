@@ -40,8 +40,8 @@
         {
             Apparel_Backpack backpack = this.job.GetTarget(BackpackInd).Thing as Apparel_Backpack;
 
-            // no free slots
-            this.FailOn(() => backpack.slotsComp.slots.Count >= backpack.MaxItem);
+            // no free innerContainer
+            this.FailOn(() => backpack.slotsComp.innerContainer.Count >= backpack.MaxItem);
 
             // reserve resources
             yield return Toils_Reserve.ReserveQueue(HaulableInd);
@@ -58,8 +58,7 @@
             {
                 initAction = () =>
                     {
-                        if (!backpack.slotsComp.slots.TryAdd(this.job.targetA.Thing)
-                        )
+                        if (!backpack.slotsComp.innerContainer.TryAddOrTransfer(this.TargetThingA.SplitOff(this.TargetThingA.stackCount)))
                         {
                             this.EndJobWith(JobCondition.Incompletable);
                         }

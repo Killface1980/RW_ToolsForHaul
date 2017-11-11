@@ -92,7 +92,7 @@ namespace TFH_VehicleHauling
             return null;
         }
     
-        public static Job HaulWithToolsToCell([NotNull] Pawn pawn, Vehicle_Cart cart, Thing haulThing = null)
+        public static Job HaulWithCartToCell([NotNull] Pawn pawn, Vehicle_Cart cart, Thing haulThing = null)
         {
             Trace.StopWatchStart();
             bool forced = false;
@@ -121,7 +121,7 @@ namespace TFH_VehicleHauling
             Zone zone = pawn.Map.zoneManager.ZoneAt(cart.Position);
 
             targetCart = cart;
-            ThingOwner storage = cart.GetContainer();
+            ThingOwner storage = cart.GetDirectlyHeldThings();
 
             maxItem = cart.MaxItem;
             thresholdItem = (int)Math.Ceiling(maxItem * 0.25);
@@ -292,7 +292,6 @@ namespace TFH_VehicleHauling
             }
 
             Trace.AppendLine("No Job. Reason: " + JobFailReason.Reason);
-            Trace.LogMessage();
             return null;
         }
 
@@ -325,7 +324,7 @@ namespace TFH_VehicleHauling
             Zone zone = pawn.Map.zoneManager.ZoneAt(cart.Position);
 
             targetC = cart;
-            ThingOwner storage = cart.GetContainer();
+            ThingOwner storage = cart.GetDirectlyHeldThings();
 
             maxItem = cart.MaxItem;
             thresholdItem = (int)Math.Ceiling(maxItem * 0.25);

@@ -24,6 +24,7 @@
         public virtual void DrawWornExtras();
         public virtual IEnumerable<Gizmo> GetWornGizmos();
         */
+
         public int numOfSavedItems;
         public Pawn postWearer;
 
@@ -31,12 +32,21 @@
         public int MaxItem;
         public int MaxStack => this.MaxItem * 20;
 
+
         public Apparel_Backpack()
         {
             this.postWearer = null;
             this.numOfSavedItems = 0;
         }
-
+        public override string GetInspectString()
+        {
+            string inspectString = base.GetInspectString();
+            string text = inspectString;
+            return text + "\n" + HaulStatDefOf.InventoryMaxItem.LabelCap + ": "
+                   + HaulStatDefOf.InventoryMaxItem.ValueToString(
+                       Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.InventoryMaxItem)),
+                       ToStringNumberSense.Absolute);
+        }
 
         public CompSlotsBackpack slotsComp => this.GetComp<CompSlotsBackpack>();
 
@@ -71,12 +81,12 @@
         // //Put off backpack. Should drop all from postWearer
         // else if (postWearer != null && wearer == null)
         // {
-        // slotsComp.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
+        // slotsComp.innerContainer.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
         // postWearer = null;
         // numOfSavedItems = 0;
         // }
-        // if (wearer != null && numOfSavedItems > slotsComp.slots.Count)
-        // numOfSavedItems = slotsComp.slots.Count;
+        // if (wearer != null && numOfSavedItems > slotsComp.innerContainer.Count)
+        // numOfSavedItems = slotsComp.innerContainer.Count;
         // }
         public override IEnumerable<Gizmo> GetWornGizmos()
         {
@@ -90,7 +100,7 @@
             // yield return designator;
             Designator_PutInBackpackSlot designator2 = new Designator_PutInBackpackSlot();
             designator2.SlotsBackpackComp = this.slotsComp;
-            designator2.defaultLabel = string.Format("Put in ({0}/{1})", this.slotsComp.slots.Count, this.MaxItem);
+            designator2.defaultLabel = string.Format("Put in ({0}/{1})", this.slotsComp.innerContainer.Count, this.MaxItem);
             designator2.defaultDesc = string.Format("Put thing in {0}.", this.Label);
             designator2.hotKey = KeyBindingDef.Named("CommandPutInInventory");
             designator2.activateSound = SoundDef.Named("Click");
@@ -100,9 +110,8 @@
             designator2.MaxItem = this.MaxItem;
             yield return designator2;
 
-            Gizmo_BackpackEquipment gizmo = new Gizmo_BackpackEquipment();
+            Gizmo_BackpackEquipment gizmo = new Gizmo_BackpackEquipment { backpack = this };
 
-            gizmo.backpack = this;
             yield return gizmo;
         }
     }

@@ -11,67 +11,75 @@
 
     public class CompSlotsBackpack : CompEquipmentGizmoProvider, IThingHolder
     {
-        public ThingOwner GetDirectlyHeldThings()
-        {
-            return this.slots;
-        }
-
-        public ThingOwner slots;
-
-        public void GetChildHolders(List<IThingHolder> outChildren)
-        {
-            ThingOwnerUtility.AppendThingHoldersFromThings(outChildren, this.GetDirectlyHeldThings());
-        }
+        #region Public Fields
 
         public List<Thing> designatedThings = new List<Thing>();
 
-        // gets access to the comp properties
-        public CompSlotsBackpack_Properties Properties => (CompSlotsBackpack_Properties)this.props;
+        public ThingOwner<Thing> innerContainer;
 
-        public bool Spawned => this.parent.Spawned;
+        #endregion Public Fields
 
-        // IThingContainerOwner requirement
-        public Map GetMap()
+        #region Public Constructors
+
+        // initialises ThingContainer owner and restricts the max innerContainer range
+        public CompSlotsBackpack()
         {
-            return this.parent.MapHeld;
+            this.innerContainer = new ThingOwner<Thing>(this);
+
+            // if (Properties.MaxSlots > 6)
+            //     Properties.MaxSlots = 6;
+            //
+            // if (Properties.maxSlots < 1)
+            //     Properties.maxSlots = 1;
         }
 
-        public override void CompTick()
-        {
-            base.CompTick();
-        }
+        #endregion Public Constructors
 
-        public float moveSpeedFactor
-        {
-            get
-            {
-                if (this.slots != null && this.slots.Count > 0)
-                    return Mathf.Lerp(1f, 0.75f, this.slots.Count / (this.parent as Apparel_Backpack).MaxItem);
-                return 1f;
-            }
-        }
+        #region Public Properties
 
         public float encumberPenalty
         {
             get
             {
                 float penalty = 0f;
-                if (this.slots != null && this.slots.Count > 0)
+                if (this.innerContainer != null && this.innerContainer.Count > 0)
                 {
-                    penalty = this.slots.Count / (this.parent as Apparel_Backpack).MaxItem;
+                    penalty = this.innerContainer.Count / (this.parent as Apparel_Backpack).MaxItem;
                 }
 
                 return penalty;
             }
         }
 
-        // IThingContainerOwner requirement
-        public IntVec3 GetPosition()
+        public int MaxStack => (this.parent as Apparel_Backpack).MaxItem * 50;
+
+        public float moveSpeedFactor
         {
-            return this.parent.Position;
+            get
+            {
+                if (this.innerContainer != null && this.innerContainer.Count > 0)
+                    return Mathf.Lerp(1f, 0.75f, this.innerContainer.Count / (this.parent as Apparel_Backpack).MaxItem);
+                return 1f;
+            }
         }
 
-        public int MaxStack => (this.parent as Apparel_Backpack).MaxItem * 50;
+        public Apparel_Backpack backpack;
+        public IThingHolder ParentHolder
+        {
+            get
+            {
+                return this.backpack.Wearer;
+            }
+        }
+
+        // gets access to the comp properties
+        public CompSlotsBackpack_Properties Properties => (CompSlotsBackpack_Properties)this.props;
+
+        public bool Spawned => this.parent.Spawned;
+
+        #endregion Public Properties
+
+        #region Public Methods
 
         public int AvailableStackSpace(ThingDef td, Thing CarriedThing = null)
         {
@@ -85,21 +93,42 @@
             return num;
         }
 
-        // initialises ThingContainer owner and restricts the max slots range
-        public CompSlotsBackpack()
+        public override void CompTick()
         {
-            this.slots = new ThingOwner<Thing>(this, true, LookMode.Deep);
+            base.CompTick();
         }
 
-        // apply remaining damage and scatter things in slots, if holdingContainer is destroyed
+        public void GetChildHolders(List<IThingHolder> outChildren)
+        {
+            ThingOwnerUtility.AppendThingHoldersFromThings(outChildren, this.GetDirectlyHeldThings());
+        }
+
+        public ThingOwner GetDirectlyHeldThings()
+        {
+            return this.innerContainer;
+        }
+        // IThingContainerOwner requirement
+        public IntVec3 GetPosition()
+        {
+            return this.parent.Position;
+        }
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+
+            // NOTE: check if not "new object[]{ this });"
+            Scribe_Deep.Look(ref this.innerContainer, "innerContainer", this);
+        }
+
+        // apply remaining damage and scatter things in innerContainer, if holdingContainer is destroyed
         public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             if (this.parent.HitPoints < 0)
             {
-                foreach (Thing thing in this.slots)
+                foreach (Thing thing in this.innerContainer)
                     thing.HitPoints -= (int)totalDamageDealt - this.parent.HitPoints;
 
-                this.slots.TryDropAll(this.parent.Position, this.parent.Map, ThingPlaceMode.Near);
+                this.innerContainer.TryDropAll(this.parent.Position, this.parent.Map, ThingPlaceMode.Near);
             }
         }
 
@@ -114,25 +143,19 @@
                 // put weapon in slotter
                 this.Owner.equipment.TryTransferEquipmentToContainer(
                     this.Owner.equipment.Primary,
-                    this.slots);
+                    this.innerContainer);
             }
 
             // equip new weapon
             this.Owner.equipment.AddEquipment(thing);
 
             // remove that equipment from slotter
-            this.slots.Remove(thing);
+            this.innerContainer.Remove(thing);
 
             // interrupt current jobs to prevent random errors
-            if (this.Owner?.jobs.curJob != null) this.Owner.jobs.EndCurrentJob(JobCondition.InterruptForced);
+            if (this.Owner?.CurJob != null) this.Owner.jobs.EndCurrentJob(JobCondition.InterruptForced);
         }
 
-        public override void PostExposeData()
-        {
-            base.PostExposeData();
-
-            // NOTE: check if not "new object[]{ this });"
-            Scribe_Deep.Look(ref this.slots, "slots", this);
-        }
+        #endregion Public Methods
     }
 }

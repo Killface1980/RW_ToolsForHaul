@@ -32,13 +32,13 @@
         }
         public override bool ShouldSkip(Pawn pawn)
         {
-            Trace.DebugWriteHaulingPawn(pawn);
 
             pawn.AvailableVehicles(out List<Thing> availableVehicles);
             if (availableVehicles.NullOrEmpty())
             {
                 return true;
             }
+            Trace.DebugWriteHaulingPawn(pawn);
 
             if (TFH_BaseUtility.GetRightVehicle(pawn, availableVehicles, null) == null)
             {

@@ -26,7 +26,6 @@
         public Pawn postWearer;
 
         public int MaxItem;
-        public int MaxStack => this.MaxItem * 20;
 
         public Apparel_ToolBelt()
         {
@@ -37,9 +36,9 @@
 
         public CompSlotsToolbelt slotsComp => this.GetComp<CompSlotsToolbelt>();
 
-        public override void SpawnSetup(Map map, bool respawn)
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            base.SpawnSetup(map, respawn);
+            base.SpawnSetup(map, respawningAfterLoad);
             this.MaxItem = Mathf.RoundToInt(this.GetStatValue(HaulStatDefOf.InventoryMaxItem));
         }
 
@@ -67,17 +66,17 @@
         // //Put off backpack. Should drop all from postWearer
         // else if (postWearer != null && wearer == null)
         // {
-        // slotsComp.slots.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
+        // slotsComp.innerContainer.TryDropAll(postWearer.Position, ThingPlaceMode.Near);
         // postWearer = null;
         // }
         // }
         public override IEnumerable<Gizmo> GetWornGizmos()
         {
-            if (this.Wearer.story != null && !this.Wearer.story.WorkTagIsDisabled(WorkTags.Violent))
+            if (!this.Wearer.story?.WorkTagIsDisabled(WorkTags.Violent) == true)
             {
                 Designator_PutInToolbeltSlot designator2 = new Designator_PutInToolbeltSlot();
                 designator2.SlotsToolbeltComp = this.slotsComp;
-                designator2.defaultLabel = string.Format("Put in ({0}/{1})", this.slotsComp.slots.Count, this.MaxItem);
+                designator2.defaultLabel = string.Format("Put in ({0}/{1})", this.slotsComp.innerContainer.Count, this.MaxItem);
                 designator2.defaultDesc = string.Format("Put thing in {0}.", this.Label);
                 designator2.hotKey = KeyBindingDef.Named("CommandPutInInventory");
                 designator2.activateSound = SoundDef.Named("Click");

@@ -68,7 +68,7 @@
                 return null;
             }
 
-            ThingOwner storage = cart.GetContainer();
+            ThingOwner storage = cart.GetDirectlyHeldThings();
 
             if (cart.IsBurning())
             {
@@ -110,7 +110,7 @@
             // }
             if (cart.IsMountedOnAnimalAndAvailable() || pawn.IsPlayerAllowedToRide(cart))
             {
-                return TFH_Utility.HaulWithToolsToCell(pawn, cart, t);
+                return TFH_Utility.HaulWithCartToCell(pawn, cart, t);
             }
 
             JobFailReason.Is(Static.NoAvailableCart);

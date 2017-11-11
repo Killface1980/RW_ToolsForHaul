@@ -35,7 +35,7 @@
 
             Vehicle_Cart carrier=new Vehicle_Cart();
 
-            ThingOwner storage = carrier.GetContainer();
+            ThingOwner storage = carrier.GetDirectlyHeldThings();
 
             IEnumerable<Thing> remainingItems = storage;
             int reservedMaxItem = storage.Count;
@@ -148,7 +148,7 @@
         {
             availableVehicle = this.PotentialWorkThingsGlobal(pawn) as List<Thing>;
 
-            return availableVehicle != null && (availableVehicle.Find(aV => ((Vehicle_Cart)aV).GetContainer().TotalStackCount > 0)
+            return availableVehicle != null && (availableVehicle.Find(aV => ((Vehicle_Cart)aV).GetDirectlyHeldThings().TotalStackCount > 0)
                                                 == null // Need to drop
                                                 && pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0); // No Haulable
         }

@@ -13,10 +13,10 @@
     {
         public ThingOwner GetDirectlyHeldThings()
         {
-            return this.slots;
+            return this.innerContainer;
         }
 
-        public ThingOwner slots;
+        public ThingOwner<Thing> innerContainer;
 
         public void GetChildHolders(List<IThingHolder> outChildren)
         {
@@ -41,16 +41,16 @@
             base.CompTick();
         }
 
-        public float moveSpeedFactor => Mathf.Lerp(1f, 0.75f, this.slots.Count / (this.parent as Apparel_ToolBelt).MaxItem);
+        public float moveSpeedFactor => Mathf.Lerp(1f, 0.75f, this.innerContainer.Count / (this.parent as Apparel_ToolBelt).MaxItem);
 
         public float encumberPenalty
         {
             get
             {
                 float penalty = 0f;
-                if (this.slots.Count != 0)
+                if (this.innerContainer.Count != 0)
                 {
-                    penalty = this.slots.Count / (this.parent as Apparel_ToolBelt).MaxItem;
+                    penalty = this.innerContainer.Count / (this.parent as Apparel_ToolBelt).MaxItem;
                 }
 
                 return penalty;
@@ -77,21 +77,21 @@
             return num;
         }
 
-        // initialises ThingContainer owner and restricts the max slots range
+        // initialises ThingContainer owner and restricts the max innerContainer range
         public CompSlotsToolbelt()
         {
-            this.slots = new ThingOwner<Thing>(this, true, LookMode.Deep);
+            this.innerContainer = new ThingOwner<Thing>(this);
         }
 
-        // apply remaining damage and scatter things in slots, if holdingContainer is destroyed
+        // apply remaining damage and scatter things in innerContainer, if holdingContainer is destroyed
         public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             if (this.parent.HitPoints < 0)
             {
-                foreach (Thing thing in this.slots)
+                foreach (Thing thing in this.innerContainer)
                     thing.HitPoints -= (int)totalDamageDealt - this.parent.HitPoints;
 
-                this.slots.TryDropAll(this.parent.Position, this.parent.Map, ThingPlaceMode.Near);
+                this.innerContainer.TryDropAll(this.parent.Position, this.parent.Map, ThingPlaceMode.Near);
             }
         }
 
@@ -106,14 +106,14 @@
                 // put weapon in slotter
                 this.Owner.equipment.TryTransferEquipmentToContainer(
                     this.Owner.equipment.Primary,
-                    this.slots);
+                    this.innerContainer);
             }
 
             // equip new weapon
             this.Owner.equipment.AddEquipment(thing);
 
             // remove that equipment from slotter
-            this.slots.Remove(thing);
+            this.innerContainer.Remove(thing);
 
             // interrupt current jobs to prevent random errors
             if (this.Owner?.jobs.curJob != null)
@@ -127,7 +127,7 @@
             base.PostExposeData();
 
             // NOTE: check if not "new object[]{ this });"
-            Scribe_Deep.Look(ref this.slots, "slots", this);
+            Scribe_Deep.Look(ref this.innerContainer, "innerContainer", this);
         }
     }
 }

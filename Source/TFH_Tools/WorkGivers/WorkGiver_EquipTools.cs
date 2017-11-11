@@ -68,7 +68,7 @@
             if (toolbelt == null) return true;
 
             // Skip it toolbelt full
-            if (toolbelt.MaxItem <= toolbelt.slotsComp.slots.Count)
+            if (toolbelt.MaxItem <= toolbelt.slotsComp.innerContainer.Count)
             {
                 return true;
             }
@@ -85,7 +85,7 @@
             if (!HaulAIUtility.PawnCanAutomaticallyHaul(pawn, t, forced))
                 return false;
 
-            if (toolbelt.slotsComp.slots.Contains(t.def))
+            if (toolbelt.slotsComp.innerContainer.Contains(t.def))
                 return false;
 
             if (pawn.equipment.Primary != null && pawn.equipment.Primary.def.Equals(t.def))

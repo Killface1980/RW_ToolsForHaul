@@ -17,7 +17,7 @@
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Assemblies\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;LOGGING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -53,8 +53,10 @@
     <Compile Include="Apparel_Backpack.cs" />
     <Compile Include="Apparel_ToolBelt.cs" />
     <None Include="WorkGivers\Class1.cs" />
+    <Compile Include="Components\Class1.cs" />
     <Compile Include="Components\CompEquipmentGizmoProvider.cs" />
     <Compile Include="Components\CompEquipmentGizmoUser.cs" />
+    <Compile Include="Components\CompInventory.cs" />
     <Compile Include="Components\CompSlotsBackpack.cs" />
     <Compile Include="Components\CompSlotsBackpack_Properties.cs" />
     <Compile Include="Components\CompSlotsToolbelt.cs" />
@@ -78,12 +80,15 @@
     <Compile Include="ToolsForHaulUtility.cs" />
     <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
-    <Compile Include="_Pawn_ApparelTracker.cs" />
+    <None Include="_Pawn_ApparelTracker.cs" />
     <Compile Include="HarmonyPatches.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\Defs\JobDefs\Jobs_Tools.xml">
       <Link>JobDrivers\Jobs_Tools.xml</Link>
+    </Content>
+    <Content Include="..\..\Defs\StatDefs\Stats_Apparel.xml">
+      <Link>Stats_Apparel.xml</Link>
     </Content>
     <Content Include="..\..\Defs\ThingDefs\Apparel_Backpack.xml">
       <Link>Apparel_Backpack.xml</Link>
@@ -95,7 +100,10 @@
       <Link>RA_Weapons_Melee.xml</Link>
     </Content>
     <Content Include="..\..\Defs\WorkGiverDefs\WorkGiver_Tool.xml">
-      <Link>WorkGiver_Tool.xml</Link>
+      <Link>WorkGivers\WorkGiver_Tool.xml</Link>
+    </Content>
+    <Content Include="..\..\Patches\HumanPatch.xml">
+      <Link>HumanPatch.xml</Link>
     </Content>
   </ItemGroup>
   <ItemGroup>

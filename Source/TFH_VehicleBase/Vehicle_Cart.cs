@@ -105,12 +105,7 @@
         private int tickCooldown = 60;
 
         // mount and storage data
-        private ThingOwner<ThingWithComps> storage;
-
-        public ThingOwner GetContainer()
-        {
-            return this.storage;
-        }
+        private ThingOwner<Thing> innerContainer;
 
         public IntVec3 GetPosition()
         {
@@ -170,7 +165,7 @@
 
             // Get the vehicles away from buildings
             // map.designationManager.Notify_BuildingDespawned(this);
-            this.storage = new ThingOwner<ThingWithComps>(this, false);
+            this.innerContainer = new ThingOwner<Thing>(this);
 
             if (this.allowances == null)
             {
@@ -221,7 +216,7 @@
         {
             base.ExposeData();
 
-            Scribe_Deep.Look(ref this.storage, "storage", this);
+            Scribe_Deep.Look(ref this.innerContainer, "innerContainer", this);
             Scribe_Deep.Look(ref this.allowances, "allowances");
 
             Scribe_Values.Look<bool>(ref this.wickStarted, "wickStarted", false, false);
@@ -604,10 +599,10 @@
             }
             else if (this.wickStarted)
             {
-                this.storage?.ClearAndDestroyContents();
+                this.innerContainer?.ClearAndDestroyContents();
             }
 
-            this.storage?.TryDropAll(this.Position, this.Map, ThingPlaceMode.Near);
+            this.innerContainer?.TryDropAll(this.Position, this.Map, ThingPlaceMode.Near);
 
             base.Destroy(mode);
         }
@@ -756,7 +751,7 @@
             // TODO bugs when storage shown & something in storage & no driver - deativated for now
             if (this.VehicleComp.ShowsStorage())
             {
-                if (!this.storage.InnerListForReading.NullOrEmpty() || (this.MountableComp.IsMounted
+                if (!this.innerContainer.InnerListForReading.NullOrEmpty() || (this.MountableComp.IsMounted
                                                   && this.MountableComp.Rider.RaceProps.packAnimal
                                                   && this.MountableComp.Rider.RaceProps.Animal))
                 {
@@ -794,9 +789,9 @@
                             }
                         }
                     }
-                    else if (this.storage.Any)
+                    else if (this.innerContainer.Any)
                     {
-                        foreach (ThingWithComps mountThing in this.storage.InnerListForReading)
+                        foreach (ThingWithComps mountThing in this.innerContainer.InnerListForReading)
                         {
                             mountThing.Rotation = this.Rotation;
                             Pawn storagePawn = mountThing as Pawn;
@@ -889,7 +884,7 @@
 
         public ThingOwner GetDirectlyHeldThings()
         {
-            return this.storage;
+            return this.innerContainer;
         }
 
         public bool InParkingLot => this.Position.GetZone(this.Map) is Zone_ParkingLot;

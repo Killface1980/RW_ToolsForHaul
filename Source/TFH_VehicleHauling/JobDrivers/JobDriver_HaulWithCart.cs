@@ -149,6 +149,8 @@
             // Keep the cart if haulables
             if (this.pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().NullOrEmpty())
             {
+              //  yield return checkParkingCellEmpty;
+
                 yield return findParkingSpaceForCart;
 
                 yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.OnCell);

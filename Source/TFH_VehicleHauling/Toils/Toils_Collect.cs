@@ -19,11 +19,16 @@
             Toil toil = new Toil();
             toil.initAction = () =>
                 {
-                    List<LocalTargetInfo> targetQueue = toil.actor.jobs.curJob.GetTargetQueue(ind);
+                    List<LocalTargetInfo> targetQueue = toil.actor.CurJob.GetTargetQueue(ind);
                     if (!targetQueue.NullOrEmpty())
                     {
-                        toil.actor.jobs.curJob.SetTarget(ind, targetQueue.First());
+                        toil.actor.CurJob.SetTarget(ind, targetQueue.First());
                         targetQueue.RemoveAt(0);
+                        if (!toil.actor.CurJob.countQueue.NullOrEmpty())
+                        {
+                            toil.actor.CurJob.count = toil.actor.CurJob.countQueue.First();
+                            toil.actor.CurJob.countQueue.RemoveAt(0);
+                        }
                     }
                 };
             return toil;
@@ -36,7 +41,6 @@
             Toil toil = new Toil();
             toil.initAction = () =>
                 {
-                    IntVec3 storeCell = IntVec3.Invalid;
                     Pawn actor = toil.GetActor();
 
                     LocalTargetInfo target = toil.actor.jobs.curJob.GetTarget(HaulableInd);
@@ -49,7 +53,7 @@
                     if (!targetQueue.NullOrEmpty() && target.Thing.def.defName == targetQueue.First().Thing.def.defName)
                     {
                         toil.actor.jobs.curJob.SetTarget(HaulableInd, targetQueue.First());
-                        actor.Map.reservationManager.Reserve(actor,actor.CurJob, targetQueue.First());
+                        actor.Map.reservationManager.Reserve(actor, actor.CurJob, targetQueue.First());
                         targetQueue.RemoveAt(0);
                         toil.actor.jobs.curDriver.JumpToToil(jumpToil);
                         return;
@@ -64,7 +68,7 @@
                         return;
                     }
 
-                    ThingOwner storage = cart.GetContainer();
+                    ThingOwner storage = cart.GetDirectlyHeldThings();
 
                     int curItemCount = storage.Count
                                        + targetQueue.Count;
@@ -91,7 +95,7 @@
                     if (thing != null)
                     {
                         toil.actor.jobs.curJob.SetTarget(HaulableInd, thing);
-                        actor.Map.reservationManager.Reserve(actor,actor.CurJob, thing);
+                        actor.Map.reservationManager.Reserve(actor, actor.CurJob, thing);
                         toil.actor.jobs.curDriver.JumpToToil(jumpToil);
                     }
                 };
@@ -188,7 +192,7 @@
                         // Collecting TargetIndex ind
                         // if
                         // haulThing.DeSpawn();
-                        ThingOwner storage = carrier.GetContainer();
+                        ThingOwner storage = carrier.GetDirectlyHeldThings();
 
                         haulThing.holdingOwner.TryTransferToContainer(haulThing, storage, haulThing.stackCount);// carrier.innerContainer.TryAdd(haulThing);
                     }
@@ -202,7 +206,7 @@
                         if (actor.Position.AdjacentTo8Way(thingList[i].Thing.Position))
                         {
                             // thingList[i].Thing.DeSpawn();
-                            ThingOwner storage = carrier.GetContainer();
+                            ThingOwner storage = carrier.GetDirectlyHeldThings();
                             thingList[i].Thing.holdingOwner
                                 .TryTransferToContainer(thingList[i].Thing, storage, thingList[i].Thing.stackCount);
                             {
@@ -254,7 +258,7 @@
                         toil.actor.jobs.curDriver.EndJobWith(JobCondition.Errored);
                     }
 
-                    ThingOwner storage = cart.GetContainer();
+                    ThingOwner storage = cart.GetDirectlyHeldThings();
 
                     if (storage.Count == 0)
                     {
@@ -265,7 +269,7 @@
                     if (cell != IntVec3.Invalid)
                     {
                         toil.actor.jobs.curJob.SetTarget(StoreCellInd, cell);
-                        actor.Map.reservationManager.Reserve(actor,actor.CurJob, cell);
+                        actor.Map.reservationManager.Reserve(actor, actor.CurJob, cell);
                         toil.actor.jobs.curDriver.JumpToToil(jumpToil);
                     }
                 };
@@ -366,7 +370,7 @@
                     Pawn actor = toil.actor;
                     Job curJob = actor.jobs.curJob;
                     Vehicle_Cart carrier = actor.jobs.curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
-                    ThingOwner cartStorage = carrier.GetContainer();
+                    ThingOwner cartStorage = carrier.GetDirectlyHeldThings();
                     if (cartStorage.Count <= 0)
                     {
                         return;

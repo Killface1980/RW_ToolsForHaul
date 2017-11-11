@@ -19,16 +19,17 @@ namespace TFH_Tools.WorkGivers
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
             List<Thing> list = new List<Thing>();
-            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            Apparel_Backpack backpack = pawn.TryGetBackpack();
             foreach (Thing thing in pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling())
             {
-                if (
-                    thing.def.thingCategories.Exists(
-                        category =>
-                            backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
-                                subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))
-                            && !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(
-                                subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)))) list.Add(thing);
+                if (thing.def.thingCategories.Exists(
+                    category => backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
+                                    subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))
+                                && !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(
+                                    subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))))
+                {
+                    list.Add(thing);
+                }
 
                 // return ToolsForHaulUtility.Cart();
             }
@@ -38,24 +39,25 @@ namespace TFH_Tools.WorkGivers
 
         public override bool ShouldSkip(Pawn pawn)
         {
-            Trace.DebugWriteHaulingPawn(pawn);
 
-            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            Apparel_Backpack backpack = pawn.TryGetBackpack();
 
             // Should skip pawn that don't have backpack.
             if (backpack == null)
             {
                 return true;
             }
-            if (backpack.MaxItem - backpack.slotsComp.slots.Count == 0)
+
+            if (backpack.MaxItem - backpack.slotsComp.innerContainer.Count == 0)
             {
                 return true;
             }
 
+            Trace.DebugWriteHaulingPawn(pawn);
             return false;
         }
 
-        public override Job JobOnThing(Pawn pawn, Thing t, bool forced=false)
+        public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             if (t is Corpse)
             {
@@ -67,24 +69,21 @@ namespace TFH_Tools.WorkGivers
                 return null;
             }
 
-            Apparel_Backpack backpack = ToolsForHaulUtility.TryGetBackpack(pawn);
+            Apparel_Backpack backpack = pawn.TryGetBackpack();
             if (backpack != null)
             {
-                if (
-                    !t.def.thingCategories.Exists(
-                        category =>
-                            backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
-                                subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category)) &&
-                            !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(
-                                subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))))
+                if (!t.def.thingCategories.Exists(
+                        category => backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
+                                        subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))
+                                    && !backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Exists(
+                                        subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))))
                 {
                     JobFailReason.Is("Backpack can't hold that thing");
                     return null;
                 }
                 else
                 {
-
-                    return ToolsForHaulUtility.HaulWithTools(pawn, pawn.Map);
+                    return ToolsForHaulUtility.HaulWithTools(pawn, pawn.Map, t);
                 }
             }
 

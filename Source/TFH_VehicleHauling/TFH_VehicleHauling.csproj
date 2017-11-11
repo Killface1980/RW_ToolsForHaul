@@ -61,7 +61,7 @@
     <None Include="JobDrivers\Class1.cs" />
     <None Include="WorkGivers\Class1.cs" />
     <None Include="WorkGivers\WorkGiver_DoBillVehicle.cs" />
-    <Compile Include="WorkGivers\WorkGiver_RescueDowned.cs" />
+    <Compile Include="WorkGivers\WorkGiver_RescueVehicleDowned.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulCorpses_WithAnimalCart.cs" />
     <Compile Include="WorkGivers\WorkGiver_Haul_WithAnimalCart.cs" />
     <None Include="SpotlightTurret.cs" />

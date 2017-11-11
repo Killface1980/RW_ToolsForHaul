@@ -26,7 +26,7 @@
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced)
         {
             Vehicle_Cart carrier = t as Vehicle_Cart;
-                ThingOwner storage = carrier.GetContainer();
+                ThingOwner storage = carrier.GetDirectlyHeldThings();
 
             if (carrier == null)
             {
@@ -154,7 +154,7 @@
         {
             availableVehicle = this.PotentialWorkThingsGlobal(pawn) as List<Thing>;
 
-            return availableVehicle != null && (availableVehicle.Find(aV => ((Vehicle_Cart)aV).GetContainer().TotalStackCount > 0)
+            return availableVehicle != null && (availableVehicle.Find(aV => ((Vehicle_Cart)aV).GetDirectlyHeldThings().TotalStackCount > 0)
                                                 == null // Need to drop
                                                 && pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0); // No Haulable
         }

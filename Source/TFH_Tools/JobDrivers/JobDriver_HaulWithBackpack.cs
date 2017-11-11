@@ -1,5 +1,6 @@
 ﻿namespace TFH_Tools.JobDrivers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -12,12 +13,13 @@
 
     public class JobDriver_HaulWithBackpack : JobDriver
     {
-        private const TargetIndex BackpackInd = TargetIndex.C;
 
         // Constants
         private const TargetIndex HaulableInd = TargetIndex.A;
 
         private const TargetIndex StoreCellInd = TargetIndex.B;
+
+        private const TargetIndex BackpackInd = TargetIndex.C;
 
         public override string GetReport()
         {
@@ -59,46 +61,38 @@
 
         public override bool TryMakePreToilReservations()
         {
-            return true; // this.pawn.Reserve(this.TargetThingA, this.job);
+            //  base.pawn.ReserveAsManyAsPossible(base.job.GetTargetQueue(TargetIndex.A), base.job, 1, -1, null);
+            //  base.pawn.ReserveAsManyAsPossible(base.job.GetTargetQueue(TargetIndex.B), base.job, 1, -1, null);
+
+            return true;
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            Apparel_Backpack backpack = this.job.GetTarget(BackpackInd).Thing as Apparel_Backpack;
-
             ///
             // Set fail conditions
             ///
-            // no free slots
-            this.FailOn(() => backpack.slotsComp.slots.Count >= backpack.MaxItem);
-
-            //// hauling stuff not allowed
-            // foreach (ThingCategoryDef category in CurJob.targetA.Thing.def.thingCategories)
-            // {
-            // this.FailOn(() => !backpack.slotsComp.Properties.allowedThingCategoryDefs.Contains(category));
-            // this.FailOn(() => backpack.slotsComp.Properties.forbiddenSubThingCategoryDefs.Contains(category));
-            // }
 
             ///
             // Define Toil
             ///
 
-            Toil endOfJob = new Toil();
-            endOfJob.initAction = () => { this.EndJobWith(JobCondition.Succeeded); };
-            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(
-                endOfJob,
-                () => this.job.GetTargetQueue(StoreCellInd).NullOrEmpty());
-            Toil checkHaulableEmpty = Toils_Jump.JumpIf(
-                checkStoreCellEmpty,
-                () => this.job.GetTargetQueue(HaulableInd).NullOrEmpty());
+            Toil endOfJob = new Toil { initAction = () => { this.EndJobWith(JobCondition.Succeeded); } };
+            Toil checkStoreCellEmpty = Toils_Jump.JumpIf(endOfJob, () => this.job.GetTargetQueue(StoreCellInd).NullOrEmpty());
 
-            Toil checkBackpackEmpty = Toils_Jump.JumpIf(endOfJob, () => backpack.slotsComp.slots.Count <= 0);
+            Toil checkHaulableEmpty = Toils_Jump.JumpIf(checkStoreCellEmpty, () => this.job.GetTargetQueue(HaulableInd).NullOrEmpty());
+            Toil extractA = Toils_Collect.Extract(HaulableInd);
+            Toil extractB = Toils_Collect.Extract(StoreCellInd);
+
+            Toil gotoThing = Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch)
+                .FailOnSomeonePhysicallyInteracting(HaulableInd)
+                .FailOnDestroyedNullOrForbidden(HaulableInd);
 
             ///
             // Toils Start
             ///
 
-            // Reserve thing to be stored and storage cell
+            // Reserve thing to be stored and storage cell 
             yield return Toils_Reserve.ReserveQueue(HaulableInd);
             yield return Toils_Reserve.ReserveQueue(StoreCellInd);
 
@@ -106,29 +100,14 @@
             yield return checkHaulableEmpty;
             {
                 // Collect TargetQueue
-                Toil extractA = Toils_Collect.Extract(HaulableInd);
                 yield return extractA;
-
-                Toil gotoThing = Toils_Goto.GotoThing(HaulableInd, PathEndMode.ClosestTouch)
-                    .FailOnDestroyedOrNull(HaulableInd);
                 yield return gotoThing;
+                yield return Toils_General.WaitWith(HaulableInd, 60, true);
+                yield return Toils_Haul.StartCarryThing(HaulableInd);
+                yield return PutCarriedThingInBackpack();
 
-                // yield return Toils_Collect.CollectInBackpack(HaulableInd, backpack);
-                Toil pickUpThingIntoSlot = new Toil
-                {
-                    initAction = () =>
-                        {
-                            if (!backpack.slotsComp.slots.TryAdd(
-                                    this.job.targetA.Thing))
-                            {
-                                this.EndJobWith(JobCondition.Incompletable);
-                            }
-                        }
-                };
-                yield return pickUpThingIntoSlot;
-
+                //   yield return CollectInBackpack(HaulableInd);
                 yield return Toils_Collect.CheckDuplicates(gotoThing, BackpackInd, HaulableInd);
-
                 yield return Toils_Jump.JumpIfHaveTargetInQueue(HaulableInd, extractA);
             }
 
@@ -136,19 +115,14 @@
             yield return checkStoreCellEmpty;
             {
                 // Drop TargetQueue
-                yield return checkBackpackEmpty;
-
-                Toil extractB = Toils_Collect.Extract(StoreCellInd);
                 yield return extractB;
 
-                Toil gotoCell = Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch);
-                yield return gotoCell;
+                yield return Toils_Goto.GotoCell(StoreCellInd, PathEndMode.ClosestTouch)
+                    .FailOnBurningImmobile(StoreCellInd);
 
-                yield return DropTheCarriedFromBackpackInCell(StoreCellInd, ThingPlaceMode.Direct, backpack);
+                yield return DropTheCarriedFromBackpackInCell(StoreCellInd, ThingPlaceMode.Direct);
 
-                yield return Toils_Jump.JumpIfHaveTargetInQueue(StoreCellInd, checkBackpackEmpty);
-
-                yield return Toils_Collect.CheckNeedStorageCell(gotoCell, BackpackInd, StoreCellInd);
+                yield return Toils_Jump.JumpIfHaveTargetInQueue(StoreCellInd, extractB);
             }
 
             yield return endOfJob;
@@ -156,15 +130,14 @@
 
         private static Toil DropTheCarriedFromBackpackInCell(
             TargetIndex StoreCellInd,
-            ThingPlaceMode placeMode,
-            Apparel_Backpack backpack)
+            ThingPlaceMode placeMode)
         {
             Toil toil = new Toil();
             toil.initAction = () =>
                 {
                     Pawn actor = toil.actor;
                     Job curJob = actor.jobs.curJob;
-                    if (backpack.slotsComp.slots.Count <= 0)
+                    if (actor.inventory.innerContainer.Count <= 0)
                     {
                         return;
                     }
@@ -172,7 +145,7 @@
                     // Check dropThing is last item that should not be dropped
                     Thing dropThing = null;
 
-                    dropThing = backpack.slotsComp.slots.First();
+                    dropThing = actor.inventory.innerContainer.First();
 
                     if (dropThing == null)
                     {
@@ -188,10 +161,61 @@
                     if (destLoc.GetStorable(actor.Map) == null)
                     {
                         actor.Map.designationManager.RemoveAllDesignationsOn(dropThing);
-                        backpack.slotsComp.slots.TryDrop(dropThing, destLoc, actor.Map, placeMode, out dummy);
+                        actor.inventory.innerContainer.TryDrop(dropThing, destLoc, actor.Map, placeMode, out dummy);
                     }
                 };
             return toil;
         }
+
+        public static Toil CollectInBackpack(TargetIndex HaulableInd)
+        {
+
+            Toil toil = new Toil();
+            toil.initAction = () =>
+                {
+                    Pawn actor = toil.actor;
+                    Job curJob = actor.jobs.curJob;
+                    Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
+
+                    actor.TryGetBackpack().slotsComp.innerContainer.TryAdd(haulThing.SplitOff(haulThing.stackCount));
+
+                };
+
+            toil.FailOn(() =>
+                {
+                    Pawn actor = toil.actor;
+                    Job curJob = actor.jobs.curJob;
+                    Thing haulThing = curJob.GetTarget(HaulableInd).Thing;
+
+                    if (!actor.TryGetBackpack().slotsComp.innerContainer.CanAcceptAnyOf(haulThing))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                });
+            return toil;
+        }
+
+        public static Toil PutCarriedThingInBackpack()
+        {
+            Toil toil = new Toil();
+            toil.initAction = () =>
+                {
+                    var actor = toil.GetActor();
+                    if (actor.carryTracker.CarriedThing != null)
+                    {
+                        //Try transfer to inventory
+                        if (!actor.carryTracker.innerContainer.TryTransferToContainer(actor.carryTracker.CarriedThing, actor.TryGetBackpack().slotsComp.innerContainer))
+                        {
+                            //Failed: try drop
+                            Thing unused;
+                            actor.carryTracker.TryDropCarriedThing(actor.Position, actor.carryTracker.CarriedThing.stackCount, ThingPlaceMode.Near, out unused);
+                        }
+                    }
+                };
+            return toil;
+        }
+
     }
 }

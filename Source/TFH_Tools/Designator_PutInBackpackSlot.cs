@@ -170,7 +170,7 @@
                 return true;
             }
 
-            this.numOfContents = this.SlotsBackpackComp.slots.Count;
+            this.numOfContents = this.SlotsBackpackComp.innerContainer.Count;
 
             int designationsTotalStackCount = 0;
             foreach (Thing designation in this.SlotsBackpackComp.designatedThings)
@@ -178,7 +178,7 @@
 
             // No Item space or no stack space
             if (this.SlotsBackpackComp.designatedThings.Count + this.numOfContents >= this.MaxItem
-                || designationsTotalStackCount + this.SlotsBackpackComp.slots.TotalStackCount >= this.SlotsBackpackComp.MaxStack)
+                || designationsTotalStackCount + this.SlotsBackpackComp.innerContainer.TotalStackCount >= this.SlotsBackpackComp.MaxStack)
                 return new AcceptanceReport("BackpackIsFull".Translate());
 
             foreach (Thing designation in this.SlotsBackpackComp.designatedThings)
@@ -214,13 +214,13 @@
             if (!this.SlotsBackpackComp.Owner.CanReserveAndReach(
                     thing,
                     PathEndMode.ClosestTouch,
-                    this.SlotsBackpackComp.Owner.NormalMaxDanger()))
+                   Danger.Some))
             {
                 return false;
             }
 
-            // if there are free slots
-            if (this.SlotsBackpackComp.designatedThings.Count + this.SlotsBackpackComp.slots.Count >= this.MaxItem)
+            // if there are free innerContainer
+            if (this.SlotsBackpackComp.designatedThings.Count + this.SlotsBackpackComp.innerContainer.Count >= this.MaxItem)
             {
                 return false;
             }
