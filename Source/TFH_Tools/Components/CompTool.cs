@@ -8,7 +8,7 @@
 
     using Verse;
 
-    public class CompTool : CompEquipmentGizmoProvider
+    public class CompTool : ThingComp
     {
         public int wearTicks;
         public bool wasAutoEquipped;

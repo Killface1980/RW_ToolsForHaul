@@ -9,12 +9,14 @@
     using Verse;
     using Verse.AI;
 
-    public class CompSlotsToolbelt : CompEquipmentGizmoProvider, IThingHolder
+    public class CompSlotsToolbelt : ThingComp, IThingHolder
     {
         public ThingOwner GetDirectlyHeldThings()
         {
             return this.innerContainer;
         }
+
+        public Pawn Owner => (parent as Apparel_ToolBelt).Wearer;
 
         public ThingOwner<Thing> innerContainer;
 

@@ -50,12 +50,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\JobDriver_EmptyBackpack.cs" />
     <Compile Include="Apparel_Backpack.cs" />
     <Compile Include="Apparel_ToolBelt.cs" />
     <None Include="WorkGivers\Class1.cs" />
     <Compile Include="Components\Class1.cs" />
-    <Compile Include="Components\CompEquipmentGizmoProvider.cs" />
-    <Compile Include="Components\CompEquipmentGizmoUser.cs" />
+    <None Include="Components\CompEquipmentGizmoProvider.cs" />
+    <None Include="Components\CompEquipmentGizmoUser.cs" />
     <Compile Include="Components\CompInventory.cs" />
     <Compile Include="Components\CompSlotsBackpack.cs" />
     <Compile Include="Components\CompSlotsBackpack_Properties.cs" />
@@ -69,9 +70,10 @@
     <Compile Include="HaulJobDefOf.cs" />
     <Compile Include="HaulStatDefOf.cs" />
     <None Include="MapComponentInjector.cs" />
-    <Compile Include="JobDrivers\JobDriver_HaulWithBackpack.cs" />
-    <Compile Include="JobDrivers\JobDriver_PutInBackpackSlot.cs" />
-    <Compile Include="JobDrivers\JobDriver_PutInToolbeltSlot.cs" />
+    <Compile Include="AI\Toils_TFH.cs" />
+    <Compile Include="AI\JobDriver_HaulWithBackpack.cs" />
+    <Compile Include="AI\JobDriver_PutInBackpackSlot.cs" />
+    <Compile Include="AI\JobDriver_PutInToolbeltSlot.cs" />
     <Compile Include="MapComponent_ToolsForHaul.cs" />
     <Compile Include="MoteMakerTFH.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="StatsHelper.cs" />
     <Compile Include="ToolsForHaulUtility.cs" />
     <Compile Include="WorkGivers\WorkGiver_EquipTools.cs" />
+    <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack - Kopieren.cs" />
     <Compile Include="WorkGivers\WorkGiver_HaulWithBackpack.cs" />
     <None Include="_Pawn_ApparelTracker.cs" />
     <Compile Include="HarmonyPatches.cs" />

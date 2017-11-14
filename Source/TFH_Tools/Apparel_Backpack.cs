@@ -25,19 +25,15 @@
         public virtual IEnumerable<Gizmo> GetWornGizmos();
         */
 
-        public int numOfSavedItems;
-        public Pawn postWearer;
+        public int numOfSavedItems = 0;
+        public Pawn postWearer = null;
 
+       // public List<Thing> toDrop = new List<Thing>();
 
         public int MaxItem;
         public int MaxStack => this.MaxItem * 20;
 
 
-        public Apparel_Backpack()
-        {
-            this.postWearer = null;
-            this.numOfSavedItems = 0;
-        }
         public override string GetInspectString()
         {
             string inspectString = base.GetInspectString();
@@ -61,6 +57,7 @@
             base.ExposeData();
             Scribe_Values.Look(ref this.numOfSavedItems, "numOfSavedItems", 0);
             Scribe_Values.Look(ref this.MaxItem, "MaxItem");
+          //  Scribe_Collections.Look(ref this.toDrop, "toDrop");
         }
 
         public override void Draw()
@@ -98,16 +95,24 @@
             // designator.hotKey = KeyBindingDef.Named("CommandPutInInventory");
             // designator.activateSound = SoundDef.Named("Click");
             // yield return designator;
-            Designator_PutInBackpackSlot designator2 = new Designator_PutInBackpackSlot();
-            designator2.SlotsBackpackComp = this.slotsComp;
-            designator2.defaultLabel = string.Format("Put in ({0}/{1})", this.slotsComp.innerContainer.Count, this.MaxItem);
-            designator2.defaultDesc = string.Format("Put thing in {0}.", this.Label);
-            designator2.hotKey = KeyBindingDef.Named("CommandPutInInventory");
-            designator2.activateSound = SoundDef.Named("Click");
+            Designator_PutInBackpackSlot designator2 =
+                new Designator_PutInBackpackSlot
+                    {
+                        SlotsBackpackComp = this.slotsComp,
+                        pawn = this.Wearer,
+                        defaultLabel =
+                            string.Format(
+                                "Put in ({0}/{1})",
+                                this.slotsComp.innerContainer.Count,
+                                this.MaxItem),
+                        defaultDesc = string.Format("Put thing in {0}.", this.Label),
+                        hotKey = KeyBindingDef.Named("CommandPutInInventory"),
+                        activateSound = SoundDef.Named("Click"),
+                        icon = this.def.uiIcon,
+                        MaxItem = this.MaxItem
+                    };
 
             // not used, but need to be defined, so that gizmo could accept actions
-            designator2.icon = this.def.uiIcon;
-            designator2.MaxItem = this.MaxItem;
             yield return designator2;
 
             Gizmo_BackpackEquipment gizmo = new Gizmo_BackpackEquipment { backpack = this };

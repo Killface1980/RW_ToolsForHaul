@@ -562,7 +562,7 @@ namespace TFH_VehicleBase
             if (parkingLot.Count > 0)
             {
                 IOrderedEnumerable<IntVec3> orderedEnumerable = parkingLot.OrderBy(x => x.DistanceTo(searchPos));
-                parkingSpace = orderedEnumerable.First();
+                parkingSpace = orderedEnumerable.FirstOrDefault();
                 return true;
             }
 
@@ -767,24 +767,27 @@ namespace TFH_VehicleBase
             // Find closest cell in queue.
             if (!targetQueue.NullOrEmpty())
             {
-                foreach (LocalTargetInfo target in targetQueue)
+                for (int index = targetQueue.Count - 1; index >= 0; index--)
                 {
+                    LocalTargetInfo target = targetQueue[index];
                     IntVec3 place = IntVec3.Invalid;
 
-                    foreach (IntVec3 adjCell in GenAdjFast.AdjacentCells8Way(target))
+                    for (int i = 0; i < GenAdjFast.AdjacentCells8Way(target).Count; i++)
                     {
-                        if (!targetQueue.Contains(adjCell) && adjCell.IsValidStorageFor(pawn.Map, haulable))
+                        IntVec3 adjCell = GenAdjFast.AdjacentCells8Way(target)[i];
+                        if (targetQueue.Contains(adjCell) || !adjCell.IsValidStorageFor(pawn.Map, haulable))
                         {
-                            if (pawn.CanReserveAndReach(adjCell, PathEndMode.ClosestTouch, Danger.Some))
-                            {
-                                return adjCell;
-                            }
+                            continue;
+                        }
+                        if (HaulablePlaceValidator(haulable, pawn, adjCell))
+                        {
+                            return adjCell;
                         }
                     }
-                    if (TryFindSpotToPlaceHaulableCloseTo(haulable, pawn, target.Cell, out place))
-                    {
-                        return place;
-                    }
+                    //  if (TryFindSpotToPlaceHaulableCloseTo(haulable, pawn, target.Cell, out place))
+                    //  {
+                    //      return place;
+                    //  }
                 }
             }
 
@@ -792,35 +795,38 @@ namespace TFH_VehicleBase
             StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(haulable.Position, haulable);
             IntVec3 foundCell;
 
-            if (StoreUtility.TryFindBestBetterStoreCellFor(
+            if (TryFindBestBetterStoreCellFor(
                 haulable,
                 pawn,
                 pawn.Map,
                 currentPriority,
                 pawn.Faction,
                 out foundCell,
-                true))
+                true, targetQueue))
             {
                 return foundCell;
             }
 
 
-            // // Vanilla code is not worked item on container.
-            // StoragePriority currentPriority = HaulAIUtility.StoragePriorityAtFor(haulable.Position, haulable);
-            // foreach (SlotGroup slotGroup in pawn.Map.slotGroupManager.AllGroupsListInPriorityOrder)
+            // Vanilla code is not worked item on container.
+            // for (int index = 0; index < pawn.Map.slotGroupManager.AllGroupsListInPriorityOrder.Count; index++)
             // {
-            //     if (slotGroup.Settings.Priority < currentPriority) break;
+            //     SlotGroup slotGroup = pawn.Map.slotGroupManager.AllGroupsListInPriorityOrder[index];
+            //     if (slotGroup.Settings.Priority < currentPriority)
             //     {
-            //         foreach (IntVec3 cell in slotGroup.CellsList)
+            //         break;
+            //     }
+            //     for (int i = 0; i < slotGroup.CellsList.Count; i++)
+            //     {
+            //         IntVec3 cell = slotGroup.CellsList[i];
+            //         if (!targetQueue.NullOrEmpty() && !targetQueue.Contains(cell) || targetQueue.NullOrEmpty())
             //         {
-            //             if (!targetQueue.NullOrEmpty() && !targetQueue.Contains(cell) || targetQueue.NullOrEmpty())
+            //             if (cell.GetStorable(pawn.Map) == null)
             //             {
-            //                 if (cell.GetStorable(pawn.Map) == null)
+            //                 if (slotGroup.Settings.AllowedToAccept(haulable)
+            //                     && pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Deadly))
             //                 {
-            //                     if (slotGroup.Settings.AllowedToAccept(haulable) && pawn.CanReserveAndReach(cell, PathEndMode.ClosestTouch, Danger.Deadly))
-            //                     {
-            //                         return cell;
-            //                     }
+            //                     return cell;
             //                 }
             //             }
             //         }
@@ -829,6 +835,72 @@ namespace TFH_VehicleBase
 
             return IntVec3.Invalid;
         }
+
+        public static bool TryFindBestBetterStoreCellFor(Thing t, Pawn carrier, Map map, StoragePriority currentPriority, Faction faction, out IntVec3 foundCell, bool needAccurateResult = true, List<LocalTargetInfo> targetQueue = null)
+        {
+            List<SlotGroup> allGroupsListInPriorityOrder = map.slotGroupManager.AllGroupsListInPriorityOrder;
+            if (allGroupsListInPriorityOrder.Count == 0)
+            {
+                foundCell = IntVec3.Invalid;
+                return false;
+            }
+            IntVec3 a = (!t.SpawnedOrAnyParentSpawned) ? carrier.PositionHeld : t.PositionHeld;
+            StoragePriority storagePriority = currentPriority;
+            float num = 2.14748365E+09f;
+            IntVec3 intVec = default(IntVec3);
+            bool flag = false;
+            int count = allGroupsListInPriorityOrder.Count;
+            int num2 = 0;
+            while (num2 < count)
+            {
+                SlotGroup slotGroup = allGroupsListInPriorityOrder[num2];
+                StoragePriority priority = slotGroup.Settings.Priority;
+                if ((int)priority >= (int)storagePriority && (int)priority > (int)currentPriority)
+                {
+                    if (slotGroup.Settings.AllowedToAccept(t))
+                    {
+                        List<IntVec3> cellsList = slotGroup.CellsList;
+                        int count2 = cellsList.Count;
+                        int num3 = needAccurateResult ? Mathf.FloorToInt((float)count2 * Rand.Range(0.005f, 0.018f)) : 0;
+                        for (int i = 0; i < count2; i++)
+                        {
+                            IntVec3 intVec2 = cellsList[i];
+
+                            // TFH Code
+
+                            if (!targetQueue.NullOrEmpty() && targetQueue.Contains(intVec2))
+                            {
+                                continue;
+                            }
+
+                            // Code end
+
+                                float num4 = (float)(a - intVec2).LengthHorizontalSquared;
+                                if (!(num4 > num) && StoreUtility.IsGoodStoreCell(intVec2, map, t, carrier, faction))
+                                {
+                                    flag = true;
+                                    intVec = intVec2;
+                                    num = num4;
+                                    storagePriority = priority;
+                                    if (i >= num3)
+                                        break;
+                                }
+                        }
+                    }
+                    num2++;
+                    continue;
+                }
+                break;
+            }
+            if (!flag)
+            {
+                foundCell = IntVec3.Invalid;
+                return false;
+            }
+            foundCell = intVec;
+            return true;
+        }
+
         // Verse.AI.HaulAIUtility
 
         private static bool TryFindSpotToPlaceHaulableCloseTo(Thing haulable, Pawn worker, IntVec3 center, out IntVec3 spot)
@@ -867,7 +939,6 @@ namespace TFH_VehicleBase
         }
 
         // Verse.AI.HaulAIUtility
-
         private static bool HaulablePlaceValidator(Thing haulable, Pawn worker, IntVec3 c)
         {
             if (!worker.CanReserveAndReach(c, PathEndMode.OnCell, worker.NormalMaxDanger(), 1, -1, null, false))
@@ -898,7 +969,7 @@ namespace TFH_VehicleBase
                     return false;
                 }
             }
-            if (haulable.def.passability != Traversability.Standable)
+            if (haulable.def.passability != 0)
             {
                 for (int i = 0; i < 8; i++)
                 {

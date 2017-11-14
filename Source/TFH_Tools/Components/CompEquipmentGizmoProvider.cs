@@ -1,5 +1,7 @@
 ﻿namespace TFH_Tools.Components
 {
+    using System.Collections.Generic;
+
     using RimWorld;
 
     using Verse;
@@ -13,6 +15,9 @@
         {
             this.owner = p;
         }
+
+
+
 
         public bool ParentIsEquipped
         {

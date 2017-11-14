@@ -10,6 +10,8 @@
         // public static readonly JobDef HuntWithVehicle = DefDatabase<JobDef>.GetNamed("HuntWithVehicle");
         public static readonly JobDef HaulWithBackpack = DefDatabase<JobDef>.GetNamed("HaulWithBackpack");
 
+        public static readonly JobDef EmptyBackpack = DefDatabase<JobDef>.GetNamed("EmptyBackpack");
+
         // public static readonly JobDef DismountInBase = DefDatabase<JobDef>.GetNamed("DismountInBase");
 
         // public static readonly JobDef StandBy = DefDatabase<JobDef>.GetNamed("StandBy");

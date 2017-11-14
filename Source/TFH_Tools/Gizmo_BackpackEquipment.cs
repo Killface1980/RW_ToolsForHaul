@@ -55,7 +55,7 @@
                     return 2;
                 else
                 {
-                    int count = Mathf.FloorToInt(this.backpack.slotsComp.innerContainer.Count - 4) / 2;
+                    int count = Mathf.CeilToInt((this.backpack.slotsComp.innerContainer.Count - 3) / 2);
 
                     return 2 + count;
                 }
@@ -71,9 +71,9 @@
                     return Height;
                 else
                 {
-                    int count = Mathf.FloorToInt(this.backpack.slotsComp.innerContainer.Count - 4) / 2;
-
-                    return Height + count * Height * 0.5f;
+                    int count = Mathf.CeilToInt((this.backpack.slotsComp.innerContainer.Count - 3) / 2) ;
+                //    Log.Message("Shitty count: " + this.pawn.inventory.innerContainer.Count + " - " + count);
+                    return Height + (count * (Height /2));
                 }
 
             }
@@ -98,21 +98,23 @@
 
             // Equipment slot
             Pawn wearer = this.backpack.Wearer;
-            {
-                // Slots CompSlots
-                Rect inventoryRect = new Rect(topLeft.x, topLeft.y, this.Width, Height);
+            
+            // Slots CompSlots
+            Rect inventoryRect = new Rect(topLeft.x, topLeft.y, this.Width, Height);
 
-                Widgets.DrawWindowBackground(inventoryRect);
-                this.DrawSlots(wearer, this.backpack.slotsComp, inventoryRect);
-            }
+            Widgets.DrawWindowBackground(inventoryRect);
+            this.DrawSlots(wearer, this.backpack.slotsComp, inventoryRect);
 
             return new GizmoResult(GizmoState.Clear);
         }
 
-        public void DrawSlots(Pawn wearer, CompSlotsBackpack SlotsBackpackComp, Rect inventoryRect)
+        public void DrawSlots(Pawn wearer, CompSlotsBackpack slotsComp, Rect inventoryRect)
         {
             // draw text message if no contents inside
-            if (SlotsBackpackComp.innerContainer.Count == 0)
+            // ThingOwner<Thing> container = SlotsBackpackComp.innerContainer;
+            ThingOwner<Thing> container = wearer.inventory.innerContainer;
+
+            if (slotsComp.innerContainer.Count == 0)
             {
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleCenter;
@@ -139,7 +141,9 @@
                         Widgets.DrawTextureFitted(slotRect, NoAvailableTex, 1.0f);
                     }
 
-                    if (currentSlotInd >= SlotsBackpackComp.innerContainer.Count)
+                    // ThingOwner<Thing> innerContainer = SlotsBackpackComp.innerContainer;
+
+                    if (currentSlotInd >= slotsComp.innerContainer.Count)
                     {
                         slotRect.x = inventoryRect.x
                                      + inventoryRect.width / this.iconsPerRow * (currentSlotInd % this.iconsPerRow);
@@ -148,13 +152,13 @@
                     }
 
                     // draw occupied innerContainer
-                    if (currentSlotInd < SlotsBackpackComp.innerContainer.Count)
+                    if (currentSlotInd < slotsComp.innerContainer.Count)
                     {
                         slotRect.x = inventoryRect.x
                                      + inventoryRect.width / this.iconsPerRow * (currentSlotInd % this.iconsPerRow);
                         slotRect.y = inventoryRect.y + Height / 2 * (currentSlotInd / this.iconsPerRow);
 
-                        Thing currentThing = SlotsBackpackComp.innerContainer[currentSlotInd];
+                        Thing currentThing = slotsComp.innerContainer[currentSlotInd];
 
                         // draws greyish slot background
                         Widgets.DrawTextureFitted(slotRect.ContractedBy(3f), texOccupiedSlotBG, 1f);
@@ -190,7 +194,7 @@
                                 if (currentThing != null && currentThing.def.equipmentType == EquipmentType.Primary
                                     && (currentThing.def.IsRangedWeapon || currentThing.def.IsMeleeWeapon))
                                 {
-                                    SlotsBackpackComp.SwapEquipment(currentThing as ThingWithComps);
+                                    slotsComp.SwapEquipment(currentThing as ThingWithComps);
                                 }
 
                                 //// equip weapon in slot
@@ -217,7 +221,7 @@
                                                                             () =>
                                                                                 {
                                                                                     Thing resultThing;
-                                                                                    SlotsBackpackComp.innerContainer.TryDrop(
+slotsComp.innerContainer.TryDrop(
                                                                                         currentThing,
                                                                                         wearer.Position,
                                                     wearer.Map,
@@ -236,7 +240,7 @@
                                     options.Add(
                                         new FloatMenuOption(
                                             "Equip".Translate(currentThing.LabelCap),
-                                            () => { SlotsBackpackComp.SwapEquipment(currentThing as ThingWithComps); }));
+                                            () => { slotsComp.SwapEquipment(currentThing as ThingWithComps); }));
 
 
 
@@ -252,7 +256,7 @@
                                             () =>
                                                 {
                                                     Thing dummy;
-                                                    SlotsBackpackComp.innerContainer.TryDrop(
+                                                    slotsComp.innerContainer.TryDrop(
                                                         currentThing,
                                                         wearer.Position,
                                                     wearer.Map,
@@ -276,7 +280,7 @@
                                             () =>
                                                 {
                                                     Thing dummy;
-                                                    SlotsBackpackComp.innerContainer.TryDrop(
+                                                    slotsComp.innerContainer.TryDrop(
                                                         currentThing,
                                                         wearer.Position,
                                                     wearer.Map,

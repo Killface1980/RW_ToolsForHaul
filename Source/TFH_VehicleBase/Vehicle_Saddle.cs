@@ -64,7 +64,7 @@
             get
             {
                 return (this.innerContainer.Where(x => x is Pawn).Count() > 0)
-                           ? this.innerContainer.Where(x => x is Pawn).First() as Pawn
+                           ? this.innerContainer.Where(x => x is Pawn).FirstOrDefault() as Pawn
                            : null;
             }
         }

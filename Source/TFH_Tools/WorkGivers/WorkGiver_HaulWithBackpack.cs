@@ -2,6 +2,7 @@
 
 namespace TFH_Tools.WorkGivers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -14,14 +15,19 @@ namespace TFH_Tools.WorkGivers
     using Verse;
     using Verse.AI;
 
-    public class WorkGiver_HaulWithBackpack : WorkGiver_Scanner
+    public class WorkGiver_HaulWithBackpack : WorkGiver_Haul
     {
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
             List<Thing> list = new List<Thing>();
             Apparel_Backpack backpack = pawn.TryGetBackpack();
-            foreach (Thing thing in pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling())
+            if (backpack == null)
             {
+                return list;
+            }
+            for (int index = 0; index < pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count; index++)
+            {
+                Thing thing = pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling()[index];
                 if (thing.def.thingCategories.Exists(
                     category => backpack.slotsComp.Properties.allowedThingCategoryDefs.Exists(
                                     subCategory => subCategory.ThisAndChildCategoryDefs.Contains(category))
@@ -33,7 +39,6 @@ namespace TFH_Tools.WorkGivers
 
                 // return ToolsForHaulUtility.Cart();
             }
-
             return list;
         }
 
@@ -43,18 +48,18 @@ namespace TFH_Tools.WorkGivers
             Apparel_Backpack backpack = pawn.TryGetBackpack();
 
             // Should skip pawn that don't have backpack.
-            if (backpack == null)
+            if (backpack == null || backpack.slotsComp.innerContainer.Count > 0)
             {
                 return true;
             }
 
-            if (backpack.MaxItem - backpack.slotsComp.innerContainer.Count == 0)
-            {
-                return true;
-            }
+            // if (backpack.MaxItem - pawn.inventory.innerContainer.Count == 0)
+            // {
+            //     return true;
+            // }
 
             Trace.DebugWriteHaulingPawn(pawn);
-            return false;
+            return pawn.Map.listerHaulables.ThingsPotentiallyNeedingHauling().Count == 0;
         }
 
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
@@ -83,7 +88,8 @@ namespace TFH_Tools.WorkGivers
                 }
                 else
                 {
-                    return ToolsForHaulUtility.HaulWithTools(pawn, pawn.Map, t);
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    return ToolsForHaulUtility.HaulWithTools(pawn, t);
                 }
             }
 

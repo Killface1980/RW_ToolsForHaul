@@ -90,4 +90,11 @@
     <driverClass>TFH_Tools.JobDrivers.JobDriver_HaulWithBackpack</driverClass>
     <reportString>Collecting TargetA with targetC.</reportString>
   </JobDef>
+
+    <JobDef>
+    <defName>EmptyBackpack</defName>
+    <driverClass>TFH_Tools.JobDrivers.JobDriver_EmptyBackpack</driverClass>
+    <reportString>Emptying TargetA from targetC.</reportString>
+  </JobDef>
+  
 </JobDefs>

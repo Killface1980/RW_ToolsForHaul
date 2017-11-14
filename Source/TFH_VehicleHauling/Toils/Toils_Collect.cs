@@ -14,27 +14,31 @@
     {
         private const int NearbyCell = 30;
 
-        public static Toil Extract(TargetIndex ind)
-        {
-            Toil toil = new Toil();
-            toil.initAction = () =>
-                {
-                    List<LocalTargetInfo> targetQueue = toil.actor.CurJob.GetTargetQueue(ind);
-                    if (!targetQueue.NullOrEmpty())
-                    {
-                        toil.actor.CurJob.SetTarget(ind, targetQueue.First());
-                        targetQueue.RemoveAt(0);
-                        if (!toil.actor.CurJob.countQueue.NullOrEmpty())
-                        {
-                            toil.actor.CurJob.count = toil.actor.CurJob.countQueue.First();
-                            toil.actor.CurJob.countQueue.RemoveAt(0);
-                        }
-                    }
-                };
-            return toil;
-        }
+       // public static Toil Extract(TargetIndex ind)
+       // {
+       //     Toil toil = new Toil();
+       //     toil.initAction = () =>
+       //         {
+       //             List<LocalTargetInfo> targetQueue = toil.actor.jobs.curJob.GetTargetQueue(ind);
+       //             if (!targetQueue.NullOrEmpty())
+       //             {
+       //                 toil.actor.jobs.curJob.SetTarget(ind, targetQueue.FirstOrDefault());
+       //                 targetQueue.RemoveAt(0);
+       //                 if (!toil.actor.jobs.curJob.countQueue.NullOrEmpty())
+       //                 {
+       //                     toil.actor.jobs.curJob.count = toil.actor.CurJob.countQueue.FirstOrDefault();
+       //                     toil.actor.jobs.curJob.countQueue.RemoveAt(0);
+       //                 }
+       //             }
+       //         };
+       //     return toil;
+       // }
+
+
 
         #region Toil Collect
+
+
 
         public static Toil CheckDuplicates(Toil jumpToil, TargetIndex CarrierInd, TargetIndex HaulableInd)
         {
@@ -43,23 +47,26 @@
                 {
                     Pawn actor = toil.GetActor();
 
-                    LocalTargetInfo target = toil.actor.jobs.curJob.GetTarget(HaulableInd);
+                    Job curJob = toil.actor.CurJob;
+
+                    LocalTargetInfo target = curJob.GetTarget(HaulableInd);
                     if (target.Thing.def.stackLimit <= 1)
                     {
                         return;
                     }
 
-                    List<LocalTargetInfo> targetQueue = toil.actor.jobs.curJob.GetTargetQueue(HaulableInd);
+                    List<LocalTargetInfo> targetQueue = curJob.GetTargetQueue(HaulableInd);
                     if (!targetQueue.NullOrEmpty() && target.Thing.def.defName == targetQueue.First().Thing.def.defName)
                     {
-                        toil.actor.jobs.curJob.SetTarget(HaulableInd, targetQueue.First());
+                        curJob.SetTarget(HaulableInd, targetQueue.First());
+                       
                         actor.Map.reservationManager.Reserve(actor, actor.CurJob, targetQueue.First());
                         targetQueue.RemoveAt(0);
                         toil.actor.jobs.curDriver.JumpToToil(jumpToil);
                         return;
                     }
 
-                    Vehicle_Cart cart = toil.actor.jobs.curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
+                    Vehicle_Cart cart = curJob.GetTarget(CarrierInd).Thing as Vehicle_Cart;
 
                     if (cart == null)
                     {
@@ -94,7 +101,7 @@
                             && !item.IsBurning() && actor.Map.reservationManager.CanReserve(actor, item));
                     if (thing != null)
                     {
-                        toil.actor.jobs.curJob.SetTarget(HaulableInd, thing);
+                        curJob.SetTarget(HaulableInd, thing);
                         actor.Map.reservationManager.Reserve(actor, actor.CurJob, thing);
                         toil.actor.jobs.curDriver.JumpToToil(jumpToil);
                     }

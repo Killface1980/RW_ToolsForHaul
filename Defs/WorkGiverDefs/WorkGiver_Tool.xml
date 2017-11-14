@@ -27,6 +27,18 @@
     <requiredCapacities>
       <li>Manipulation</li>
     </requiredCapacities>
+  </WorkGiverDef> 
+  
+  <WorkGiverDef>
+    <defName>EmptyBackpack</defName>
+    <giverClass>TFH_Tools.WorkGivers.WorkGiver_EmptyBackpack</giverClass>
+    <workType>Hauling</workType>
+    <priorityInType>40</priorityInType>
+    <verb>empty backpack</verb>
+    <gerund>emptying backpack</gerund>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
   </WorkGiverDef>
   
 </Defs>

@@ -7,10 +7,10 @@
 
     public class JobDriver_PutInBackpackSlot : JobDriver
     {
-        public const TargetIndex BackpackInd = TargetIndex.B;
-
         // Constants
         public const TargetIndex HaulableInd = TargetIndex.A;
+
+        public const TargetIndex BackpackInd = TargetIndex.B;
 
         public override string GetReport()
         {

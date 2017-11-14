@@ -35,7 +35,7 @@ namespace TFH_VehicleBase.ITabs
         {
             get
             {
-                Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
+                Vehicle_Cart cart = Find.Selector.SelectedObjects.FirstOrDefault() as Vehicle_Cart;
                 if (cart == null)
                 {
                     return false;
@@ -64,8 +64,8 @@ namespace TFH_VehicleBase.ITabs
             PlayerKnowledgeDatabase.KnowledgeDemonstrated(ConceptDefOf.StorageTab, KnowledgeAmount.FrameDisplayed);
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.StorageTab, OpportunityType.Critical);
             LessonAutoActivator.TeachOpportunity(ConceptDefOf.Stockpiles, OpportunityType.Critical);
-            Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
-            allowances = ((Vehicle_Cart)Find.Selector.SelectedObjects.First()).allowances;
+            Vehicle_Cart cart = Find.Selector.SelectedObjects.FirstOrDefault() as Vehicle_Cart;
+            allowances = ((Vehicle_Cart)Find.Selector.SelectedObjects.FirstOrDefault()).allowances;
 
 
 

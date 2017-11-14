@@ -37,7 +37,8 @@
 
         public int MaxItem;
 
-        private float curWidth => Height;
+        public Pawn pawn;
+
 
         public override float Width => Height;
 
@@ -146,7 +147,10 @@
         }
 
         // determine conditions of hiding similar gizmos
-        public override bool GroupsWith(Gizmo other) { return false; }
+        public override bool GroupsWith(Gizmo other)
+        {
+            return base.GroupsWith(other);
+        }
 
         // allows rectangular selection
         public override int DraggableDimensions => 2;
@@ -170,7 +174,10 @@
                 return true;
             }
 
-            this.numOfContents = this.SlotsBackpackComp.innerContainer.Count;
+            //ThingOwner<Thing> container = this.SlotsBackpackComp.innerContainer;
+            ThingOwner<Thing> container = this.SlotsBackpackComp.innerContainer;
+
+            this.numOfContents = container.Count;
 
             int designationsTotalStackCount = 0;
             foreach (Thing designation in this.SlotsBackpackComp.designatedThings)
@@ -178,7 +185,7 @@
 
             // No Item space or no stack space
             if (this.SlotsBackpackComp.designatedThings.Count + this.numOfContents >= this.MaxItem
-                || designationsTotalStackCount + this.SlotsBackpackComp.innerContainer.TotalStackCount >= this.SlotsBackpackComp.MaxStack)
+                || designationsTotalStackCount + container.TotalStackCount >= this.SlotsBackpackComp.MaxStack)
                 return new AcceptanceReport("BackpackIsFull".Translate());
 
             foreach (Thing designation in this.SlotsBackpackComp.designatedThings)
@@ -211,7 +218,7 @@
                 return false;
             }
 
-            if (!this.SlotsBackpackComp.Owner.CanReserveAndReach(
+            if (!this.pawn.CanReserveAndReach(
                     thing,
                     PathEndMode.ClosestTouch,
                    Danger.Some))

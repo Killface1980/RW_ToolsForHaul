@@ -22,22 +22,49 @@
             HarmonyInstance harmony = HarmonyInstance.Create("com.toolsforhaul.rimworld.mod.tools");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-            harmony.Patch(
-                AccessTools.Method(
-                    typeof(Pawn_ApparelTracker),
-                    nameof(Pawn_ApparelTracker.TryDrop),
-                    new[] { typeof(Apparel), typeof(Apparel), typeof(IntVec3), typeof(bool) }),
-                new HarmonyMethod(typeof(HarmonyPatches), nameof(TryDrop_Prefix)),
-                null);
+          //  harmony.Patch(
+          //      AccessTools.Method(
+          //          typeof(Verse.AI.Job),
+          //          nameof(Verse.AI.Job.JobIsSameAs)),
+          //      null,
+          //      new HarmonyMethod(typeof(HarmonyPatches), nameof(JobIsSameAs)),
+          //      null);
+           
+         //   harmony.Patch(
+         //       AccessTools.Method(
+         //           typeof(Pawn_InventoryTracker),
+         //           nameof(Pawn_InventoryTracker.InventoryTrackerTick)),
+         //       new HarmonyMethod(typeof(HarmonyPatches), nameof(ThingOwnerTick)),
+         //       null);
+         //  
+         //   harmony.Patch(
+         //       AccessTools.Method(
+         //           typeof(Pawn_InventoryTracker),
+         //           nameof(Pawn_InventoryTracker.InventoryTrackerTickRare)),
+         //       new HarmonyMethod(typeof(HarmonyPatches), nameof(ThingOwnerTickRare)),
+         //       null);
         }
 
-        private static void TryDrop_Prefix(Apparel ap)
+      //  private static void JobIsSameAs(Verse.AI.Job __instance, ref bool __result, Job other)
+      //  {
+      //      if (__instance == other)
+      //      {
+      //          if (__instance.def == HaulJobDefOf.HaulWithBackpack)
+      //          {
+      //              __result = true;
+      //          }
+      //      }
+      //  }
+        private static void ThingOwnerTick(Pawn_InventoryTracker __instance)
         {
-            Log.Message("DEBUG: Trydrop detours working.");
-            var bp = ap as Apparel_Backpack;
-            var tb = ap as Apparel_ToolBelt;
-            bp?.slotsComp.innerContainer.TryDropAll(bp.Wearer.Position, bp.Wearer.Map, ThingPlaceMode.Near);
-            tb?.slotsComp.innerContainer.TryDropAll(tb.Wearer.Position, tb.Wearer.Map, ThingPlaceMode.Near);
+            Apparel_Backpack backpack = __instance.pawn.TryGetBackpack();
+            backpack?.slotsComp.InventoryTrackerTick();
+        }
+       
+        private static void ThingOwnerTickRare(Pawn_InventoryTracker __instance)
+        {
+            Apparel_Backpack backpack = __instance.pawn.TryGetBackpack();
+            backpack?.slotsComp.InventoryTrackerTickRare();
         }
     }
 }

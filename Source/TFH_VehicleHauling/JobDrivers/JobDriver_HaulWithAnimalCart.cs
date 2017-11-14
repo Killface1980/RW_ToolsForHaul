@@ -107,7 +107,7 @@
             yield return checkHaulableEmpty;
             {
                 // Collect TargetQueue
-                Toil extractA = Toils_Collect.Extract(HaulableInd);
+                Toil extractA = Toils_JobTransforms.ExtractNextTargetFromQueue(HaulableInd);
                 yield return extractA;
 
                 yield return Toils_Cart.CallAnimalCart(CartInd, HaulableInd).FailOnDestroyedOrNull(HaulableInd);
@@ -131,7 +131,7 @@
             yield return checkStoreCellEmpty;
             {
                 // Drop TargetQueue
-                Toil extractB = Toils_Collect.Extract(StoreCellInd);
+                Toil extractB = Toils_JobTransforms.ExtractNextTargetFromQueue(StoreCellInd);
                 yield return extractB;
 
                 yield return Toils_Cart.CallAnimalCart(CartInd, StoreCellInd);

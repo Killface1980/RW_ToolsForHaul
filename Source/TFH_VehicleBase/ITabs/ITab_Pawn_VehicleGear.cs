@@ -40,7 +40,7 @@ namespace TFH_VehicleBase.ITabs
         {
             get
             {
-                Vehicle_Cart cart = Find.Selector.SelectedObjects.First() as Vehicle_Cart;
+                Vehicle_Cart cart = Find.Selector.SelectedObjects.FirstOrDefault() as Vehicle_Cart;
                 if (cart == null)
                 {
                     return false;

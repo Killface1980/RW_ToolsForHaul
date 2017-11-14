@@ -25,7 +25,7 @@
                         IEnumerable<Hediff> diffs = from x in pawn.health.hediffSet.hediffs
                                                     where x.Part == record 
                         select x;
-                        if (diffs.Count<Hediff>() != 1 || diffs.First<Hediff>().def != recipe.addsHediff)
+                        if (diffs.Count<Hediff>() != 1 || diffs.FirstOrDefault<Hediff>().def != recipe.addsHediff)
                         {
                             if (record.parent == null || pawn.health.hediffSet.GetNotMissingParts(BodyPartHeight.Undefined, BodyPartDepth.Undefined).Contains(record.parent))
                             {
